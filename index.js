@@ -69,11 +69,19 @@ export const Downstreams = curry(function Downstreams(children, el, state) {
             element = el.querySelector(selector);
         }
 
+        // If no element was found, abort.
+        if (!element) {
+            // For some weird reason, `identity` on its own isn't getting
+            // compiled by webpack correctly. This seems to make it work
+            // but it's a hack we should probably get rid of.
+            return pipe(identity);
+        }
+
         let instance = factory(element, adapter(state));
 
         // Plug into Downstream's pool
         pipe(preplug, plug)(instance);
 
-        return pipe(adapter, instance.render);
+        return pipe(adapter, instance.render || identity);
     }
 });
