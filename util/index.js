@@ -1,6 +1,3 @@
-import { curry, identity, pipe } from 'ramda';
-import { pool } from 'kefir';
-
 /**
  * Create a new event with the custom type string.
  *
@@ -22,4 +19,3 @@ export function createEvent(type) {
 
     return event;
 }
-

@@ -1,6 +1,6 @@
-# brook framework stubs
+# brook-util
 
-These are elements which wrap shared functionality in the codebase into a common structure. These pieces will eventually be extracted into their own framework.
+Some useful utility functions for brook.
 
 ## `createEvent`
 
