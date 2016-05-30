@@ -15,13 +15,22 @@ import Events from './events';
  * @returns {stream} Component instance.
  * @factory
  */
-const Component = function Component({ events = {}, render = identity, subcomponents = [] }, el, state = {}) {
-    const stream = pool();
-    const downstreams = Downstreams(subcomponents, el, state);
-    const dom = Events(events, el);
+const Component = function Component({ events, render = identity, subcomponents }, el, state = {}) {
+    let downstreams, dom;
 
-    stream.plug(downstreams);
-    stream.plug(dom);
+    const stream = pool();
+
+    if (subcomponents) {
+        downstreams = Downstreams(subcomponents, el, state);
+
+        stream.plug(downstreams);
+    }
+
+    if (events) {
+        dom = Events(events, el);
+
+        stream.plug(dom);
+    }
 
     const api = Object.create(stream);
 
@@ -31,7 +40,7 @@ const Component = function Component({ events = {}, render = identity, subcompon
      * @type {Function}
      */
     api.render = pipe(
-        tap(downstreams.render),
+        tap(downstreams ? downstreams.render : identity),
         tap(update => render(el, state, update)),
         update => state = update,
         always(api)
