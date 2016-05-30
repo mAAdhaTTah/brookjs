@@ -25,6 +25,9 @@ const Events = function Events(config, el) {
         }
 
         const handlers = elements.concat(
+            // @todo problem here!
+            // we can't guarantee that the nodes we get here are
+            // from the component or its children.
             Array.from(el.querySelectorAll(`[${EVENT_ATTRIBUTE}]`))
         )
             .map(element => element.getAttribute(EVENT_ATTRIBUTE).split(';')

@@ -3,6 +3,8 @@ import { always, curry, identity, pipe, tap } from 'ramda';
 import Downstreams from './downstreams';
 import Events from './events';
 
+const NOT_SUPPORTED_ERROR = 'Components with both subcomponents & events are not yet supported.';
+
 /**
  * Create a new Component with the provided configuration.
  *
@@ -17,6 +19,12 @@ import Events from './events';
  */
 const Component = function Component({ events, render = identity, subcomponents }, el, state = {}) {
     let downstreams, dom;
+
+    // We can't yet support both as we can't tell
+    // whether a DOM node is from a child or itself.
+    if (subcomponents && events) {
+        throw new Error(NOT_SUPPORTED_ERROR);
+    }
 
     const stream = pool();
 
