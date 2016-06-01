@@ -18,7 +18,7 @@ const NOT_SUPPORTED_ERROR = 'Components with both subcomponents & events are not
  * @factory
  */
 const Component = function Component({ events, render = identity, subcomponents }, el, state = {}) {
-    let downstreams, dom;
+    let downstreams;
 
     // We can't yet support both as we can't tell
     // whether a DOM node is from a child or itself.
@@ -35,9 +35,7 @@ const Component = function Component({ events, render = identity, subcomponents 
     }
 
     if (events) {
-        dom = Events(events, el);
-
-        stream.plug(dom);
+        stream.plug(Events(events, el));
     }
 
     const api = Object.create(stream);
