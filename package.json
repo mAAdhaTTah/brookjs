@@ -1,0 +1,11 @@
+{
+  "name": "brook",
+  "version": "0.0.1",
+  "description": "Framework for composing stream-based applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma start karma.conf.js --single-run"
+  },
+  "author": "Valtech US",
+  "license": "MIT"
+}
