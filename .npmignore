@@ -1,0 +1,6 @@
+.babelrc
+.gitignore
+karma.conf.js
+webpack.config.js
+**/test
+**/README.md
