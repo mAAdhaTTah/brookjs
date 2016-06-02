@@ -1,3 +1,7 @@
 {
+  "plugins": [
+    "ramda",
+    "transform-array-from"
+  ],
   "presets": ["es2015-webpack"]
 }
