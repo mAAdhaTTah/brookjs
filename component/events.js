@@ -1,5 +1,5 @@
 import { stream } from 'kefir';
-import { curry, pipe, prop } from 'ramda';
+import { always, curry, pipe, prop } from 'ramda';
 
 /**
  * Data attribute for element events.
@@ -109,3 +109,16 @@ export function checkedEventAction(checked) {
  * @type {Function}
  */
 export const checkedEvent = pipe(prop('target'), prop('checked'), checkedEventAction);
+
+export const FIELD_FOCUS = 'FIELD_FOCUS';
+
+/**
+ * Create a FIELD_FOCUS action object.
+ *
+ * @returns {{type: string}} FIELD_FOCUS action.
+ */
+export const fieldFocusAction = function fieldFocusAction() {
+    return { type: FIELD_FOCUS };
+};
+
+export const focusEvent = always(fieldFocusAction());
