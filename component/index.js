@@ -40,6 +40,13 @@ const Component = function Component({ events, render = identity, subcomponents 
 
     const api = Object.create(stream);
 
+    Object.defineProperty(api, 'el', {
+        enumerable: false,
+        configurable: false,
+        writable: false,
+        value: el
+    });
+
     /**
      * Updates the components subcomponents & component.
      *
@@ -47,7 +54,7 @@ const Component = function Component({ events, render = identity, subcomponents 
      */
     api.render = pipe(
         tap(downstreams ? downstreams.render : identity),
-        tap(update => render(el, state, update)),
+        tap(update => render(api, state, update)),
         update => state = update,
         always(api)
     );
