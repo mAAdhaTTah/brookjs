@@ -28,4 +28,7 @@ build/Release
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
 
+# ESLint cache
+.eslintcache
+
 # Created by .ignore support plugin (hsz.mobi)

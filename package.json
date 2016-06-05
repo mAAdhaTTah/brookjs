@@ -4,7 +4,8 @@
   "description": "Framework for composing stream-based applications.",
   "main": "index.js",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run"
+    "test": "karma start karma.conf.js --single-run",
+    "lint": "eslint ./ --cache true --fix; exit 0"
   },
   "author": "Valtech US",
   "license": "MIT",
