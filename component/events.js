@@ -33,7 +33,14 @@ const Events = function Events(config, el) {
             .map(element => element.getAttribute(EVENT_ATTRIBUTE).split(';')
                 .map(event => {
                     const [type, key] = event.split(':');
-                    const listener = pipe(config[key], emitter.emit);
+                    const hook = config[key];
+                    const listener = function listener(ev) {
+                        const value = hook(ev);
+
+                        if (value) {
+                            emitter.emit(value);
+                        }
+                    };
 
                     element.addEventListener(type, listener);
 
