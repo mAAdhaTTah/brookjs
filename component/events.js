@@ -129,3 +129,16 @@ export const fieldFocusAction = function fieldFocusAction() {
 };
 
 export const focusEvent = always(fieldFocusAction());
+
+export const HEADER_CLICK = 'HEADER_CLICK';
+
+/**
+ * Create a new Header Clicked action
+ *
+ * @returns {{type: string}} Clicked action object.
+ */
+export const clickedEventAction = function clickedEventAction() {
+    return { type: HEADER_CLICK };
+};
+
+export const clickEvent = always(clickedEventAction());
