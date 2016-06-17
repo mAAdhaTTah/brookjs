@@ -124,11 +124,14 @@ export const FIELD_FOCUS = 'FIELD_FOCUS';
  *
  * @returns {{type: string}} FIELD_FOCUS action.
  */
-export const fieldFocusAction = function fieldFocusAction() {
-    return { type: FIELD_FOCUS };
+export const fieldFocusAction = function fieldFocusAction(name) {
+    return {
+        type: FIELD_FOCUS,
+        payload: { name }
+    };
 };
 
-export const focusEvent = always(fieldFocusAction());
+export const focusEvent = pipe(prop('target'), prop('name'), fieldFocusAction);
 
 export const CLICK = 'CLICK';
 
