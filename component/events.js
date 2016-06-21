@@ -100,13 +100,13 @@ export const CHECKED_CHANGE = 'CHECKED_CHANGE';
 /**
  * Create a new Checked Change action.
  *
- * @param {boolean} checked - Target checked.
+ * @param {boolean} value - Target checked.
  * @returns {Object} Checked Change action object.
  */
-export function checkedEventAction(checked) {
+export function checkedEventAction(value) {
     return {
         type: CHECKED_CHANGE,
-        payload: { checked }
+        payload: { value }
     };
 }
 
