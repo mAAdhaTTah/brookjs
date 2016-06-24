@@ -35,6 +35,7 @@ export function createEvent(type) {
 export const mapActionTo = curry(function mapActionTo(source, dest, { type, payload }) {
     if (type === source) {
         type = dest;
+        payload = Object.assign({}, payload, { source });
     }
 
     return { type, payload };
