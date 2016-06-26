@@ -1,4 +1,5 @@
 import { createStore } from 'redux';
+import { fromESObservable } from 'kefir';
 import { pipe, identity } from 'ramda';
 
 export const BROOKJS_INIT = 'BROOKJS_INIT';
@@ -12,7 +13,14 @@ export function bootstrap({ reducer, enhancer, root }) {
 
     return function mount(el, state) {
         const store = createStore(reducer, state, enhancer);
-        const instance = root(el, store);
+        const store$ = Object.assign(Object.create(fromESObservable(store)), {
+            getState: function getState() {
+                console.log("Calling getState from observable is deprecated");
+                return store.getState();
+            }
+        });
+
+        const instance = root(el, store$);
 
         if (process.env.NODE_ENV !== 'production') {
             instance.log('App');
