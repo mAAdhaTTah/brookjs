@@ -1,11 +1,13 @@
 import $$observable from 'symbol-observable';
-import { pool } from 'kefir';
-import { always, binary, curry, identity, pipe, prop, T, tap } from 'ramda';
+import { fromESObservable, pool, stream } from 'kefir';
+import { always, curry, curryN, identity, pipe, prop, T, tap } from 'ramda';
 import morphdom from 'morphdom';
 import Downstreams from './downstreams';
 import Events from './events';
 
 const NOT_SUPPORTED_ERROR = 'Components with both subcomponents & events are not yet supported.';
+
+const updateDOM = curryN(2, morphdom);
 
 /**
  * Create a new Component with the provided configuration.
@@ -30,19 +32,19 @@ const Component = function Component({ events, render = identity, shouldUpdate =
         throw new Error(NOT_SUPPORTED_ERROR);
     }
 
-    const stream = pool();
+    const stream$ = pool();
 
     if (subcomponents) {
         downstreams = Downstreams(subcomponents, el, state);
 
-        stream.plug(downstreams);
+        stream$.plug(downstreams);
     }
 
     if (events) {
-        stream.plug(Events(events, el));
+        stream$.plug(Events(events, el));
     }
 
-    const api = Object.create(stream);
+    const api = Object.create(stream$);
 
     Object.defineProperty(api, 'el', {
         enumerable: false,
@@ -56,7 +58,7 @@ const Component = function Component({ events, render = identity, shouldUpdate =
             throw new Error('Needs observable');
         }
 
-        const next = pipe(template, binary(morphdom(el)));
+        const next = pipe(template, updateDOM(el));
         const state$ = fromESObservable(state)
             .scan(({ prev = {} }, next) => ({ prev, next }), {})
             .filter(shouldUpdate)
