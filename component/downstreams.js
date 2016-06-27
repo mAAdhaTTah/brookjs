@@ -33,7 +33,7 @@ const Downstreams = function Downstreams(children, el, state) {
                 unsub();
                 api.offValue(emitter.emit);
             };
-        }).toESObservable();
+        });
     }
 
     api.render = pipe(
