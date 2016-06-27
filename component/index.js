@@ -53,12 +53,14 @@ const Component = function Component({ events, render = identity, shouldUpdate =
         value: el
     });
 
-    if (template) {
-        if (!state[$$observable]) {
-            throw new Error('Needs observable');
-        }
-
-        const next = pipe(template, updateDOM(el));
+    if (state[$$observable]) {
+        const next = pipe(
+            tap(downstreams && downstreams.render ? downstreams.render : identity),
+            tap(render ? update => render(api, state, update) : identity),
+            tap(template ? pipe(template, updateDOM(el)) : identity),
+            update => state = update,
+            always(api)
+        );
         const state$ = fromESObservable(state)
             .scan(({ prev = {} }, next) => ({ prev, next }), {})
             .filter(shouldUpdate)
@@ -79,6 +81,8 @@ const Component = function Component({ events, render = identity, shouldUpdate =
 
         return Object.assign(Object.create(events$), opts);
     }
+
+    console.log('Instantiating with direct state is deprecated');
 
     /**
      * Updates the components subcomponents & component.
