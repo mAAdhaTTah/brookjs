@@ -1,3 +1,4 @@
+import $$observable from 'symbol-observable';
 import { pool } from 'kefir';
 import { always, binary, curry, identity, pipe, prop, T, tap } from 'ramda';
 import morphdom from 'morphdom';
