@@ -1,6 +1,6 @@
 import $$observable from 'symbol-observable';
 import { fromESObservable, pool, stream } from 'kefir';
-import { always, curry, curryN, identity, pipe, prop, T, tap } from 'ramda';
+import { always, curry, curryN, identity, once, pipe, prop, T, tap } from 'ramda';
 import morphdom from 'morphdom';
 import Downstreams from './downstreams';
 import Events from './events';
@@ -23,7 +23,7 @@ const updateDOM = curryN(2, morphdom);
  * @returns {stream} Component instance.
  * @factory
  */
-const Component = function Component({ events, render = identity, shouldUpdate = T, subcomponents, template }, el, state = {}) {
+const Component = function Component({ events, onMount = identity, render = identity, shouldUpdate = T, subcomponents, template }, el, state = {}) {
     let downstreams;
 
     // We can't yet support both as we can't tell
@@ -55,6 +55,7 @@ const Component = function Component({ events, render = identity, shouldUpdate =
 
     if (state[$$observable]) {
         const next = pipe(
+            tap(once(update => onMount({ el }, update))),
             tap(downstreams && downstreams.render ? downstreams.render : identity),
             tap(render ? update => render(api, state, update) : identity),
             tap(template ? pipe(template, updateDOM(el)) : identity),
