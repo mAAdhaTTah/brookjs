@@ -2,6 +2,8 @@ import { createStore } from 'redux';
 import $$observable from 'symbol-observable';
 import { pipe, identity } from 'ramda';
 
+export { default as component } from './component';
+
 export const BROOKJS_INIT = 'BROOKJS_INIT';
 
 export function bootstrap({ reducer, enhancer, root }) {
