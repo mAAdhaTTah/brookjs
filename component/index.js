@@ -54,19 +54,21 @@ const Component = function Component({ events, onMount = identity, render = iden
     });
 
     if (state[$$observable]) {
-        const next = pipe(
-            tap(once(update => onMount({ el }, update))),
-            tap(downstreams && downstreams.render ? downstreams.render : identity),
-            tap(render ? update => render(api, state, update) : identity),
-            tap(template ? pipe(template, updateDOM(el)) : identity),
-            update => state = update,
-            always(api)
-        );
         const state$ = fromESObservable(state)
             .scan(({ prev = {} }, next) => ({ prev, next }), {})
             .filter(shouldUpdate)
             .map(prop('next'))
             .toESObservable();
+        state = undefined;
+
+        const next = pipe(
+            tap(once(update => onMount({ el }, update))),
+            tap(downstreams && downstreams.render ? downstreams.render : identity),
+            tap(render ? update => render(api, state || update, update) : identity),
+            tap(template ? pipe(template, updateDOM(el)) : identity),
+            update => state = update,
+            always(api)
+        );
 
         const events$ = stream(emitter => {
             const unsub = state$.subscribe({ next });
