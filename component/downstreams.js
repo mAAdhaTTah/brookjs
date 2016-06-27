@@ -1,4 +1,5 @@
-import { pool } from 'kefir';
+import $$observable from 'symbol-observable';
+import { fromESObservable, pool, stream } from 'kefir';
 import { always, curry, identity, pipe, tap } from 'ramda';
 
 /**
@@ -11,14 +12,29 @@ import { always, curry, identity, pipe, tap } from 'ramda';
  * @factory
  */
 const Downstreams = function Downstreams(children, el, state) {
-    const stream = pool();
-    const plug = stream.plug.bind(stream);
+    const stream$ = pool();
+    const plug = stream$.plug.bind(stream$);
 
     // Map over the children definitions and turn
     // them into component instances.
     const renderers = children.map(mapChildren);
 
-    const api = Object.create(stream);
+    const api = Object.create(stream$);
+
+    if (state[$$observable]) {
+        const state$ = state[$$observable]();
+        const next = tap(update => renderers.forEach(render => render(update)));
+
+        return stream(emitter => {
+            const unsub = state$.subscribe({ next });
+            api.onValue(emitter.emit);
+
+            return function unsubscribe() {
+                unsub();
+                api.offValue(emitter.emit);
+            };
+        }).toESObservable();
+    }
 
     api.render = pipe(
         tap(update => renderers.forEach(render => render(update))),
@@ -52,7 +68,9 @@ const Downstreams = function Downstreams(children, el, state) {
             return pipe(identity);
         }
 
-        let instance = factory(element, adapter(state));
+        let instance = factory(element, state[$$observable] ?
+            fromESObservable(state).map(adapter).toESObservable() :
+            adapter(state));
 
         // Plug into Downstream's pool
         pipe(preplug, plug)(instance);
