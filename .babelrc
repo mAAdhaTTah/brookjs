@@ -1,7 +1,8 @@
 {
   "plugins": [
     "ramda",
-    "transform-array-from"
+    "transform-array-from",
+    "transform-object-assign"
   ],
   "presets": ["es2015-webpack"]
 }
