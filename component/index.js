@@ -1,6 +1,5 @@
-import $$observable from 'symbol-observable';
 import { fromESObservable, pool, stream } from 'kefir';
-import { always, curry, curryN, identity, once, pipe, prop, T, tap } from 'ramda';
+import { always, apply, curry, curryN, identity, last, once, pipe, prop, T, tap } from 'ramda';
 import morphdom from 'morphdom';
 import Downstreams from './downstreams';
 import Events from './events';
@@ -23,7 +22,7 @@ const updateDOM = curryN(2, morphdom);
  * @returns {stream} Component instance.
  * @factory
  */
-const Component = function Component({ events, onMount = identity, render = identity, shouldUpdate = T, subcomponents, template }, el, state = {}) {
+const Component = function Component({ events, onMount = identity, render = identity, shouldUpdate = T, subcomponents, template }, el, state$) {
     let downstreams;
 
     // We can't yet support both as we can't tell
@@ -35,7 +34,7 @@ const Component = function Component({ events, onMount = identity, render = iden
     const stream$ = pool();
 
     if (subcomponents) {
-        downstreams = Downstreams(subcomponents, el, state);
+        downstreams = Downstreams(subcomponents, el, state$);
 
         stream$.plug(downstreams);
     }
@@ -53,53 +52,38 @@ const Component = function Component({ events, onMount = identity, render = iden
         value: el
     });
 
-    if (state[$$observable]) {
-        const state$ = fromESObservable(state)
-            .scan(({ prev = {} }, next) => ({ prev, next }), {})
-            .filter(shouldUpdate)
-            .map(prop('next'))
-            .toESObservable();
-        state = undefined;
+    state$ = fromESObservable(state$)
+        .scan(([,prev], next) => ([prev || next, next]), [])
+        .skip(1)
+        .filter(apply(shouldUpdate));
+    template = template ? pipe(template, updateDOM(el)) : identity;
 
-        const next = pipe(
-            tap(once(update => onMount({ el }, update))),
-            tap(downstreams && downstreams.render ? downstreams.render : identity),
-            tap(render ? update => render(api, state || update, update) : identity),
-            tap(template ? pipe(template, updateDOM(el)) : identity),
-            update => state = update,
-            always(api)
-        );
+    const events$ = stream(emitter => {
+        let mounted = false;
+        state$.onValue(function([prev, next]) {
+            if (!mounted) {
+                onMount(api, next);
+                mounted = true;
+            }
+            render(api, prev || next, next);
+        });
 
-        const events$ = stream(emitter => {
-            const unsub = state$.subscribe({ next });
-            api.onValue(emitter.emit);
+        const latest$ = state$.map(last);
+        latest$.onValue(template);
 
-            return function unsubscribe() {
-                unsub();
-                api.offValue(emitter.emit);
-            };
-        }).toESObservable();
+        api.onValue(emitter.emit);
 
-        const opts = { el };
+        return function unsubscribe() {
+            state$.offValue(onMount);
+            state$.offValue(render);
+            latest$.offValue(template);
+            api.offValue(emitter.emit);
+        };
+    }).toESObservable();
 
-        return Object.assign(Object.create(events$), opts);
-    }
+    const opts = { el };
 
-    console.log('Instantiating with direct state is deprecated');
-
-    /**
-     * Updates the components subcomponents & component.
-     *
-     * @type {Function}
-     */
-    api.render = pipe(
-        tap(downstreams ? downstreams.render : identity),
-        tap(update => render(api, state, update)),
-        update => state = update,
-        always(api)
-    );
-
-    return api;
+    return Object.assign(Object.create(events$), opts);
 };
 
 export default curry(Component);

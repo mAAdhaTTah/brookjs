@@ -1,5 +1,5 @@
 import $$observable from 'symbol-observable';
-import { fromESObservable, pool, stream } from 'kefir';
+import { fromESObservable, never, pool, stream } from 'kefir';
 import { always, curry, identity, pipe, tap } from 'ramda';
 
 /**
@@ -11,37 +11,24 @@ import { always, curry, identity, pipe, tap } from 'ramda';
  * @returns {stream} Combined child streams.
  * @factory
  */
-const Downstreams = function Downstreams(children, el, state) {
-    const stream$ = pool();
-    const plug = stream$.plug.bind(stream$);
+const Downstreams = function Downstreams(children, el, state$) {
+    const events$ = pool();
+    const plug = events$.plug.bind(events$);
+    const unplug = events$.unplug.bind(events$);
 
-    // Map over the children definitions and turn
-    // them into component instances.
-    const renderers = children.map(mapChildren);
+    return stream(emitter => {
+        // Map over the children definitions and turn
+        // them into component instances.
+        const instances = children.map(mapChildren);
+        instances.forEach(plug);
 
-    const api = Object.create(stream$);
+        events$.onValue(emitter.emit);
 
-    if (state[$$observable]) {
-        const state$ = state[$$observable]();
-        const next = tap(update => renderers.forEach(render => render(update)));
-
-        return stream(emitter => {
-            const unsub = state$.subscribe({ next });
-            api.onValue(emitter.emit);
-
-            return function unsubscribe() {
-                unsub();
-                api.offValue(emitter.emit);
-            };
-        });
-    }
-
-    api.render = pipe(
-        tap(update => renderers.forEach(render => render(update))),
-        always(api)
-    );
-
-    return api;
+        return function unsubscribe() {
+            events$.offValue(emitter.emit);
+            instances.forEach(unplug);
+        };
+    });
 
     /**
      * Plugs child into stream and returns child's render function.
@@ -62,20 +49,17 @@ const Downstreams = function Downstreams(children, el, state) {
 
         // If no element was found, abort.
         if (!element) {
-            // For some weird reason, `identity` on its own isn't getting
-            // compiled by webpack correctly. This seems to make it work
-            // but it's a hack we should probably get rid of.
-            return pipe(identity);
+            return never();
+        }
+        
+
+        let instance = factory(element, fromESObservable(state$).map(adapter).toESObservable());
+
+        if(instance[$$observable] || typeof instance.subscribe === 'function') {
+            instance = fromESObservable(instance);
         }
 
-        let instance = factory(element, state[$$observable] ?
-            fromESObservable(state).map(adapter).toESObservable() :
-            adapter(state));
-
-        // Plug into Downstream's pool
-        pipe(preplug, plug)(instance);
-
-        return pipe(adapter, instance.render || identity);
+        return preplug(instance);
     }
 };
 

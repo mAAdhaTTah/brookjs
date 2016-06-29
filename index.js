@@ -1,6 +1,7 @@
 import { createStore } from 'redux';
 import $$observable from 'symbol-observable';
 import { pipe, identity } from 'ramda';
+import { fromESObservable } from 'kefir';
 
 export { default as component } from './component';
 
@@ -15,14 +16,9 @@ export function bootstrap({ reducer, enhancer, root }) {
 
     return function mount(el, state) {
         const store = createStore(reducer, state, enhancer);
-        const store$ = Object.assign(Object.create(store[$$observable]()), {
-            getState: function getState() {
-                console.log("Calling getState from observable is deprecated");
-                return store.getState();
-            }
-        });
+        const store$ = store[$$observable]();
 
-        const instance = root(el, store$);
+        const instance = fromESObservable(root(el, store$));
 
         if (process.env.NODE_ENV !== 'production') {
             instance.log('App');
