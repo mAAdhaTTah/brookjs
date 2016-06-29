@@ -1,5 +1,5 @@
 import { stream } from 'kefir';
-import { always, curry, pipe, prop } from 'ramda';
+import { always, curry, identity, pipe, prop } from 'ramda';
 
 /**
  * Data attribute for element events.
@@ -28,12 +28,18 @@ const Events = function Events(config, el) {
             // @todo problem here!
             // we can't guarantee that the nodes we get here are
             // from the component or its children.
-            Array.from(el.querySelectorAll(`[${EVENT_ATTRIBUTE}]`))
+            Array.from(el.querySelectorAll(`[${EVENT_ATTRIBUTE}]`) || [])
         )
             .map(element => element.getAttribute(EVENT_ATTRIBUTE).split(';')
                 .map(event => {
                     const [type, key] = event.split(':');
                     const hook = config[key];
+
+                    // Don't include any events with unmatched hooks.
+                    if (!hook) {
+                        return false;
+                    }
+
                     const listener = function listener(ev) {
                         const value = hook(ev);
 
@@ -46,6 +52,7 @@ const Events = function Events(config, el) {
 
                     return { element, listener, type };
                 })
+                .filter(identity)
             )
             .reduce((acc, next) => acc.concat(next), []);
 
