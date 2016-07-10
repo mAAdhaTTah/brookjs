@@ -1,5 +1,5 @@
 import { stream } from 'kefir';
-import { always, curry, identity, pipe, prop } from 'ramda';
+import { always, identity, pipe, prop } from 'ramda';
 
 /**
  * Data attribute for element events.
@@ -16,7 +16,7 @@ const EVENT_ATTRIBUTE = 'data-brk-event';
  * @returns {stream} Events stream instance.
  * @factory
  */
-const Events = function Events(config, el) {
+export default function events(config, el) {
     return stream(emitter => {
         const elements = [];
 
@@ -67,8 +67,6 @@ const Events = function Events(config, el) {
         };
     });
 };
-
-export default curry(Events);
 
 /**
  * Value change constant.

@@ -51,11 +51,10 @@ const Downstreams = function Downstreams(children, el, state$) {
         if (!element) {
             return never();
         }
-        
 
-        let instance = factory(element, fromESObservable(state$).map(adapter).toESObservable());
+        let instance = factory(element, fromESObservable(state$).map(adapter));
 
-        if(instance[$$observable] || typeof instance.subscribe === 'function') {
+        if(instance[$$observable]) {
             instance = fromESObservable(instance);
         }
 

@@ -1,12 +1,35 @@
-import { fromESObservable, pool, stream } from 'kefir';
-import { always, apply, curry, curryN, identity, last, once, pipe, prop, T, tap } from 'ramda';
+import {
+    __,
+    always,
+    apply,
+    curry,
+    equals,
+    head,
+    identity,
+    ifElse,
+    last,
+    length,
+    merge,
+    once,
+    pipe,
+    prop,
+    repeat,
+    T,
+    tap
+} from 'ramda';
+import assert from 'assert';
+import $$observable from 'symbol-observable';
+import { constant, fromESObservable, never, stream } from 'kefir';
 import morphdom from 'morphdom';
-import Downstreams from './downstreams';
-import Events from './events';
+import downstreams from './downstreams';
+import bindEvents from './events';
 
-const NOT_SUPPORTED_ERROR = 'Components with both subcomponents & events are not yet supported.';
-
-const updateDOM = curryN(2, morphdom);
+const defaults = {
+    events: {},
+    onMount: identity,
+    shouldUpdate: T,
+    subcomponents: []
+};
 
 /**
  * Create a new Component with the provided configuration.
@@ -16,74 +39,97 @@ const updateDOM = curryN(2, morphdom);
  * @param {Function} config.render - Render function.
  * @param {Function} config.shouldUpdate - Whether the component should rerender.
  * @param {Object[]} config.subcomponents - Subcomponent declarations.
- * @param {Function} config.template - String-returning template function.
- * @param {Element} el - Component element.
- * @param {Object|Observable} [state] - Initial component state or observable of state.
- * @returns {stream} Component instance.
+ * @param {Function} [config.template] - String-returning template function.
  * @factory
  */
-const Component = function Component({ events, onMount = identity, render = identity, shouldUpdate = T, subcomponents, template }, el, state$) {
-    let downstreams;
+export default function component(config) {
+    let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
 
-    // We can't yet support both as we can't tell
-    // whether a DOM node is from a child or itself.
-    if (subcomponents && events) {
-        throw new Error(NOT_SUPPORTED_ERROR);
-    }
+    /**
+     * Component factory function.
+     *
+     * @param {Element} el - Component element.
+     * @param {Observable} state$ - Initial component state or observable of state.
+     * @returns {Observable} Component instance.
+     */
+    return function factory(el, state$) {
+        assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
+        assert.ok(typeof state$[$$observable] === 'function', 'state$ is not an Observable');
 
-    const stream$ = pool();
-
-    if (subcomponents) {
-        downstreams = Downstreams(subcomponents, el, state$);
-
-        stream$.plug(downstreams);
-    }
-
-    if (events) {
-        stream$.plug(Events(events, el));
-    }
-
-    const api = Object.create(stream$);
-
-    Object.defineProperty(api, 'el', {
-        enumerable: false,
-        configurable: false,
-        writable: false,
-        value: el
-    });
-
-    state$ = fromESObservable(state$)
-        .scan(([,prev], next) => ([prev || next, next]), [])
-        .skip(1)
-        .filter(apply(shouldUpdate));
-    template = template ? pipe(template, updateDOM(el)) : identity;
-
-    const events$ = stream(emitter => {
+        const api = { el };
         let mounted = false;
-        state$.onValue(function([prev, next]) {
+
+        const downstreams$ = downstreams(subcomponents, el, state$);
+
+        return fromESObservable(state$)
+            .slidingWindow(2)
+            .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
+            .filter(apply(shouldUpdate))
+            .map(apply(Render))
+            .withHandler(makeEventSwapper(events, el))
+            .merge(constant(bindEvents(events, el)))
+            .flatMapLatest()
+            .merge(downstreams$);
+
+        function Render(prev, next) {
+            let render$ = never();
+
+            // @todo extract to separate function
             if (!mounted) {
-                onMount(api, next);
+                let mount$ = onMount(api, next) || {};
+
+                if (mount$[$$observable]) {
+                    render$.concat(fromESObservable(mount$));
+                }
+
                 mounted = true;
             }
-            render(api, prev || next, next);
-        });
 
-        const latest$ = state$.map(last);
-        latest$.onValue(template);
+            if (template) {
+                render$ = render$.concat(stream(emitter => {
+                    const loop = requestAnimationFrame(() => {
+                        morphdom(el, template(next), {
+                            onBeforeElUpdated: function blackboxContainers(fromEl) {
+                                return !fromEl.hasAttribute('data-brk-container')
+                                    && fromEl !== el;
+                            }
+                        });
 
-        api.onValue(emitter.emit);
+                        emitter.end();
+                    });
 
-        return function unsubscribe() {
-            state$.offValue(onMount);
-            state$.offValue(render);
-            latest$.offValue(template);
-            api.offValue(emitter.emit);
-        };
-    }).toESObservable();
+                    return () => cancelAnimationFrame(loop);
+                }));
+            }
 
-    const opts = { el };
+            if (render) {
+                const r$ = render(api, prev, next) || {};
 
-    return Object.assign(Object.create(events$), opts);
+                // @todo add assert.ok
+                if (r$[$$observable]) {
+                    render$ = render$.concat(fromESObservable(r$));
+                } else {
+                    console.log('deprecated: `render` should return an Observable', el.className);
+                }
+            }
+
+            return render$;
+        }
+    };
 };
 
-export default curry(Component);
+function makeEventSwapper(events, el) {
+    let sub = { closed: true };
+    let bind = () => bindEvents(events, el);
+
+    return (emitter, event) => {
+        if (event.type === 'value') {
+            if (!sub.closed) {
+                sub.unsubscribe();
+            }
+
+            const complete = pipe(bind, emitter.next);
+            sub = event.value.observe({ complete });
+        }
+    };
+}

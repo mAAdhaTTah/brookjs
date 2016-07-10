@@ -1,5 +1,4 @@
 import { createStore } from 'redux';
-import $$observable from 'symbol-observable';
 import { pipe, identity } from 'ramda';
 import { fromESObservable } from 'kefir';
 
@@ -16,19 +15,19 @@ export function bootstrap({ reducer, enhancer, root }) {
 
     return function mount(el, state) {
         const store = createStore(reducer, state, enhancer);
-        const store$ = store[$$observable]();
-
-        const instance = fromESObservable(root(el, store$));
+        const app = fromESObservable(root(el, store));
 
         if (process.env.NODE_ENV !== 'production') {
-            instance.log('App');
+            app.log('App');
         }
 
-        instance.onValue(store.dispatch);
+        let sub = app.observe({ next: store.dispatch });
 
         // @todo when Redux 4.0 is released use built-in init action:
         // https://github.com/reactjs/redux/pull/1702
         // We really shouldn't have to dispatch our own init action.
         setTimeout(() => store.dispatch({ type: BROOKJS_INIT }), 0);
+
+        return sub;
     }
 }

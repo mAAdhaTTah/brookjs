@@ -8,13 +8,19 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loader: 'babel',
-                exclude: /(node_modules)/
+                loader: 'babel'
             },
             {
                 test: /\.json$/,
                 loader: 'json'
             }
         ]
+    },
+    resolve: {
+        mainFields: ['jsnext:main', 'browser', 'main'],
+        alias: {
+            kefir: 'kefir/src',
+            redux: 'redux/src'
+        }
     }
 };
