@@ -2,7 +2,7 @@
 import { AssertionError } from 'assert';
 
 import $$observable from 'symbol-observable';
-import { constant, pool } from 'kefir';
+import { constant, pool, never } from 'kefir';
 import { F, identity } from 'ramda';
 
 import chai, { expect } from 'chai';
@@ -15,7 +15,7 @@ chai.use(spies);
 chai.use(dom);
 
 describe('component', function() {
-    let factory, fixture, state$, instance, initial, sub;
+    let api, factory, fixture, state$, instance, initial, sub;
 
     function setup (config = {}) {
         initial = {
@@ -33,6 +33,7 @@ describe('component', function() {
         state$.plug(constant(initial));
 
         instance = factory(fixture, state$);
+        api = { el: fixture };
     }
 
     describe('module', function() {
@@ -78,6 +79,46 @@ describe('component', function() {
     });
 
     describe('config', function() {
+        describe('onMount', function () {
+            let onMount, return$;
+
+            beforeEach(function() {
+                return$ = pool();
+                onMount = chai.spy(() => return$);
+
+                setup({ onMount });
+            });
+
+            it('should throw without function', function() {
+                const invalid = [{}, 'string', 2, true, []];
+
+                invalid.forEach(onMnt => {
+                    expect(() => component({ onMount: onMnt })).to.throw(AssertionError);
+                });
+            });
+
+            it('should call onMount once with initial state and api', function() {
+                sub = instance.observe({ next: identity });
+
+                expect(onMount).to.have.been.called.once().with.exactly(api, initial);
+            });
+
+            it('should propagate stream events', function() {
+                const next = chai.spy();
+                const state = {
+                    type: 'EVENT_NAME',
+                    payload: {
+                        value: 'some value'
+                    }
+                };
+
+                sub = instance.observe({ next });
+                return$.plug(constant(state));
+
+                expect(next).to.have.been.called.once().with.exactly(state);
+            });
+        });
+
         describe('shouldUpdate', function() {
             let shouldUpdate;
 

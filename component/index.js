@@ -26,9 +26,7 @@ import bindEvents from './events';
 
 const defaults = {
     events: {},
-    onMount: identity,
-    shouldUpdate: T,
-    subcomponents: []
+    shouldUpdate: T
 };
 
 /**
@@ -38,12 +36,16 @@ const defaults = {
  * @param {Object} config.events - Events mapping
  * @param {Function} config.render - Render function.
  * @param {Function} config.shouldUpdate - Whether the component should rerender.
- * @param {Object[]} config.subcomponents - Subcomponent declarations.
+ * @param {Object[]} [config.subcomponents] - Subcomponent declarations.
  * @param {Function} [config.template] - String-returning template function.
  * @factory
  */
 export default function component(config) {
     let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
+
+    if (onMount) {
+        assert.ok(typeof onMount === 'function', 'onMount should be a function');
+    }
 
     assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
 
@@ -62,34 +64,49 @@ export default function component(config) {
         assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
         assert.ok(typeof state$[$$observable] === 'function', 'state$ is not an Observable');
 
+        state$ = fromESObservable(state$).toProperty();
+
         const api = { el };
-        let mounted = false;
 
-        const downstreams$ = downstreams(subcomponents, el, state$);
-
-        return fromESObservable(state$)
+        let events$ = state$
             .slidingWindow(2)
             .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
             .filter(apply(shouldUpdate))
             .map(apply(Render))
             .withHandler(makeEventSwapper(events, el))
             .merge(constant(bindEvents(events, el)))
-            .flatMapLatest()
-            .merge(downstreams$);
+            .flatMapLatest();
+
+        if (subcomponents) {
+            events$ = events.merge(downstreams(subcomponents, el, state$));
+        }
+
+        if (onMount) {
+            events$ = events$.merge(stream(emitter => {
+                let sub = state$.take(1).observe({
+                    next: next => {
+                        const mount$ = onMount(api, next);
+
+                        if (mount$[$$observable]) {
+                            sub = fromESObservable(mount$).observe(emitter);
+                        } else if (!sub.closed) {
+                            sub.unsubscribe();
+                        }
+                    }
+                });
+
+                return () => {
+                    if (!sub.closed) {
+                        sub.unsubscribe();
+                    }
+                };
+            }));
+        }
+
+        return events$;
 
         function Render(prev, next) {
             let render$ = never();
-
-            // @todo extract to separate function
-            if (!mounted) {
-                let mount$ = onMount(api, next) || {};
-
-                if (mount$[$$observable]) {
-                    render$.concat(fromESObservable(mount$));
-                }
-
-                mounted = true;
-            }
 
             if (template) {
                 render$ = render$.concat(stream(emitter => {
