@@ -45,6 +45,12 @@ const defaults = {
 export default function component(config) {
     let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
 
+    assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
+
+    if (template) {
+        assert.ok(typeof template === 'function', 'template should be a function');
+    }
+
     /**
      * Component factory function.
      *
@@ -88,12 +94,7 @@ export default function component(config) {
             if (template) {
                 render$ = render$.concat(stream(emitter => {
                     const loop = requestAnimationFrame(() => {
-                        morphdom(el, template(next), {
-                            onBeforeElUpdated: function blackboxContainers(fromEl) {
-                                return !fromEl.hasAttribute('data-brk-container')
-                                    && fromEl !== el;
-                            }
-                        });
+                        morphdom(el, template(next));
 
                         emitter.end();
                     });

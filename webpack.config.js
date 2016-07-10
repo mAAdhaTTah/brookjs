@@ -20,7 +20,8 @@ module.exports = {
         mainFields: ['jsnext:main', 'browser', 'main'],
         alias: {
             kefir: 'kefir/src',
-            redux: 'redux/src'
+            redux: 'redux/src',
+            handlebars: 'handlebars/dist/cjs/handlebars'
         }
     }
 };
