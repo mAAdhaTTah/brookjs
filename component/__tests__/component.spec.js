@@ -1,15 +1,18 @@
 /*eslint-env mocha */
+import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
 import $$observable from 'symbol-observable';
-import { constant, pool, never } from 'kefir';
-import { F, identity } from 'ramda';
+import { constant, pool } from 'kefir';
+import { F, identity, map } from 'ramda';
 
 import chai, { expect } from 'chai';
 import spies from 'chai-spies';
 import dom from 'chai-dom';
+import simulant from 'simulant';
 
 import component from '../index';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, clickEvent } from '../events/index';
 
 chai.use(spies);
 chai.use(dom);
@@ -79,6 +82,48 @@ describe('component', function() {
     });
 
     describe('config', function() {
+        describe('events', function() {
+            let events;
+
+            beforeEach(function() {
+                events = { onclick: map(clickEvent) };
+                setup({ events });
+
+                fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
+                fixture.setAttribute(EVENT_ATTRIBUTES.click, Object.keys(events).pop());
+                document.body.appendChild(fixture);
+            });
+
+            it('should throw without an object', function() {
+                const invalid = ['string', 2, true, identity];
+
+                invalid.forEach(vnts => {
+                    expect(() => component({ events: vnts }), `${typeof vnts} did not throw`).to.throw(AssertionError);
+                });
+            });
+
+            it('should throw without a function', function() {
+                const invalid = [{}, 'string', 2, true, []];
+
+                invalid.forEach(cb => {
+                    expect(() => component({ events: { cb } }), `${typeof cb} did not throw`).to.throw(AssertionError);
+                });
+            });
+
+            it('should emit DOM event', function() {
+                const next = chai.spy();
+                sub = instance.observe({ next });
+
+                const event = simulant.fire(fixture, 'click');
+
+                expect(next).to.have.been.called.once().with.exactly(clickEvent(event));
+            });
+
+            afterEach(function() {
+                document.body.removeChild(fixture);
+            });
+        });
+
         describe('onMount', function () {
             let onMount, return$;
 

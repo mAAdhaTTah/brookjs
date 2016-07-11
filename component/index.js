@@ -19,10 +19,10 @@ import {
 } from 'ramda';
 import assert from 'assert';
 import $$observable from 'symbol-observable';
-import { constant, fromESObservable, never, stream } from 'kefir';
+import { fromESObservable, never, stream } from 'kefir';
 import morphdom from 'morphdom';
 import downstreams from './downstreams';
-import bindEvents from './events';
+import bindEvents from './events/index';
 
 const defaults = {
     events: {},
@@ -42,6 +42,14 @@ const defaults = {
  */
 export default function component(config) {
     let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
+
+    assert.ok(typeof events === 'object', 'events is not an object');
+
+    for (let key in events) {
+        if (events.hasOwnProperty(key)) {
+            assert.ok(typeof events[key] === 'function', `events[${key}] is not a function`);
+        }
+    }
 
     if (onMount) {
         assert.ok(typeof onMount === 'function', 'onMount should be a function');
@@ -74,7 +82,7 @@ export default function component(config) {
             .filter(apply(shouldUpdate))
             .map(apply(Render))
             .withHandler(makeEventSwapper(events, el))
-            .merge(constant(bindEvents(events, el)))
+            .merge(bindEvents(events, el))
             .flatMapLatest();
 
         if (subcomponents) {
@@ -82,25 +90,9 @@ export default function component(config) {
         }
 
         if (onMount) {
-            events$ = events$.merge(stream(emitter => {
-                let sub = state$.take(1).observe({
-                    next: next => {
-                        const mount$ = onMount(api, next);
-
-                        if (mount$[$$observable]) {
-                            sub = fromESObservable(mount$).observe(emitter);
-                        } else if (!sub.closed) {
-                            sub.unsubscribe();
-                        }
-                    }
-                });
-
-                return () => {
-                    if (!sub.closed) {
-                        sub.unsubscribe();
-                    }
-                };
-            }));
+            events$ = events$.merge(
+                state$.take(1)
+                    .flatMap(next => onMount(api, next)));
         }
 
         return events$;
