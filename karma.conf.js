@@ -3,6 +3,7 @@ const webpackConfig = require('./webpack.config');
 
 module.exports = function (config) {
     const tests = '!(node_modules)/**/__tests__/*.spec.js';
+    const root = '__tests__/*.spec.js';
 
     config.set({
 
@@ -15,7 +16,8 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            tests
+            tests,
+            root
         ],
 
         // list of files to exclude
@@ -24,7 +26,8 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            [tests]: ['webpack']
+            [tests]: ['webpack'],
+            [root]: ['webpack']
         },
 
         webpack: webpackConfig,
