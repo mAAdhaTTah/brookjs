@@ -22,10 +22,10 @@ const Downstreams = function Downstreams(children, el, state$) {
         const instances = children.map(mapChildren);
         instances.forEach(plug);
 
-        events$.onValue(emitter.emit);
+        events$.onValue(emitter.value);
 
         return function unsubscribe() {
-            events$.offValue(emitter.emit);
+            events$.offValue(emitter.value);
             instances.forEach(unplug);
         };
     });

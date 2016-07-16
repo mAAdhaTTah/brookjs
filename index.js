@@ -1,6 +1,5 @@
 import { createStore } from 'redux';
 import { pipe, identity } from 'ramda';
-import { fromESObservable } from 'kefir';
 
 export { default as component } from './component';
 
@@ -15,13 +14,13 @@ export function bootstrap({ reducer, enhancer, root }) {
 
     return function mount(el, state) {
         const store = createStore(reducer, state, enhancer);
-        const app = fromESObservable(root(el, store));
+        const app = root(el, store);
 
         if (process.env.NODE_ENV !== 'production') {
             app.log('App');
         }
 
-        let sub = app.observe({ next: store.dispatch });
+        let sub = app.observe({ value: store.dispatch });
 
         // @todo when Redux 4.0 is released use built-in init action:
         // https://github.com/reactjs/redux/pull/1702

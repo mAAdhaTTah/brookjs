@@ -127,7 +127,7 @@ function legacy(config, elements) {
                         const value = hook(ev);
 
                         if (value) {
-                            emitter.emit(value);
+                            emitter.value(value);
                         }
                     };
 

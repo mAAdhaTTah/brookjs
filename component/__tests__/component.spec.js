@@ -111,12 +111,12 @@ describe('component', function() {
             });
 
             it('should emit DOM event', function() {
-                const next = chai.spy();
-                sub = instance.observe({ next });
+                const value = chai.spy();
+                sub = instance.observe({ value });
 
                 const event = simulant.fire(fixture, 'click');
 
-                expect(next).to.have.been.called.once().with.exactly(clickEvent(event));
+                expect(value).to.have.been.called.once().with.exactly(clickEvent(event));
             });
 
             afterEach(function() {
@@ -143,13 +143,13 @@ describe('component', function() {
             });
 
             it('should call onMount once with initial state and api', function() {
-                sub = instance.observe({ next: identity });
+                sub = instance.observe({ value: identity });
 
                 expect(onMount).to.have.been.called.once().with.exactly(api, initial);
             });
 
             it('should propagate stream events', function() {
-                const next = chai.spy();
+                const value = chai.spy();
                 const state = {
                     type: 'EVENT_NAME',
                     payload: {
@@ -157,10 +157,10 @@ describe('component', function() {
                     }
                 };
 
-                sub = instance.observe({ next });
+                sub = instance.observe({ value });
                 return$.plug(constant(state));
 
-                expect(next).to.have.been.called.once().with.exactly(state);
+                expect(value).to.have.been.called.once().with.exactly(state);
             });
         });
 
@@ -181,7 +181,7 @@ describe('component', function() {
             });
 
             it('should call shouldUpdate immediately with two equal params', function() {
-                sub = instance.observe({ next: identity });
+                sub = instance.observe({ value: identity });
 
                 expect(shouldUpdate).to.have.been.called.once().with.exactly(initial, initial);
             });

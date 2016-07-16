@@ -138,8 +138,8 @@ function makeEventSwapper(events, el) {
                 sub.unsubscribe();
             }
 
-            const complete = pipe(bind, emitter.next);
-            sub = event.value.observe({ complete });
+            const end = pipe(bind, emitter.value);
+            sub = event.value.observe({ end });
         }
     };
 }
