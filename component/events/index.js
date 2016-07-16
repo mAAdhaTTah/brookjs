@@ -163,7 +163,7 @@ export default function events(config, el) {
     let events$ = pool();
 
     if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
-        events$ = events$.merge(delegateElement(config, el));
+        events$.plug(delegateElement(config, el));
     }
 
     // start deprecated
@@ -182,7 +182,7 @@ export default function events(config, el) {
 
     if (elements.length) {
         console.log('deprecated: element should use container attribute & hbs helpers');
-        events$ = events$.merge(legacy(config, elements));
+        events$.plug(legacy(config, elements));
     }
     // end deprecated
 

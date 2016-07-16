@@ -7,18 +7,20 @@ import { constant, pool } from 'kefir';
 import { F, identity, map } from 'ramda';
 
 import chai, { expect } from 'chai';
-import spies from 'chai-spies';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import dom from 'chai-dom';
 import simulant from 'simulant';
 
 import component from '../index';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, clickEvent } from '../events/index';
 
-chai.use(spies);
 chai.use(dom);
+chai.use(sinonChai);
 
 describe('component', function() {
     let api, factory, fixture, state$, instance, initial, sub;
+    let fixturize = identity;
 
     function setup (config = {}) {
         initial = {
@@ -31,6 +33,8 @@ describe('component', function() {
         fixture = document.createElement('div');
         fixture.classList.add(initial.type);
         fixture.textContent = initial.text;
+
+        fixture = fixturize(fixture);
 
         state$ = pool();
         state$.plug(constant(initial));
@@ -87,11 +91,15 @@ describe('component', function() {
 
             beforeEach(function() {
                 events = { onclick: map(clickEvent) };
-                setup({ events });
+                fixturize = fixture => {
+                    fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
+                    fixture.setAttribute(EVENT_ATTRIBUTES.click, Object.keys(events).pop());
+                    document.body.appendChild(fixture);
 
-                fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
-                fixture.setAttribute(EVENT_ATTRIBUTES.click, Object.keys(events).pop());
-                document.body.appendChild(fixture);
+                    return fixture;
+                };
+
+                setup({ events });
             });
 
             it('should throw without an object', function() {
@@ -111,12 +119,12 @@ describe('component', function() {
             });
 
             it('should emit DOM event', function() {
-                const value = chai.spy();
+                const value = sinon.spy();
                 sub = instance.observe({ value });
 
                 const event = simulant.fire(fixture, 'click');
 
-                expect(value).to.have.been.called.once().with.exactly(clickEvent(event));
+                expect(value).to.have.been.calledWithMatch(clickEvent(event));
             });
 
             afterEach(function() {
@@ -129,7 +137,7 @@ describe('component', function() {
 
             beforeEach(function() {
                 return$ = pool();
-                onMount = chai.spy(() => return$);
+                onMount = sinon.spy(() => return$);
 
                 setup({ onMount });
             });
@@ -145,11 +153,12 @@ describe('component', function() {
             it('should call onMount once with initial state and api', function() {
                 sub = instance.observe({ value: identity });
 
-                expect(onMount).to.have.been.called.once().with.exactly(api, initial);
+                expect(onMount).to.have.been.calledOnce;
+                expect(onMount.args[0][1]._name).to.equal('fromESObservable.toProperty');
             });
 
             it('should propagate stream events', function() {
-                const value = chai.spy();
+                const value = sinon.spy();
                 const state = {
                     type: 'EVENT_NAME',
                     payload: {
@@ -160,7 +169,7 @@ describe('component', function() {
                 sub = instance.observe({ value });
                 return$.plug(constant(state));
 
-                expect(value).to.have.been.called.once().with.exactly(state);
+                expect(value).to.have.been.calledWithExactly(state);
             });
         });
 
@@ -168,7 +177,7 @@ describe('component', function() {
             let shouldUpdate;
 
             beforeEach(function() {
-                shouldUpdate = chai.spy(F);
+                shouldUpdate = sinon.spy(F);
                 setup({ shouldUpdate });
             });
 
@@ -183,7 +192,7 @@ describe('component', function() {
             it('should call shouldUpdate immediately with two equal params', function() {
                 sub = instance.observe({ value: identity });
 
-                expect(shouldUpdate).to.have.been.called.once().with.exactly(initial, initial);
+                expect(shouldUpdate).to.have.been.calledWithExactly(initial, initial);
             });
         });
 
@@ -195,7 +204,7 @@ describe('component', function() {
                     type: 'image',
                     text: 'A picture'
                 };
-                template = chai.spy(() => '<div class="image">A picture</div>');
+                template = sinon.spy(() => '<div class="image">A picture</div>');
 
                 setup({ template });
             });
@@ -216,7 +225,8 @@ describe('component', function() {
                 requestAnimationFrame(() => {
                     // Delay a bit to ensure render is complete.
                     setTimeout(() => {
-                        expect(template).to.have.been.called.once().with(next);
+                        expect(template).to.have.been.calledOnce;
+                        expect(template).to.have.been.calledWithExactly(next);
                         expect(fixture).to.not.have.class('text');
                         expect(fixture).to.have.class('image');
                         expect(fixture).to.have.text('A picture');

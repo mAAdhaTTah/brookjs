@@ -19,7 +19,7 @@ import {
 } from 'ramda';
 import assert from 'assert';
 import $$observable from 'symbol-observable';
-import { fromESObservable, never, stream } from 'kefir';
+import { constant, fromESObservable, never, stream } from 'kefir';
 import morphdom from 'morphdom';
 import downstreams from './downstreams';
 import bindEvents from './events/index';
@@ -82,17 +82,15 @@ export default function component(config) {
             .filter(apply(shouldUpdate))
             .map(apply(Render))
             .withHandler(makeEventSwapper(events, el))
-            .merge(bindEvents(events, el))
+            .merge(constant(bindEvents(events, el)))
             .flatMapLatest();
 
         if (subcomponents) {
-            events$ = events.merge(downstreams(subcomponents, el, state$));
+            events$ = events$.merge(downstreams(subcomponents, el, state$));
         }
 
         if (onMount) {
-            events$ = events$.merge(
-                state$.take(1)
-                    .flatMap(next => onMount(api, next)));
+            events$ = events$.merge(onMount(api, state$));
         }
 
         return events$;
