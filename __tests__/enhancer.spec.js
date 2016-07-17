@@ -57,7 +57,7 @@ describe('enhancer', function() {
         expect(value).to.have.been.calledWith({ changed: true });
     });
 
-    it('should subscribe to system$', function() {
+    it('should dispatch system$ events to actions$', function() {
         const action = { type: 'AN_ACTION' };
         const value = sinon.spy();
         sub = actions$.observe({ value });
@@ -66,6 +66,29 @@ describe('enhancer', function() {
 
         expect(value).to.have.been.calledOnce;
         expect(value).to.have.been.calledWithExactly(action);
+    });
+
+    it('should dispatch system$ events to store', function() {
+        const action = { type: 'AN_ACTION' };
+        const subscribe = sinon.spy();
+        store.subscribe(subscribe);
+
+        system$.plug(constant(action));
+
+        expect(store.closed).to.be.not.ok;
+        expect(subscribe).to.be.calledOnce;
+    });
+
+    it('should unsubscribe from systems$', function() {
+        const action = { type: 'AN_ACTION' };
+        const subscribe = sinon.spy();
+        store.unsubscribe();
+        store.subscribe(subscribe);
+
+        system$.plug(constant(action));
+
+        expect(store.closed).to.be.ok;
+        expect(subscribe.called).to.not.be.ok;
     });
 
     afterEach(function() {
