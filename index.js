@@ -5,6 +5,15 @@ export { default as component } from './component';
 
 export const BROOKJS_INIT = 'BROOKJS_INIT';
 
+/**
+ * Generates a `mount` function, which attached the provide configuration
+ * values and uses them to mount an element and bootstrap the application.
+ *
+ * @param {Reducer<Object>} reducer - Reducer function.
+ * @param {StoreEnhancer} enhancer - createStore enhancer function.
+ * @param {Function} root - Root component factory.
+ * @returns {mount} Starts the application.
+ */
 export function bootstrap({ reducer, enhancer, root }) {
     if (process.env.NODE_ENV !== 'production') {
         // To use devtools, install Chrome extension:
@@ -12,7 +21,7 @@ export function bootstrap({ reducer, enhancer, root }) {
         enhancer = pipe(global.devToolsExtension ? global.devToolsExtension() : identity, enhancer);
     }
 
-    return function mount(el, state) {
+    return (el, state) => {
         const store = createStore(reducer, state, enhancer);
         const app = root(el, store);
 
