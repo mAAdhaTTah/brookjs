@@ -53,8 +53,6 @@ describe('component', function() {
         });
 
         it('should return a factory function', function() {
-            const factory = component({});
-
             expect(factory).to.be.a('function');
         });
     });
