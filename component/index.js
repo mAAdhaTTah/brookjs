@@ -1,4 +1,4 @@
-import {
+import R, {
     __,
     always,
     apply,
@@ -14,7 +14,6 @@ import {
     pipe,
     prop,
     repeat,
-    T,
     tap
 } from 'ramda';
 import assert from 'assert';
@@ -26,7 +25,7 @@ import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
 
 const defaults = {
     events: {},
-    shouldUpdate: T
+    shouldUpdate: R.T
 };
 
 let checked = false;
