@@ -129,11 +129,8 @@ export default function component(config) {
             if (render) {
                 const r$ = render(api, prev, next) || {};
 
-                // @todo add assert.ok
-                if (r$[$$observable]) {
-                    render$ = render$.concat(fromESObservable(r$));
-                } else {
-                    console.log('deprecated: `render` should return an Observable', el.className);
+                if (process.env.NODE_ENV !== 'production') {
+                    assert.ok(r$[$$observable], '`render` should return an Observable');
                 }
             }
 
