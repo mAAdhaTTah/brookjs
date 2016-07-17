@@ -19,8 +19,8 @@ import {
 } from 'ramda';
 import assert from 'assert';
 import $$observable from 'symbol-observable';
-import { constant, fromESObservable, never, stream } from 'kefir';
-import morphdom from 'morphdom';
+import { constant, fromESObservable } from 'kefir';
+import renderGenerator from './render';
 import downstreams from './downstreams';
 import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
 
@@ -96,7 +96,7 @@ export default function component(config) {
             .slidingWindow(2)
             .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
             .filter(apply(shouldUpdate))
-            .map(apply(Render))
+            .map(apply(renderGenerator({ api, el, template, render })))
             .withHandler(makeEventSwapper(events, el))
             .merge(constant(bindEvents(events, el)))
             .flatMapLatest();
@@ -110,32 +110,6 @@ export default function component(config) {
         }
 
         return events$;
-
-        function Render(prev, next) {
-            let render$ = never();
-
-            if (template) {
-                render$ = render$.concat(stream(emitter => {
-                    const loop = requestAnimationFrame(() => {
-                        morphdom(el, template(next));
-
-                        emitter.end();
-                    });
-
-                    return () => cancelAnimationFrame(loop);
-                }));
-            }
-
-            if (render) {
-                const r$ = render(api, prev, next) || {};
-
-                if (process.env.NODE_ENV !== 'production') {
-                    assert.ok(r$[$$observable], '`render` should return an Observable');
-                }
-            }
-
-            return render$;
-        }
     };
 };
 
