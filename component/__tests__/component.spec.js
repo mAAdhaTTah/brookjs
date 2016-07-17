@@ -147,7 +147,7 @@ describe('component', function() {
                 });
             });
 
-            it('should call onMount once with initial state and api', function() {
+            it('should call onMount once with api and state$', function() {
                 sub = instance.observe({ value: identity });
 
                 expect(onMount).to.have.been.calledOnce;
