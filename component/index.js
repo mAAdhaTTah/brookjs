@@ -96,7 +96,13 @@ export default function component(config) {
             .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
             .filter(apply(shouldUpdate))
             .map(apply(renderGenerator({ api, el, template, render })))
-            .withHandler(makeEventSwapper(events, el))
+            .map(render$ => render$
+                    .ignoreValues()
+                    .ignoreErrors()
+                    .beforeEnd(() =>
+                        bindEvents(events, el))
+            )
+            .flatMapLatest()
             .merge(constant(bindEvents(events, el)))
             .flatMapLatest();
 
@@ -111,19 +117,3 @@ export default function component(config) {
         return events$;
     };
 };
-
-function makeEventSwapper(events, el) {
-    let sub = { closed: true };
-    let bind = () => bindEvents(events, el);
-
-    return (emitter, event) => {
-        if (event.type === 'value') {
-            if (!sub.closed) {
-                sub.unsubscribe();
-            }
-
-            const end = pipe(bind, emitter.value);
-            sub = event.value.observe({ end });
-        }
-    };
-}
