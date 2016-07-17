@@ -22,12 +22,14 @@ import $$observable from 'symbol-observable';
 import { constant, fromESObservable, never, stream } from 'kefir';
 import morphdom from 'morphdom';
 import downstreams from './downstreams';
-import bindEvents from './events/index';
+import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
 
 const defaults = {
     events: {},
     shouldUpdate: T
 };
+
+let checked = false;
 
 /**
  * Create a new Component with the provided configuration.
@@ -71,6 +73,16 @@ export default function component(config) {
     return function factory(el, state$) {
         assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
         assert.ok(typeof state$[$$observable] === 'function', 'state$ is not an Observable');
+
+        if (!checked) {
+            const elements = document.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`);
+
+            if (elements.length) {
+                console.warn('deprecated: elements should use container attribute & hbs helpers', elements);
+            }
+
+            checked = true;
+        }
 
         state$ = fromESObservable(state$).toProperty();
 

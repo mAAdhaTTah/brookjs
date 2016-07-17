@@ -100,7 +100,7 @@ export const EVENT_ATTRIBUTES = {
  * @type {string}
  * @deprecated
  */
-const DEPRECATED_EVENT_ATTRIBUTE = 'data-brk-event';
+export const DEPRECATED_EVENT_ATTRIBUTE = 'data-brk-event';
 
 /**
  * Legacy events stream factory function.
@@ -181,7 +181,6 @@ export default function events(config, el) {
     );
 
     if (elements.length) {
-        console.log('deprecated: element should use container attribute & hbs helpers');
         events$.plug(legacy(config, elements));
     }
     // end deprecated
