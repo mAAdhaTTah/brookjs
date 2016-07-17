@@ -7,7 +7,7 @@ import { always, curry, identity, pipe, tap } from 'ramda';
  *
  * @param {Object[]} children - Array of child compoent definitions.
  * @param {Element} el - Parent component element.
- * @param {Object} state - Current page state.
+ * @param {Observable} state$ - Current page state.
  * @returns {stream} Combined child streams.
  * @factory
  */
@@ -52,13 +52,13 @@ const Downstreams = function Downstreams(children, el, state$) {
             return never();
         }
 
-        let instance = factory(element, fromESObservable(state$).map(adapter));
+        let instance = preplug(factory(element, state$.map(adapter)));
 
-        if(instance[$$observable]) {
-            instance = fromESObservable(instance);
+        if (process.env.NODE_ENV !== 'production') {
+            assert.ok(instance instanceof Observable, '`instance` is not a `Kefir.Observable`');
         }
 
-        return preplug(instance);
+        return instance;
     }
 };
 
