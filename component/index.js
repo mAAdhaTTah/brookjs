@@ -45,22 +45,24 @@ let checked = false;
 export default function component(config) {
     let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
 
-    assert.ok(typeof events === 'object', 'events is not an object');
+    if (process.env.NODE_ENV !== 'production') {
+        assert.ok(typeof events === 'object', 'events is not an object');
 
-    for (let key in events) {
-        if (events.hasOwnProperty(key)) {
-            assert.ok(typeof events[key] === 'function', `events[${key}] is not a function`);
+        for (let key in events) {
+            if (events.hasOwnProperty(key)) {
+                assert.ok(typeof events[key] === 'function', `events[${key}] is not a function`);
+            }
         }
-    }
 
-    if (onMount) {
-        assert.ok(typeof onMount === 'function', 'onMount should be a function');
-    }
+        if (onMount) {
+            assert.ok(typeof onMount === 'function', 'onMount should be a function');
+        }
 
-    assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
+        assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
 
-    if (template) {
-        assert.ok(typeof template === 'function', 'template should be a function');
+        if (template) {
+            assert.ok(typeof template === 'function', 'template should be a function');
+        }
     }
 
     /**
@@ -71,17 +73,19 @@ export default function component(config) {
      * @returns {Observable} Component instance.
      */
     return function factory(el, state$) {
-        assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
-        assert.ok(typeof state$[$$observable] === 'function', 'state$ is not an Observable');
+        if (process.env.NODE_ENV !== 'production') {
+            assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
+            assert.ok(typeof state$[$$observable] === 'function', 'state$ is not an Observable');
 
-        if (!checked) {
-            const elements = document.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`);
+            if (!checked) {
+                const elements = document.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`);
 
-            if (elements.length) {
-                console.warn('deprecated: elements should use container attribute & hbs helpers', elements);
+                if (elements.length) {
+                    console.warn('deprecated: elements should use container attribute & hbs helpers', elements);
+                }
+
+                checked = true;
             }
-
-            checked = true;
         }
 
         state$ = fromESObservable(state$).toProperty();
