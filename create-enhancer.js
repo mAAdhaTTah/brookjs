@@ -11,10 +11,12 @@ export default function enhancer(...systems) {
             return result;
         };
 
-        actions$.plug(merge(
+        const systems$ = merge(
             systems.map(system =>
-                system(actions$, fromESObservable(store)))));
+                system(actions$, fromESObservable(store))));
 
-        return Object.assign(store, { dispatch: value });
+        actions$.plug(systems$);
+
+        return Object.assign({}, store, { dispatch: value }, systems$.observe({ value: _dispatch }));
     };
 }
