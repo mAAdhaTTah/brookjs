@@ -1,44 +1,85 @@
+import { curry } from 'ramda';
+import { constant, merge, pool } from 'kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from './index';
-import dispatcher from './dispatcher';
 
+/**
+ * Associates a DOM element with its dispatch function.
+ *
+ * @type {WeakMap}
+ */
 const DISPATCHERS = new WeakMap();
 
+/**
+ * Supported event constants.
+ *
+ * @type {string}
+ */
 const CLICK = 'click';
 const FOCUS = 'focus';
 
 const SUPPORTED_EVENTS = [CLICK, FOCUS];
+
+/**
+ * Whether the event listener should be captured.
+ *
+ * @type {Object}
+ */
 const CAPTURE = {
     [CLICK]: false,
     [FOCUS]: true
 };
 
-const LISTENERS = {
-    [CLICK]: function click(ev) {
-        let target = ev.target;
+/**
+ * Check if any element in the capture area
+ * and call the dispatcher with the event key.
+ *
+ * @param {string} EVENT - Event name.
+ * @param {Event} ev - Event object.
+ */
+const listener = curry(function listener(EVENT, ev) {
+    let target = ev.target;
 
-        while (target !== document.body) {
-            if (target.hasAttribute(EVENT_ATTRIBUTES[CLICK])) {
-                let parent = target;
+    while (target !== document.body) {
+        if (target.hasAttribute(EVENT_ATTRIBUTES[EVENT])) {
+            let parent = target;
 
-                while (!parent.hasAttribute(CONTAINER_ATTRIBUTE)) {
-                    parent = parent.parentNode;
-                }
-
-                if (DISPATCHERS.has(parent)) {
-                    let dispatch = DISPATCHERS.get(parent);
-
-                    dispatch(target.getAttribute(EVENT_ATTRIBUTES[CLICK]), ev);
-                }
+            while (!parent.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                parent = parent.parentNode;
             }
 
-            target = target.parentNode;
+            if (DISPATCHERS.has(parent)) {
+                let dispatch = DISPATCHERS.get(parent);
+
+                dispatch(target.getAttribute(EVENT_ATTRIBUTES[EVENT]), ev);
+            }
         }
+
+        target = target.parentNode;
     }
+});
+
+/**
+ * Event listener functions.
+ *
+ * @type {Object}
+ */
+const LISTENERS = {
+    [CLICK]: listener(CLICK)
 };
+
+/**
+ * Whether the given event has already been
+ * delegated to the document.body.
+ *
+ * @type {Object}
+ */
 const DELEGATED = {
     [CLICK]: false
 };
 
+/**
+ * Registers the global event listeners to the document.
+ */
 function registerListeners() {
     SUPPORTED_EVENTS.forEach(event => {
         if (DELEGATED[event]) {
@@ -52,6 +93,14 @@ function registerListeners() {
     });
 }
 
+/**
+ * Creates a delegated events$ stream from the element
+ * and configuration.
+ *
+ * @param {Object} config - Events configuration.
+ * @param {HTMLElement} el - Element to make stream from.
+ * @returns {Observable} Delegated events$ stream.
+ */
 export function delegateElement(config, el) {
     registerListeners();
 
@@ -59,7 +108,25 @@ export function delegateElement(config, el) {
         return DISPATCHERS.get(el).events$;
     }
 
-    const dispatch = dispatcher(config);
+    let dispatchable = {};
+    let streams = Object.keys(config).map(
+        key => config[key](dispatchable[key] = pool()));
+
+    /**
+     * Dispatches an event down the key$ stream.
+     *
+     * @param {string} key - Callback key.
+     * @param {Event} event - Event object.
+     */
+    const dispatch = function dispatch(key, event) {
+        const stream$ = dispatchable[key];
+
+        if (stream$) {
+            stream$.plug(constant(event));
+        }
+    };
+
+    dispatch.events$ = Object.assign(Object.create(merge(streams)), dispatchable);
     DISPATCHERS.set(el, dispatch);
     return dispatch.events$;
 }

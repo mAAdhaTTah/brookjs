@@ -3,7 +3,7 @@ import { always, identity, pipe, prop } from 'ramda';
 import { delegateElement } from './delegator';
 
 /**
- * Value change constant.
+ * Value change Action type.
  *
  * @type {string}
  */
@@ -13,7 +13,7 @@ export const VALUE_CHANGE = 'VALUE_CHANGE';
  * Create a new Value Change action.
  *
  * @param {string} value - Target value.
- * @returns {Object} Value Change action object.
+ * @returns {Action} Value Change action object.
  */
 export function valueEventAction(value) {
     return {
@@ -23,7 +23,7 @@ export function valueEventAction(value) {
 }
 
 /**
- * Adapter for value change events.
+ * Maps a value change event to a VALUE_CHANGE action.
  *
  * @type {Function}
  */
@@ -40,7 +40,7 @@ export const CHECKED_CHANGE = 'CHECKED_CHANGE';
  * Create a new Checked Change action.
  *
  * @param {boolean} value - Target checked.
- * @returns {Object} Checked Change action object.
+ * @returns {Action} Checked Change action object.
  */
 export function checkedEventAction(value) {
     return {
@@ -50,18 +50,23 @@ export function checkedEventAction(value) {
 }
 
 /**
- * Adapter for checked change events.
+ * Maps checked change event to CHECKED action..
  *
  * @type {Function}
  */
 export const checkedEvent = pipe(prop('target'), prop('checked'), checkedEventAction);
 
+/**
+ * Field focus event action type.
+ *
+ * @type {string}
+ */
 export const FIELD_FOCUS = 'FIELD_FOCUS';
 
 /**
  * Create a FIELD_FOCUS action object.
  *
- * @returns {{type: string}} FIELD_FOCUS action.
+ * @returns {Action} FIELD_FOCUS action.
  */
 export const fieldFocusAction = function fieldFocusAction(name) {
     return {
@@ -70,25 +75,56 @@ export const fieldFocusAction = function fieldFocusAction(name) {
     };
 };
 
+/**
+ * Maps focus event to FIELD_FOCUS action.
+ *
+ * @type {Function}
+ */
 export const focusEvent = pipe(prop('target'), prop('name'), fieldFocusAction);
 
+/**
+ * Click event Action type.
+ *
+ * @type {string}
+ */
 export const CLICK = 'CLICK';
 
 /**
- * Create a new Clicked action
+ * Create a new Clicked Action
  *
- * @returns {{type: string}} Clicked action object.
+ * @returns {Action} Clicked action object.
  */
 export const clickedEventAction = function clickedEventAction() {
     return { type: CLICK };
 };
 
+/**
+ * Map click event to click event Action.
+ *
+ * @type {Function}
+ */
 export const clickEvent = always(clickedEventAction());
 
-const prefix = name => `data-brk-${name}`;
-
+/**
+ * HTML attribute container directive.
+ *
+ * @type {string}
+ */
 export const CONTAINER_ATTRIBUTE = 'data-brk-container';
 
+/**
+ * Event attribute prefixer.
+ *
+ * @param {string} name
+ * @returns {string} HTML attribute
+ */
+const prefix = name => `data-brk-${name}`;
+
+/**
+ * HTML attribute event directives.
+ *
+ * @type {Object}
+ */
 export const EVENT_ATTRIBUTES = {
     click: prefix('onclick'),
     focus: prefix('onfocus')
@@ -107,7 +143,7 @@ export const DEPRECATED_EVENT_ATTRIBUTE = 'data-brk-event';
  *
  * @param {Object} config - Events configuration object.
  * @param {Array} elements - Array of elements to emit from.
- * @returns {Kefir.Observable} Event stream.
+ * @returns {Observable} Event stream.
  * @deprecated
  */
 function legacy(config, elements) {
@@ -156,7 +192,7 @@ function legacy(config, elements) {
  *
  * @param {Object} config - Events configuration.
  * @param {Element} el - Element to make a stream.
- * @returns {stream} Events stream instance.
+ * @returns {Observable} Events stream instance.
  * @factory
  */
 export default function events(config, el) {
