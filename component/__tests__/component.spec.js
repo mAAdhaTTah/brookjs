@@ -2,8 +2,7 @@
 import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
-import $$observable from 'symbol-observable';
-import { constant, pool } from 'kefir';
+import { constant, Observable, pool } from 'kefir';
 import { F, identity, map } from 'ramda';
 
 import chai, { expect } from 'chai';
@@ -79,7 +78,7 @@ describe('component', function() {
         });
 
         it('should return an observable', function() {
-            expect(instance[$$observable]).to.be.a('function');
+            expect(instance).to.be.an.instanceof(Observable);
         });
     });
 
