@@ -1,5 +1,5 @@
-import $$observable from 'symbol-observable';
-import { fromESObservable, never, pool, stream } from 'kefir';
+import assert from 'assert';
+import { never, Observable, pool, stream } from 'kefir';
 import { always, curry, identity, pipe, tap } from 'ramda';
 
 /**
@@ -11,7 +11,11 @@ import { always, curry, identity, pipe, tap } from 'ramda';
  * @returns {stream} Combined child streams.
  * @factory
  */
-const Downstreams = function Downstreams(children, el, state$) {
+const downstreams = function downstreams(children, el, state$) {
+    if (process.env.NODE_ENV !== 'production') {
+        assert.ok(state$ instanceof Observable, '`state$` is not a `Kefir.Observable`');
+    }
+
     const events$ = pool();
     const plug = events$.plug.bind(events$);
     const unplug = events$.unplug.bind(events$);
@@ -62,4 +66,4 @@ const Downstreams = function Downstreams(children, el, state$) {
     }
 };
 
-export default curry(Downstreams);
+export default curry(downstreams);
