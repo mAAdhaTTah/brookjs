@@ -1,5 +1,5 @@
-import { curry } from 'ramda';
-import { constant, merge, pool } from 'kefir';
+import R from 'ramda';
+import { merge, stream } from 'kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from './index';
 
 /**
@@ -7,7 +7,7 @@ import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from './index';
  *
  * @type {WeakMap}
  */
-const DISPATCHERS = new WeakMap();
+const sources = new WeakMap();
 
 /**
  * Supported event constants.
@@ -34,23 +34,23 @@ const CAPTURE = {
  * and call the dispatcher with the event key.
  *
  * @param {string} EVENT - Event name.
+ * @param {Emitter} emitter - source$ emitter.
  * @param {Event} ev - Event object.
  */
-const listener = curry(function listener(EVENT, ev) {
+const listener = R.curry(function listener(EVENT, emitter, ev) {
     let target = ev.target;
 
     while (target !== document.body) {
         if (target.hasAttribute(EVENT_ATTRIBUTES[EVENT])) {
-            let parent = target;
+            let container = target;
+            let callback = target.getAttribute(EVENT_ATTRIBUTES[EVENT]);
 
-            while (!parent.hasAttribute(CONTAINER_ATTRIBUTE)) {
-                parent = parent.parentNode;
+            while (container !== document.body && !container.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                container = container.parentNode;
             }
 
-            if (DISPATCHERS.has(parent)) {
-                let dispatch = DISPATCHERS.get(parent);
-
-                dispatch(target.getAttribute(EVENT_ATTRIBUTES[EVENT]), ev);
+            if (container.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                emitter.value({ callback, container, ev })
             }
         }
 
@@ -59,33 +59,42 @@ const listener = curry(function listener(EVENT, ev) {
 });
 
 /**
- * Event listener functions.
+ * Global events source stream.
  *
- * @type {Object}
+ * Delegates the subscription of any required events,
+ * allowing many individual streams of DOM events to be
+ * created out of a small number of event listeners.
+ *
+ * @type {Stream<T, S>}
  */
-const LISTENERS = {
-    [CLICK]: listener(CLICK),
-    [FOCUS]: listener(FOCUS)
-};
+const sources$ = stream(emitter => {
+    const listeners = {};
+
+    SUPPORTED_EVENTS.forEach(EVENT =>
+        document.body.addEventListener(
+            EVENT,
+            listeners[EVENT] = listener(EVENT, emitter),
+            CAPTURE[EVENT]));
+
+    return () =>
+        SUPPORTED_EVENTS.forEach(EVENT =>
+            document.body.removeEventListener(
+                EVENT,
+                listeners[EVENT],
+                CAPTURE[EVENT]));
+});
 
 /**
- * Whether the given event has already been
- * delegated to the document.body.
- *
- * @type {Object}
+ * Retrieves the event object from the emitted object.
  */
-let delegated = false;
+const getEvent = R.prop('ev');
 
-/**
- * Registers the global event listeners to the document.
- */
-function registerListeners() {
-    SUPPORTED_EVENTS.forEach(event =>
-        document.body.addEventListener(event, LISTENERS[event], CAPTURE[event])
-    );
-
-    delegated = true;
-}
+const eventMatches = R.curry(function eventMatches(key, el, event) {
+    return R.converge(R.and, [
+        R.propEq('callback', key),
+        R.propEq('container', el)
+    ], event);
+});
 
 /**
  * Creates a delegated events$ stream from the element
@@ -96,35 +105,22 @@ function registerListeners() {
  * @returns {Observable} Delegated events$ stream.
  */
 export function delegateElement(config, el) {
-    if (!delegated) {
-        registerListeners();
+    if (sources.has(el)) {
+        return sources.get(el);
     }
 
-    if (DISPATCHERS.has(el)) {
-        return DISPATCHERS.get(el).events$;
-    }
+    let mixin = {};
 
-    let dispatchable = {};
-    let extendable = {};
     let streams = Object.keys(config)
-        .map(key =>
-            extendable[key] = config[key](dispatchable[key] = pool()));
+        .map(key => {
+            const source$ = sources$
+                .filter(eventMatches(key, el))
+                .map(getEvent);
 
-    /**
-     * Dispatches an event down the key$ stream.
-     *
-     * @param {string} key - Callback key.
-     * @param {Event} event - Event object.
-     */
-    const dispatch = function dispatch(key, event) {
-        const stream$ = dispatchable[key];
+            return mixin[key] = config[key](source$);
+        });
 
-        if (stream$) {
-            stream$.plug(constant(event));
-        }
-    };
-
-    dispatch.events$ = Object.assign(Object.create(merge(streams)), extendable);
-    DISPATCHERS.set(el, dispatch);
-    return dispatch.events$;
+    let events$ = Object.assign(Object.create(merge(streams)), mixin);
+    sources.set(el, events$);
+    return events$;
 }
