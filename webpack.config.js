@@ -8,7 +8,8 @@ module.exports = {
         loaders: [
             {
                 test: /\.js$/,
-                loader: 'babel'
+                loader: 'babel',
+                exclude: /(node_modules)/
             },
             {
                 test: /\.json$/,
@@ -19,8 +20,6 @@ module.exports = {
     resolve: {
         mainFields: ['jsnext:main', 'browser', 'main'],
         alias: {
-            kefir: 'kefir/src',
-            redux: 'redux/es',
             handlebars: 'handlebars/dist/cjs/handlebars',
             sinon: 'sinon/pkg/sinon-2.0.0-pre.js'
         }
