@@ -17,7 +17,7 @@ const DISPATCHERS = new WeakMap();
 const CLICK = 'click';
 const FOCUS = 'focus';
 
-const SUPPORTED_EVENTS = [CLICK, FOCUS];
+export const SUPPORTED_EVENTS = [CLICK, FOCUS];
 
 /**
  * Whether the event listener should be captured.

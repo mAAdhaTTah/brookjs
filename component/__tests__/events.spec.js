@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import simulant from 'simulant';
 
-import { delegateElement, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../events';
+import { delegateElement, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../events';
 
 chai.use(sinonChai);
 
@@ -50,24 +50,29 @@ describe('events$', function() {
         expect(value).to.be.calledWith(event);
     });
 
-    it('should emit a click event', function() {
-        el.setAttribute(EVENT_ATTRIBUTES['click'], Object.keys(config).pop());
+    SUPPORTED_EVENTS.forEach(event => {
+        it(`should emit ${event} event`, function() {
+            let target = el;
 
-        const event = simulant.fire(el, 'click');
+            value = sinon.spy();
+            sub = events$.observe({ value });
 
-        expect(value).to.be.calledOnce;
-        expect(value).to.be.calledWith(event);
-    });
+            switch (event) {
+                case 'focus':
+                    target = document.createElement('input');
+                    target.setAttribute(EVENT_ATTRIBUTES['focus'], Object.keys(config).pop());
+                    el.appendChild(target);
+                    break;
+                default:
+                    target.setAttribute(EVENT_ATTRIBUTES['click'], Object.keys(config).pop());
+                    break;
+            }
 
-    it('should emit a focus event', function() {
-        const input = document.createElement('input');
-        input.setAttribute(EVENT_ATTRIBUTES['focus'], Object.keys(config).pop());
-        el.appendChild(input);
+            const e = simulant.fire(target, event);
 
-        const event = simulant.fire(input, 'focus');
-
-        expect(value).to.be.calledOnce;
-        expect(value).to.be.calledWith(event);
+            expect(value).to.be.calledOnce;
+            expect(value).to.be.calledWith(e);
+        });
     });
 
     afterEach(function() {
