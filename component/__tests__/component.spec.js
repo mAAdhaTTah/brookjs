@@ -126,6 +126,7 @@ describe('component', function() {
 
             afterEach(function() {
                 document.body.removeChild(fixture);
+                fixturize = identity;
             });
         });
 

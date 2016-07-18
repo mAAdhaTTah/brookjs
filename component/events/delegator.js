@@ -64,7 +64,8 @@ const listener = curry(function listener(EVENT, ev) {
  * @type {Object}
  */
 const LISTENERS = {
-    [CLICK]: listener(CLICK)
+    [CLICK]: listener(CLICK),
+    [FOCUS]: listener(FOCUS)
 };
 
 /**
@@ -73,24 +74,17 @@ const LISTENERS = {
  *
  * @type {Object}
  */
-const DELEGATED = {
-    [CLICK]: false
-};
+let delegated = false;
 
 /**
  * Registers the global event listeners to the document.
  */
 function registerListeners() {
-    SUPPORTED_EVENTS.forEach(event => {
-        if (DELEGATED[event]) {
-            return;
-        }
+    SUPPORTED_EVENTS.forEach(event =>
+        document.body.addEventListener(event, LISTENERS[event], CAPTURE[event])
+    );
 
-        if (document.querySelector(`[${EVENT_ATTRIBUTES[event]}]`)) {
-            document.documentElement.addEventListener(event, LISTENERS[event], CAPTURE[event]);
-            DELEGATED[event] = true;
-        }
-    });
+    delegated = true;
 }
 
 /**
@@ -102,15 +96,19 @@ function registerListeners() {
  * @returns {Observable} Delegated events$ stream.
  */
 export function delegateElement(config, el) {
-    registerListeners();
+    if (!delegated) {
+        registerListeners();
+    }
 
     if (DISPATCHERS.has(el)) {
         return DISPATCHERS.get(el).events$;
     }
 
     let dispatchable = {};
-    let streams = Object.keys(config).map(
-        key => config[key](dispatchable[key] = pool()));
+    let extendable = {};
+    let streams = Object.keys(config)
+        .map(key =>
+            extendable[key] = config[key](dispatchable[key] = pool()));
 
     /**
      * Dispatches an event down the key$ stream.
@@ -126,7 +124,7 @@ export function delegateElement(config, el) {
         }
     };
 
-    dispatch.events$ = Object.assign(Object.create(merge(streams)), dispatchable);
+    dispatch.events$ = Object.assign(Object.create(merge(streams)), extendable);
     DISPATCHERS.set(el, dispatch);
     return dispatch.events$;
 }

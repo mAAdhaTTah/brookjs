@@ -2,6 +2,9 @@ import { pool, stream } from 'kefir';
 import { always, identity, pipe, prop } from 'ramda';
 import { delegateElement } from './delegator';
 
+
+export * from './delegator';
+
 /**
  * Value change Action type.
  *
