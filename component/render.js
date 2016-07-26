@@ -1,5 +1,6 @@
 import $$observable from 'symbol-observable';
 import assert from 'assert';
+import { CONTAINER_ATTRIBUTE } from './events';
 import { curry } from 'ramda';
 import { stream, never } from 'kefir';
 import morphdom from 'morphdom';
@@ -20,7 +21,12 @@ const renderGenerator = function renderGenerator({ api, template, render }, prev
     if (template) {
         render$ = render$.concat(stream(emitter => {
             const loop = requestAnimationFrame(() => {
-                morphdom(api.el, template(next));
+                morphdom(api.el, template(next), {
+                    onBeforeElUpdated: function blackboxContainer(fromEl) {
+                        // Only update non-container elements.
+                        return !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
+                    }
+                });
 
                 emitter.end();
             });
