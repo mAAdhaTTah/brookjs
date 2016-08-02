@@ -41,6 +41,8 @@ const renderGenerator = function renderGenerator({ api, template, render }, prev
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(r$[$$observable], '`render` should return an Observable');
         }
+
+        render$ = render$.concat(r$);
     }
 
     return render$;
