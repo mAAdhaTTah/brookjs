@@ -1,4 +1,6 @@
 .babelrc
+.editorconfig
+.eslintrc.js
 .gitignore
 karma.conf.js
 webpack.config.js
