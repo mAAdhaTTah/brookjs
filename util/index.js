@@ -40,3 +40,5 @@ export function createFixture(component, template, state) {
 
     return { el, instance };
 }
+
+export default { mapActionTo, createFixture };

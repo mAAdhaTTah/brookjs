@@ -1,9 +1,9 @@
 import { createStore } from 'redux';
 import { pipe, identity } from 'ramda';
+import component from './component';
+import util from './util';
 
-export { default as component } from './component';
-
-export const BROOKJS_INIT = 'BROOKJS_INIT';
+const BROOKJS_INIT = 'BROOKJS_INIT';
 
 /**
  * Generates a `mount` function, which attached the provide configuration
@@ -14,7 +14,7 @@ export const BROOKJS_INIT = 'BROOKJS_INIT';
  * @param {Function} root - Root component factory.
  * @returns {mount} Starts the application.
  */
-export function bootstrap({ reducer, enhancer, root }) {
+const bootstrap = function bootstrap({ reducer, enhancer, root }) {
     if (process.env.NODE_ENV !== 'production') {
         // To use devtools, install Chrome extension:
         // https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
@@ -38,4 +38,10 @@ export function bootstrap({ reducer, enhancer, root }) {
 
         return sub;
     };
-}
+};
+
+const brook = { bootstrap, component, util, BROOKJS_INIT };
+
+export { brook, bootstrap, component, util, BROOKJS_INIT };
+
+export default brook;
