@@ -20,8 +20,7 @@ module.exports = {
     resolve: {
         mainFields: ['jsnext:main', 'browser', 'main'],
         alias: {
-            handlebars: 'handlebars/dist/cjs/handlebars',
-            sinon: 'sinon/pkg/sinon-2.0.0-pre.js'
+            handlebars: 'handlebars/dist/cjs/handlebars'
         }
     }
 };
