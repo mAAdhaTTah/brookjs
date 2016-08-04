@@ -50,7 +50,7 @@ const listener = R.curry(function listener(EVENT, emitter, ev) {
             }
 
             if (container.hasAttribute(CONTAINER_ATTRIBUTE)) {
-                emitter.value({ callback, container, ev })
+                emitter.value({ callback, container, ev });
             }
         }
 

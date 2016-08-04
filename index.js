@@ -37,5 +37,5 @@ export function bootstrap({ reducer, enhancer, root }) {
         setTimeout(() => store.dispatch({ type: BROOKJS_INIT }), 0);
 
         return sub;
-    }
+    };
 }

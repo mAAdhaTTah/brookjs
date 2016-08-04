@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { never, Observable, pool, stream } from 'kefir';
-import { always, curry, identity, pipe, tap } from 'ramda';
+import R from 'ramda';
 
 /**
  * Create a combined stream & renderer for an array of child components.
@@ -44,7 +44,7 @@ const downstreams = function downstreams(children, el, state$) {
      * @param {Function} child.preplug - Function to modify stream before being plugged in.
      * @returns {Function} Child's render function.
      */
-    function mapChildren({ adapter = identity, factory, selector, preplug = identity }) {
+    function mapChildren({ adapter = R.identity, factory, selector, preplug = R.identity }) {
         let element = el;
 
         if (selector) {
@@ -66,4 +66,4 @@ const downstreams = function downstreams(children, el, state$) {
     }
 };
 
-export default curry(downstreams);
+export default R.curry(downstreams);

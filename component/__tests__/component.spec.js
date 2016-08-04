@@ -18,7 +18,7 @@ chai.use(dom);
 chai.use(sinonChai);
 
 describe('component', function() {
-    let api, factory, fixture, state$, instance, initial, sub;
+    let factory, fixture, state$, instance, initial, sub;
     let fixturize = identity;
 
     function setup (config = {}) {
@@ -39,7 +39,6 @@ describe('component', function() {
         state$.plug(constant(initial));
 
         instance = factory(fixture, state$);
-        api = { el: fixture };
     }
 
     describe('module', function() {

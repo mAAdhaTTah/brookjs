@@ -1,9 +1,11 @@
+/* eslint-env mocha */
+
 import { constant, Observable, pool } from 'kefir';
 import { createStore } from 'redux';
-import createEnhancer from '../create-enhancer'
+import createEnhancer from '../create-enhancer';
 import chai, { expect } from 'chai';
-import sinon from "sinon";
-import sinonChai from "sinon-chai";
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 

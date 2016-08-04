@@ -69,6 +69,7 @@ export const FIELD_FOCUS = 'FIELD_FOCUS';
 /**
  * Create a FIELD_FOCUS action object.
  *
+ * @param {string} name - Field name.
  * @returns {Action} FIELD_FOCUS action.
  */
 export const fieldFocusAction = function fieldFocusAction(name) {
@@ -118,7 +119,7 @@ export const CONTAINER_ATTRIBUTE = 'data-brk-container';
 /**
  * Event attribute prefixer.
  *
- * @param {string} name
+ * @param {string} name - Event name.
  * @returns {string} HTML attribute
  */
 const prefix = name => `data-brk-${name}`;

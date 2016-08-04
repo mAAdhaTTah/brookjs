@@ -1,20 +1,14 @@
 import R, {
     __,
-    always,
     apply,
-    curry,
     equals,
     head,
     identity,
     ifElse,
-    last,
     length,
     merge,
-    once,
     pipe,
-    prop,
-    repeat,
-    tap
+    repeat
 } from 'ramda';
 import assert from 'assert';
 import $$observable from 'symbol-observable';
@@ -39,6 +33,7 @@ let checked = false;
  * @param {Function} config.shouldUpdate - Whether the component should rerender.
  * @param {Object[]} [config.subcomponents] - Subcomponent declarations.
  * @param {Function} [config.template] - String-returning template function.
+ * @returns {factory} Component factory function.
  * @factory
  */
 export default function component(config) {

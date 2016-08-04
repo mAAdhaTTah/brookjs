@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 import { constant, Observable, pool } from 'kefir';
 
 import chai, { expect } from 'chai';
@@ -36,7 +37,7 @@ describe('events$', function() {
     });
 
     it('should have modified Observable', function() {
-        expect(events$.callback).to.equal(strm$)
+        expect(events$.callback).to.equal(strm$);
     });
 
     it('should pass the event Observable', function() {
@@ -60,11 +61,11 @@ describe('events$', function() {
             switch (event) {
                 case 'focus':
                     target = document.createElement('input');
-                    target.setAttribute(EVENT_ATTRIBUTES['focus'], Object.keys(config).pop());
+                    target.setAttribute(EVENT_ATTRIBUTES['focus'], Object.keys(config).pop()); // eslint-disable-line dot-notation
                     el.appendChild(target);
                     break;
                 default:
-                    target.setAttribute(EVENT_ATTRIBUTES['click'], Object.keys(config).pop());
+                    target.setAttribute(EVENT_ATTRIBUTES['click'], Object.keys(config).pop()); // eslint-disable-line dot-notation
                     break;
             }
 
@@ -78,5 +79,5 @@ describe('events$', function() {
     afterEach(function() {
         sub.unsubscribe();
         document.body.removeChild(el);
-    })
+    });
 });
