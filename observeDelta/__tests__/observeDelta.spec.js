@@ -2,7 +2,7 @@
 
 import { constant, Observable, pool } from 'kefir';
 import { createStore } from 'redux';
-import createEnhancer from '../create-enhancer';
+import createEnhancer from '../index';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';

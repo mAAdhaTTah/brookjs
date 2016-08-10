@@ -4,7 +4,7 @@
 
 `brookjs` is framework for building functional, reactive JavaScript applications. The core of the library is built on [`kefir`][kefir] for Observables and [`ramda`][ramda] as a utility library. Everything else is designed to be as flexible as possible, allowing you to pick and choose which modules to use while designing them to work together seamlessly with common patterns. While not required, [`redux`][redux] is recommended for data management, with its `Symbol.observable` interop and significant community.
 
-`brookjs` modules handle various aspects of an application, with the core of the library being the `component`, which handles the UI lifecycle, and the `observeProcesses` Redux enhancer, which provides an observable-based hook for responding to state changes and actions and emitting new events into your Redux store. Additional components provide support for other necessary application functionality.
+`brookjs` modules handle various aspects of an application, with the core of the library being the `component`, which handles the UI lifecycle, and the `observeDelta` Redux enhancer, which provides an observable-based hook for responding to state changes and actions and emitting new events into your Redux store. Additional components provide support for other necessary application functionality.
 
 # How to Use
 
@@ -31,6 +31,7 @@ Be sure the grab the latest commit sha from GitHub.
 # Modules
 
 * [component][] - Declarative UI lifecycle management.
+* [observeDelta][] - Redux enhancer for streaming side effects.
 * [util][] - Utility functions for standard patterns.
 
 # Semver
@@ -41,6 +42,9 @@ Be sure the grab the latest commit sha from GitHub.
   [ramda]: http://ramdajs.com/
   [redux]: http://redux.js.org/
   [component]: component/README.md
+  [observeDelta]: observeDelta/README.md
   [util]: util/README.md
   [webpack]: https://webpack.github.io/
   [browserify]: http://browserify.org/
+  [babel]: https://babeljs.io/
+  [semver]: http://semver.org/

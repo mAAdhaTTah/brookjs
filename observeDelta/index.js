@@ -1,23 +1,23 @@
 import { constant, fromESObservable, merge, pool } from 'kefir';
 
 /**
- * Accepts a set of system generator functions and returns a
- * StoreEnhancer, which generates the `systems$` stream and
+ * Accepts a set of delta generator functions and returns a
+ * StoreEnhancer, which generates the `deltas$` stream and
  * binds it to the store.
  *
  * Functions similar to middleware, but provides a way to respond
  * to events from, and emit events into, the application's central
  * redux store.
  *
- * The system function takes an `actions$` stream and a `state$`
- * stream, and should return a new `system$`, which gets observed by
+ * The delta function takes an `actions$` stream and a `state$`
+ * stream, and should return a new `delta$`, which gets observed by
  * the store. Note that the `actions$` stream will re-emit
  * events emitted from the returned `system$`.
  *
- * @param {...Function} systems - System-generating function.
+ * @param {...Function} sources - Source-generating function.
  * @returns {StoreEnhancer} Enhanced create store function.
  */
-export default function enhancer(...systems) {
+export default function observeDelta(...sources) {
     return createStore => (reducer, preloadedState, enhancer) => {
         const store = createStore(reducer, preloadedState, enhancer);
         const value = store.dispatch;
@@ -28,12 +28,12 @@ export default function enhancer(...systems) {
             return result;
         };
 
-        const systems$ = merge(
-            systems.map(system =>
-                system(actions$, fromESObservable(store))));
+        const sources$ = merge(
+            sources.map(source =>
+                source(actions$, fromESObservable(store))));
 
-        actions$.plug(systems$);
+        actions$.plug(sources$);
 
-        return Object.assign(systems$.observe({ value }), store, { dispatch });
+        return Object.assign(sources$.observe({ value }), store, { dispatch });
     };
 }
