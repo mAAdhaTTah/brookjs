@@ -1,5 +1,5 @@
 import component from './component';
-import observeDelta from './observe-delta';
+import observeDelta from './observeDelta';
 import util from './util';
 import bootstrap, { BROOKJS_INIT } from './bootstrap';
 
