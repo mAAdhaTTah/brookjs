@@ -1,8 +1,7 @@
-import $$observable from 'symbol-observable';
 import assert from 'assert';
 import { CONTAINER_ATTRIBUTE } from './events';
 import { curry } from 'ramda';
-import { stream, never } from 'kefir';
+import { Observable, stream, never } from 'kefir';
 import morphdom from 'morphdom';
 
 /**
@@ -39,7 +38,7 @@ const renderGenerator = function renderGenerator({ api, template, render }, prev
         const r$ = render(api, prev, next) || {};
 
         if (process.env.NODE_ENV !== 'production') {
-            assert.ok(r$[$$observable], '`render` should return an Observable');
+            assert.ok(r$ instanceof Observable, '`render` should return a Kefir.Observable');
         }
 
         render$ = render$.concat(r$);
