@@ -151,7 +151,7 @@ describe('component', function() {
                 sub = instance.observe({ value: identity });
 
                 expect(onMount).to.have.been.calledOnce;
-                expect(onMount.args[0][1]._name).to.equal('fromESObservable.toProperty');
+                expect(onMount.args[0][1]).to.equal(state$);
             });
 
             it('should propagate stream events', function() {
