@@ -1,5 +1,6 @@
-import { createStore } from 'redux';
 import R from 'ramda';
+import { createStore } from 'redux';
+import { fromESObservable } from 'kefir';
 
 export const BROOKJS_INIT = 'BROOKJS_INIT';
 
@@ -10,9 +11,10 @@ export const BROOKJS_INIT = 'BROOKJS_INIT';
  * @param {Reducer<Object>} reducer - Reducer function.
  * @param {StoreEnhancer} enhancer - createStore enhancer function.
  * @param {Function} root - Root component factory.
+ * @param {Function} modifyState - Modify state$ function.
  * @returns {mount} Starts the application.
  */
-export default function bootstrap({ reducer, enhancer, root }) {
+export default function bootstrap({ reducer, enhancer, root, modifyState = R.identity }) {
     if (process.env.NODE_ENV !== 'production') {
         // To use devtools, install Chrome extension:
         // https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
@@ -21,9 +23,11 @@ export default function bootstrap({ reducer, enhancer, root }) {
 
     return (el, state) => {
         const store = createStore(reducer, state, enhancer);
-        const app = root(el, store);
+        const state$ = modifyState(fromESObservable(store).toProperty());
+        const app = root(el, state$);
 
         if (process.env.NODE_ENV !== 'production') {
+            state$.log('state$');
             app.log('App');
         }
 

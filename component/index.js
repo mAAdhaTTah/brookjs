@@ -11,8 +11,7 @@ import R, {
     repeat
 } from 'ramda';
 import assert from 'assert';
-import $$observable from 'symbol-observable';
-import { constant, fromESObservable } from 'kefir';
+import { constant, Observable } from 'kefir';
 import renderGenerator from './render';
 import downstreams from './downstreams';
 import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
@@ -69,7 +68,7 @@ export default function component(config) {
     return function factory(el, state$) {
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
-            assert.ok(typeof state$[$$observable] === 'function', 'state$ is not an Observable');
+            assert.ok(state$ instanceof Observable, '`instance` is not a `Kefir.Observable`');
 
             if (!checked) {
                 const elements = document.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`);
@@ -81,8 +80,6 @@ export default function component(config) {
                 checked = true;
             }
         }
-
-        state$ = fromESObservable(state$).toProperty();
 
         const api = { el };
 
