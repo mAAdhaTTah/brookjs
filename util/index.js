@@ -1,3 +1,4 @@
+import { constant, pool } from 'kefir';
 import { curry } from 'ramda';
 
 /**
@@ -35,10 +36,12 @@ export function createFixture(component, template, state) {
 
         return result.children[0];
     })();
+    const state$ = pool();
+    state$.plug(constant(state));
 
-    const instance = component(el, state);
+    const instance = component(el, state$);
 
-    return { el, instance };
+    return { el, instance, state$ };
 }
 
 export default { mapActionTo, createFixture };
