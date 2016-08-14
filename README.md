@@ -31,8 +31,10 @@ Be sure the grab the latest commit sha from GitHub.
 # Modules
 
 * [component][] - Declarative UI lifecycle management.
+* [events][] - Generate streams of DOM events.
+* [helpers][] - Function helpers for brookjs applications.
 * [observeDelta][] - Redux enhancer for streaming side effects.
-* [util][] - Utility functions for standard patterns.
+* [render][] - Generate streams of rendering activity.
 
 # Semver
 
@@ -42,8 +44,10 @@ Be sure the grab the latest commit sha from GitHub.
   [ramda]: http://ramdajs.com/
   [redux]: http://redux.js.org/
   [component]: component/README.md
+  [events]: events/README.md
+  [helpers]: helpers/README.md
   [observeDelta]: observeDelta/README.md
-  [util]: util/README.md
+  [render]: render/README.md
   [webpack]: https://webpack.github.io/
   [browserify]: http://browserify.org/
   [babel]: https://babeljs.io/
