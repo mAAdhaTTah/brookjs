@@ -1,4 +1,4 @@
-import { CONTAINER_ATTRIBUTE } from '../../events';
+import { CONTAINER_ATTRIBUTE } from '../events';
 
 /**
  * Generates a HTML attribute for a container.
