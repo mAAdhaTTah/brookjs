@@ -12,13 +12,13 @@ import dom from 'chai-dom';
 import simulant from 'simulant';
 
 import component from '../index';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, clickEvent } from '../events/index';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, clickEvent } from '../../events/index';
 
 chai.use(dom);
 chai.use(sinonChai);
 
 describe('component', function() {
-    let factory, fixture, state$, instance, initial, sub;
+    let factory, fixture, pluggable$, state$, instance, initial, sub;
     let fixturize = identity;
 
     function setup (config = {}) {
@@ -35,8 +35,10 @@ describe('component', function() {
 
         fixture = fixturize(fixture);
 
-        state$ = pool();
-        state$.plug(constant(initial));
+        pluggable$ = pool();
+        pluggable$.plug(constant(initial));
+
+        state$ = pluggable$.toProperty();
 
         instance = factory(fixture, state$);
     }
@@ -98,15 +100,15 @@ describe('component', function() {
                 setup({ events });
             });
 
-            it('should throw without an object', function() {
-                const invalid = ['string', 2, true, identity];
+            it('should throw without an object (deprecated) or function', function () {
+                const invalid = ['string', 2, true];
 
                 invalid.forEach(vnts => {
                     expect(() => component({ events: vnts }), `${typeof vnts} did not throw`).to.throw(AssertionError);
                 });
             });
 
-            it('should throw without a function', function() {
+            it('should throw if object value is not a function (deprecated)', function () {
                 const invalid = [{}, 'string', 2, true, []];
 
                 invalid.forEach(cb => {
@@ -114,7 +116,7 @@ describe('component', function() {
                 });
             });
 
-            it('should emit DOM event', function() {
+            it('should emit DOM event (deprecated)', function () {
                 const value = sinon.spy();
                 sub = instance.observe({ value });
 
@@ -154,7 +156,7 @@ describe('component', function() {
                 const value = sinon.spy();
                 sub = instance.observe({ value });
 
-                state$.plug(constant(next));
+                pluggable$.plug(constant(next));
 
                 expect(render).to.have.callCount(2);
                 render.args.forEach(call => {
@@ -187,11 +189,11 @@ describe('component', function() {
                 });
             });
 
-            it('should call onMount once with api and state$', function() {
+            it('should call onMount once with el and state$', function() {
                 sub = instance.observe({ value: identity });
 
-                expect(onMount).to.have.been.calledOnce;
-                expect(onMount.args[0][1]).to.equal(state$);
+                expect(onMount).to.have.callCount(1);
+                expect(onMount).to.have.been.calledWithExactly(fixture, state$);
             });
 
             it('should propagate stream events', function() {
@@ -229,6 +231,7 @@ describe('component', function() {
             it('should call shouldUpdate immediately with two equal params', function() {
                 sub = instance.observe({ value: identity });
 
+                expect(shouldUpdate).to.have.callCount(1);
                 expect(shouldUpdate).to.have.been.calledWithExactly(initial, initial);
             });
         });

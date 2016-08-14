@@ -1,7 +1,7 @@
+import assert from 'assert';
 import { pool, stream } from 'kefir';
 import { always, identity, pipe, prop } from 'ramda';
 import { delegateElement } from './delegator';
-
 
 export * from './delegator';
 
@@ -195,35 +195,48 @@ function legacy(config, elements) {
  * Create a new Events stream from the element.
  *
  * @param {Object} config - Events configuration.
- * @param {Element} el - Element to make a stream.
- * @returns {Observable} Events stream instance.
- * @factory
+ * @returns {Function} Events stream generator funciton.
  */
-export default function events(config, el) {
-    let events$ = pool();
-
-    if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
-        events$.plug(delegateElement(config, el));
+export default function events(config) {
+    for (let key in config) {
+        if (config.hasOwnProperty(key)) {
+            assert.ok(typeof config[key] === 'function', `events[${key}] is not a function`);
+        }
     }
 
-    // start deprecated
-    let elements = [];
+    /**
+     * Generates a new stream of events for the provided element.
+     *
+     * @param {Element} el - Element to make a stream.
+     * @returns {Observable} Events stream instance.
+     * @factory
+     */
+    return function eventsGenerator(el) {
+        let events$ = pool();
 
-    if (el.hasAttribute(DEPRECATED_EVENT_ATTRIBUTE)) {
-        elements.push(el);
-    }
+        if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
+            events$.plug(delegateElement(config, el));
+        }
 
-    elements = elements.concat(
-        // @todo problem here!
-        // we can't guarantee that the nodes we get here are
-        // from the component or its children.
-        Array.from(el.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`) || [])
-    );
+        // start deprecated
+        let elements = [];
 
-    if (elements.length) {
-        events$.plug(legacy(config, elements));
-    }
-    // end deprecated
+        if (el.hasAttribute(DEPRECATED_EVENT_ATTRIBUTE)) {
+            elements.push(el);
+        }
 
-    return events$;
+        elements = elements.concat(
+            // @todo problem here!
+            // we can't guarantee that the nodes we get here are
+            // from the component or its children.
+            Array.from(el.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`) || [])
+        );
+
+        if (elements.length) {
+            events$.plug(legacy(config, elements));
+        }
+        // end deprecated
+
+        return events$;
+    };
 };

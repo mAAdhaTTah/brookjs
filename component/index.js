@@ -12,7 +12,7 @@ import R, {
 import assert from 'assert';
 import { constant, Observable, never } from 'kefir';
 import downstreams from './downstreams';
-import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
+import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from '../events';
 
 let checked = false;
 
@@ -28,29 +28,31 @@ let checked = false;
  * @factory
  */
 export default function component(config) {
-    let { events, onMount, render, subcomponents, shouldUpdate = R.T } = config;
+    let { events, onMount, render, subcomponents = [], shouldUpdate = R.T } = config;
+
+    if (!render) {
+        render = R.curryN(3, R.always(never()));
+    }
 
     if (process.env.NODE_ENV !== 'production') {
-        assert.ok(typeof events === 'object', 'events is not an object');
-
-        for (let key in events) {
-            if (events.hasOwnProperty(key)) {
-                assert.ok(typeof events[key] === 'function', `events[${key}] is not a function`);
-            }
-        }
-
-        if (render) {
-            assert.equal(typeof render, 'function', '`render` should be a function');
-            assert.equal(render.length, 3, '`render` should take 3 arguments');
-            assert.equal(typeof render({}), 'function', '`render` should be curried');
-        } else {
-            render = R.curryN(3, R.always(never()));
-        }
-
         if (onMount) {
             assert.ok(typeof onMount === 'function', 'onMount should be a function');
         }
 
+        if (typeof events === 'object') {
+            console.warn('deprecated: events should be a function');
+            events = bindEvents(events);
+        }
+
+        if (events) {
+            assert.equal(typeof events, 'function', '`events` should be a function');
+        }
+
+        assert.equal(typeof render, 'function', '`render` should be a function');
+        assert.equal(render.length, 3, '`render` should take 3 arguments');
+        assert.equal(typeof render({}), 'function', '`render` should be curried');
+
+        assert.ok(Array.isArray(subcomponents), '`subcomponent` should be an array');
         assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
     }
 
@@ -80,24 +82,34 @@ export default function component(config) {
         // BC with destructured impl
         el.el = el;
 
-        let events$ = state$
-            .slidingWindow(2)
-            .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
-            .filter(apply(shouldUpdate))
-            .map(apply(render(el)))
-            .map(render$ => render$
-                .beforeEnd(() => bindEvents(el))
-            )
-            .flatMapLatest()
-            .merge(constant(bindEvents(events, el)))
-            .flatMapLatest();
-
-        if (subcomponents) {
-            events$ = events$.merge(downstreams(subcomponents, el, state$));
-        }
+        let events$ = never();
 
         if (onMount) {
             events$ = events$.merge(onMount(el, state$));
+        }
+
+        state$ = state$
+            .slidingWindow(2)
+            .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
+            .filter(apply(shouldUpdate));
+
+        let render$$ = state$
+            .map(apply(render(el)));
+
+        if (events) {
+            render$$ = render$$
+                .map(render$ => render$
+                    .beforeEnd(() => events(el))
+                )
+                .flatMapLatest()
+                .merge(constant(events(el)))
+                .flatMapLatest();
+        }
+
+        events$ = events$.merge(render$$);
+
+        if (subcomponents) {
+            events$ = events$.merge(downstreams(subcomponents, el, state$));
         }
 
         return events$;
