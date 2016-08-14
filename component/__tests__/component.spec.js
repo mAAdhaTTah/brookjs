@@ -18,7 +18,7 @@ chai.use(dom);
 chai.use(sinonChai);
 
 describe('component', function() {
-    let factory, fixture, pluggable$, state$, instance, initial, sub;
+    let factory, fixture, pluggable$, props$, instance, initial, sub;
     let fixturize = identity;
 
     function setup (config = {}) {
@@ -38,9 +38,9 @@ describe('component', function() {
         pluggable$ = pool();
         pluggable$.plug(constant(initial));
 
-        state$ = pluggable$.toProperty();
+        props$ = pluggable$.toProperty();
 
-        instance = factory(fixture, state$);
+        instance = factory(fixture, props$);
     }
 
     describe('module', function() {
@@ -122,6 +122,7 @@ describe('component', function() {
 
                 const event = simulant.fire(fixture, 'click');
 
+                expect(value).to.have.callCount(1);
                 expect(value).to.have.been.calledWithMatch(clickEvent(event));
             });
 
@@ -189,11 +190,11 @@ describe('component', function() {
                 });
             });
 
-            it('should call onMount once with el and state$', function() {
+            it('should call onMount once with el and props$', function() {
                 sub = instance.observe({ value: identity });
 
                 expect(onMount).to.have.callCount(1);
-                expect(onMount).to.have.been.calledWithExactly(fixture, state$);
+                expect(onMount).to.have.been.calledWithExactly(fixture, props$);
             });
 
             it('should propagate stream events', function() {
