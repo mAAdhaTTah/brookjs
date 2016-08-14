@@ -200,7 +200,7 @@ function legacy(config, elements) {
 export default function events(config) {
     for (let key in config) {
         if (config.hasOwnProperty(key)) {
-            assert.ok(typeof config[key] === 'function', `events[${key}] is not a function`);
+            assert.equal(typeof config[key], 'function', `events[${key}] is not a function`);
         }
     }
 
