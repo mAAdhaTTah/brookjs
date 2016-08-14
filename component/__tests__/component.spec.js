@@ -2,8 +2,8 @@
 import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
-import { constant, Observable, pool } from 'kefir';
-import { F, identity, map } from 'ramda';
+import { constant, Observable, never, pool } from 'kefir';
+import R, { F, identity, map } from 'ramda';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
@@ -129,6 +129,46 @@ describe('component', function() {
             });
         });
 
+        describe('render', () => {
+            let render;
+
+            beforeEach(() => {
+                render = sinon.spy(() => never());
+                setup({ render: R.curryN(3, render) });
+            });
+
+            it('should throw if not a function', () => {
+                const invalid = ['string', 2, true, {}];
+
+                invalid.forEach(rndr => {
+                    expect(() => component({ render: rndr }), `${typeof rndr} did not throw`).to.throw(AssertionError);
+                });
+            });
+
+            it('should get called with el, prev, & next', () => {
+                const next = {
+                    type: 'img',
+                    text: 'House'
+                };
+
+                const value = sinon.spy();
+                sub = instance.observe({ value });
+
+                state$.plug(constant(next));
+
+                expect(render).to.have.callCount(2);
+                render.args.forEach(call => {
+                    expect(call.length).to.equal(3);
+                });
+
+                let [el, init, nex] = render.args[1];
+
+                expect(el).to.equal(fixture);
+                expect(init).to.equal(initial);
+                expect(nex).to.equal(next);
+            });
+        });
+
         describe('onMount', function () {
             let onMount, return$;
 
@@ -190,47 +230,6 @@ describe('component', function() {
                 sub = instance.observe({ value: identity });
 
                 expect(shouldUpdate).to.have.been.calledWithExactly(initial, initial);
-            });
-        });
-
-        describe('template', function() {
-            let template, next;
-
-            beforeEach(function() {
-                next = {
-                    type: 'image',
-                    text: 'A picture'
-                };
-                template = sinon.spy(() => '<div class="image">A picture</div>');
-
-                setup({ template });
-            });
-
-            it('should throw without function', function() {
-                const invalid = [{}, 'string', 2, true, []];
-
-                invalid.forEach(templ => {
-                    expect(() => component({ template: templ })).to.throw(AssertionError);
-                });
-            });
-
-            it('should update element with new state', function(done) {
-                sub = instance.observe();
-                state$.plug(constant(next));
-
-                // Have to wait for render.
-                requestAnimationFrame(() => {
-                    // Delay a bit to ensure render is complete.
-                    setTimeout(() => {
-                        expect(template).to.have.been.calledOnce;
-                        expect(template).to.have.been.calledWithExactly(next);
-                        expect(fixture).to.not.have.class('text');
-                        expect(fixture).to.have.class('image');
-                        expect(fixture).to.have.text('A picture');
-
-                        done();
-                    }, 50);
-                });
             });
         });
     });

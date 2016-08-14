@@ -6,20 +6,13 @@ import R, {
     identity,
     ifElse,
     length,
-    merge,
     pipe,
     repeat
 } from 'ramda';
 import assert from 'assert';
-import { constant, Observable } from 'kefir';
-import renderGenerator from './render';
+import { constant, Observable, never } from 'kefir';
 import downstreams from './downstreams';
 import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
-
-const defaults = {
-    events: {},
-    shouldUpdate: R.T
-};
 
 let checked = false;
 
@@ -28,15 +21,14 @@ let checked = false;
  *
  * @param {Object} config - Component configuration.
  * @param {Object} config.events - Events mapping
- * @param {Function} config.render - Render function.
+ * @param {Function} config.render - Stream-returning render function.
  * @param {Function} config.shouldUpdate - Whether the component should rerender.
  * @param {Object[]} [config.subcomponents] - Subcomponent declarations.
- * @param {Function} [config.template] - String-returning template function.
  * @returns {factory} Component factory function.
  * @factory
  */
 export default function component(config) {
-    let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
+    let { events, onMount, render, subcomponents, shouldUpdate = R.T } = config;
 
     if (process.env.NODE_ENV !== 'production') {
         assert.ok(typeof events === 'object', 'events is not an object');
@@ -47,15 +39,19 @@ export default function component(config) {
             }
         }
 
+        if (render) {
+            assert.equal(typeof render, 'function', '`render` should be a function');
+            assert.equal(render.length, 3, '`render` should take 3 arguments');
+            assert.equal(typeof render({}), 'function', '`render` should be curried');
+        } else {
+            render = R.curryN(3, R.always(never()));
+        }
+
         if (onMount) {
             assert.ok(typeof onMount === 'function', 'onMount should be a function');
         }
 
         assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
-
-        if (template) {
-            assert.ok(typeof template === 'function', 'template should be a function');
-        }
     }
 
     /**
@@ -81,18 +77,16 @@ export default function component(config) {
             }
         }
 
-        const api = { el };
+        // BC with destructured impl
+        el.el = el;
 
         let events$ = state$
             .slidingWindow(2)
             .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
             .filter(apply(shouldUpdate))
-            .map(apply(renderGenerator({ api, el, template, render })))
+            .map(apply(render(el)))
             .map(render$ => render$
-                    .ignoreValues()
-                    .ignoreErrors()
-                    .beforeEnd(() =>
-                        bindEvents(events, el))
+                .beforeEnd(() => bindEvents(el))
             )
             .flatMapLatest()
             .merge(constant(bindEvents(events, el)))
@@ -103,7 +97,7 @@ export default function component(config) {
         }
 
         if (onMount) {
-            events$ = events$.merge(onMount(api, state$));
+            events$ = events$.merge(onMount(el, state$));
         }
 
         return events$;
