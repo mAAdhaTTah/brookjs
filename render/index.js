@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CONTAINER_ATTRIBUTE } from '../component/events';
+import { CONTAINER_ATTRIBUTE } from '../events';
 import R from 'ramda';
 import { stream } from 'kefir';
 import morphdom from 'morphdom';
@@ -13,7 +13,6 @@ import morphdom from 'morphdom';
 export default function render(template) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof template, 'function', '`template` should be a function');
-        assert.equal(typeof template({}), 'string', '`template` should return a string');
     }
 
     /**
@@ -28,7 +27,13 @@ export default function render(template) {
     return R.curry(function renderGenerator(el, prev, next) {
         return stream(emitter => {
             const loop = requestAnimationFrame(() => {
-                morphdom(el, template(next), {
+                const html = template(next);
+
+                if (process.env.NODE_ENV !== 'production') {
+                    assert.equal(typeof html, 'string', '`template` should return a string');
+                }
+
+                morphdom(el, html, {
                     onBeforeElUpdated: function blackboxContainer(fromEl) {
                         // Only update non-container elements.
                         return !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
