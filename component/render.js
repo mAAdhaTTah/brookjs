@@ -22,8 +22,8 @@ const renderGenerator = function renderGenerator({ api, template, render }, prev
             const loop = requestAnimationFrame(() => {
                 morphdom(api.el, template(next), {
                     onBeforeElUpdated: function blackboxContainer(fromEl) {
-                        // Only update non-container elements.
-                        return !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
+                        // Only update non-container elements or the main element.
+                        return fromEl === api.el || !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
                     }
                 });
 
