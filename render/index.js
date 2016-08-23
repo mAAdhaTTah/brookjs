@@ -35,8 +35,8 @@ export default function render(template) {
 
                 morphdom(el, html, {
                     onBeforeElUpdated: function blackboxContainer(fromEl) {
-                        // Only update non-container elements.
-                        return !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
+                        // Only update non-container elements or the main element.
+                        return fromEl === el || !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
                     }
                 });
 

@@ -1,6 +1,6 @@
 # `brookjs`
 
-**Note: Early alpha. Expect breaking changes before version 0.1.0. See [semver][#Semver] policy below.**
+**Note: Early alpha. Expect breaking changes before version 0.1.0. See [semver](#semver) policy below.**
 
 `brookjs` is framework for building functional, reactive JavaScript applications. The core of the library is built on [`kefir`][kefir] for Observables and [`ramda`][ramda] as a utility library. Everything else is designed to be as flexible as possible, allowing you to pick and choose which modules to use while designing them to work together seamlessly with common patterns. While not required, [`redux`][redux] is recommended for data management, with its `Symbol.observable` interop and significant community.
 
@@ -30,6 +30,7 @@ Be sure the grab the latest commit sha from GitHub.
 
 # Modules
 
+* [combineActionReducers][] - Action-based state transitions.
 * [component][] - Declarative UI lifecycle management.
 * [events][] - Generate streams of DOM events.
 * [helpers][] - Function helpers for brookjs applications.
@@ -43,6 +44,7 @@ Be sure the grab the latest commit sha from GitHub.
   [kefir]: http://rpominov.github.io/kefir/
   [ramda]: http://ramdajs.com/
   [redux]: http://redux.js.org/
+  [combineActionReducers]: combineActionReducers/README.md
   [component]: component/README.md
   [events]: events/README.md
   [helpers]: helpers/README.md
