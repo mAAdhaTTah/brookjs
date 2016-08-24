@@ -1,4 +1,5 @@
 import assert from 'assert';
+import R from 'ramda';
 import { pool, stream } from 'kefir';
 import { always, identity, pipe, prop } from 'ramda';
 import { delegateElement } from './delegator';
@@ -211,7 +212,7 @@ export default function events(config) {
      * @returns {Observable} Events stream instance.
      * @factory
      */
-    return function eventsGenerator(el) {
+    return R.curry(el => {
         let events$ = pool();
 
         if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
@@ -238,5 +239,5 @@ export default function events(config) {
         // end deprecated
 
         return events$;
-    };
+    });
 };

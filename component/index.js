@@ -68,7 +68,7 @@ export default function component(config) {
      * @param {Observable} props$ - Observable of component props.
      * @returns {Observable} Component instance.
      */
-    return function factory(el, props$) {
+    return R.curry((el, props$) => {
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
             assert.ok(props$ instanceof Observable, '`props$` is not a `Kefir.Observable`');

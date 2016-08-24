@@ -24,7 +24,7 @@ export default function render(template) {
      * @returns {Stream<void, void>} Rendering stream.
      * @factory
      */
-    return R.curry(function renderGenerator(el, prev, next) {
+    return R.curry((el, prev, next) => {
         return stream(emitter => {
             const loop = requestAnimationFrame(() => {
                 const html = template(next);
