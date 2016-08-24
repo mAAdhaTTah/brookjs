@@ -3,6 +3,7 @@ import assert from 'assert';
 import { combine, constant, Observable, merge, never } from 'kefir';
 import downstreams from './downstreams';
 import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from '../events';
+import renderGenerator from '../render';
 
 let checked = false;
 
@@ -26,6 +27,8 @@ export default function component(config) {
         render = R.curryN(3, () => never()),
         subcomponents = [],
         shouldUpdate = R.T } = config;
+        shouldUpdate = R.T,
+        template } = config;
 
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof combinator, 'function', '`combinator` should be a function');
@@ -42,6 +45,12 @@ export default function component(config) {
         assert.ok(typeof onMount === 'function', 'onMount should be a function');
 
         // Validate render$ stream generator.
+        if (template) {
+            console.warn('deprecated: use `render` instead of `template`');
+            assert.equal(typeof template, 'function', '`template` should be a function');
+            render = renderGenerator(template);
+        }
+
         assert.equal(typeof render, 'function', '`render` should be a function');
         assert.equal(render.length, 3, '`render` should take 3 arguments');
         assert.equal(typeof render({}), 'function', '`render` should be curried');
