@@ -1,5 +1,7 @@
 module.exports = {
     entry: {},
+    debug: true,
+    devtool: 'sourcemap',
     output: {
         path: './dist/',
         filename: '[name].js'
