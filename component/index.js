@@ -21,16 +21,17 @@ let checked = false;
  */
 export default function component(config) {
     let {
+        children = R.always(never()),
         combinator = R.pipe(R.values, merge),
         events = R.always(never()),
         onMount = R.always(never()),
         render = R.curryN(3, () => never()),
-        subcomponents = [],
-        shouldUpdate = R.T } = config;
+        subcomponents,
         shouldUpdate = R.T,
         template } = config;
 
     if (process.env.NODE_ENV !== 'production') {
+        // Validate combinator
         assert.equal(typeof combinator, 'function', '`combinator` should be a function');
 
         // Validate events$ stream generator.
@@ -55,9 +56,16 @@ export default function component(config) {
         assert.equal(render.length, 3, '`render` should take 3 arguments');
         assert.equal(typeof render({}), 'function', '`render` should be curried');
 
-        // Validate downstreams$ stream generator.
-        assert.ok(Array.isArray(subcomponents), '`subcomponent` should be an array');
+        // Validate children$ stream generator.
+        if (subcomponents) {
+            console.warn('deprecated: replace `subcomponents` with `children` function');
+            assert.ok(Array.isArray(subcomponents), '`subcomponents` should be an array');
+            children = downstreams(subcomponents);
+        }
 
+        assert.ok(children, '`children` should be a function');
+
+        // Validate shouldUpdate filter.
         assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
     }
 
@@ -101,16 +109,16 @@ export default function component(config) {
             .flatMapLatest()
             .merge(constant(events(el)));
 
-        let downstreams$$ = constant(downstreams(subcomponents, el, props$));
+        let children$$ = constant(children(el, props$));
 
-        return combine([render$$, events$$, downstreams$$], (render$, events$, downstreams$) => {
+        return combine([render$$, events$$, children$$], (render$, events$, children$) => {
             if (process.env.NODE_ENV !== 'production') {
                 assert.ok(render$ instanceof Observable, '`render$` is not a `Kefir.Observable`');
                 assert.ok(events$ instanceof Observable, '`events$` is not a `Kefir.Observable`');
-                assert.ok(downstreams$ instanceof Observable, '`downstreams$` is not a `Kefir.Observable`');
+                assert.ok(children$ instanceof Observable, '`children$` is not a `Kefir.Observable`');
             }
 
-            let result$ = combinator({ render$, events$, downstreams$ });
+            let result$ = combinator({ render$, events$, children$ });
 
             if (process.env.NODE_ENV !== 'production') {
                 assert.ok(result$ instanceof Observable, '`result$` is not a `Kefir.Observable`');
@@ -121,5 +129,5 @@ export default function component(config) {
             .flatMapLatest()
             .merge(onMount(el, props$))
             .changes();
-    };
+    });
 };
