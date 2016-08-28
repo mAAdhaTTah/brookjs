@@ -13,13 +13,14 @@ import children from '../';
 chai.use(sinonChai);
 
 describe('children', () => {
-    let child$, factory, adapter, generator, element, firstChild, props$, instance, sub;
+    let child$, factory, modifyChildProps, preplug, generator, element, firstChild, props$, instance, sub;
 
     beforeEach(() => {
         child$ = pool();
         factory = sinon.spy(() => child$);
-        adapter = sinon.spy(R.identity);
-        generator = children({ child: { factory, adapter } });
+        modifyChildProps = sinon.spy(R.identity);
+        preplug = sinon.spy(R.identity);
+        generator = children({ child: { factory, modifyChildProps, preplug } });
 
         element = document.createElement('div');
         element.setAttribute('data-brk-container', 'parent');
@@ -55,6 +56,12 @@ describe('children', () => {
     it('should bind to child with matching key', () => {
         expect(factory).to.have.callCount(1);
         expect(factory).to.have.been.calledWith(firstChild, props$);
+
+        expect(modifyChildProps).to.have.callCount(1);
+        expect(modifyChildProps).to.have.been.calledWith(props$);
+
+        expect(preplug).to.have.callCount(1);
+        expect(preplug).to.have.been.calledWith(child$);
     });
 
     it('should emit child events', () => {
@@ -69,16 +76,20 @@ describe('children', () => {
     });
 
     it('should bind to new child element', done => {
-        const value = sinon.spy();
-        sub = instance.observe({ value });
+        sub = instance.observe();
 
         let secondChild = createChild();
         element.appendChild(secondChild);
 
         requestAnimationFrame(() => {
-            expect(value).to.have.callCount(0);
             expect(factory).to.have.callCount(2);
             expect(factory).to.have.been.calledWith(secondChild, props$);
+
+            expect(modifyChildProps).to.have.callCount(2);
+            expect(modifyChildProps).to.have.been.calledWith(props$);
+
+            expect(preplug).to.have.callCount(2);
+            expect(preplug).to.have.been.calledWith(child$);
             done();
         });
     });

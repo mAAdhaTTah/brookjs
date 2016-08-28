@@ -6,6 +6,11 @@ import mutations$ from './mutations';
 
 const sources = new WeakMap();
 
+const defaults = key => ({
+    modifyChildProps: R.map(R.prop(key)),
+    preplug: R.identity
+});
+
 /**
  * Generates a function to create new children streams.
  *
@@ -27,10 +32,9 @@ export default function children(config) {
 
     for (let key in config) {
         if (typeof config[key] === 'function') {
-            config[key] = {
-                factory: config[key],
-                adapter: R.map(R.prop(key))
-            };
+            config[key] = R.merge(defaults(key), { factory: config[key] });
+        } else {
+            config[key] = R.merge(defaults(key), config[key]);
         }
     }
 
@@ -48,11 +52,12 @@ export default function children(config) {
         const streams = Object.keys(config).map(key => {
             let component = config[key];
 
-            let { factory, adapter } = component;
+            let { factory, modifyChildProps, preplug } = component;
 
             if (process.env.NODE_ENV !== 'production') {
                 assert.equal(typeof factory, 'function', `factory for ${key} should be a function`);
-                assert.equal(typeof adapter, 'function', `adapter for ${key} should be a function`);
+                assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${key} should be a function`);
+                assert.equal(typeof preplug, 'function', `preplug for ${key} should be a function`);
             }
 
             let component$ = mixin[key] = pool();
@@ -60,7 +65,7 @@ export default function children(config) {
             // @todo use common container attribute
             Array.from(el.querySelectorAll(`[data-brk-container="${key}"]`))
                 .forEach(element => {
-                    let instance$ = factory(element, adapter(props$));
+                    let instance$ = preplug(factory(element, modifyChildProps(props$)));
                     sources.set(element, instance$);
                     component$.plug(instance$);
                 });
@@ -83,9 +88,9 @@ export default function children(config) {
                 let component = config[key];
 
                 if (component) {
-                    let { factory, adapter } = component;
+                    let { factory, modifyChildProps, preplug } = component;
 
-                    let instance$ = factory(node, adapter(props$));
+                    let instance$ = preplug(factory(node, modifyChildProps(props$)));
                     sources.set(node, instance$);
                     mixin[key].plug(instance$);
                 }
