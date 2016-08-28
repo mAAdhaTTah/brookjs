@@ -124,15 +124,17 @@ export default function component(config) {
                 assert.ok(children$ instanceof Observable, '`children$` is not a `Kefir.Observable`');
             }
 
-            let result$ = combinator({ render$, events$, children$ });
-
-            if (process.env.NODE_ENV !== 'production') {
-                assert.ok(result$ instanceof Observable, '`result$` is not a `Kefir.Observable`');
-            }
-
-            return result$;
+            return { render$, events$, children$ };
         })
-            .flatMapLatest()
+            .flatMapLatest(streams => {
+                let result$ = combinator(streams);
+
+                if (process.env.NODE_ENV !== 'production') {
+                    assert.ok(result$ instanceof Observable, '`result$` is not a `Kefir.Observable`');
+                }
+
+                return result$;
+            })
             .merge(onMount(el, props$))
             .changes();
     });
