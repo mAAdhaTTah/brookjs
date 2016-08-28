@@ -54,7 +54,13 @@ export default function component(config) {
 
         assert.equal(typeof render, 'function', '`render` should be a function');
         assert.equal(render.length, 3, '`render` should take 3 arguments');
-        assert.equal(typeof render({}), 'function', '`render` should be curried');
+
+        try {
+            assert.equal(typeof render({}), 'function', '`render` should be curried');
+        } catch (e) {
+            console.warn('deprecated: `render` should be curried');
+            render = R.curry(render);
+        }
 
         // Validate children$ stream generator.
         if (subcomponents) {
