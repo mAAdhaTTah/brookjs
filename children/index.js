@@ -1,7 +1,8 @@
 import assert from 'assert';
 import R from 'ramda';
 import { merge, never, pool } from 'kefir';
-import mutations$, { NODE_ADDED, NODE_REMOVED } from './mutations';
+import { NODE_ADDED, NODE_REMOVED } from './actions';
+import mutations$ from './mutations';
 
 const sources = new WeakMap();
 
