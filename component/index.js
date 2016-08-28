@@ -98,8 +98,21 @@ export default function component(config) {
             }
         }
 
-        // BC with destructured impl
-        el.el = el;
+        if (!el._hasEl) {
+            let warned = false;
+            Object.defineProperty(el, 'el', {
+                get: function() {
+                    if (!warned) {
+                        console.warn('deprecated: `el` is passed in directly');
+                        warned = true;
+                    }
+
+                    return el;
+                }
+            });
+
+            el._hasEl = true;
+        }
 
         let render$$ = props$
             .slidingWindow(2)
