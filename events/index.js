@@ -3,28 +3,11 @@ import R from 'ramda';
 import { pool, stream } from 'kefir';
 import { always, identity, pipe, prop } from 'ramda';
 import { delegateElement } from './delegator';
+import { valueEventAction, checkedEventAction,
+    fieldFocusAction, clickedEventAction } from './actions';
 
+export * from './actions';
 export * from './delegator';
-
-/**
- * Value change Action type.
- *
- * @type {string}
- */
-export const VALUE_CHANGE = 'VALUE_CHANGE';
-
-/**
- * Create a new Value Change action.
- *
- * @param {string} value - Target value.
- * @returns {Action} Value Change action object.
- */
-export function valueEventAction(value) {
-    return {
-        type: VALUE_CHANGE,
-        payload: { value }
-    };
-}
 
 /**
  * Maps a value change event to a VALUE_CHANGE action.
@@ -34,26 +17,6 @@ export function valueEventAction(value) {
 export const valueEvent = pipe(prop('target'), prop('value'), valueEventAction);
 
 /**
- * Checked change constant.
- *
- * @type {string}
- */
-export const CHECKED_CHANGE = 'CHECKED_CHANGE';
-
-/**
- * Create a new Checked Change action.
- *
- * @param {boolean} value - Target checked.
- * @returns {Action} Checked Change action object.
- */
-export function checkedEventAction(value) {
-    return {
-        type: CHECKED_CHANGE,
-        payload: { value }
-    };
-}
-
-/**
  * Maps checked change event to CHECKED action..
  *
  * @type {Function}
@@ -61,47 +24,11 @@ export function checkedEventAction(value) {
 export const checkedEvent = pipe(prop('target'), prop('checked'), checkedEventAction);
 
 /**
- * Field focus event action type.
- *
- * @type {string}
- */
-export const FIELD_FOCUS = 'FIELD_FOCUS';
-
-/**
- * Create a FIELD_FOCUS action object.
- *
- * @param {string} name - Field name.
- * @returns {Action} FIELD_FOCUS action.
- */
-export const fieldFocusAction = function fieldFocusAction(name) {
-    return {
-        type: FIELD_FOCUS,
-        payload: { name }
-    };
-};
-
-/**
  * Maps focus event to FIELD_FOCUS action.
  *
  * @type {Function}
  */
 export const focusEvent = pipe(prop('target'), prop('name'), fieldFocusAction);
-
-/**
- * Click event Action type.
- *
- * @type {string}
- */
-export const CLICK = 'CLICK';
-
-/**
- * Create a new Clicked Action
- *
- * @returns {Action} Clicked action object.
- */
-export const clickedEventAction = function clickedEventAction() {
-    return { type: CLICK };
-};
 
 /**
  * Map click event to click event Action.
@@ -196,7 +123,7 @@ function legacy(config, elements) {
  * Create a new Events stream from the element.
  *
  * @param {Object} config - Events configuration.
- * @returns {Function} Events stream generator funciton.
+ * @returns {Function} Events stream generator function.
  */
 export default function events(config) {
     for (let key in config) {
