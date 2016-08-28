@@ -73,12 +73,20 @@ export default function children(config) {
             return component$;
         });
 
-        streams.push(mutations$.filter(
-                R.pipe(R.path(['payload', 'parent']), R.equals(el))
-            )
-            .filter(
-                R.pipe(R.prop('type'), R.equals(NODE_ADDED))
-            )
+        let isChildNode = R.converge(R.or, [
+            R.pipe(R.path(['payload', 'parent']), R.equals(el)),
+            R.pipe(R.path(['payload', 'target']), R.equals(el)),
+        ]);
+        let isAddedChildNode = R.converge(R.and, [
+            isChildNode,
+            R.pipe(R.prop('type'), R.equals(NODE_ADDED))
+        ]);
+        let isRemovedChildNode = R.converge(R.and, [
+            isChildNode,
+            R.pipe(R.prop('type'), R.equals(NODE_REMOVED))
+        ]);
+
+        streams.push(mutations$.filter(isAddedChildNode)
             .flatMapLatest(({ payload })=> {
                 // We're going to side effect here
                 // by updating the already-created
@@ -99,12 +107,7 @@ export default function children(config) {
             })
         );
 
-        streams.push(mutations$.filter(
-                R.pipe(R.path(['payload', 'target']), R.equals(el))
-            )
-            .filter(
-                R.pipe(R.prop('type'), R.equals(NODE_REMOVED))
-            )
+        streams.push(mutations$.filter(isRemovedChildNode)
             .flatMapLatest(({ payload })=> {
                 // Side-effect. See above.
                 let { key, node } = payload;
