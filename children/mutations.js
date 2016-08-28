@@ -1,4 +1,5 @@
 import R from 'ramda';
+import { CONTAINER_ATTRIBUTE } from '../events';
 import { stream } from 'kefir';
 import { nodeAdded, nodeRemoved } from './actions';
 import { getContainerNode } from './util';
@@ -10,7 +11,7 @@ import { getContainerNode } from './util';
  * @returns {boolean} Whether node is relevant to children$ streams.
  */
 function isRelevantNode(node) {
-    return !!(node.hasAttribute && node.hasAttribute('data-brk-container'));
+    return !!(node.hasAttribute && node.hasAttribute(CONTAINER_ATTRIBUTE));
 
 }
 
@@ -47,7 +48,7 @@ export default stream(emitter => {
             isRelevantNode))
     .map(({ type, payload }) => {
         let { node, target } = payload;
-        let key = node.getAttribute('data-brk-container');
+        let key = node.getAttribute(CONTAINER_ATTRIBUTE);
         let parent = getContainerNode(node.parentNode) || getContainerNode(target);
 
         return {

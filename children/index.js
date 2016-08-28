@@ -1,5 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
+import { containerAttribute } from '../helpers';
 import { constant, merge, pool } from 'kefir';
 import { defaults, createInstance, getContainerNode, getInstanceForElement, keyMatches, isAddedChildNode, isRemovedChildNode } from './util';
 import mutations$ from './mutations';
