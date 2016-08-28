@@ -1,6 +1,7 @@
 import R from 'ramda';
 import { stream } from 'kefir';
 import { nodeAdded, nodeRemoved } from './actions';
+import { getContainerNode } from './util';
 
 /**
  * Determines whether the node is relevant to stream consumers.
@@ -23,7 +24,6 @@ function isRelevantNode(node) {
 export default stream(emitter => {
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-            console.log(mutation.target);
             Array.from(mutation.addedNodes)
                 .forEach(R.pipe(nodeAdded(mutation.target), emitter.value));
 
@@ -55,21 +55,3 @@ export default stream(emitter => {
             payload: { key, node, parent, target }
         };
     });
-
-/**
- * Returns the container node of the provided node.
- *
- * @param {Node} parent - Parent node to check.
- * @returns {null|Node} Parent container node.
- */
-function getContainerNode(parent) {
-    if (!parent) {
-        return null;
-    }
-
-    if (parent.hasAttribute('data-brk-container')) {
-        return parent;
-    }
-
-    return getContainerNode(parent.parentNode);
-}

@@ -1,21 +1,8 @@
 import assert from 'assert';
 import R from 'ramda';
-import { merge, never, pool } from 'kefir';
-import { NODE_ADDED, NODE_REMOVED } from './actions';
+import { constant, merge, pool } from 'kefir';
+import { defaults, createInstance, getContainerNode, getInstanceForElement, keyMatches, isAddedChildNode, isRemovedChildNode } from './util';
 import mutations$ from './mutations';
-
-const sources = new WeakMap();
-
-const defaults = key => ({
-    modifyChildProps: R.map(R.prop(key)),
-    preplug: R.identity
-});
-
-let createInstance = R.curry((props$, { factory, modifyChildProps, preplug }, element) => {
-    let instance$ = preplug(factory(element, modifyChildProps(props$)));
-    sources.set(element, instance$);
-    return instance$;
-});
 
 /**
  * Generates a function to create new children streams.
@@ -57,6 +44,8 @@ export default function children(config) {
             assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${key} should be a function`);
             assert.equal(typeof preplug, 'function', `preplug for ${key} should be a function`);
         }
+
+        config[key] = createInstance(config[key]);
     }
 
     /**
@@ -67,27 +56,16 @@ export default function children(config) {
      * @return {Observable<T, S>} Children stream.
      * @factory
      */
-    return R.curry((el, props$) => {
+    return R.curry((element, props$) => {
+        const nodeAddedMutationPayload$ = mutations$.filter(isAddedChildNode(element))
+            .map(R.prop('payload'));
+        const nodeRemovedMutationPayload$ = mutations$.filter(isRemovedChildNode(element))
+            .map(R.prop('payload'));
+
         /**
-         * Set up utility functions.
-         *
-         * These functions are reused a few times, so we can
-         * bind up the provided properties into functions so
-         * we don't have to worry about them parameters later.
+         * Bind createInstance functions with props$ stream.
          */
-        let createInstanceWithProps = createInstance(props$);
-        let isChildNode = R.converge(R.or, [
-            R.pipe(R.path(['payload', 'parent']), R.equals(el)),
-            R.pipe(R.path(['payload', 'target']), R.equals(el)),
-        ]);
-        let isAddedChildNode = R.converge(R.and, [
-            isChildNode,
-            R.pipe(R.prop('type'), R.equals(NODE_ADDED))
-        ]);
-        let isRemovedChildNode = R.converge(R.and, [
-            isChildNode,
-            R.pipe(R.prop('type'), R.equals(NODE_REMOVED))
-        ]);
+        let boundConfig = R.map(createInstance => createInstance(props$), config);
 
         /**
          * Mixin object holds the pool stream for each key.
@@ -95,66 +73,41 @@ export default function children(config) {
          * Allows us to plug/unplug from each stream as
          * nodes are added and removed from the DOM.
          */
-        let mixin = {};
-
-        /**
-         * Transform the configuration into an array of
-         * streams, setting each key into the mixin object
-         * to extend into the returned stream.
-         *
-         * @type {Array}
-         */
-        const streams = Object.keys(config).map(key => {
-            let component$ = mixin[key] = pool();
+        const mixin = R.fromPairs(R.toPairs(boundConfig).map(([key, createInstanceWithProps]) => {
+            // Create pool and bind methods.
+            let pool$ = pool();
+            pool$.plug = pool$.plug.bind(pool$);
+            pool$.unplug = pool$.unplug.bind(pool$);
 
             /**
              * Query all of the children for the configuration key.
              *
              * Filters out children that are under other containers.
-             *
-             * @todo use common container attribute
              */
-            Array.from(el.querySelectorAll(`[data-brk-container="${key}"]`))
-                .map(createInstanceWithProps(config[key]))
-                .forEach(component$.plug.bind(component$));
+            Array.from(element.querySelectorAll(`[${containerAttribute(key)}]`))
+                .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)))
+                .map(createInstanceWithProps)
+                .forEach(pool$.plug);
 
-            return component$;
-        });
+            const added$$ = nodeAddedMutationPayload$
+                .filter(keyMatches(key))
+                .map(({ node }) =>
+                    pool$.plug(createInstanceWithProps(node)));
 
-        streams.push(mutations$.filter(isAddedChildNode)
-            .map(R.prop('payload'))
-            .filter(({ key, node })=> {
-                // We're going to side effect here
-                // by updating the already-created
-                // streams with the stream for the
-                // new node.
-                let component = config[key];
+            const removed$$ = nodeRemovedMutationPayload$
+                .filter(keyMatches(key))
+                .map(({ node }) => {
+                    pool$.unplug(getInstanceForElement(node));
 
-                if (component) {
-                    mixin[key].plug(createInstanceWithProps(component, node));
-                }
+                    return pool$;
+                });
 
-                // Returning false ensures no actions
-                // are propagated down the stream.
-                return false;
-            })
-        );
+            let instance$ = merge([constant(pool$), added$$, removed$$])
+                .flatMapLatest(R.always(pool$));
 
-        streams.push(mutations$.filter(isRemovedChildNode)
-            .map(R.prop('payload'))
-            .filter(({ key, node })=> {
-                // Side-effect. See above.
-                let instance$ = sources.get(node);
-                let components$ = mixin[key];
+            return [key, instance$];
+        }));
 
-                if (instance$ && components$) {
-                    components$.unplug(instance$);
-                }
-
-                return false;
-            })
-        );
-
-        return Object.assign(Object.create(merge(streams)), mixin);
+        return Object.assign(Object.create(merge(R.values(mixin))), mixin);
     });
 }

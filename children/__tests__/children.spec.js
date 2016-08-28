@@ -115,7 +115,11 @@ describe('children', () => {
         element.removeChild(firstChild);
 
         requestAnimationFrame(() => {
-            expect(instance.child._curSources.length).is.equal(0);
+            // Since we changed the implementation, we need to unwrap the
+            // combined stream to check the sources of the underlying pool.
+            // @todo figure out a better way to check this
+            // @todo w/o leaning on implementation details
+            expect(instance.child._curSources[0]._curSources.length).is.equal(0);
             done();
         });
     });
