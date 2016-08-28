@@ -12,7 +12,8 @@ import dom from 'chai-dom';
 import simulant from 'simulant';
 
 import component from '../index';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, clickEvent } from '../../events/index';
+import { clickEvent } from '../../events/index';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../../constants';
 
 chai.use(dom);
 chai.use(sinonChai);

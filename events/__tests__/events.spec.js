@@ -1,12 +1,13 @@
 /* eslint-env mocha */
 import { constant, Observable, pool } from 'kefir';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../../constants';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import simulant from 'simulant';
 
-import { delegateElement, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../';
+import { delegateElement, SUPPORTED_EVENTS } from '../';
 
 chai.use(sinonChai);
 

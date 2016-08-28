@@ -1,6 +1,6 @@
 import R from 'ramda';
 import { merge, stream } from 'kefir';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from './index';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../constants';
 
 /**
  * Associates a DOM element with its dispatch function.

@@ -2,6 +2,7 @@ import assert from 'assert';
 import R from 'ramda';
 import { pool, stream } from 'kefir';
 import { always, identity, pipe, prop } from 'ramda';
+import { CONTAINER_ATTRIBUTE } from '../constants';
 import { delegateElement } from './delegator';
 import { valueEventAction, checkedEventAction,
     fieldFocusAction, clickedEventAction } from './actions';
@@ -36,31 +37,6 @@ export const focusEvent = pipe(prop('target'), prop('name'), fieldFocusAction);
  * @type {Function}
  */
 export const clickEvent = always(clickedEventAction());
-
-/**
- * HTML attribute container directive.
- *
- * @type {string}
- */
-export const CONTAINER_ATTRIBUTE = 'data-brk-container';
-
-/**
- * Event attribute prefixer.
- *
- * @param {string} name - Event name.
- * @returns {string} HTML attribute
- */
-const prefix = name => `data-brk-${name}`;
-
-/**
- * HTML attribute event directives.
- *
- * @type {Object}
- */
-export const EVENT_ATTRIBUTES = {
-    click: prefix('onclick'),
-    focus: prefix('onfocus')
-};
 
 /**
  * Data attribute for element events.

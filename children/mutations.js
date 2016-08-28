@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { CONTAINER_ATTRIBUTE } from '../events';
+import { CONTAINER_ATTRIBUTE } from '../constants';
 import { stream } from 'kefir';
 import { nodeAdded, nodeRemoved } from './actions';
 import { getContainerNode } from './util';
