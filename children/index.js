@@ -75,36 +75,37 @@ export default function children(config) {
          * nodes are added and removed from the DOM.
          */
         const mixin = R.fromPairs(R.toPairs(boundConfig).map(([key, createInstanceWithProps]) => {
-            // Create pool and bind methods.
             let pool$ = pool();
-            pool$.plug = pool$.plug.bind(pool$);
-            pool$.unplug = pool$.unplug.bind(pool$);
 
             /**
              * Query all of the children for the configuration key.
              *
              * Filters out children that are under other containers.
              */
-            Array.from(element.querySelectorAll(`[${containerAttribute(key)}]`))
+            const els$ = constant(Array.from(element.querySelectorAll(`[${containerAttribute(key)}]`)))
+                .ignoreEnd()
+                .withHandler((emitter, { value }) =>
+                    value.forEach(emitter.value))
                 .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)))
                 .map(createInstanceWithProps)
-                .forEach(pool$.plug);
+                .diff((source$, instance$) => source$.plug(instance$), pool$);
 
             const added$$ = nodeAddedMutationPayload$
                 .filter(keyMatches(key))
-                .map(({ node }) =>
-                    pool$.plug(createInstanceWithProps(node)));
+                .diff(
+                    (source$, { node }) => source$.plug(createInstanceWithProps(node)),
+                    pool$
+                );
 
             const removed$$ = nodeRemovedMutationPayload$
                 .filter(keyMatches(key))
-                .map(({ node }) => {
-                    pool$.unplug(getInstanceForElement(node));
+                .diff(
+                    (source$, { node }) => source$.unplug(getInstanceForElement(node)),
+                    pool$
+                );
 
-                    return pool$;
-                });
-
-            let instance$ = merge([constant(pool$), added$$, removed$$])
-                .flatMapLatest(R.always(pool$));
+            let instance$ = merge([els$, added$$, removed$$])
+                .flatMapLatest();
 
             return [key, instance$];
         }));

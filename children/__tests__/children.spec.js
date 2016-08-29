@@ -54,6 +54,8 @@ describe('children', () => {
     });
 
     it('should bind to child with matching key', () => {
+        sub = instance.observe();
+
         expect(factory).to.have.callCount(1);
         expect(factory).to.have.been.calledWith(firstChild, props$);
 
