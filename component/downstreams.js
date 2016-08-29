@@ -1,38 +1,22 @@
 import assert from 'assert';
-import { never, Observable, pool, stream } from 'kefir';
+import { merge, never, Observable } from 'kefir';
 import R from 'ramda';
 
 /**
  * Create a combined stream & renderer for an array of child components.
  *
- * @param {Object[]} children - Array of child compoent definitions.
+ * @param {Object[]} children - Array of child component definitions.
  * @param {Element} el - Parent component element.
  * @param {Observable} state$ - Current page state.
  * @returns {stream} Combined child streams.
  * @factory
  */
-const downstreams = function downstreams(children, el, state$) {
+export default function downstreams(children, el, state$) {
     if (process.env.NODE_ENV !== 'production') {
         assert.ok(state$ instanceof Observable, '`state$` is not a `Kefir.Observable`');
     }
 
-    const events$ = pool();
-    const plug = events$.plug.bind(events$);
-    const unplug = events$.unplug.bind(events$);
-
-    return stream(emitter => {
-        // Map over the children definitions and turn
-        // them into component instances.
-        const instances = children.map(mapChildren);
-        instances.forEach(plug);
-
-        events$.onValue(emitter.value);
-
-        return function unsubscribe() {
-            events$.offValue(emitter.value);
-            instances.forEach(unplug);
-        };
-    });
+    return merge(R.map(mapChildren, children));
 
     /**
      * Plugs child into stream and returns child's render function.
@@ -42,7 +26,7 @@ const downstreams = function downstreams(children, el, state$) {
      * @param {Function} child.factory - Child's factory function.
      * @param {string} child.selector - Child's querySelector string.
      * @param {Function} child.preplug - Function to modify stream before being plugged in.
-     * @returns {Function} Child's render function.
+     * @returns {Observable} Child instance.
      */
     function mapChildren({ adapter = R.identity, factory, selector, preplug = R.identity }) {
         let element = el;
@@ -56,14 +40,12 @@ const downstreams = function downstreams(children, el, state$) {
             return never();
         }
 
-        let instance = preplug(factory(element, state$.map(adapter)));
+        let instance$ = preplug(factory(element, state$.map(adapter)));
 
         if (process.env.NODE_ENV !== 'production') {
-            assert.ok(instance instanceof Observable, '`instance` is not a `Kefir.Observable`');
+            assert.ok(instance$ instanceof Observable, '`preplug` did not return a `Kefir.Observable`');
         }
 
-        return instance;
+        return instance$;
     }
 };
-
-export default R.curry(downstreams);
