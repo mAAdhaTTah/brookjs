@@ -1,3 +1,4 @@
+import R from 'ramda';
 import { constant, pool } from 'kefir';
 
 /**
@@ -6,7 +7,7 @@ import { constant, pool } from 'kefir';
  * @param {Function} component - Component factory function.
  * @param {Function} template - Associated handlebars template function.
  * @param {Object} state - Initial state
- * @returns {{el, instance: *}} Fixtures.
+ * @returns {{el, instance: Observable}} Fixtures.
  */
 export default function createFixture(component, template, state) {
     const el = (() => {
@@ -17,9 +18,9 @@ export default function createFixture(component, template, state) {
         return result.children[0];
     })();
     const state$ = pool();
-    state$.plug(constant(state));
+    state$.plug(constant(R.clone(state)));
 
-    const instance = component(el, state$);
+    const instance = component(el, state$.toProperty());
 
     return { el, instance, state$ };
 }
