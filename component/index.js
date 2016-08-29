@@ -66,7 +66,6 @@ export default function component(config) {
         if (subcomponents) {
             console.warn('deprecated: replace `subcomponents` with `children` function');
             assert.ok(Array.isArray(subcomponents), '`subcomponents` should be an array');
-            children = downstreams(subcomponents);
         }
 
         assert.ok(children, '`children` should be a function');
@@ -116,7 +115,10 @@ export default function component(config) {
 
         let render$$ = props$
             .slidingWindow(2)
-            .map(R.ifElse(R.pipe(R.length, R.equals(2)), R.identity, R.pipe(R.head, R.repeat(R.__, 2))))
+            .map(R.ifElse(
+                R.pipe(R.length, R.equals(2)),
+                R.identity,
+                R.pipe(R.head, R.repeat(R.__, 2))))
             .filter(R.apply(shouldUpdate))
             .map(R.apply(render(el)));
 
@@ -130,7 +132,7 @@ export default function component(config) {
 
         let children$$ = constant(children(el, props$));
 
-        return combine([render$$, events$$, children$$], (render$, events$, children$) => {
+        let instance$ = combine([render$$, events$$, children$$], (render$, events$, children$) => {
             if (process.env.NODE_ENV !== 'production') {
                 assert.ok(render$ instanceof Observable, '`render$` is not a `Kefir.Observable`');
                 assert.ok(events$ instanceof Observable, '`events$` is not a `Kefir.Observable`');
@@ -148,7 +150,12 @@ export default function component(config) {
 
                 return result$;
             })
-            .merge(onMount(el, props$))
-            .changes();
+            .merge(onMount(el, props$));
+
+        if (subcomponents) {
+            instance$ = instance$.merge(downstreams(subcomponents, el, props$));
+        }
+
+        return instance$;
     });
 };
