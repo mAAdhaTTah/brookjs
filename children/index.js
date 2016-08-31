@@ -83,31 +83,23 @@ export default function children(config) {
              * Filters out children that are under other containers.
              */
             const els$ = constant(Array.from(element.querySelectorAll(`[${containerAttribute(key)}]`)))
-                .ignoreEnd()
-                .withHandler((emitter, { value }) =>
-                    value.forEach(emitter.value))
+                .flatten()
                 .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)))
                 .map(createInstanceWithProps)
-                .diff((source$, instance$) => source$.plug(instance$), pool$);
+                .scan((source$, instance$) => source$.plug(instance$), pool$)
+                .ignoreValues();
 
-            const added$$ = nodeAddedMutationPayload$
+            const added$ = nodeAddedMutationPayload$
                 .filter(keyMatches(key))
-                .diff(
-                    (source$, { node }) => source$.plug(createInstanceWithProps(node)),
-                    pool$
-                );
+                .scan((source$, { node }) => source$.plug(createInstanceWithProps(node)), pool$)
+                .ignoreValues();
 
-            const removed$$ = nodeRemovedMutationPayload$
+            const removed$ = nodeRemovedMutationPayload$
                 .filter(keyMatches(key))
-                .diff(
-                    (source$, { node }) => source$.unplug(getInstanceForElement(node)),
-                    pool$
-                );
+                .scan((source$, { node }) => source$.unplug(getInstanceForElement(node)), pool$)
+                .ignoreValues();
 
-            let instance$ = merge([els$, added$$, removed$$])
-                .flatMapLatest();
-
-            return [key, instance$];
+            return [key, merge([pool$, els$, added$, removed$])];
         }));
 
         return Object.assign(Object.create(merge(R.values(mixin))), mixin);
