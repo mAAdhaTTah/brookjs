@@ -49,32 +49,42 @@ describe('events$', function() {
         let event = new Event('fake');
         strm$.plug(constant(event));
 
+        expect(value).to.have.callCount(1);
         expect(value).to.be.calledWith(event);
     });
 
     SUPPORTED_EVENTS.forEach(event => {
         it(`should emit ${event} event`, function() {
-            let target = el;
-
             value = sinon.spy();
             sub = events$.observe({ value });
 
-            switch (event) {
-                case 'focus':
-                    target = document.createElement('input');
-                    target.setAttribute(EVENT_ATTRIBUTES['focus'], Object.keys(config).pop()); // eslint-disable-line dot-notation
-                    el.appendChild(target);
-                    break;
-                default:
-                    target.setAttribute(EVENT_ATTRIBUTES['click'], Object.keys(config).pop()); // eslint-disable-line dot-notation
-                    break;
-            }
+            let target = document.createElement('input');
+            target.setAttribute(EVENT_ATTRIBUTES[event], Object.keys(config).pop());
+            el.appendChild(target);
 
             const e = simulant.fire(target, event);
 
-            expect(value).to.be.calledOnce;
+            expect(value).to.have.callCount(1);
             expect(value).to.be.calledWith(e);
         });
+    });
+
+    it('should only emit events for the triggered element', function() {
+        value = sinon.spy();
+        sub = events$.observe({ value });
+
+        let count = 0;
+        while (count < 3) {
+            let target = document.createElement('input');
+            target.setAttribute(EVENT_ATTRIBUTES.input, Object.keys(config).pop());
+            target.setAttribute(EVENT_ATTRIBUTES.focus, 'dummy');
+            el.appendChild(target);
+            count++;
+        }
+
+        simulant.fire(el.querySelector('input'), 'input');
+
+        expect(value).to.have.callCount(1);
     });
 
     afterEach(function() {
