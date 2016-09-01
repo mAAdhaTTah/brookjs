@@ -92,10 +92,7 @@ const sources$ = stream(emitter => {
 const getEvent = R.prop('ev');
 
 const eventMatches = R.curry(function eventMatches(key, el, event) {
-    return R.converge(R.and, [
-        R.propEq('callback', key),
-        R.propEq('container', el)
-    ], event);
+    return event.callback === key && event.container === el;
 });
 
 /**
