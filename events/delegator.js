@@ -40,9 +40,12 @@ const CAPTURE = {
  * @param {Event} ev - Event object.
  */
 const listener = R.curry(function listener(EVENT, emitter, ev) {
-    let target = ev.target;
+    (function traverse(target) {
+        // Base case.
+        if (!target || target === document.body) {
+            return;
+        }
 
-    while (target !== document.body) {
         if (target.hasAttribute(EVENT_ATTRIBUTES[EVENT])) {
             let container = target;
             let callback = target.getAttribute(EVENT_ATTRIBUTES[EVENT]);
@@ -56,8 +59,8 @@ const listener = R.curry(function listener(EVENT, emitter, ev) {
             }
         }
 
-        target = target.parentNode;
-    }
+        traverse(target.parentNode);
+    })(ev.target);
 });
 
 /**
