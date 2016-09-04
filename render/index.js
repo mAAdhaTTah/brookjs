@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CONTAINER_ATTRIBUTE } from '../events';
+import { CONTAINER_ATTRIBUTE } from '../constants';
 import R from 'ramda';
 import { stream } from 'kefir';
 import morphdom from 'morphdom';
