@@ -21,5 +21,6 @@ const prefix = name => `data-brk-${name}`;
 export const EVENT_ATTRIBUTES = {
     click: prefix('onclick'),
     focus: prefix('onfocus'),
-    input: prefix('oninput')
+    input: prefix('oninput'),
+    change: prefix('onchange')
 };

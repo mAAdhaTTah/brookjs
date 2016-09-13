@@ -17,8 +17,9 @@ const sources = new WeakMap();
 const CLICK = 'click';
 const FOCUS = 'focus';
 const INPUT = 'input';
+const CHANGE = 'change';
 
-export const SUPPORTED_EVENTS = [CLICK, FOCUS, INPUT];
+export const SUPPORTED_EVENTS = [CLICK, FOCUS, INPUT, CHANGE];
 
 /**
  * Whether the event listener should be captured.
@@ -28,7 +29,8 @@ export const SUPPORTED_EVENTS = [CLICK, FOCUS, INPUT];
 const CAPTURE = {
     [CLICK]: false,
     [FOCUS]: true,
-    [INPUT]: true
+    [INPUT]: true,
+    [CHANGE]: true
 };
 
 /**
