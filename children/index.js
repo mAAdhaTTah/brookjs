@@ -33,9 +33,9 @@ export default function children(config) {
      */
     for (let key in config) {
         if (typeof config[key] === 'function') {
-            config[key] = R.merge(defaults(key), { factory: config[key] });
+            config[key] = R.merge(defaults, { factory: config[key] });
         } else {
-            config[key] = R.merge(defaults(key), config[key]);
+            config[key] = R.merge(defaults, config[key]);
         }
 
         if (process.env.NODE_ENV !== 'production') {

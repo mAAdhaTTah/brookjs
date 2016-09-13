@@ -3,10 +3,10 @@ import { NODE_ADDED, NODE_REMOVED } from './actions';
 
 const sources = new WeakMap();
 
-export const defaults = key => ({
-    modifyChildProps: R.map(R.prop(key)),
+export const defaults = {
+    modifyChildProps: R.identity,
     preplug: R.identity
-});
+};
 
 export const createInstance = R.curry(({ factory, modifyChildProps, preplug }, props$, element) => {
     let instance$ = preplug(factory(element, modifyChildProps(props$)));
