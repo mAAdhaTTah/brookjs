@@ -34,9 +34,37 @@ export default function render(template) {
                 }
 
                 morphdom(el, html, {
-                    onBeforeElUpdated: function blackboxContainer(fromEl) {
-                        // Only update non-container elements or the main element.
-                        return fromEl === el || !fromEl.hasAttribute(CONTAINER_ATTRIBUTE);
+                    onBeforeElUpdated: function blackboxContainer(fromEl, toEl) {
+                        // Update the contents of the main element...
+                        if (fromEl === el &&
+                            // ... unless the Container attribute has changed.
+                            el.getAttribute(CONTAINER_ATTRIBUTE) === toEl.getAttribute(CONTAINER_ATTRIBUTE)
+                        ) {
+                            return true;
+                        }
+
+                        // Update anything that isn't a container.
+                        if (!fromEl.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                            return true;
+                        }
+
+                        // If the container has changed, swap element ourselves
+                        // and tell morphdom to move on. This similar to
+                        // how React handles it: If a subtree is a different
+                        // component, it just prunes and replaces, since the
+                        // subtree could be different in myriad different
+                        // ways and a full diff would be computationally
+                        // expensive. Additionally, this allows the
+                        // MutationObserver to continue to only worry about
+                        // add/remove operations instead of attribute mutations.
+                        if (fromEl.getAttribute(CONTAINER_ATTRIBUTE) !== toEl.getAttribute(CONTAINER_ATTRIBUTE)) {
+                            const parent = fromEl.parentNode;
+                            parent.replaceChild(toEl, fromEl);
+                            return false;
+                        }
+
+                        return true;
+
                     }
                 });
 
