@@ -1,10 +1,10 @@
 # observeDelta
 
-`observeDelta` is a Redux enhancer similar to the built-in `applyMiddleware`. Like `applyMiddleware`, `observeDelta` takes a varying number of source functions and returns a StoreEnhancer, wrapping Redux's `createStore` function.
+`observeDelta` is a Redux middleware for binding a set of delta source streams to a Redux store.
 
-When the store gets created, each source function will be called with two parameters: `actions$` and `state$`. These are Kefir streams, with the `actions$` stream emitting every action dispatched into the Store, and the `state$` emitting each new state after it changes. Each source function should return a Kefir stream. These `source$` streams are combined into a `delta$` stream with its values emitted into the Redux store.
+When the middleware gets applied, each source function will be called with two parameters: `actions$` and `state$`. These are `Kefir.Observable`s, with the `actions$` stream emitting every action dispatched through the middleware, and the `state$` emitting each new state after each action. Each source function should return a Kefir stream, which are combined into a `delta$` stream that emits into the Redux store.
 
-Note that, unlike middleware, the actions will be emitted into `actions$` after the store's state has been updated. If you need to manipulate actions before they reach the Store's reducer, use middleware.
+Specifically, `state$` is a `Kefir.Property`, which means it retains its current value when it gets subscribed to. Additionally, note that the `state$` will have its value emitted before the `action$`, ensuring that any combination of the stream will have the latest state when the action is emitted.
 
 # Example
 
@@ -31,15 +31,15 @@ export default function exampleSourceStream(actions$, state$) {
 }
 ```
 
-Applying the enhancer with the example:
+Applying the middleware with the example:
 
 ```js
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import { observeDelta } from 'brookjs'
 import reducer from './reducer';
 import exampleSourceStream from './example'
 
-const store = createStore(reducer, observeDelta(exampleSourceStream));
+const store = createStore(reducer, applyMiddleware(observeDelta(exampleSourceStream)));
 
 store.dispatch({ type: 'SAVE_THING', payload: { id: 1, name: 'The Thing to save' } });
 ```
