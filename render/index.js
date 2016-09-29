@@ -48,6 +48,13 @@ export default function render(template) {
                             return true;
                         }
 
+                        const containerKey = fromEl.getAttribute(CONTAINER_ATTRIBUTE);
+
+                        if (toEl.getAttribute(CONTAINER_ATTRIBUTE) === '') {
+                            console.warn('deprecated: ensure rendered HTML includes container attribute', containerKey);
+                            toEl.setAttribute(CONTAINER_ATTRIBUTE, containerKey);
+                        }
+
                         // If the container has changed, swap element ourselves
                         // and tell morphdom to move on. This similar to
                         // how React handles it: If a subtree is a different
@@ -57,7 +64,7 @@ export default function render(template) {
                         // expensive. Additionally, this allows the
                         // MutationObserver to continue to only worry about
                         // add/remove operations instead of attribute mutations.
-                        if (fromEl.getAttribute(CONTAINER_ATTRIBUTE) !== toEl.getAttribute(CONTAINER_ATTRIBUTE)) {
+                        if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE)) {
                             const parent = fromEl.parentNode;
                             parent.replaceChild(toEl, fromEl);
                             return false;
