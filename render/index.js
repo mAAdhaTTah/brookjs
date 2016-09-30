@@ -51,7 +51,10 @@ export default function render(template) {
                         const containerKey = fromEl.getAttribute(CONTAINER_ATTRIBUTE);
 
                         if (toEl.getAttribute(CONTAINER_ATTRIBUTE) === '') {
-                            console.warn('deprecated: ensure rendered HTML includes container attribute', containerKey);
+                            if (process.env.NODE_ENV !== 'production') {
+                                console.warn('deprecated: ensure rendered HTML includes container attribute', containerKey);
+                            }
+
                             toEl.setAttribute(CONTAINER_ATTRIBUTE, containerKey);
                         }
 

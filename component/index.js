@@ -111,7 +111,10 @@ export default function component(config) {
             Object.defineProperty(el, 'el', {
                 get: function() {
                     if (!warned) {
-                        console.warn('deprecated: `el` is passed in directly');
+                        if (process.env.NODE_ENV !== 'production') {
+                            console.warn('deprecated: `el` is passed in directly');
+                        }
+
                         warned = true;
                     }
 
