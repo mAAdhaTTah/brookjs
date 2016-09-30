@@ -34,33 +34,13 @@ export default function component(config) {
         // Validate combinator
         assert.equal(typeof combinator, 'function', '`combinator` should be a function');
 
-        // Validate events$ stream generator.
-        if (typeof events === 'object') {
-            console.warn('deprecated: events should be a function');
-            events = bindEvents(events);
-        }
-
         assert.equal(typeof events, 'function', '`events` should be a function');
 
         // Validate onMount$ stream generator.
         assert.ok(typeof onMount === 'function', 'onMount should be a function');
 
-        // Validate render$ stream generator.
-        if (template) {
-            console.warn('deprecated: use `render` instead of `template`');
-            assert.equal(typeof template, 'function', '`template` should be a function');
-            render = renderGenerator(template);
-        }
-
         assert.equal(typeof render, 'function', '`render` should be a function');
         assert.equal(render.length, 3, '`render` should take 3 arguments');
-
-        try {
-            assert.equal(typeof render({}), 'function', '`render` should be curried');
-        } catch (e) {
-            console.warn('deprecated: `render` should be curried');
-            render = R.curry(render);
-        }
 
         // Validate children$ stream generator.
         if (subcomponents) {
@@ -72,6 +52,35 @@ export default function component(config) {
 
         // Validate shouldUpdate filter.
         assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
+    }
+
+    // Validate render$ stream generator.
+    if (template) {
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn('deprecated: use `render` instead of `template`');
+            assert.equal(typeof template, 'function', '`template` should be a function');
+        }
+
+        render = renderGenerator(template);
+    }
+
+    try {
+        assert.equal(typeof render({}), 'function', '`render` should be curried');
+    } catch (e) {
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn('deprecated: `render` should be curried');
+        }
+
+        render = R.curry(render);
+    }
+
+    // Validate events$ stream generator.
+    if (typeof events === 'object') {
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn('deprecated: events should be a function');
+        }
+
+        events = bindEvents(events);
     }
 
     /**
