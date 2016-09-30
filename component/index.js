@@ -30,30 +30,6 @@ export default function component(config) {
         shouldUpdate = R.T,
         template } = config;
 
-    if (process.env.NODE_ENV !== 'production') {
-        // Validate combinator
-        assert.equal(typeof combinator, 'function', '`combinator` should be a function');
-
-        assert.equal(typeof events, 'function', '`events` should be a function');
-
-        // Validate onMount$ stream generator.
-        assert.ok(typeof onMount === 'function', 'onMount should be a function');
-
-        assert.equal(typeof render, 'function', '`render` should be a function');
-        assert.equal(render.length, 3, '`render` should take 3 arguments');
-
-        // Validate children$ stream generator.
-        if (subcomponents) {
-            console.warn('deprecated: replace `subcomponents` with `children` function');
-            assert.ok(Array.isArray(subcomponents), '`subcomponents` should be an array');
-        }
-
-        assert.ok(children, '`children` should be a function');
-
-        // Validate shouldUpdate filter.
-        assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
-    }
-
     // Validate render$ stream generator.
     if (template) {
         if (process.env.NODE_ENV !== 'production') {
@@ -81,6 +57,30 @@ export default function component(config) {
         }
 
         events = bindEvents(events);
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+        // Validate combinator
+        assert.equal(typeof combinator, 'function', '`combinator` should be a function');
+
+        assert.equal(typeof events, 'function', '`events` should be a function');
+
+        // Validate onMount$ stream generator.
+        assert.ok(typeof onMount === 'function', 'onMount should be a function');
+
+        assert.equal(typeof render, 'function', '`render` should be a function');
+        assert.equal(render.length, 3, '`render` should take 3 arguments');
+
+        // Validate children$ stream generator.
+        if (subcomponents) {
+            console.warn('deprecated: replace `subcomponents` with `children` function');
+            assert.ok(Array.isArray(subcomponents), '`subcomponents` should be an array');
+        }
+
+        assert.ok(children, '`children` should be a function');
+
+        // Validate shouldUpdate filter.
+        assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
     }
 
     /**
