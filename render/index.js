@@ -48,8 +48,16 @@ export default function render(template) {
                             return true;
                         }
 
+                        /**
+                         * If it is a container, we're going to do our own updating
+                         * and tell morphdom to move on.
+                         */
                         const containerKey = fromEl.getAttribute(CONTAINER_ATTRIBUTE);
 
+                        // In the current application, attributes aren't passed through
+                        // the modified child props$ stream correctly, so make sure
+                        // the container attribute doesn't change for now. This is
+                        // deprecated behavior already.
                         if (toEl.getAttribute(CONTAINER_ATTRIBUTE) === '') {
                             if (process.env.NODE_ENV !== 'production') {
                                 console.warn('deprecated: ensure rendered HTML includes container attribute', containerKey);
@@ -58,11 +66,10 @@ export default function render(template) {
                             toEl.setAttribute(CONTAINER_ATTRIBUTE, containerKey);
                         }
 
-                        // If the container has changed, swap element ourselves
-                        // and tell morphdom to move on. This similar to
-                        // how React handles it: If a subtree is a different
-                        // component, it just prunes and replaces, since the
-                        // subtree could be different in myriad different
+                        // If the container has changed, swap element ourselves.
+                        // This is similar to how React handles it: If a subtree
+                        // is a different component, it just prunes and replaces,
+                        // since the subtree could be different in myriad different
                         // ways and a full diff would be computationally
                         // expensive. Additionally, this allows the
                         // MutationObserver to continue to only worry about
@@ -70,10 +77,10 @@ export default function render(template) {
                         if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE)) {
                             const parent = fromEl.parentNode;
                             parent.replaceChild(toEl, fromEl);
-                            return false;
                         }
 
-                        return true;
+                        // Tell morphdom to move on.
+                        return false;
 
                     }
                 });
