@@ -1,6 +1,7 @@
+const webpack = require('webpack');
+
 module.exports = {
     entry: {},
-    debug: true,
     devtool: 'sourcemap',
     output: {
         path: './dist/',
@@ -24,5 +25,10 @@ module.exports = {
         alias: {
             handlebars: 'handlebars/dist/cjs/handlebars'
         }
-    }
+    },
+    plugins: [
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        })
+    ]
 };
