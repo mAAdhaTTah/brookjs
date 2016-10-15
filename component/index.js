@@ -149,14 +149,13 @@ export default function component(config) {
 
         const children$ = children(el, props$);
 
-        let instance$ = combinator({ children$, events$, render$ });
+        const onMount$ = onMount(el, props$);
+
+        let instance$ = combinator({ children$, events$, render$, onMount$ });
 
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(instance$ instanceof Observable, '`instance$` is not a `Kefir.Observable`');
         }
-
-        instance$ = instance$
-            .merge(onMount(el, props$));
 
         if (subcomponents) {
             instance$ = instance$.merge(downstreams(subcomponents, el, props$));

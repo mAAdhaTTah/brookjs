@@ -4,54 +4,33 @@
 
 **Note: Early alpha. Expect breaking changes before version 0.1.0. See [semver](#semver) policy below.**
 
-`brookjs` is framework for building functional, reactive JavaScript applications. The core of the library is built on [`kefir`][kefir] for Observables and [`ramda`][ramda] as a utility library. Everything else is designed to be as flexible as possible, allowing you to pick and choose which modules to use while designing them to work together seamlessly with common patterns. While not required, [`redux`][redux] is recommended for data management, with its `Symbol.observable` interop and significant community.
+# Requirements
 
-`brookjs` modules handle various aspects of an application, with the core of the library being the `component`, which handles the UI lifecycle, and the `observeDelta` Redux enhancer, which provides an observable-based hook for responding to state changes and actions and emitting new events into your Redux store. Additional components provide support for other necessary application functionality.
-
-# How to Use
-
-This section will be filled out after v0.1.0. For now, see "Using the Uncompiled Source" below.
-
-# Using the Uncompiled Source
-
-For now, `brookjs` is currently distributed as ES6 modules with ES6 features, so if you're using it, you'll need to include a build step with [`webpack`][webpack] or [`browserify`][browserify] and ensure the [`babel`][babel] configuration converts `brookjs` modules. In addition, `brookjs` takes advantage of some ES6 features that may require polyfills or babel transforms to work in older environments:
+`brookjs` is distributed on GitHub as an ES6 module. In order to use it in a browser, bundle the application with [`webpack`][webpack] or [`browserify`][browserify] and ensure [`babel`][babel] transpiles `brookjs`. In addition, `brookjs` uses new JavaScript features that require polyfills transforms in older environments, including:
 
 * `WeakMap`
 * `Object.assign`
 * `Array.from`
+* `MutationObserver`
 
-A distribution version will be provided with v0.1.0 which will include these transforms.
+# Documentation
 
-You can still install from github with npm:
+Full documentation for `brookjs` can be found [here][docs].
 
-```js
-npm install --save valtech-nyc/brookjs#commitsha
+# Quick Start
+
+You can install from github with npm:
+
+```bash
+npm install --save valtech-nyc/brookjs#<commitsha>
 ```
 
-Be sure the grab the latest commit sha from GitHub.
-
-# Modules
-
-* [combineActionReducers][] - Action-based state transitions.
-* [component][] - Declarative UI lifecycle management.
-* [events][] - Generate streams of DOM events.
-* [helpers][] - Function helpers for brookjs applications.
-* [observeDelta][] - Redux enhancer for streaming side effects.
-* [render][] - Generate streams of rendering activity.
+Grab the latest commit sha from GitHub and replace `<commitsha>` in the command above.
 
 # Semver
 
-`brookjs` modules adhere to [semver][]. However, as this hasn't been released on npm yet, expect breaking changes before `v0.1.0` and the first public release.
+`brookjs` modules adhere to [semver][]. Expect breaking changes before `v0.1.0` and the first public release to npm.
 
-  [kefir]: http://rpominov.github.io/kefir/
-  [ramda]: http://ramdajs.com/
-  [redux]: http://redux.js.org/
-  [combineActionReducers]: combineActionReducers/README.md
-  [component]: component/README.md
-  [events]: events/README.md
-  [helpers]: helpers/README.md
-  [observeDelta]: observeDelta/README.md
-  [render]: render/README.md
   [webpack]: https://webpack.github.io/
   [browserify]: http://browserify.org/
   [babel]: https://babeljs.io/
