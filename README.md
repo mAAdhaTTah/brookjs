@@ -1,5 +1,7 @@
 # `brookjs`
 
+[![Build Status](https://travis-ci.org/valtech-nyc/brookjs.svg?branch=master)](https://travis-ci.org/valtech-nyc/brookjs)
+
 **Note: Early alpha. Expect breaking changes before version 0.1.0. See [semver](#semver) policy below.**
 
 `brookjs` is framework for building functional, reactive JavaScript applications. The core of the library is built on [`kefir`][kefir] for Observables and [`ramda`][ramda] as a utility library. Everything else is designed to be as flexible as possible, allowing you to pick and choose which modules to use while designing them to work together seamlessly with common patterns. While not required, [`redux`][redux] is recommended for data management, with its `Symbol.observable` interop and significant community.

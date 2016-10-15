@@ -1,9 +1,13 @@
 // Karma configuration
-const webpackConfig = require('./webpack.config');
+if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = 'test';
+}
+
+const R = require('ramda');
+const webpackConfig = R.clone(require('./webpack.config'));
 
 module.exports = function (config) {
     const tests = '!(node_modules)/**/__tests__/*.spec.js';
-    const root = '__tests__/*.spec.js';
 
     config.set({
 
@@ -16,8 +20,7 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            tests,
-            root
+            tests
         ],
 
         // list of files to exclude
@@ -26,16 +29,28 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            [tests]: ['webpack'],
-            [root]: ['webpack']
+            [tests]: ['webpack', 'sourcemap']
         },
 
         webpack: webpackConfig,
 
+        webpackServer: {
+            noInfo: true //please don’t spam the console when running in karma!
+        },
+
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['spec'],
+        reporters: ['spec', 'coverage'],
+
+        // specify the coverage information
+        coverageReporter: {
+            // specify a common output directory
+            dir: 'coverage',
+            reporters: [
+                { type: 'html', subdir: 'report-html' }
+            ]
+        },
 
         // web server port
         port: 9876,
@@ -60,6 +75,6 @@ module.exports = function (config) {
 
         // Concurrency level
         // how many browser should be started simultaneous
-        concurrency: Infinity
+        concurrency: Infinity,
     });
 };
