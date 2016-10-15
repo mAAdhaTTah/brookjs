@@ -44,6 +44,7 @@ export default function component(config) {
         assert.equal(typeof render({}), 'function', '`render` should be curried');
     } catch (e) {
         if (process.env.NODE_ENV !== 'production') {
+            assert.equal(typeof render, 'function', '`render` should be a function');
             console.warn('deprecated: `render` should be curried');
         }
 
