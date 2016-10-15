@@ -2,25 +2,21 @@
 import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
+import R from 'ramda';
 import { constant, Observable, never, pool } from 'kefir';
-import R, { F, identity, map } from 'ramda';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import dom from 'chai-dom';
-import simulant from 'simulant';
 
 import component from '../index';
-import { clickEvent } from '../../events/index';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../../constants';
 
 chai.use(dom);
 chai.use(sinonChai);
 
 describe('component', function() {
     let factory, fixture, pluggable$, props$, instance, initial, sub;
-    let fixturize = identity;
 
     function setup (config = {}) {
         initial = {
@@ -33,8 +29,6 @@ describe('component', function() {
         fixture = document.createElement('div');
         fixture.classList.add(initial.type);
         fixture.textContent = initial.text;
-
-        fixture = fixturize(fixture);
 
         pluggable$ = pool();
         pluggable$.plug(constant(initial));
@@ -64,7 +58,7 @@ describe('component', function() {
         });
 
         it('should require an HTMLElement', function() {
-            const invalid = [{}, 'string', 2, true, [], identity];
+            const invalid = [{}, 'string', 2, true, [], R.identity];
 
             invalid.forEach(el => {
                 expect(() => factory(el, {})).to.throw(AssertionError);
@@ -89,47 +83,24 @@ describe('component', function() {
             let events;
 
             beforeEach(function() {
-                events = { onclick: map(clickEvent) };
-                fixturize = fixture => {
-                    fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
-                    fixture.setAttribute(EVENT_ATTRIBUTES.click, Object.keys(events).pop());
-                    document.body.appendChild(fixture);
-
-                    return fixture;
-                };
-
+                events = sinon.spy(() => never());
                 setup({ events });
+                document.body.appendChild(fixture);
             });
 
-            it('should throw without an object (deprecated) or function', function () {
-                const invalid = ['string', 2, true];
+            it('should throw without a function', function () {
+                const invalid = ['string', 2, true, {}];
 
                 invalid.forEach(vnts => {
                     expect(() => component({ events: vnts }), `${typeof vnts} did not throw`).to.throw(AssertionError);
                 });
             });
 
-            it('should throw if object value is not a function (deprecated)', function () {
-                const invalid = [{}, 'string', 2, true, []];
-
-                invalid.forEach(cb => {
-                    expect(() => component({ events: { cb } }), `${typeof cb} did not throw`).to.throw(AssertionError);
-                });
-            });
-
-            it('should emit DOM event (deprecated)', function () {
-                const value = sinon.spy();
-                sub = instance.observe({ value });
-
-                const event = simulant.fire(fixture, 'click');
-
-                expect(value).to.have.callCount(1);
-                expect(value).to.have.been.calledWithMatch(clickEvent(event));
-            });
+            it.skip('should get called on mount with el');
+            it.skip('should get called on render end with el');
 
             afterEach(function() {
                 document.body.removeChild(fixture);
-                fixturize = identity;
             });
         });
 
@@ -192,7 +163,7 @@ describe('component', function() {
             });
 
             it('should call onMount once with el and props$', function() {
-                sub = instance.observe({ value: identity });
+                sub = instance.observe({ value: R.identity });
 
                 expect(onMount).to.have.callCount(1);
                 expect(onMount).to.have.been.calledWithExactly(fixture, props$);
@@ -218,7 +189,7 @@ describe('component', function() {
             let shouldUpdate;
 
             beforeEach(function() {
-                shouldUpdate = sinon.spy(F);
+                shouldUpdate = sinon.spy(R.F);
                 setup({ shouldUpdate });
             });
 
@@ -231,7 +202,7 @@ describe('component', function() {
             });
 
             it('should call shouldUpdate immediately with two equal params', function() {
-                sub = instance.observe({ value: identity });
+                sub = instance.observe({ value: R.identity });
 
                 expect(shouldUpdate).to.have.callCount(1);
                 expect(shouldUpdate).to.have.been.calledWithExactly(initial, initial);
