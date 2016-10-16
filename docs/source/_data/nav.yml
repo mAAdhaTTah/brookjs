@@ -6,3 +6,5 @@
   items:
     - id: component
       title: component
+    - id: observeDelta
+      title: observeDelta
