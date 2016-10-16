@@ -1,99 +1,114 @@
 import assert from 'assert';
 import R from 'ramda';
-import { pool, stream } from 'kefir';
-import { always, identity, pipe, prop } from 'ramda';
-import { CONTAINER_ATTRIBUTE } from '../constants';
-import { delegateElement } from './delegator';
-import { valueEventAction, checkedEventAction,
-    fieldFocusAction, clickedEventAction } from './actions';
-
-export * from './actions';
-export * from './delegator';
+import { merge, stream, never } from 'kefir';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../constants';
 
 /**
- * Maps a value change event to a VALUE_CHANGE action.
+ * Associates a DOM element with its dispatch function.
  *
- * @type {Function}
+ * @type {WeakMap}
  */
-export const valueEvent = pipe(prop('target'), prop('value'), valueEventAction);
+const sources = new WeakMap();
 
 /**
- * Maps checked change event to CHECKED action..
- *
- * @type {Function}
- */
-export const checkedEvent = pipe(prop('target'), prop('checked'), checkedEventAction);
-
-/**
- * Maps focus event to FIELD_FOCUS action.
- *
- * @type {Function}
- */
-export const focusEvent = pipe(prop('target'), prop('name'), fieldFocusAction);
-
-/**
- * Map click event to click event Action.
- *
- * @type {Function}
- */
-export const clickEvent = always(clickedEventAction());
-
-/**
- * Data attribute for element events.
+ * Supported event constants.
  *
  * @type {string}
- * @deprecated
  */
-export const DEPRECATED_EVENT_ATTRIBUTE = 'data-brk-event';
+const CLICK = 'click';
+const FOCUS = 'focus';
+const INPUT = 'input';
+const CHANGE = 'change';
+
+export const SUPPORTED_EVENTS = [CLICK, FOCUS, INPUT, CHANGE];
 
 /**
- * Legacy events stream factory function.
+ * Whether the event listener should be captured.
  *
- * @param {Object} config - Events configuration object.
- * @param {Array} elements - Array of elements to emit from.
- * @returns {Observable} Event stream.
- * @deprecated
+ * @type {Object}
  */
-function legacy(config, elements) {
-    return stream(emitter => {
-        const handlers = elements
-            .map(element => element.getAttribute(DEPRECATED_EVENT_ATTRIBUTE).split(';')
-                .map(event => {
-                    const [type, key] = event.split(':');
-                    const hook = config[key];
+const CAPTURE = {
+    [CLICK]: false,
+    [FOCUS]: true,
+    [INPUT]: true,
+    [CHANGE]: true
+};
 
-                    // Don't include any events with unmatched hooks.
-                    if (!hook) {
-                        return false;
-                    }
+/**
+ * Check if any element in the capture area
+ * and call the dispatcher with the event key.
+ *
+ * @param {string} EVENT - Event name.
+ * @param {Emitter} emitter - source$ emitter.
+ * @param {Event} ev - Event object.
+ */
+const listener = R.curry(function listener(EVENT, emitter, ev) {
+    (function traverse(target) {
+        // Base case.
+        if (!target || target === document.body) {
+            return;
+        }
 
-                    const listener = function listener(ev) {
-                        const value = hook(ev);
+        if (target.hasAttribute(EVENT_ATTRIBUTES[EVENT])) {
+            let container = target;
+            let callback = target.getAttribute(EVENT_ATTRIBUTES[EVENT]);
 
-                        if (value) {
-                            emitter.value(value);
-                        }
-                    };
+            while (container !== document.body && !container.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                container = container.parentNode;
+            }
 
-                    element.addEventListener(type, listener);
+            if (container.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                emitter.value({ callback, container, ev });
+            }
+        }
 
-                    return { element, listener, type };
-                })
-                .filter(identity)
-            )
-            .reduce((acc, next) => acc.concat(next), []);
+        traverse(target.parentNode);
+    })(ev.target);
+});
 
-        /**
-         * Dispose of the listeners.
-         */
-        return function dispose() {
-            handlers.forEach(
-                ({ element, listener, type }) =>
-                    element.removeEventListener(type, listener)
-            );
-        };
-    });
-}
+
+/**
+ * Global events source stream.
+ *
+ * Delegates the subscription of any required events,
+ * allowing many individual streams of DOM events to be
+ * created out of a small number of event listeners.
+ *
+ * @type {Stream<T, S>}
+ */
+const sources$ = stream(emitter => {
+    const listeners = {};
+
+    SUPPORTED_EVENTS.forEach(EVENT =>
+        document.body.addEventListener(
+            EVENT,
+            listeners[EVENT] = listener(EVENT, emitter),
+            CAPTURE[EVENT]));
+
+    return () =>
+        SUPPORTED_EVENTS.forEach(EVENT =>
+            document.body.removeEventListener(
+                EVENT,
+                listeners[EVENT],
+                CAPTURE[EVENT]));
+});
+
+/**
+ * Retrieves the event object from the emitted object.
+ */
+const getEvent = R.prop('ev');
+
+/**
+ * Determines if the event object is scoped to the provided container & callback.
+ *
+ * @param {string} key - Container key.
+ * @param {Element} el - Container element.
+ * @param {Object} event - Event object.
+ * @returns {boolean} Whether the event is matched.
+ */
+const eventMatches = R.curry(function eventMatches(key, el, event) {
+    return event.callback === key && event.container === el;
+});
 
 /**
  * Create a new Events stream from the element.
@@ -109,38 +124,32 @@ export default function events(config) {
     }
 
     /**
-     * Generates a new stream of events for the provided element.
+     * Creates a delegated events$ stream from the element
+     * and configuration.
      *
      * @param {Element} el - Element to make a stream.
      * @returns {Observable} Events stream instance.
      * @factory
      */
     return R.curry(el => {
-        let events$ = pool();
-
-        if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
-            events$.plug(delegateElement(config, el));
+        if (!el.hasAttribute(CONTAINER_ATTRIBUTE)) {
+            return never();
         }
 
-        // start deprecated
-        let elements = [];
-
-        if (el.hasAttribute(DEPRECATED_EVENT_ATTRIBUTE)) {
-            elements.push(el);
+        if (sources.has(el)) {
+            return sources.get(el);
         }
 
-        elements = elements.concat(
-            // @todo problem here!
-            // we can't guarantee that the nodes we get here are
-            // from the component or its children.
-            Array.from(el.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`) || [])
-        );
+        let mixin = {};
 
-        if (elements.length) {
-            events$.plug(legacy(config, elements));
-        }
-        // end deprecated
+        let streams = Object.keys(config)
+            .map(key =>
+                mixin[key] = config[key](sources$
+                    .filter(eventMatches(key, el))
+                    .map(getEvent)));
 
+        let events$ = Object.assign(Object.create(merge(streams)), mixin);
+        sources.set(el, events$);
         return events$;
     });
 };

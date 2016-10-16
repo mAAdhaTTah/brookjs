@@ -8,3 +8,5 @@
       title: component
     - id: observeDelta
       title: observeDelta
+    - id: events
+      title: events

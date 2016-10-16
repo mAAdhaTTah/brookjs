@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import simulant from 'simulant';
 
-import { delegateElement, SUPPORTED_EVENTS } from '../';
+import events, { SUPPORTED_EVENTS } from '../';
 
 chai.use(sinonChai);
 
@@ -25,7 +25,7 @@ describe('events$', function() {
         el = document.createElement('div');
         el.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
 
-        events$ = delegateElement(config, el);
+        events$ = events(config)(el);
 
         value = sinon.spy();
         sub = events$.observe({ value });

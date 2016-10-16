@@ -1,12 +1,13 @@
-# brookjs/events
+---
+id: events
+title: <code>events</code>
+---
 
-`brookjs/events` provides a factory function for generating `events$` stream factories for use in `brookjs/component`. It takes a configuration object and returns a function that accepts an `{Element} el` and returns an `events$` stream, as defined by the configuration object.
-
-In addition, `brookjs/events` exposes some helper functions and constants for use in defining events in the configuration object.
+The `events` modules exports a factory method for declaring the behavior of an `events$` stream-generating factory. Designed to be used in the `component` module, it takes a configuration object and returns a factory function that accepts an `{Element} el` and returns an `events$` stream, as defined by the configuration object.
 
 # How to Use
 
-`brookjs/events` exports a factory function for defining your `events$` stream.
+The `events` factory method takes a configuration object, with the key matching a value of a `data-attribute` and value providing a function to modify the event stream:
 
 ```js
 import { events } from 'brookjs';
@@ -16,7 +17,7 @@ export default events({
 });
 ```
 
-This should be an element decorated with a `data-brk-on{event}` attribute and contained within a `data-brk-container` attribute:
+This should be matched with an element decorated with a `data-brk-on{event}` attribute and contained within a `data-brk-container` attribute:
 
 ```html
 <div data-brk-container="button">
@@ -50,4 +51,4 @@ The configuration object defines which `data-attribute`s map to which functions,
 
 * `{string}` key - Event name key. Should be found in the element with the following `data-attr`: `data-brk-on{event}="{key}"`
 
-* `{Function}` value - Event adapter function. Will be passed the `event$` stream which emits `Event` values and should return new stream emitting [Flux Standard Action][fsa] representing the event.
+* `{Function}` value - Event adapter function. Will be passed the `event$` stream which emits `Event` values and should return the (un)modified stream.
