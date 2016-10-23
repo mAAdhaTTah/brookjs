@@ -1,38 +1,19 @@
 /* eslint-env mocha */
 import 'es6-weak-map/implement';
-import R from 'ramda';
+
 import { AssertionError } from 'assert';
-import { constant, never, pool } from 'kefir';
+import { constant } from 'kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 
+import { createFixture, createChild } from './util';
 import children from '../';
 
 chai.use(sinonChai);
 
 describe('children', () => {
-    let child$, factory, modifyChildProps, preplug, generator, element, firstChild, props$, instance, sub;
-
-    beforeEach(() => {
-        child$ = pool();
-        factory = sinon.spy(() => child$);
-        modifyChildProps = sinon.spy(R.identity);
-        preplug = sinon.spy(R.identity);
-        generator = children({ child: { factory, modifyChildProps, preplug } });
-
-        element = document.createElement('div');
-        element.setAttribute('data-brk-container', 'parent');
-        firstChild = createChild();
-        element.appendChild(firstChild);
-
-        props$ = never();
-
-        document.body.appendChild(element);
-        instance = generator(element, props$);
-    });
-
     it('should throw if config not an object or function', () => {
         const invalid = ['string', 2, true];
 
@@ -50,11 +31,14 @@ describe('children', () => {
     });
 
     it('should be a function', () => {
+        let { generator } = createFixture();
+
         expect(generator).to.be.a('function');
     });
 
     it('should bind to child with matching key', () => {
-        sub = instance.observe();
+        let { factory, firstChild, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
+        let sub = instance.observe();
 
         expect(factory).to.have.callCount(1);
         expect(factory).to.have.been.calledWith(firstChild, props$);
@@ -64,21 +48,28 @@ describe('children', () => {
 
         expect(preplug).to.have.callCount(1);
         expect(preplug).to.have.been.calledWith(child$);
+
+        sub.unsubscribe();
     });
 
     it('should emit child events', () => {
         const value = sinon.spy();
         const next = { type: 'ACTION' };
 
-        sub = instance.observe({ value });
+        let { instance, child$ } = createFixture();
+
+        let sub = instance.observe({ value });
         child$.plug(constant(next));
 
         expect(value).to.have.callCount(1);
         expect(value).to.have.been.calledWith(next);
+
+        sub.unsubscribe();
     });
 
     it('should bind to new child element', done => {
-        sub = instance.observe();
+        let { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
+        let sub = instance.observe();
 
         let secondChild = createChild();
         element.appendChild(secondChild);
@@ -92,13 +83,17 @@ describe('children', () => {
 
             expect(preplug).to.have.callCount(2);
             expect(preplug).to.have.been.calledWith(child$);
+
+            sub.unsubscribe();
+
             done();
         });
     });
 
     it('should not bind to grandchild element', done => {
+        let { instance, firstChild, factory } = createFixture();
         const value = sinon.spy();
-        sub = instance.observe({ value });
+        let sub = instance.observe({ value });
 
         let secondChild = createChild();
         firstChild.appendChild(secondChild);
@@ -106,13 +101,17 @@ describe('children', () => {
         requestAnimationFrame(() => {
             expect(value).to.have.callCount(0);
             expect(factory).to.have.callCount(1);
+
+            sub.unsubscribe();
+
             done();
         });
     });
 
     it('should unbind when element removed', done => {
+        let { instance, element, firstChild } = createFixture();
         const value = sinon.spy();
-        sub = instance.observe({ value });
+        let sub = instance.observe({ value });
 
         element.removeChild(firstChild);
 
@@ -122,23 +121,10 @@ describe('children', () => {
             // @todo figure out a better way to check this
             // @todo w/o leaning on implementation details
             expect(instance.child._curSources[0]._curSources.length).is.equal(0);
+
+            sub.unsubscribe();
+
             done();
         });
     });
-
-    afterEach(() => {
-        if (sub) {
-            sub.unsubscribe();
-            sub = undefined;
-        }
-
-        document.body.removeChild(element);
-    });
-
-    function createChild() {
-        let child = document.createElement('div');
-        // @todo use common container attribute
-        child.setAttribute('data-brk-container', 'child');
-        return child;
-    }
 });
