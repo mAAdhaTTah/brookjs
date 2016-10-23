@@ -22,5 +22,10 @@ export const EVENT_ATTRIBUTES = {
     click: prefix('onclick'),
     focus: prefix('onfocus'),
     input: prefix('oninput'),
-    change: prefix('onchange')
+    change: prefix('onchange'),
+    keydown: prefix('onkeydown'),
+    keyup: prefix('onkeyup'),
+    keypress: prefix('onkeypress'),
+    cut: prefix('oncut'),
+    paste: prefix('onpaste')
 };

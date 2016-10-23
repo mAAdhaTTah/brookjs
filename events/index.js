@@ -19,8 +19,23 @@ const CLICK = 'click';
 const FOCUS = 'focus';
 const INPUT = 'input';
 const CHANGE = 'change';
+const KEYDOWN = 'keydown';
+const KEYUP = 'keyup';
+const KEYPRESS = 'keypress';
+const CUT = 'cut';
+const PASTE = 'paste';
 
-export const SUPPORTED_EVENTS = [CLICK, FOCUS, INPUT, CHANGE];
+export const SUPPORTED_EVENTS = [
+    CLICK,
+    FOCUS,
+    INPUT,
+    CHANGE,
+    KEYDOWN,
+    KEYUP,
+    KEYPRESS,
+    CUT,
+    PASTE
+];
 
 /**
  * Whether the event listener should be captured.
@@ -31,7 +46,12 @@ const CAPTURE = {
     [CLICK]: false,
     [FOCUS]: true,
     [INPUT]: true,
-    [CHANGE]: true
+    [CHANGE]: true,
+    [KEYDOWN]: false,
+    [KEYUP]: false,
+    [KEYPRESS]: false,
+    [CUT]: false,
+    [PASTE]: false
 };
 
 /**
