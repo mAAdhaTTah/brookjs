@@ -54,19 +54,29 @@ describe('events$', function() {
     });
 
     SUPPORTED_EVENTS.forEach(event => {
-        it(`should emit ${event} event`, function() {
-            value = sinon.spy();
-            sub = events$.observe({ value });
+        switch (event) {
+            case 'cut':
+            case 'paste':
+                if (!window.ClipboardEvent) {
+                    it.skip(`should emit ${event} event`);
+                    break;
+                }
+            default:
+                it(`should emit ${event} event`, function() {
+                    value = sinon.spy();
+                    sub = events$.observe({ value });
 
-            let target = document.createElement('input');
-            target.setAttribute(EVENT_ATTRIBUTES[event], Object.keys(config).pop());
-            el.appendChild(target);
+                    let target = document.createElement('input');
+                    target.setAttribute(EVENT_ATTRIBUTES[event], Object.keys(config).pop());
+                    el.appendChild(target);
 
-            const e = simulant.fire(target, event);
+                    const e = simulant.fire(target, event);
 
-            expect(value).to.have.callCount(1);
-            expect(value).to.be.calledWith(e);
-        });
+                    expect(value).to.have.callCount(1);
+                    expect(value).to.be.calledWith(e);
+                });
+                break;
+        }
     });
 
     it('should only emit events for the triggered element', function() {
