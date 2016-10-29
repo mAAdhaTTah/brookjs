@@ -6,6 +6,15 @@
 export const CONTAINER_ATTRIBUTE = 'data-brk-container';
 
 /**
+ * HTML attribute key directive.
+ *
+ * For tagging a component that appears multiple times.
+ *
+ * @type {string}
+ */
+export const KEY_ATTRIBUTE = 'data-brk-key';
+
+/**
  * Event attribute prefixer.
  *
  * @param {string} name - Event name.

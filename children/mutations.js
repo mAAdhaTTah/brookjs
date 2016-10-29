@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { CONTAINER_ATTRIBUTE } from '../constants';
+import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import { stream } from 'kefir';
 import { nodeAdded, nodeRemoved } from './actions';
 import { getContainerNode } from './util';
@@ -48,11 +48,12 @@ export default stream(emitter => {
             isRelevantNode))
     .map(({ type, payload }) => {
         let { node, target } = payload;
-        let key = node.getAttribute(CONTAINER_ATTRIBUTE);
+        let container = node.getAttribute(CONTAINER_ATTRIBUTE);
+        let key = node.getAttribute(KEY_ATTRIBUTE);
         let parent = getContainerNode(node.parentNode) || getContainerNode(target);
 
         return {
             type,
-            payload: { key, node, parent, target }
+            payload: { container, key, node, parent, target }
         };
     });

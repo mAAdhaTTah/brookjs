@@ -1,16 +1,40 @@
 import R from 'ramda';
+import { KEY_ATTRIBUTE } from '../constants';
 import { NODE_ADDED, NODE_REMOVED } from './actions';
 
 const sources = new WeakMap();
 
 export const defaults = {
     modifyChildProps: R.identity,
-    preplug: R.identity
+    preplug: R.identity,
+    key: ''
 };
 
-export const createInstance = R.curry(({ factory, modifyChildProps, preplug }, props$, element) => {
-    let instance$ = preplug(factory(element, modifyChildProps(props$)));
+export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key }, props$, element) => {
+    let childProps$ = modifyChildProps(props$);
+
+    if (key && element.hasAttribute(KEY_ATTRIBUTE)) {
+        if ('@key' === key) {
+            childProps$ = childProps$.map(R.prop(element.getAttribute(KEY_ATTRIBUTE)));
+        } else {
+            childProps$ = childProps$.map(R.find(
+                R.pipe(R.prop(key), R.equals(element.getAttribute(KEY_ATTRIBUTE)))
+            ));
+        }
+    }
+
+    let instance$ = preplug(factory(element, childProps$));
+
+    if (key && element.hasAttribute(KEY_ATTRIBUTE)) {
+        instance$ = instance$.map(action => Object.assign({}, action, {
+            payload: Object.assign({}, action.payload, {
+                key: element.getAttribute(KEY_ATTRIBUTE)
+            })
+        }));
+    }
+
     sources.set(element, instance$);
+
     return instance$;
 });
 

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CONTAINER_ATTRIBUTE } from '../constants';
+import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import R from 'ramda';
 import { stream } from 'kefir';
 import morphdom from 'morphdom';
@@ -34,6 +34,13 @@ export default function render(template) {
                 }
 
                 morphdom(el, html, {
+                    getNodeKey: function getNodeKey(el) {
+                        if (el.hasAttribute && el.hasAttribute(CONTAINER_ATTRIBUTE) && el.hasAttribute(KEY_ATTRIBUTE)) {
+                            return `${el.getAttribute(CONTAINER_ATTRIBUTE)}::${el.getAttribute(KEY_ATTRIBUTE)}`;
+                        }
+
+                        return '';
+                    },
                     onBeforeElUpdated: function blackboxContainer(fromEl, toEl) {
                         // Update the contents of the main element...
                         if (fromEl === el &&
@@ -75,8 +82,7 @@ export default function render(template) {
                         // MutationObserver to continue to only worry about
                         // add/remove operations instead of attribute mutations.
                         if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE)) {
-                            const parent = fromEl.parentNode;
-                            parent.replaceChild(toEl, fromEl);
+                            fromEl.parentNode.replaceChild(toEl, fromEl);
                         }
 
                         // Tell morphdom to move on.

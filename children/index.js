@@ -42,11 +42,12 @@ export default function children(config) {
         }
 
         if (process.env.NODE_ENV !== 'production') {
-            let { factory, modifyChildProps, preplug } = config[key];
+            let { factory, modifyChildProps, preplug, key } = config[container];
 
-            assert.equal(typeof factory, 'function', `factory for ${key} should be a function`);
-            assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${key} should be a function`);
-            assert.equal(typeof preplug, 'function', `preplug for ${key} should be a function`);
+            assert.equal(typeof factory, 'function', `factory for ${container} should be a function`);
+            assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${container} should be a function`);
+            assert.equal(typeof preplug, 'function', `preplug for ${container} should be a function`);
+            assert.equal(typeof key, 'string', `key for ${container} should be a string`);
         }
 
         config[container] = createInstance(config[container]);
