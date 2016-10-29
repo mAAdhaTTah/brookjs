@@ -29,7 +29,7 @@ export const isRemovedChildNode = el => R.converge(R.and, [
     R.pipe(R.prop('type'), R.equals(NODE_REMOVED))
 ]);
 
-export const keyMatches = key => R.pipe(R.prop('key'), R.equals(key));
+export const containerMatches = container => R.pipe(R.prop('container'), R.equals(container));
 
 /**
  * Returns the container node of the provided node.

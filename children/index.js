@@ -2,7 +2,10 @@ import assert from 'assert';
 import R from 'ramda';
 import { containerAttribute } from '../helpers';
 import { constant, merge, pool } from 'kefir';
-import { defaults, createInstance, getContainerNode, getInstanceForElement, keyMatches, isAddedChildNode, isRemovedChildNode } from './util';
+import { defaults, createInstance, getContainerNode,
+    getInstanceForElement, containerMatches, isAddedChildNode,
+    isRemovedChildNode
+} from './util';
 import mutations$ from './mutations';
 
 /**
@@ -15,12 +18,12 @@ export default function children(config) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof config, 'object', '`config` should be an object');
 
-        for (let key in config) {
-            if (!config.hasOwnProperty(key)) {
+        for (let container in config) {
+            if (!config.hasOwnProperty(container)) {
                 continue;
             }
 
-            assert.ok(typeof config[key] === 'function' || typeof config[key] === 'object', `${key} should be a function or object`);
+            assert.ok(typeof config[container] === 'function' || typeof config[container] === 'object', `${container} should be a function or object`);
         }
     }
 
@@ -31,11 +34,11 @@ export default function children(config) {
      * or a configuration object and the children$ stream will work
      * the same both ways.
      */
-    for (let key in config) {
-        if (typeof config[key] === 'function') {
-            config[key] = R.merge(defaults, { factory: config[key] });
+    for (let container in config) {
+        if (typeof config[container] === 'function') {
+            config[container] = R.merge(defaults, { factory: config[container] });
         } else {
-            config[key] = R.merge(defaults, config[key]);
+            config[container] = R.merge(defaults, config[container]);
         }
 
         if (process.env.NODE_ENV !== 'production') {
@@ -46,7 +49,7 @@ export default function children(config) {
             assert.equal(typeof preplug, 'function', `preplug for ${key} should be a function`);
         }
 
-        config[key] = createInstance(config[key]);
+        config[container] = createInstance(config[container]);
     }
 
     /**
@@ -74,7 +77,7 @@ export default function children(config) {
          * Allows us to plug/unplug from each stream as
          * nodes are added and removed from the DOM.
          */
-        const mixin = R.fromPairs(R.toPairs(boundConfig).map(([key, createInstanceWithProps]) => {
+        const mixin = R.fromPairs(R.toPairs(boundConfig).map(([container, createInstanceWithProps]) => {
             let pool$ = pool();
 
             /**
@@ -82,7 +85,7 @@ export default function children(config) {
              *
              * Filters out children that are under other containers.
              */
-            const els$ = constant(Array.from(element.querySelectorAll(`[${containerAttribute(key)}]`)))
+            const els$ = constant(Array.from(element.querySelectorAll(`[${containerAttribute(container)}]`)))
                 .flatten()
                 .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)))
                 .map(createInstanceWithProps)
@@ -90,16 +93,16 @@ export default function children(config) {
                 .ignoreValues();
 
             const added$ = nodeAddedMutationPayload$
-                .filter(keyMatches(key))
+                .filter(containerMatches(container))
                 .scan((source$, { node }) => source$.plug(createInstanceWithProps(node)), pool$)
                 .ignoreValues();
 
             const removed$ = nodeRemovedMutationPayload$
-                .filter(keyMatches(key))
+                .filter(containerMatches(container))
                 .scan((source$, { node }) => source$.unplug(getInstanceForElement(node)), pool$)
                 .ignoreValues();
 
-            return [key, merge([pool$, els$, added$, removed$])];
+            return [container, merge([pool$, els$, added$, removed$])];
         }));
 
         return Object.assign(Object.create(merge(R.values(mixin))), mixin);
