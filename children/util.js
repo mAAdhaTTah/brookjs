@@ -18,7 +18,7 @@ export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key
             childProps$ = childProps$.map(R.prop(element.getAttribute(KEY_ATTRIBUTE)));
         } else {
             childProps$ = childProps$.map(R.find(
-                R.pipe(R.prop(key), R.equals(element.getAttribute(KEY_ATTRIBUTE)))
+                R.pipe(R.path(key.split('.')), R.equals(element.getAttribute(KEY_ATTRIBUTE)))
             ));
         }
     }
