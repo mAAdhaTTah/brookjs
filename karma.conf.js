@@ -76,5 +76,10 @@ module.exports = function (config) {
         // Concurrency level
         // how many browser should be started simultaneous
         concurrency: Infinity,
+
+        // Ensure Karma doesn't use an iFrame.
+        client: {
+            useIframe: false
+        }
     });
 };
