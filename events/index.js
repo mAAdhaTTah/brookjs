@@ -15,26 +15,54 @@ const sources = new WeakMap();
  *
  * @type {string}
  */
-const CLICK = 'click';
-const FOCUS = 'focus';
-const INPUT = 'input';
+const BLUR = 'blur';
 const CHANGE = 'change';
-const KEYDOWN = 'keydown';
-const KEYUP = 'keyup';
-const KEYPRESS = 'keypress';
+const CLICK = 'click';
+const CONTEXTMENU = 'contextmenu';
 const CUT = 'cut';
+const DBLCLICK = 'dblclick';
+const FOCUS = 'focus';
+const FOCUSIN = 'focusin';
+const FOCUSOUT = 'focusout';
+const INPUT = 'input';
+const KEYDOWN = 'keydown';
+const KEYPRESS = 'keypress';
+const KEYUP = 'keyup';
+const LOAD = 'load';
+const MOUSEDOWN = 'mousedown';
+const MOUSEUP = 'mouseup';
 const PASTE = 'paste';
+const RESIZE = 'resize';
+const SELECT = 'select';
+const SUBMIT = 'submit';
+const TOUCHCANCEL = 'touchcancel';
+const TOUCHEND = 'touchend';
+const TOUCHSTART = 'touchstart';
 
 export const SUPPORTED_EVENTS = [
-    CLICK,
-    FOCUS,
-    INPUT,
+    BLUR,
     CHANGE,
-    KEYDOWN,
-    KEYUP,
-    KEYPRESS,
+    CLICK,
+    CONTEXTMENU,
     CUT,
-    PASTE
+    DBLCLICK,
+    FOCUS,
+    FOCUSIN,
+    FOCUSOUT,
+    INPUT,
+    KEYDOWN,
+    KEYPRESS,
+    KEYUP,
+    LOAD,
+    MOUSEDOWN,
+    MOUSEUP,
+    PASTE,
+    RESIZE,
+    SELECT,
+    SUBMIT,
+    TOUCHCANCEL,
+    TOUCHEND,
+    TOUCHSTART
 ];
 
 /**
@@ -43,15 +71,29 @@ export const SUPPORTED_EVENTS = [
  * @type {Object}
  */
 const CAPTURE = {
-    [CLICK]: false,
-    [FOCUS]: true,
-    [INPUT]: true,
+    [BLUR]: true,
     [CHANGE]: true,
-    [KEYDOWN]: false,
-    [KEYUP]: false,
-    [KEYPRESS]: false,
+    [CLICK]: false,
+    [CONTEXTMENU]: false,
     [CUT]: false,
-    [PASTE]: false
+    [DBLCLICK]: false,
+    [FOCUS]: true,
+    [FOCUSIN]: true,
+    [FOCUSOUT]: true,
+    [INPUT]: true,
+    [KEYDOWN]: false,
+    [KEYPRESS]: false,
+    [KEYUP]: false,
+    [LOAD]: true,
+    [MOUSEDOWN]: false,
+    [MOUSEUP]: false,
+    [PASTE]: false,
+    [RESIZE]: true,
+    [SELECT]: true,
+    [SUBMIT]: true,
+    [TOUCHCANCEL]: true,
+    [TOUCHEND]: true,
+    [TOUCHSTART]: true
 };
 
 /**
