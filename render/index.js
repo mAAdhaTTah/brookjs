@@ -5,6 +5,54 @@ import { stream } from 'kefir';
 import morphdom from 'morphdom';
 
 /**
+ * Emitted on requestAnimationFrame callbacks.
+ *
+ * @type {string}
+ */
+export const RAF = 'RAF';
+
+/**
+ * Create a new raf action.
+ *
+ * @param {number} time - rAF time.
+ * @returns {Action} raf Action.
+ */
+export const rafAction = function rafAction(time) {
+    return {
+        type: RAF,
+        payload: { time }
+    };
+};
+
+/**
+ * Stream of requestAnimationFrame events.
+ *
+ * Used to schedule renders.
+ *
+ * @type {Kefir.Stream<T, S>}
+ */
+export const raf$ = stream(emitter => {
+    let loop;
+    let enabled = false;
+
+    (function schedule() {
+        enabled = true;
+        loop = requestAnimationFrame(time => {
+            emitter.value(rafAction(time));
+
+            if (enabled) {
+                schedule();
+            }
+        });
+    })();
+
+    return () => {
+        cancelAnimationFrame(loop);
+        enabled = false;
+    };
+});
+
+/**
  * Generates a new rendering stream that ends after the element is updated.
  *
  * @param {Function} template - String-returning template function.
@@ -24,9 +72,9 @@ export default function render(template) {
      * @returns {Stream<void, void>} Rendering stream.
      * @factory
      */
-    return R.curry((el, prev, next) => {
-        return stream(emitter => {
-            const loop = requestAnimationFrame(() => {
+    return R.curry((el, prev, next) =>
+        raf$.take(1)
+            .flatMap(() => stream(emitter => {
                 const html = template(next);
 
                 if (process.env.NODE_ENV !== 'production') {
@@ -92,9 +140,5 @@ export default function render(template) {
                 });
 
                 emitter.end();
-            });
-
-            return () => cancelAnimationFrame(loop);
-        });
-    });
+            })));
 };
