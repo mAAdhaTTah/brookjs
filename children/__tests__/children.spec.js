@@ -90,6 +90,32 @@ describe('children', () => {
         });
     });
 
+    it('should bind to new subchild element', done => {
+        let { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
+        let sub = instance.observe();
+
+        let nesting = document.createElement('div');
+        let secondChild = createChild();
+
+        nesting.appendChild(secondChild);
+        element.appendChild(nesting);
+
+        requestAnimationFrame(() => {
+            expect(factory).to.have.callCount(2);
+            expect(factory).to.have.been.calledWith(secondChild, props$);
+
+            expect(modifyChildProps).to.have.callCount(2);
+            expect(modifyChildProps).to.have.been.calledWith(props$);
+
+            expect(preplug).to.have.callCount(2);
+            expect(preplug).to.have.been.calledWith(child$);
+
+            sub.unsubscribe();
+
+            done();
+        });
+    });
+
     it('should not bind to grandchild element', done => {
         let { instance, firstChild, factory } = createFixture();
         const value = sinon.spy();
