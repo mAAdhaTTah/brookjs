@@ -57,26 +57,16 @@ export default function component(config) {
             assert.ok(props$ instanceof Observable, '`props$` is not a `Kefir.Observable`');
         }
 
-        const render$$ = props$
+        const render$ = props$
             .slidingWindow(2)
             .map(R.ifElse(
                 R.pipe(R.length, R.equals(2)),
                 R.identity,
                 R.pipe(R.head, R.repeat(R.__, 2))))
             .filter(R.apply(shouldUpdate))
-            .map(R.apply(render(el)));
+            .flatMapLatest(R.apply(render(el)));
 
-        const render$ = render$$
-            .flatMapLatest();
-
-        const events$ = render$$
-            .map(render$ => render$
-                .ignoreValues()
-                .ignoreErrors()
-                .beforeEnd(() => events(el)))
-            .flatMapLatest()
-            .merge(constant(events(el)))
-            .flatMapLatest();
+        const events$ = events(el);
 
         const children$ = children(el, props$);
 

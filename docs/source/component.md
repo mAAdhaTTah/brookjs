@@ -57,7 +57,7 @@ The configuration object defines the behavior of the component over its lifecycl
 
 _Note: **All functions must be curried.** `brookjs` relies on [`ramda`][ramda] for functional programming helpers, and highly recommends using the same. Use [`babel-plugin-ramda`][babel-ramda] to ensure the smallest possible build._
 
-* `{Function}` events - `events$` stream returning function. Called when a `render$` stream ends with the component's element, allowing the component to rebind events to the new DOM. The previous `events$` stream is unsubscribed, ensuring event bindings are cleared between renders.
+* `{Function}` events - `events$` stream returning function. Called with the element and should return a stream of events from the DOM. The top level element will not change during the lifecycle of the component, but any underlying element can, so any custom event implementation should use event delegation.
     * Parameters:
         * `{Element}` el - Component element.
     * Returns:

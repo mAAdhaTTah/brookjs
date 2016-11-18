@@ -29,7 +29,9 @@ This should be matched with an element decorated with a `data-brk-on{event}` att
 <button data-brk-container="button" data-brk-onclick="emitClick">Click me!</button>
 ```
 
-This `event$` stream generated will emit an action with `type: CLICK_EVENT` and no payload:
+Make sure, when declaring the HTML structure of a component, the top-level element has a `data-brk-container` attribute, as events are scoped by container.
+
+The generated `events$` stream will emit an action with `type: CLICK_EVENT` and no payload:
 
 ```js
 import button from './button';
