@@ -10,3 +10,5 @@
       title: observeDelta
     - id: events
       title: events
+    - id: render
+      title: render

@@ -25,7 +25,9 @@ export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key
         // If the key isn't found, then the child is about to
         // be removed, so don't dispatch props down the tream.
         // @todo this seems suboptimal. how to handle iterated children?
-        childProps$ = childProps$.filter(R.identity);
+        childProps$ = childProps$.filter(
+            R.pipe(R.type, R.equals('Undefined'), R.not)
+        );
     }
 
     let instance$ = preplug(factory(element, childProps$));

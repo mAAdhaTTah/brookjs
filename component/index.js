@@ -1,6 +1,6 @@
 import R from 'ramda';
 import assert from 'assert';
-import { constant, Observable, merge, never } from 'kefir';
+import { Observable, merge, never } from 'kefir';
 
 /**
  * Create a new Component with the provided configuration.
@@ -19,7 +19,7 @@ export default function component(config) {
         combinator = R.pipe(R.values, merge),
         events = R.always(never()),
         onMount = R.always(never()),
-        render = R.curryN(3, R.always(never())),
+        render = R.curryN(2, R.always(never())),
         shouldUpdate = R.T } = config;
 
     if (process.env.NODE_ENV !== 'production') {
@@ -35,7 +35,7 @@ export default function component(config) {
         // Validate render function.
         assert.equal(typeof render, 'function', '`render` should be a function');
         assert.equal(typeof render({}), 'function', '`render` should be curried');
-        assert.equal(render.length, 3, '`render` should take 3 arguments');
+        assert.equal(render.length, 2, '`render` should take 3 arguments');
 
         // Validate children$ stream generator.
         assert.ok(children, '`children` should be a function');
@@ -57,22 +57,26 @@ export default function component(config) {
             assert.ok(props$ instanceof Observable, '`props$` is not a `Kefir.Observable`');
         }
 
-        const render$ = props$
+        const children$ = children(el, props$);
+        const events$ = events(el);
+        const render$ = render(el, props$
             .slidingWindow(2)
             .map(R.ifElse(
                 R.pipe(R.length, R.equals(2)),
                 R.identity,
                 R.pipe(R.head, R.repeat(R.__, 2))))
             .filter(R.apply(shouldUpdate))
-            .flatMapLatest(R.apply(render(el)));
-
-        const events$ = events(el);
-
-        const children$ = children(el, props$);
-
+            .map(R.last));
         const onMount$ = onMount(el, props$);
 
-        let instance$ = combinator({ children$, events$, render$, onMount$ });
+        if (process.env.NODE_ENV !== 'production') {
+            assert.ok(children$ instanceof Observable, '`children$` is not a `Kefir.Observable`');
+            assert.ok(events$ instanceof Observable, '`events$` is not a `Kefir.Observable`');
+            assert.ok(render$ instanceof Observable, '`render$` is not a `Kefir.Observable`');
+            assert.ok(onMount$ instanceof Observable, '`onMount$` is not a `Kefir.Observable`');
+        }
+
+        const instance$ = combinator({ children$, events$, render$, onMount$ });
 
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(instance$ instanceof Observable, '`instance$` is not a `Kefir.Observable`');

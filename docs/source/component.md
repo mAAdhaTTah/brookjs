@@ -62,15 +62,12 @@ _Note: **All functions must be curried.** `brookjs` relies on [`ramda`][ramda] f
         * `{Element}` el - Component element.
     * Returns:
         * `{Kefir.Observable}` Observable of events from the element.
-* `{Function}` render - `render$` stream returning function. Called whenever the props change, passing the component element `el`, the `previous` props, and the `next` props.
+* `{Function}` render - `render$` stream returning function. Called with  the component element `el` and the `props$` stream.
     * Parameters:
         * `{Element}` el - Component element.
-        * `{Object}` prev - Previous component props.
-        * `{Object}` next - Next component props.
+        * `{Kefir.Observable<props>}` props$ - Previous component props.
     * Returns:
-        * `{Kefir.Observable}` Observable of events from the element. Should ends when the element is updated, allowing the events to be rebound. Can also simply emit the component's actions, providing compatibility with React or virtual-dom based rendering. If the previous render stream never ends, `events` will never be called.
-
-            When the next `render$` stream is generated, the previous stream is unsubscribed, ensuring all cleanup code is called. This allows animations to terminate midway.
+        * `{Kefir.Observable}` Observable of renders from the element.
 * `{Function}` children - `children$` stream returning function. Called once, when the component is mounted, passing the component element `el`.
     * Parameters:
         * `{Element}` el - Component element.
