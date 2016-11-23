@@ -14,7 +14,7 @@ export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key
     let childProps$ = modifyChildProps(props$);
 
     if (key && element.hasAttribute(KEY_ATTRIBUTE)) {
-        if ('@key' === key) {
+        if ('@@key' === key) {
             childProps$ = childProps$.map(R.prop(element.getAttribute(KEY_ATTRIBUTE)));
         } else {
             childProps$ = childProps$.map(R.find(
