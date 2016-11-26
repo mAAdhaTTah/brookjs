@@ -109,7 +109,7 @@ describe('component', function() {
 
             beforeEach(() => {
                 render = sinon.spy(() => never());
-                setup({ render: R.curryN(3, render) });
+                setup({ render: R.curryN(2, render) });
             });
 
             it('should throw if not a function', () => {
@@ -120,27 +120,15 @@ describe('component', function() {
                 });
             });
 
-            it('should get called with el, prev, & next', () => {
-                const next = {
-                    type: 'img',
-                    text: 'House'
-                };
-
+            it('should get called with el & modified props$', () => {
                 const value = sinon.spy();
                 sub = instance.observe({ value });
 
-                pluggable$.plug(constant(next));
+                let [el/*, props*/] = render.args[0];
 
-                expect(render).to.have.callCount(2);
-                render.args.forEach(call => {
-                    expect(call.length).to.equal(3);
-                });
-
-                let [el, init, nex] = render.args[1];
-
+                expect(render).to.have.callCount(1);
                 expect(el).to.equal(fixture);
-                expect(init).to.equal(initial);
-                expect(nex).to.equal(next);
+                // expect(props).to.equal(props$); @todo validate stream
             });
         });
 
@@ -201,12 +189,7 @@ describe('component', function() {
                 });
             });
 
-            it('should call shouldUpdate immediately with two equal params', function() {
-                sub = instance.observe({ value: R.identity });
-
-                expect(shouldUpdate).to.have.callCount(1);
-                expect(shouldUpdate).to.have.been.calledWithExactly(initial, initial);
-            });
+            it.skip('should be called with previous and next props');
         });
     });
 

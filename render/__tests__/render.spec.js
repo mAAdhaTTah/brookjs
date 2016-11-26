@@ -7,6 +7,8 @@ import sinonChai from 'sinon-chai';
 
 import render from '../';
 
+import { constant, pool } from 'kefir';
+
 chai.use(sinonChai);
 chai.use(dom);
 
@@ -15,9 +17,10 @@ describe('render', function() {
         type: 'text',
         text: 'Hello world!'
     };
-    let template, next, fixture, generator;
+    let template, next, fixture, generator, props$;
 
     beforeEach(function() {
+        props$ = pool();
         next = {
             type: 'image',
             text: 'A picture'
@@ -39,10 +42,13 @@ describe('render', function() {
         });
     });
 
-    it('should update element with new state', function(done) {
-        let render$ = generator(fixture, initial, next);
+    it('should update element with new state', done => {
+        const render$ = generator(fixture, props$);
 
-        render$.observe({ end: () => {
+        render$.observe({});
+        props$.plug(constant(next));
+
+        requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
             expect(template).to.have.been.calledWithExactly(next);
 
@@ -52,6 +58,6 @@ describe('render', function() {
             expect(fixture).to.have.text(next.text);
 
             done();
-        } });
+        });
     });
 });

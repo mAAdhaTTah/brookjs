@@ -35,7 +35,7 @@ export default function component(config) {
         // Validate render function.
         assert.equal(typeof render, 'function', '`render` should be a function');
         assert.equal(typeof render({}), 'function', '`render` should be curried');
-        assert.equal(render.length, 2, '`render` should take 3 arguments');
+        assert.equal(render.length, 2, '`render` should take 2 arguments');
 
         // Validate children$ stream generator.
         assert.ok(children, '`children` should be a function');
