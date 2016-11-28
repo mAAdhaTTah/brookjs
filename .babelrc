@@ -4,13 +4,23 @@
     "transform-array-from",
     "transform-object-assign"
   ],
-  "presets": [
-    ["es2015", { "loose": false, "modules": false }]
-  ],
   "env": {
     "test": {
       "plugins": [
         "istanbul"
+      ],
+      "presets": [
+        ["es2015", { "loose": false, "modules": false }]
+      ]
+    },
+    "commonjs": {
+      "presets": [
+        ["es2015", { "loose": false, "modules": "commonjs" }]
+      ]
+    },
+    "es": {
+      "presets": [
+        ["es2015", { "loose": false, "modules": false }]
       ]
     }
   }

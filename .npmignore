@@ -4,5 +4,5 @@
 .gitignore
 karma.conf.js
 webpack.config.js
-**/test
-**/README.md
+**/__tests__
+docs
