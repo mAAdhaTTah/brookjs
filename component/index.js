@@ -1,111 +1,87 @@
-import R, {
-    __,
-    apply,
-    equals,
-    head,
-    identity,
-    ifElse,
-    length,
-    merge,
-    pipe,
-    repeat
-} from 'ramda';
+import R from 'ramda';
 import assert from 'assert';
-import { constant, Observable } from 'kefir';
-import renderGenerator from './render';
-import downstreams from './downstreams';
-import bindEvents, { DEPRECATED_EVENT_ATTRIBUTE } from './events';
-
-const defaults = {
-    events: {},
-    shouldUpdate: R.T
-};
-
-let checked = false;
+import { Observable, merge, never } from 'kefir';
 
 /**
  * Create a new Component with the provided configuration.
  *
  * @param {Object} config - Component configuration.
- * @param {Object} config.events - Events mapping
- * @param {Function} config.render - Render function.
- * @param {Function} config.shouldUpdate - Whether the component should rerender.
- * @param {Object[]} [config.subcomponents] - Subcomponent declarations.
- * @param {Function} [config.template] - String-returning template function.
+ * @param {Function} [config.combinator] - Called with component streams, returns combined stream.
+ * @param {Function} [config.events] - `events$` stream generating function.
+ * @param {Function} [config.render] - `render$` stream generating function.
+ * @param {Function} [config.shouldUpdate] - Whether the component should rerender.
  * @returns {factory} Component factory function.
  * @factory
  */
 export default function component(config) {
-    let { events, onMount, render, subcomponents, shouldUpdate, template } = merge(defaults, config);
+    let {
+        children = R.always(never()),
+        combinator = R.pipe(R.values, merge),
+        events = R.always(never()),
+        onMount = R.always(never()),
+        render = R.curryN(2, R.always(never())),
+        shouldUpdate = R.T } = config;
 
     if (process.env.NODE_ENV !== 'production') {
-        assert.ok(typeof events === 'object', 'events is not an object');
+        // Validate combinator
+        assert.equal(typeof combinator, 'function', '`combinator` should be a function');
 
-        for (let key in events) {
-            if (events.hasOwnProperty(key)) {
-                assert.ok(typeof events[key] === 'function', `events[${key}] is not a function`);
-            }
-        }
+        // Validate events function.
+        assert.equal(typeof events, 'function', '`events` should be a function');
 
-        if (onMount) {
-            assert.ok(typeof onMount === 'function', 'onMount should be a function');
-        }
+        // Validate onMount$ stream generator.
+        assert.ok(typeof onMount === 'function', 'onMount should be a function');
 
+        // Validate render function.
+        assert.equal(typeof render, 'function', '`render` should be a function');
+        assert.equal(typeof render({}), 'function', '`render` should be curried');
+        assert.equal(render.length, 2, '`render` should take 2 arguments');
+
+        // Validate children$ stream generator.
+        assert.ok(children, '`children` should be a function');
+
+        // Validate shouldUpdate filter.
         assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
-
-        if (template) {
-            assert.ok(typeof template === 'function', 'template should be a function');
-        }
     }
 
     /**
      * Component factory function.
      *
      * @param {Element} el - Component element.
-     * @param {Observable} state$ - Initial component state or observable of state.
+     * @param {Observable} props$ - Observable of component props.
      * @returns {Observable} Component instance.
      */
-    return function factory(el, state$) {
+    return R.curry((el, props$) => {
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
-            assert.ok(state$ instanceof Observable, '`instance` is not a `Kefir.Observable`');
-
-            if (!checked) {
-                const elements = document.querySelectorAll(`[${DEPRECATED_EVENT_ATTRIBUTE}]`);
-
-                if (elements.length) {
-                    console.warn('deprecated: elements should use container attribute & hbs helpers', elements);
-                }
-
-                checked = true;
-            }
+            assert.ok(props$ instanceof Observable, '`props$` is not a `Kefir.Observable`');
         }
 
-        const api = { el };
-
-        let events$ = state$
+        const children$ = children(el, props$);
+        const events$ = events(el);
+        const render$ = render(el, props$
             .slidingWindow(2)
-            .map(ifElse(pipe(length, equals(2)), identity, pipe(head, repeat(__, 2))))
-            .filter(apply(shouldUpdate))
-            .map(apply(renderGenerator({ api, el, template, render })))
-            .map(render$ => render$
-                    .ignoreValues()
-                    .ignoreErrors()
-                    .beforeEnd(() =>
-                        bindEvents(events, el))
-            )
-            .flatMapLatest()
-            .merge(constant(bindEvents(events, el)))
-            .flatMapLatest();
+            .map(R.ifElse(
+                R.pipe(R.length, R.equals(2)),
+                R.identity,
+                R.pipe(R.head, R.repeat(R.__, 2))))
+            .filter(R.apply(shouldUpdate))
+            .map(R.last));
+        const onMount$ = onMount(el, props$);
 
-        if (subcomponents) {
-            events$ = events$.merge(downstreams(subcomponents, el, state$));
+        if (process.env.NODE_ENV !== 'production') {
+            assert.ok(children$ instanceof Observable, '`children$` is not a `Kefir.Observable`');
+            assert.ok(events$ instanceof Observable, '`events$` is not a `Kefir.Observable`');
+            assert.ok(render$ instanceof Observable, '`render$` is not a `Kefir.Observable`');
+            assert.ok(onMount$ instanceof Observable, '`onMount$` is not a `Kefir.Observable`');
         }
 
-        if (onMount) {
-            events$ = events$.merge(onMount(api, state$));
+        const instance$ = combinator({ children$, events$, render$, onMount$ });
+
+        if (process.env.NODE_ENV !== 'production') {
+            assert.ok(instance$ instanceof Observable, '`instance$` is not a `Kefir.Observable`');
         }
 
-        return events$;
-    };
+        return instance$;
+    });
 };

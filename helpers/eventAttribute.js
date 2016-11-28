@@ -1,4 +1,4 @@
-import { EVENT_ATTRIBUTES } from '../events';
+import { EVENT_ATTRIBUTES } from '../constants';
 
 /**
  * Generates HTML event attribute for an element.

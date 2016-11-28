@@ -46,7 +46,7 @@
   "dependencies": {
     "kefir": "^3.3.0",
     "morphdom": "^2.0.1",
-    "ramda": "^0.21.0",
+    "ramda": "^0.22.1",
     "redux": "^3.5.2"
   }
 }

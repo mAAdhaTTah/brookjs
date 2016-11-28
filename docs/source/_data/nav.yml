@@ -1,0 +1,16 @@
+- title: Introduction
+  items:
+  - id: index
+    title: Meet brookjs
+- title: Modules
+  items:
+    - id: component
+      title: component
+    - id: observeDelta
+      title: observeDelta
+    - id: events
+      title: events
+    - id: render
+      title: render
+    - id: children
+      title: children

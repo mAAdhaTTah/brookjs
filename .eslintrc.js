@@ -12,5 +12,8 @@ module.exports = {
         node: true,
         browser: true
     },
-    extends: 'valtech'
+    extends: 'valtech',
+    rules: {
+        'wrap-iife': [2, 'inside']
+    }
 };

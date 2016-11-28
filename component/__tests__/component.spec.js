@@ -2,24 +2,21 @@
 import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
-import { constant, Observable, pool } from 'kefir';
-import { F, identity, map } from 'ramda';
+import R from 'ramda';
+import { constant, Observable, never, pool } from 'kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import dom from 'chai-dom';
-import simulant from 'simulant';
 
 import component from '../index';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, clickEvent } from '../events/index';
 
 chai.use(dom);
 chai.use(sinonChai);
 
 describe('component', function() {
-    let factory, fixture, state$, instance, initial, sub;
-    let fixturize = identity;
+    let factory, fixture, pluggable$, props$, instance, initial, sub;
 
     function setup (config = {}) {
         initial = {
@@ -33,12 +30,12 @@ describe('component', function() {
         fixture.classList.add(initial.type);
         fixture.textContent = initial.text;
 
-        fixture = fixturize(fixture);
+        pluggable$ = pool();
+        pluggable$.plug(constant(initial));
 
-        state$ = pool();
-        state$.plug(constant(initial));
+        props$ = pluggable$.toProperty();
 
-        instance = factory(fixture, state$);
+        instance = factory(fixture, props$);
     }
 
     describe('module', function() {
@@ -61,7 +58,7 @@ describe('component', function() {
         });
 
         it('should require an HTMLElement', function() {
-            const invalid = [{}, 'string', 2, true, [], identity];
+            const invalid = [{}, 'string', 2, true, [], R.identity];
 
             invalid.forEach(el => {
                 expect(() => factory(el, {})).to.throw(AssertionError);
@@ -86,46 +83,52 @@ describe('component', function() {
             let events;
 
             beforeEach(function() {
-                events = { onclick: map(clickEvent) };
-                fixturize = fixture => {
-                    fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
-                    fixture.setAttribute(EVENT_ATTRIBUTES.click, Object.keys(events).pop());
-                    document.body.appendChild(fixture);
-
-                    return fixture;
-                };
-
+                events = sinon.spy(() => never());
                 setup({ events });
+                document.body.appendChild(fixture);
             });
 
-            it('should throw without an object', function() {
-                const invalid = ['string', 2, true, identity];
+            it('should throw without a function', function () {
+                const invalid = ['string', 2, true, {}];
 
                 invalid.forEach(vnts => {
                     expect(() => component({ events: vnts }), `${typeof vnts} did not throw`).to.throw(AssertionError);
                 });
             });
 
-            it('should throw without a function', function() {
-                const invalid = [{}, 'string', 2, true, []];
-
-                invalid.forEach(cb => {
-                    expect(() => component({ events: { cb } }), `${typeof cb} did not throw`).to.throw(AssertionError);
-                });
-            });
-
-            it('should emit DOM event', function() {
-                const value = sinon.spy();
-                sub = instance.observe({ value });
-
-                const event = simulant.fire(fixture, 'click');
-
-                expect(value).to.have.been.calledWithMatch(clickEvent(event));
-            });
+            it.skip('should get called on mount with el');
+            it.skip('should get called on render end with el');
 
             afterEach(function() {
                 document.body.removeChild(fixture);
-                fixturize = identity;
+            });
+        });
+
+        describe('render', () => {
+            let render;
+
+            beforeEach(() => {
+                render = sinon.spy(() => never());
+                setup({ render: R.curryN(2, render) });
+            });
+
+            it('should throw if not a function', () => {
+                const invalid = ['string', 2, true, {}];
+
+                invalid.forEach(rndr => {
+                    expect(() => component({ render: rndr }), `${typeof rndr} did not throw`).to.throw(AssertionError);
+                });
+            });
+
+            it('should get called with el & modified props$', () => {
+                const value = sinon.spy();
+                sub = instance.observe({ value });
+
+                let [el/*, props*/] = render.args[0];
+
+                expect(render).to.have.callCount(1);
+                expect(el).to.equal(fixture);
+                // expect(props).to.equal(props$); @todo validate stream
             });
         });
 
@@ -147,11 +150,11 @@ describe('component', function() {
                 });
             });
 
-            it('should call onMount once with api and state$', function() {
-                sub = instance.observe({ value: identity });
+            it('should call onMount once with el and props$', function() {
+                sub = instance.observe({ value: R.identity });
 
-                expect(onMount).to.have.been.calledOnce;
-                expect(onMount.args[0][1]).to.equal(state$);
+                expect(onMount).to.have.callCount(1);
+                expect(onMount).to.have.been.calledWithExactly(fixture, props$);
             });
 
             it('should propagate stream events', function() {
@@ -174,7 +177,7 @@ describe('component', function() {
             let shouldUpdate;
 
             beforeEach(function() {
-                shouldUpdate = sinon.spy(F);
+                shouldUpdate = sinon.spy(R.F);
                 setup({ shouldUpdate });
             });
 
@@ -186,52 +189,7 @@ describe('component', function() {
                 });
             });
 
-            it('should call shouldUpdate immediately with two equal params', function() {
-                sub = instance.observe({ value: identity });
-
-                expect(shouldUpdate).to.have.been.calledWithExactly(initial, initial);
-            });
-        });
-
-        describe('template', function() {
-            let template, next;
-
-            beforeEach(function() {
-                next = {
-                    type: 'image',
-                    text: 'A picture'
-                };
-                template = sinon.spy(() => '<div class="image">A picture</div>');
-
-                setup({ template });
-            });
-
-            it('should throw without function', function() {
-                const invalid = [{}, 'string', 2, true, []];
-
-                invalid.forEach(templ => {
-                    expect(() => component({ template: templ })).to.throw(AssertionError);
-                });
-            });
-
-            it('should update element with new state', function(done) {
-                sub = instance.observe();
-                state$.plug(constant(next));
-
-                // Have to wait for render.
-                requestAnimationFrame(() => {
-                    // Delay a bit to ensure render is complete.
-                    setTimeout(() => {
-                        expect(template).to.have.been.calledOnce;
-                        expect(template).to.have.been.calledWithExactly(next);
-                        expect(fixture).to.not.have.class('text');
-                        expect(fixture).to.have.class('image');
-                        expect(fixture).to.have.text('A picture');
-
-                        done();
-                    }, 50);
-                });
-            });
+            it.skip('should be called with previous and next props');
         });
     });
 
