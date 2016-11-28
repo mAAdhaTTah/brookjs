@@ -31,4 +31,7 @@ node_modules
 # ESLint cache
 .eslintcache
 
-# Created by .ignore support plugin (hsz.mobi)
+# Distribution Files
+es
+dist
+cjs
