@@ -2,16 +2,16 @@
 
 [![Build Status](https://travis-ci.org/valtech-nyc/brookjs.svg?branch=master)](https://travis-ci.org/valtech-nyc/brookjs)
 
-**Note: Early alpha. Expect breaking changes before version 0.1.0. See [semver](#semver) policy below.**
-
 # Requirements
 
-`brookjs` is distributed on GitHub as an ES6 module. In order to use it in a browser, bundle the application with [`webpack`][webpack] or [`browserify`][browserify] and ensure [`babel`][babel] transpiles `brookjs`. In addition, `brookjs` uses new JavaScript features that require polyfills transforms in older environments, including:
+`brookjs` is distributed on npm. In order to use it in a browser, bundle the application with [`webpack`][webpack] or [`browserify`][browserify]. In addition, `brookjs` uses new JavaScript features that require polyfills transforms in older environments, including:
 
 * `WeakMap`
 * `Object.assign`
 * `Array.from`
 * `MutationObserver`
+
+`Object.assign` & `Array.from` are transpiled with a pair of babel plugins, so polyfills for `WeakMap` & `MutationObserver` are required.
 
 # Documentation
 
@@ -19,19 +19,16 @@ Full documentation for `brookjs` can be found [here][docs].
 
 # Quick Start
 
-You can install from github with npm:
+Install with npm:
 
 ```bash
-npm install --save valtech-nyc/brookjs#<commitsha>
+npm install --save brookjs
 ```
 
-Grab the latest commit sha from GitHub and replace `<commitsha>` in the command above.
-
-# Semver
-
-`brookjs` modules adhere to [semver][]. Expect breaking changes before `v0.1.0` and the first public release to npm.
+By default, the `package.json` points to the CommonJS version (`cjs/`) for node compatibility, but an ES6 module version (`es/`) and a UMD version (`dist/`) are provided.
 
   [webpack]: https://webpack.github.io/
   [browserify]: http://browserify.org/
   [babel]: https://babeljs.io/
   [semver]: http://semver.org/
+  [docs]: https://valtech-nyc.github.io/brookjs/
