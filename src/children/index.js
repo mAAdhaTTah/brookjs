@@ -86,7 +86,7 @@ export default function children(config) {
              *
              * Filters out children that are under other containers.
              */
-            const els$ = constant(Array.from(element.querySelectorAll(`[${containerAttribute(container)}]`)))
+            const els$ = constant(element.querySelectorAll(`[${containerAttribute(container)}]`))
                 .flatten()
                 .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)))
                 .map(createInstanceWithProps)
