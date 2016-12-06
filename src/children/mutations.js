@@ -1,3 +1,4 @@
+import R from 'ramda';
 import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import { stream } from 'kefir';
 import { nodeAdded, nodeRemoved } from './actions';
@@ -11,7 +12,6 @@ import { getContainerNode } from './util';
  */
 function isRelevantNode(node) {
     return !!(node.hasAttribute && node.hasAttribute(CONTAINER_ATTRIBUTE));
-
 }
 
 /**
@@ -25,7 +25,7 @@ export default stream(emitter => {
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             // @todo this logic could be much better
-            Array.from(mutation.addedNodes).forEach(node => {
+            R.forEach(node => {
                 if (!node.querySelectorAll) {
                     return;
                 }
@@ -33,7 +33,7 @@ export default stream(emitter => {
                 if (isRelevantNode(node)) {
                     emitter.value(nodeAdded(mutation.target, node));
                 } else {
-                    Array.from(node.querySelectorAll(`[${CONTAINER_ATTRIBUTE}]`)).forEach(container => {
+                    R.forEach(container => {
                         let parent = container.parentNode;
 
                         while (parent && parent !== node && !isRelevantNode(parent)) {
@@ -43,11 +43,11 @@ export default stream(emitter => {
                         if (parent && parent === node) {
                             emitter.value(nodeAdded(mutation.target, container));
                         }
-                    });
+                    }, node.querySelectorAll(`[${CONTAINER_ATTRIBUTE}]`));
                 }
-            });
+            }, mutation.addedNodes);
 
-            Array.from(mutation.removedNodes).forEach(node => {
+            R.forEach(node => {
                 if (!node.querySelectorAll) {
                     return;
                 }
@@ -55,7 +55,7 @@ export default stream(emitter => {
                 if (isRelevantNode(node)) {
                     emitter.value(nodeRemoved(mutation.target, node));
                 } else {
-                    Array.from(node.querySelectorAll(`[${CONTAINER_ATTRIBUTE}]`)).forEach(container => {
+                    R.forEach(container => {
                         let parent = container.parentNode;
 
                         while (parent && parent !== node && !isRelevantNode(parent)) {
@@ -65,9 +65,9 @@ export default stream(emitter => {
                         if (parent && parent === node) {
                             emitter.value(nodeRemoved(mutation.target, container));
                         }
-                    });
+                    }, node.querySelectorAll(`[${CONTAINER_ATTRIBUTE}]`));
                 }
-            });
+            }, mutation.removedNodes);
         });
     });
 

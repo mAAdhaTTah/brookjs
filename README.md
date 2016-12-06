@@ -8,7 +8,6 @@
 
 * `WeakMap`
 * `Object.assign`
-* `Array.from`
 * `MutationObserver`
 
 `Object.assign` & `Array.from` are transpiled with a pair of babel plugins, so polyfills for `WeakMap` & `MutationObserver` are required.
