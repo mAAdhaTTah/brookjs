@@ -76,8 +76,10 @@ export const renderFromHTML = R.curry((el, html) =>
             onBeforeElUpdated: function blackboxContainer(fromEl, toEl) {
                 // Update the contents of the main element...
                 if (fromEl === el &&
-                    // ... unless the Container attribute has changed.
-                    el.getAttribute(CONTAINER_ATTRIBUTE) === toEl.getAttribute(CONTAINER_ATTRIBUTE)
+                    // ... unless the Container attribute has changed...
+                    el.getAttribute(CONTAINER_ATTRIBUTE) === toEl.getAttribute(CONTAINER_ATTRIBUTE) &&
+                    // or, if it has a key attribute, that has changed too.
+                    (el.hasAttribute(KEY_ATTRIBUTE) ? el.getAttribute(KEY_ATTRIBUTE) === toEl.getAttribute(KEY_ATTRIBUTE) : true)
                 ) {
                     return true;
                 }
@@ -101,7 +103,7 @@ export const renderFromHTML = R.curry((el, html) =>
                 // expensive. Additionally, this allows the
                 // MutationObserver to continue to only worry about
                 // add/remove operations instead of attribute mutations.
-                if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE)) {
+                if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE) || el.getAttribute(KEY_ATTRIBUTE) !== toEl.getAttribute(KEY_ATTRIBUTE)) {
                     fromEl.parentNode.replaceChild(toEl, fromEl);
                 }
 
