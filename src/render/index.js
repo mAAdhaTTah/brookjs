@@ -78,8 +78,9 @@ export const renderFromHTML = R.curry((el, html) =>
                 if (fromEl === el &&
                     // ... unless the Container attribute has changed...
                     el.getAttribute(CONTAINER_ATTRIBUTE) === toEl.getAttribute(CONTAINER_ATTRIBUTE) &&
-                    // or, if it has a key attribute, that has changed too.
-                    (el.hasAttribute(KEY_ATTRIBUTE) ? el.getAttribute(KEY_ATTRIBUTE) === toEl.getAttribute(KEY_ATTRIBUTE) : true)
+                    // or, if it has a Key attribute, that has changed too.
+                    // Note: If there is no key attribute for this element, both of these will be `null`.
+                    el.getAttribute(KEY_ATTRIBUTE) === toEl.getAttribute(KEY_ATTRIBUTE)
                 ) {
                     return true;
                 }
@@ -103,7 +104,9 @@ export const renderFromHTML = R.curry((el, html) =>
                 // expensive. Additionally, this allows the
                 // MutationObserver to continue to only worry about
                 // add/remove operations instead of attribute mutations.
-                if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE) || el.getAttribute(KEY_ATTRIBUTE) !== toEl.getAttribute(KEY_ATTRIBUTE)) {
+                if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE) ||
+                    el.getAttribute(KEY_ATTRIBUTE) !== toEl.getAttribute(KEY_ATTRIBUTE)
+                ) {
                     fromEl.parentNode.replaceChild(toEl, fromEl);
                 }
 
