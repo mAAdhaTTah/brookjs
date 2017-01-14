@@ -26,8 +26,13 @@ npm install --save brookjs
 
 By default, the `package.json` points to the CommonJS version (`cjs/`) for node compatibility, but an ES6 module version (`es/`) and a UMD version (`dist/`) are provided.
 
+# Changelog
+
+The changelog can be found [here][changelog].
+
   [webpack]: https://webpack.github.io/
   [browserify]: http://browserify.org/
   [babel]: https://babeljs.io/
   [semver]: http://semver.org/
   [docs]: https://valtech-nyc.github.io/brookjs/
+  [changelog]: valtech-nyc.github.io/brookjs/changelog.html
