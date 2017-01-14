@@ -74,14 +74,38 @@ export const renderFromHTML = R.curry((el, html) =>
                 return '';
             },
             onBeforeElUpdated: function blackboxContainer(fromEl, toEl) {
-                // Update the contents of the main element...
-                if (fromEl === el &&
-                    // ... unless the Container attribute has changed...
-                    el.getAttribute(CONTAINER_ATTRIBUTE) === toEl.getAttribute(CONTAINER_ATTRIBUTE) &&
-                    // or, if it has a Key attribute, that has changed too.
-                    // Note: If there is no key attribute for this element, both of these will be `null`.
-                    el.getAttribute(KEY_ATTRIBUTE) === toEl.getAttribute(KEY_ATTRIBUTE)
-                ) {
+                /**
+                 * Always update the top level element.
+                 *
+                 * We're making a few assumptions about the main element
+                 * and its relationship to the returned template:
+                 *
+                 * 1. The container type of the template already matches
+                 * the container type of the element. This should be matched
+                 * correctly when the element is mounted.
+                 *
+                 * 2. The key of the template already matches the key of
+                 * the element. If there is no key on either, then the
+                 * attribute is `null`. This should be matched correctly
+                 * using `modifyChildProps` to emit the props with the
+                 * correct key, assuming the use of the default render.
+                 *
+                 * These assumptions get verified below outside of production.
+                 */
+                if (fromEl === el) {
+                    if (process.env.NODE_ENV !== 'production') {
+                        assert.equal(
+                            el.getAttribute(CONTAINER_ATTRIBUTE),
+                            fromEl.getAttribute(CONTAINER_ATTRIBUTE),
+                            `The template ${CONTAINER_ATTRIBUTE} should match the root element ${CONTAINER_ATTRIBUTE}.`
+                        );
+                        assert.equal(
+                            el.getAttribute(KEY_ATTRIBUTE),
+                            fromEl.getAttribute(KEY_ATTRIBUTE),
+                            `The template ${KEY_ATTRIBUTE} should match the root element ${KEY_ATTRIBUTE}.`
+                        );
+                    }
+
                     return true;
                 }
 
@@ -93,19 +117,18 @@ export const renderFromHTML = R.curry((el, html) =>
                 /**
                  * If it is a container, we're going to do our own updating
                  * and tell morphdom to move on.
+                 *
+                 * If the container has changed, swap element ourselves.
+                 * This is similar to how React handles it: If a subtree
+                 * is a different component, it just prunes and replaces,
+                 * since the subtree could be different in myriad different
+                 * ways and a full diff would be computationally
+                 * expensive. Additionally, this allows the MutationObserver
+                 * to continue to only worry about add/remove operations
+                 * instead of attribute mutations.
                  */
-                const containerKey = fromEl.getAttribute(CONTAINER_ATTRIBUTE);
-
-                // If the container has changed, swap element ourselves.
-                // This is similar to how React handles it: If a subtree
-                // is a different component, it just prunes and replaces,
-                // since the subtree could be different in myriad different
-                // ways and a full diff would be computationally
-                // expensive. Additionally, this allows the
-                // MutationObserver to continue to only worry about
-                // add/remove operations instead of attribute mutations.
-                if (containerKey !== toEl.getAttribute(CONTAINER_ATTRIBUTE) ||
-                    el.getAttribute(KEY_ATTRIBUTE) !== toEl.getAttribute(KEY_ATTRIBUTE)
+                if (fromEl.getAttribute(CONTAINER_ATTRIBUTE) !== toEl.getAttribute(CONTAINER_ATTRIBUTE) ||
+                    fromEl.getAttribute(KEY_ATTRIBUTE) !== toEl.getAttribute(KEY_ATTRIBUTE)
                 ) {
                     fromEl.parentNode.replaceChild(toEl, fromEl);
                 }
