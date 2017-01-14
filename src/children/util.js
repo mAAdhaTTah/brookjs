@@ -2,8 +2,6 @@ import R from 'ramda';
 import { CONTAINER_ATTRIBUTE } from '../constants';
 import { NODE_ADDED, NODE_REMOVED } from './actions';
 
-const sources = new WeakMap();
-
 export const isChildNode = el => R.converge(R.or, [
     R.pipe(R.path(['payload', 'parent']), R.equals(el)),
     R.pipe(R.path(['payload', 'target']), R.equals(el)),
@@ -37,12 +35,4 @@ export function getContainerNode(parent) {
     }
 
     return getContainerNode(parent.parentNode);
-}
-
-export function setInstanceForElement(element, instance$) {
-    sources.set(element, instance$);
-}
-
-export function getInstanceForElement(element) {
-    return sources.get(element);
 }
