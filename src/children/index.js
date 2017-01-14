@@ -1,29 +1,29 @@
 import assert from 'assert';
 import R from 'ramda';
-import { containerAttribute } from '../helpers';
 import { constant, merge, pool } from 'kefir';
-import { defaults, createInstance, getContainerNode,
-    getInstanceForElement, containerMatches, isAddedChildNode,
-    isRemovedChildNode
+import child from './child';
+import { containerAttribute } from '../helpers';
+import { getContainerNode, getInstanceForElement,
+    containerMatches, isAddedChildNode, isRemovedChildNode
 } from './util';
 import mutations$ from './mutations';
 
 /**
  * Generates a function to create new children streams.
  *
- * @param {Object} config - Children configuration.
+ * @param {Object} factories - Children configuration.
  * @returns {Function} Curried children stream generator.
  */
-export default function children(config) {
+export default function children(factories) {
     if (process.env.NODE_ENV !== 'production') {
-        assert.equal(typeof config, 'object', '`config` should be an object');
+        assert.equal(typeof factories, 'object', '`factories` should be an object');
 
-        for (let container in config) {
-            if (!config.hasOwnProperty(container)) {
+        for (let container in factories) {
+            if (!factories.hasOwnProperty(container)) {
                 continue;
             }
 
-            assert.ok(typeof config[container] === 'function' || typeof config[container] === 'object', `${container} should be a function or object`);
+            assert.ok(typeof factories[container] === 'function' || typeof factories[container] === 'object', `${container} should be a function or object`);
         }
     }
 
@@ -34,23 +34,14 @@ export default function children(config) {
      * or a configuration object and the children$ stream will work
      * the same both ways.
      */
-    for (let container in config) {
-        if (typeof config[container] === 'function') {
-            config[container] = R.merge(defaults, { factory: config[container] });
-        } else {
-            config[container] = R.merge(defaults, config[container]);
+    for (let container in factories) {
+        let definition = factories[container];
+
+        if (typeof definition === 'function') {
+            definition = { factory: child };
         }
 
-        if (process.env.NODE_ENV !== 'production') {
-            let { factory, modifyChildProps, preplug, key } = config[container];
-
-            assert.equal(typeof factory, 'function', `factory for ${container} should be a function`);
-            assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${container} should be a function`);
-            assert.equal(typeof preplug, 'function', `preplug for ${container} should be a function`);
-            assert.equal(typeof key, 'string', `key for ${container} should be a string`);
-        }
-
-        config[container] = createInstance(config[container]);
+        factories[container] = child(R.merge({ container }, definition));
     }
 
     /**
@@ -68,17 +59,12 @@ export default function children(config) {
             .map(R.prop('payload'));
 
         /**
-         * Bind createInstance functions with props$ stream.
-         */
-        let boundConfig = R.map(createInstance => createInstance(props$), config);
-
-        /**
          * Mixin object holds the pool stream for each key.
          *
          * Allows us to plug/unplug from each stream as
          * nodes are added and removed from the DOM.
          */
-        const mixin = R.fromPairs(R.toPairs(boundConfig).map(([container, createInstanceWithProps]) => {
+        const mixin = R.fromPairs(R.toPairs(factories).map(([container, factory]) => {
             let pool$ = pool();
 
             /**
@@ -89,13 +75,15 @@ export default function children(config) {
             const els$ = constant(element.querySelectorAll(`[${containerAttribute(container)}]`))
                 .flatten()
                 .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)))
-                .map(createInstanceWithProps)
+                .map(factory(R.__, props$))
                 .scan((source$, instance$) => source$.plug(instance$), pool$)
                 .ignoreValues();
 
             const added$ = nodeAddedMutationPayload$
                 .filter(containerMatches(container))
-                .scan((source$, { node }) => source$.plug(createInstanceWithProps(node)), pool$)
+                .map(R.prop('node'))
+                .map(factory(R.__, props$))
+                .scan((source$, instance) => source$.plug(instance), pool$)
                 .ignoreValues();
 
             const removed$ = nodeRemovedMutationPayload$
