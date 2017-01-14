@@ -44,7 +44,7 @@ describe('children', () => {
         expect(factory).to.have.been.calledWith(firstChild, props$);
 
         expect(modifyChildProps).to.have.callCount(1);
-        expect(modifyChildProps).to.have.been.calledWith(props$);
+        expect(modifyChildProps).to.have.been.calledWith(props$, '1');
 
         expect(preplug).to.have.callCount(1);
         expect(preplug).to.have.been.calledWith(child$);
@@ -71,7 +71,7 @@ describe('children', () => {
         let { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
         let sub = instance.observe();
 
-        let secondChild = createChild();
+        let secondChild = createChild('2');
         element.appendChild(secondChild);
 
         requestAnimationFrame(() => {
@@ -79,7 +79,7 @@ describe('children', () => {
             expect(factory).to.have.been.calledWith(secondChild, props$);
 
             expect(modifyChildProps).to.have.callCount(2);
-            expect(modifyChildProps).to.have.been.calledWith(props$);
+            expect(modifyChildProps).to.have.been.calledWith(props$, '2');
 
             expect(preplug).to.have.callCount(2);
             expect(preplug).to.have.been.calledWith(child$);
@@ -95,7 +95,7 @@ describe('children', () => {
         let sub = instance.observe();
 
         let nesting = document.createElement('div');
-        let secondChild = createChild();
+        let secondChild = createChild('2');
 
         nesting.appendChild(secondChild);
         element.appendChild(nesting);
@@ -105,7 +105,7 @@ describe('children', () => {
             expect(factory).to.have.been.calledWith(secondChild, props$);
 
             expect(modifyChildProps).to.have.callCount(2);
-            expect(modifyChildProps).to.have.been.calledWith(props$);
+            expect(modifyChildProps).to.have.been.calledWith(props$, '2');
 
             expect(preplug).to.have.callCount(2);
             expect(preplug).to.have.been.calledWith(child$);
@@ -121,7 +121,7 @@ describe('children', () => {
         const value = sinon.spy();
         let sub = instance.observe({ value });
 
-        let secondChild = createChild();
+        let secondChild = createChild('2');
         firstChild.appendChild(secondChild);
 
         requestAnimationFrame(() => {

@@ -10,10 +10,30 @@ export const defaults = {
     key: ''
 };
 
+/**
+ * Create a new children stream instance from the given configuration, props$ stream & element.
+ *
+ * @param {Function} factory - Instance factory function.
+ * @param {Function} modifyChildProps - Creates a new props$ stream for the child.
+ * @param {Function} preplug - Modify the child instance stream.
+ * @param {string} key - @deprecated.
+ * @param {Kefir.Observable} props$ - Parent's props stream.
+ * @param {Element} element - Child element.
+ * @returns {Kefir.Observable} Child instance.
+ */
 export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key }, props$, element) => {
-    let childProps$ = modifyChildProps(props$);
+    const hasKey = element.hasAttribute(KEY_ATTRIBUTE);
+    const keyAttr = element.getAttribute(KEY_ATTRIBUTE);
+    const useKey = key && hasKey;
 
-    if (key && element.hasAttribute(KEY_ATTRIBUTE)) {
+    let childProps$ = modifyChildProps(props$, keyAttr);
+
+    if (useKey) {
+        if (process.env.NODE_ENV !== 'production') {
+            console.warn(`Using key in children configuration is deprecated.
+Use the second parameter to modifyChildProps.`);
+        }
+
         if ('@@key' === key) {
             childProps$ = childProps$.map(R.prop(element.getAttribute(KEY_ATTRIBUTE)));
         } else {
@@ -32,7 +52,7 @@ export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key
 
     let instance$ = preplug(factory(element, childProps$));
 
-    if (key && element.hasAttribute(KEY_ATTRIBUTE)) {
+    if (useKey) {
         instance$ = instance$.map(action => Object.assign({}, action, {
             payload: Object.assign({}, action.payload, {
                 key: element.getAttribute(KEY_ATTRIBUTE)

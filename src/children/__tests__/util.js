@@ -1,8 +1,14 @@
 import R from 'ramda';
 import { pool } from 'kefir';
 import sinon from 'sinon';
+import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../constants';
 import children from '../';
 
+/**
+ * Create new children test fixture.
+ *
+ * @returns {Fixture} Children test fixture.
+ */
 export function createFixture() {
     let child$ = pool();
     let factory = sinon.spy(() => child$);
@@ -11,8 +17,8 @@ export function createFixture() {
     let generator = children({ child: { factory, modifyChildProps, preplug } });
 
     let element = document.createElement('div');
-    element.setAttribute('data-brk-container', 'parent');
-    let firstChild = createChild();
+    element.setAttribute(CONTAINER_ATTRIBUTE, 'parent');
+    let firstChild = createChild('1');
     element.appendChild(firstChild);
 
     let props$ = pool();
@@ -23,9 +29,17 @@ export function createFixture() {
     return { child$, factory, modifyChildProps, preplug, generator, element, firstChild, props$, instance };
 }
 
-export function createChild() {
+/**
+ * Create a new element with the provided key.
+ *
+ * @param {string} key - Child key.
+ * @returns {Element} New child element.
+ */
+export function createChild(key) {
     let child = document.createElement('div');
-    // @todo use common container attribute
-    child.setAttribute('data-brk-container', 'child');
+
+    child.setAttribute(CONTAINER_ATTRIBUTE, 'child');
+    child.setAttribute(KEY_ATTRIBUTE, key);
+
     return child;
 }
