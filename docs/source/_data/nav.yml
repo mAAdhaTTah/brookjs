@@ -2,6 +2,8 @@
   items:
   - id: index
     title: Meet brookjs
+  - id: changelog
+    title: Changelog
 - title: Modules
   items:
     - id: component
