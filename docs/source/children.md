@@ -50,46 +50,47 @@ or a configuration object for that component, which defines the behavior of the 
 ```js
 import children from 'brookjs/children';
 import { mapActionTo } from 'brookjs/helpers';
-import key from './key';
 
 export default children({
     kid: {
         // only required value.
         // factory function for child taking el & props$
         factory: kid,
-        // passed parents' `props$` stream.
+        // passed parents' `props$` stream & child key.
         // return value is passed to child factory.
-        modifyChildProps: props$ => props$.map(mapToChildProps),
+        // see below for key docuentation.
+        modifyChildProps: (props$, key) => props$.map(props => props.children[key]),
         // passed each child instance to modify child stream
         // return value is plugged into combined string (hence `preplug`)
-        preplug: kid$ => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION)),
-        // optional; used to differentiate between multiple child instances
-        // see below for details
-        key: 'id'
+        preplug: kid$ => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION))
     }
 });
 ```
 
 ## Handling Multiple Child Instances
 
-*Editor's Note: Yes, this needs to be simplified.*
-
-If a single component will have multiple instances of a child component as a direct child, those instances must be differentiated, like in an iterated list. The `key` property ensures the child component gets the correct props from its parent.
+If a single component will have multiple instances of a child component as a direct child, those instances must be differentiated. The `data-brk-key` attribute is used to distinguish them in the DOM, and the value of that attribute is passed to `modifyChildProps` along with the `props$ stream. Here's how it's intended to be used.
 
 First, an iterated child must have a `data-brk-key` attribute:
 
 ```handlebars
-<div data-brk-container="child" data-brk-key="{{kidKey}}"></div>
+<div data-brk-container="child" data-brk-key="{{id}}">{{label}}</div>
 ```
 
-In the parent, when rendering, pass in a key through Handlebars' partial properties:
+A helper is also provided for the `key` attribute:
+
+```handlebars
+<div {{container "child"}} {{key id}}>{{label}}</div>
+```
+
+The parent is then responsible for iterating over the props and rendering the children. 
 
 ```handlebars
 <div data-brk-container="parent">
     {{#each kids}}
-        {{> kid kidKey=this.id}}
+        {{> kid}}
     {{/each}}
 </div>
 ```
 
-Then, in the `children` stream, ensure the `props$` stream returned from `modifyChildProps` emits an `Array<childProps>`. The `children` factory will use the value provided for `key` to search the array for the matching object, whose `data-brk-key` matches `childProps[key]`.
+For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props. 
