@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { KEY_ATTRIBUTE } from '../constants';
+import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import { NODE_ADDED, NODE_REMOVED } from './actions';
 
 const sources = new WeakMap();
@@ -23,7 +23,7 @@ export const createInstance = R.curry(({ factory, modifyChildProps, preplug, key
         }
 
         // If the key isn't found, then the child is about to
-        // be removed, so don't dispatch props down the tream.
+        // be removed, so don't dispatch props down the stream.
         // @todo this seems suboptimal. how to handle iterated children?
         childProps$ = childProps$.filter(
             R.pipe(R.type, R.equals('Undefined'), R.not)
@@ -66,14 +66,14 @@ export const containerMatches = container => R.pipe(R.prop('container'), R.equal
  * Returns the container node of the provided node.
  *
  * @param {Node} parent - Parent node to check.
- * @returns {null|Node} Parent container node.
+ * @returns {null|Node} Parent containr node.
  */
 export function getContainerNode(parent) {
     if (!parent) {
         return null;
     }
 
-    if (parent.hasAttribute && parent.hasAttribute('data-brk-container')) {
+    if (parent.hasAttribute && parent.hasAttribute(CONTAINER_ATTRIBUTE)) {
         return parent;
     }
 
