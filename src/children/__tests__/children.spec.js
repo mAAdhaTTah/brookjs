@@ -135,18 +135,16 @@ describe('children', () => {
     });
 
     it('should unbind when element removed', done => {
-        let { instance, element, firstChild } = createFixture();
+        let { instance, element, firstChild, child$ } = createFixture();
         const value = sinon.spy();
+        const next = { type: 'ACTION' };
         let sub = instance.observe({ value });
 
         element.removeChild(firstChild);
 
         requestAnimationFrame(() => {
-            // Since we changed the implementation, we need to unwrap the
-            // combined stream to check the sources of the underlying pool.
-            // @todo figure out a better way to check this
-            // @todo w/o leaning on implementation details
-            expect(instance.child._curSources[0]._curSources.length).is.equal(0);
+            child$.plug(constant(next));
+            expect(value).to.have.callCount(0);
 
             sub.unsubscribe();
 

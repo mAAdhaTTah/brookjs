@@ -1,7 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
 import { KEY_ATTRIBUTE } from '../constants';
-import { setInstanceForElement } from './util';
 
 /**
  * Create a new children stream instance from the given configuration, props$ stream & element.
@@ -67,8 +66,6 @@ Use the second parameter to modifyChildProps.`);
                 })
             }));
         }
-
-        setInstanceForElement(element, instance$);
 
         return instance$;
     });
