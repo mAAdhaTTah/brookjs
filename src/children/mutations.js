@@ -5,12 +5,12 @@ import { nodeAdded, nodeRemoved } from './actions';
 import { getContainerNode } from './util';
 
 /**
- * Determines whether the node is relevant to stream consumers.
+ * Determines whether the node is a brook container node.
  *
  * @param {Node} node - Node to check.
  * @returns {boolean} Whether node is relevant to children$ streams.
  */
-function isRelevantNode(node) {
+function isContainerNode(node) {
     return !!(node.hasAttribute && node.hasAttribute(CONTAINER_ATTRIBUTE));
 }
 
@@ -30,13 +30,13 @@ export default stream(emitter => {
                     return;
                 }
 
-                if (isRelevantNode(node)) {
+                if (isContainerNode(node)) {
                     emitter.value(nodeAdded(mutation.target, node));
                 } else {
                     R.forEach(container => {
                         let parent = container.parentNode;
 
-                        while (parent && parent !== node && !isRelevantNode(parent)) {
+                        while (parent && parent !== node && !isContainerNode(parent)) {
                             parent = parent.parentNode;
                         }
 
@@ -52,13 +52,13 @@ export default stream(emitter => {
                     return;
                 }
 
-                if (isRelevantNode(node)) {
+                if (isContainerNode(node)) {
                     emitter.value(nodeRemoved(mutation.target, node));
                 } else {
                     R.forEach(container => {
                         let parent = container.parentNode;
 
-                        while (parent && parent !== node && !isRelevantNode(parent)) {
+                        while (parent && parent !== node && !isContainerNode(parent)) {
                             parent = parent.parentNode;
                         }
 
