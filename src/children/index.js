@@ -37,7 +37,7 @@ export default function children(factories) {
         let definition = factories[container];
 
         if (typeof definition === 'function') {
-            definition = { factory: child };
+            definition = { factory: definition };
         }
 
         factories[container] = child(R.merge({ container }, definition));
