@@ -6,6 +6,6 @@ import { CONTAINER_ATTRIBUTE } from '../constants';
  * @param {string} name - Container name.
  * @returns {string} Container attribute.
  */
-export default function container(name) {
+export default function containerAttribute(name) {
     return `${CONTAINER_ATTRIBUTE}="${name}"`;
 }

@@ -1,28 +1,9 @@
 import assert from 'assert';
+import { rafAction } from '../action';
 import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import R from 'ramda';
 import { stream } from 'kefir';
 import morphdom from 'morphdom';
-
-/**
- * Emitted on requestAnimationFrame callbacks.
- *
- * @type {string}
- */
-export const RAF = 'RAF';
-
-/**
- * Create a new raf action.
- *
- * @param {number} time - rAF time.
- * @returns {Action} raf Action.
- */
-export const rafAction = function rafAction(time) {
-    return {
-        type: RAF,
-        payload: { time }
-    };
-};
 
 /**
  * Stream of requestAnimationFrame events.
@@ -164,4 +145,4 @@ export default function render(template) {
      */
     return R.curry((el, props$) =>
         props$.map(template).flatMapLatest(renderFromHTML(el)));
-};
+}

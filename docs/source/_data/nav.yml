@@ -6,6 +6,8 @@
     title: Changelog
 - title: Modules
   items:
+    - id: action
+      title: action
     - id: component
       title: component
     - id: observeDelta

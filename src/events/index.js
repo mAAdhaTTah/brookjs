@@ -1,7 +1,7 @@
 import assert from 'assert';
 import R from 'ramda';
 import { merge, stream, never } from 'kefir';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../constants';
+import { CAPTURE, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 
 /**
  * Associates a DOM element with its dispatch function.
@@ -9,92 +9,6 @@ import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES } from '../constants';
  * @type {WeakMap}
  */
 const sources = new WeakMap();
-
-/**
- * Supported event constants.
- *
- * @type {string}
- */
-const BLUR = 'blur';
-const CHANGE = 'change';
-const CLICK = 'click';
-const CONTEXTMENU = 'contextmenu';
-const CUT = 'cut';
-const DBLCLICK = 'dblclick';
-const FOCUS = 'focus';
-const FOCUSIN = 'focusin';
-const FOCUSOUT = 'focusout';
-const INPUT = 'input';
-const KEYDOWN = 'keydown';
-const KEYPRESS = 'keypress';
-const KEYUP = 'keyup';
-const LOAD = 'load';
-const MOUSEDOWN = 'mousedown';
-const MOUSEUP = 'mouseup';
-const PASTE = 'paste';
-const RESIZE = 'resize';
-const SELECT = 'select';
-const SUBMIT = 'submit';
-const TOUCHCANCEL = 'touchcancel';
-const TOUCHEND = 'touchend';
-const TOUCHSTART = 'touchstart';
-
-export const SUPPORTED_EVENTS = [
-    BLUR,
-    CHANGE,
-    CLICK,
-    CONTEXTMENU,
-    CUT,
-    DBLCLICK,
-    FOCUS,
-    FOCUSIN,
-    FOCUSOUT,
-    INPUT,
-    KEYDOWN,
-    KEYPRESS,
-    KEYUP,
-    LOAD,
-    MOUSEDOWN,
-    MOUSEUP,
-    PASTE,
-    RESIZE,
-    SELECT,
-    SUBMIT,
-    TOUCHCANCEL,
-    TOUCHEND,
-    TOUCHSTART
-];
-
-/**
- * Whether the event listener should be captured.
- *
- * @type {Object}
- */
-const CAPTURE = {
-    [BLUR]: true,
-    [CHANGE]: true,
-    [CLICK]: false,
-    [CONTEXTMENU]: false,
-    [CUT]: false,
-    [DBLCLICK]: false,
-    [FOCUS]: true,
-    [FOCUSIN]: true,
-    [FOCUSOUT]: true,
-    [INPUT]: true,
-    [KEYDOWN]: false,
-    [KEYPRESS]: false,
-    [KEYUP]: false,
-    [LOAD]: true,
-    [MOUSEDOWN]: false,
-    [MOUSEUP]: false,
-    [PASTE]: false,
-    [RESIZE]: true,
-    [SELECT]: true,
-    [SUBMIT]: true,
-    [TOUCHCANCEL]: true,
-    [TOUCHEND]: true,
-    [TOUCHSTART]: true
-};
 
 /**
  * Check if any element in the capture area

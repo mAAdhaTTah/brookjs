@@ -2,9 +2,8 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 
 const common = {
-    entry: {},
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
@@ -17,7 +16,7 @@ const common = {
         ]
     },
     resolve: {
-        mainFields: ['jsnext:main', 'browser', 'main'],
+        mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
             handlebars: 'handlebars/dist/cjs/handlebars'
         }
@@ -27,11 +26,7 @@ const common = {
 switch (process.env.npm_lifecycle_event) {
     case 'test:unit':
         module.exports = merge({
-            plugins: [
-                new webpack.LoaderOptionsPlugin({
-                    debug: true
-                })
-            ]
+            devtool: 'inline-source-map'
         }, common);
         break;
     case 'build:umd:min':
@@ -42,9 +37,7 @@ switch (process.env.npm_lifecycle_event) {
             },
             plugins: [
                 new webpack.DefinePlugin({
-                    'process.env': {
-                        'NODE_ENV': JSON.stringify('production')
-                    }
+                    'process.env.NODE_ENV': JSON.stringify('production')
                 }),
                 new webpack.optimize.UglifyJsPlugin({})
             ]
@@ -58,9 +51,7 @@ switch (process.env.npm_lifecycle_event) {
             },
             plugins: [
                 new webpack.DefinePlugin({
-                    'process.env': {
-                        'NODE_ENV': JSON.stringify('production')
-                    }
+                    'process.env.NODE_ENV': JSON.stringify('production')
                 })
             ]
         }, common);
