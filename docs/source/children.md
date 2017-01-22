@@ -7,8 +7,6 @@ title: <code>children</code>
 
 # How to Use
 
-*Editor's Note: This whole process currently has to be handled manually, and is really the weakest part of the framework right now, as it's a really easy place to get things wrong. This will eventually be solved by handling this complexity with Handlebars-based templating.*
-
 ## Preparing the DOM
 
 When setting up the HTML for a component, the top-level element should have a `data-brk-container` with a unique name.
@@ -26,7 +24,7 @@ A helper is provided to make this easy to integrate with handlebars:
 This needs to be registered with the Handlebars runtime:
 
 ```js
-import { containerAttribute } from 'brookjs/hlepers'
+import { containerAttribute } from 'brookjs'
 import Handlebars from 'handlebars/runtime';
 
 Handlebars.registerHelper('container', containerAttribute);
@@ -69,7 +67,7 @@ export default children({
 
 ## Handling Multiple Child Instances
 
-If a single component will have multiple instances of a child component as a direct child, those instances must be differentiated. The `data-brk-key` attribute is used to distinguish them in the DOM, and the value of that attribute is passed to `modifyChildProps` along with the `props$ stream. Here's how it's intended to be used.
+If a single component will have multiple instances of a child component as a direct child, those instances must be differentiated. The `data-brk-key` attribute is used to distinguish them in the DOM, and the value of that attribute is passed to `modifyChildProps` along with the `props$` stream. Here's how it's intended to be used.
 
 First, an iterated child must have a `data-brk-key` attribute:
 
@@ -83,7 +81,16 @@ A helper is also provided for the `key` attribute:
 <div {{container "child"}} {{key id}}>{{label}}</div>
 ```
 
-The parent is then responsible for iterating over the props and rendering the children. 
+This also needs to be registered with the Handlebars runtime:
+
+```js
+import { keyAttribute } from 'brookjs'
+import Handlebars from 'handlebars/runtime';
+
+Handlebars.registerHelper('key', keyAttribute);
+```
+
+The parent is then responsible for iterating over the props and rendering the children.
 
 ```handlebars
 <div data-brk-container="parent">
@@ -93,4 +100,4 @@ The parent is then responsible for iterating over the props and rendering the ch
 </div>
 ```
 
-For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props. 
+For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props.
