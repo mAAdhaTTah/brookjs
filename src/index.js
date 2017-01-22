@@ -1,16 +1,19 @@
+import { RAF, rafAction } from './action';
 import children from './children';
 import combineActionReducers from './combineActionReducers';
 import component from './component';
 import events from './events';
 import observeDelta from './observeDelta';
-import helpers from './helpers';
-import bootstrap, { BROOKJS_INIT } from './bootstrap';
-import render from './render';
+import { containerAttribute, createFixture, eventAttribute,
+    mapActionTo } from './helpers';
+import render, { raf$, renderFromHTML } from './render';
 
-const brook = { bootstrap, children, combineActionReducers, component,
-    events, observeDelta, helpers, render, BROOKJS_INIT };
+const brook = { children, combineActionReducers, component, events,
+    observeDelta, containerAttribute, createFixture, eventAttribute,
+    mapActionTo, render, RAF, rafAction, raf$, renderFromHTML };
 
-export { brook, children, bootstrap, combineActionReducers,
-    component, events, observeDelta, helpers, render, BROOKJS_INIT };
+export { brook, children, combineActionReducers, component, events,
+    observeDelta, containerAttribute, createFixture, eventAttribute,
+    mapActionTo, render, RAF, rafAction, raf$, renderFromHTML };
 
 export default brook;
