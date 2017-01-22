@@ -15,11 +15,11 @@
     <nav class="menu-nav">
         {{#each site.data.nav as |section|}}
             <ul class="nav">
-                <span>{{section.title}}</span>
+                <span>{{{section.title}}}</span>
                 <ul class="nav">
                     {{#each section.items as |item|}}
                         <li>
-                            <a href="{{url_for item.id}}.html"{{#if (compare item.id page.id)}} class="active"{{/if}}>{{item.title}}</a>
+                            <a href="{{url_for item.id}}.html"{{#if (compare item.id page.id)}} class="active"{{/if}}>{{{item.title}}}</a>
                         </li>
                     {{/each}}
                 </ul>

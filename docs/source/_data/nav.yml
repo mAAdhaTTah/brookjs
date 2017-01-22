@@ -1,9 +1,19 @@
 - title: Introduction
   items:
   - id: index
-    title: Meet brookjs
+    title: Meet <code>brookjs</code>
   - id: changelog
     title: Changelog
+- title: Writing a <code>brookjs</code> Component
+  items:
+  - id: what-is-a-component
+    title: What is a Component?
+  - id: defining-a-component
+    title: Defining a Component
+  - id: writing-a-components-html
+    title: Writing a Component's HTML
+  - id: adding-events-to-a-component
+    title: Adding Events to Your Component
 - title: Modules
   items:
     - id: action
