@@ -15,6 +15,92 @@ export const CONTAINER_ATTRIBUTE = 'data-brk-container';
 export const KEY_ATTRIBUTE = 'data-brk-key';
 
 /**
+ * Supported event constants.
+ *
+ * @type {string}
+ */
+export const BLUR = 'blur';
+export const CHANGE = 'change';
+export const CLICK = 'click';
+export const CONTEXTMENU = 'contextmenu';
+export const CUT = 'cut';
+export const DBLCLICK = 'dblclick';
+export const FOCUS = 'focus';
+export const FOCUSIN = 'focusin';
+export const FOCUSOUT = 'focusout';
+export const INPUT = 'input';
+export const KEYDOWN = 'keydown';
+export const KEYPRESS = 'keypress';
+export const KEYUP = 'keyup';
+export const LOAD = 'load';
+export const MOUSEDOWN = 'mousedown';
+export const MOUSEUP = 'mouseup';
+export const PASTE = 'paste';
+export const RESIZE = 'resize';
+export const SELECT = 'select';
+export const SUBMIT = 'submit';
+export const TOUCHCANCEL = 'touchcancel';
+export const TOUCHEND = 'touchend';
+export const TOUCHSTART = 'touchstart';
+
+export const SUPPORTED_EVENTS = [
+    BLUR,
+    CHANGE,
+    CLICK,
+    CONTEXTMENU,
+    CUT,
+    DBLCLICK,
+    FOCUS,
+    FOCUSIN,
+    FOCUSOUT,
+    INPUT,
+    KEYDOWN,
+    KEYPRESS,
+    KEYUP,
+    LOAD,
+    MOUSEDOWN,
+    MOUSEUP,
+    PASTE,
+    RESIZE,
+    SELECT,
+    SUBMIT,
+    TOUCHCANCEL,
+    TOUCHEND,
+    TOUCHSTART
+];
+
+/**
+ * Whether the event listener should be captured.
+ *
+ * @type {Object}
+ */
+export const CAPTURE = {
+    [BLUR]: true,
+    [CHANGE]: true,
+    [CLICK]: false,
+    [CONTEXTMENU]: false,
+    [CUT]: false,
+    [DBLCLICK]: false,
+    [FOCUS]: true,
+    [FOCUSIN]: true,
+    [FOCUSOUT]: true,
+    [INPUT]: true,
+    [KEYDOWN]: false,
+    [KEYPRESS]: false,
+    [KEYUP]: false,
+    [LOAD]: true,
+    [MOUSEDOWN]: false,
+    [MOUSEUP]: false,
+    [PASTE]: false,
+    [RESIZE]: true,
+    [SELECT]: true,
+    [SUBMIT]: true,
+    [TOUCHCANCEL]: true,
+    [TOUCHEND]: true,
+    [TOUCHSTART]: true
+};
+
+/**
  * Event attribute prefixer.
  *
  * @param {string} name - Event name.
@@ -28,27 +114,27 @@ const prefix = name => `data-brk-${name}`;
  * @type {Object}
  */
 export const EVENT_ATTRIBUTES = {
-    blur: prefix('onblur'),
-    click: prefix('onclick'),
-    change: prefix('onchange'),
-    contextmenu: prefix('oncontextmenu'),
-    cut: prefix('oncut'),
-    dblclick: prefix('ondblclick'),
-    focus: prefix('onfocus'),
-    focusin: prefix('onfocusin'),
-    focusout: prefix('onfocusout'),
-    input: prefix('oninput'),
-    keydown: prefix('onkeydown'),
-    keypress: prefix('onkeypress'),
-    keyup: prefix('onkeyup'),
-    load: prefix('onload'),
-    mousedown: prefix('onmousedown'),
-    mouseup: prefix('mouseup'),
-    resize: prefix('resize'),
-    paste: prefix('onpaste'),
-    select: prefix('onselect'),
-    submit: prefix('onsubmit'),
-    touchcancel: prefix('ontouchcancel'),
-    touchend: prefix('ontouchend'),
-    touchstart: prefix('ontouchstart')
+    [BLUR]: prefix('onblur'),
+    [CLICK]: prefix('onclick'),
+    [CHANGE]: prefix('onchange'),
+    [CONTEXTMENU]: prefix('oncontextmenu'),
+    [CUT]: prefix('oncut'),
+    [DBLCLICK]: prefix('ondblclick'),
+    [FOCUS]: prefix('onfocus'),
+    [FOCUSIN]: prefix('onfocusin'),
+    [FOCUSOUT]: prefix('onfocusout'),
+    [INPUT]: prefix('oninput'),
+    [KEYDOWN]: prefix('onkeydown'),
+    [KEYPRESS]: prefix('onkeypress'),
+    [KEYUP]: prefix('onkeyup'),
+    [LOAD]: prefix('onload'),
+    [MOUSEDOWN]: prefix('onmousedown'),
+    [MOUSEUP]: prefix('mouseup'),
+    [RESIZE]: prefix('resize'),
+    [PASTE]: prefix('onpaste'),
+    [SELECT]: prefix('onselect'),
+    [SUBMIT]: prefix('onsubmit'),
+    [TOUCHCANCEL]: prefix('ontouchcancel'),
+    [TOUCHEND]: prefix('ontouchend'),
+    [TOUCHSTART]: prefix('ontouchstart')
 };
