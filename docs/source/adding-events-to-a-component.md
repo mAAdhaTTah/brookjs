@@ -1,6 +1,6 @@
 ---
 id: adding-events-to-a-component
-title: Adding Events to a Component?
+title: Adding <code>events</code> to a Component
 ---
 
 Events on a `brookjs` component get defined with a combination of HTML attributes and a configuration object. This configuration object holds the functions that generate the `Observable<Action>` of the `events$` stream.

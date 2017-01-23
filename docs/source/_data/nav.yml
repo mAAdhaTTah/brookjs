@@ -13,11 +13,27 @@
   - id: writing-a-components-html
     title: Writing a Component's HTML
   - id: adding-events-to-a-component
-    title: Adding Events to Your Component
+    title: Adding <code>events</code> to a Component
+  - id: using-a-template-to-render-a-component
+    title: Using a Template to <code>render</code> a Component
+  - id: managing-children-components-in-a-component
+    title: Managing <code>children</code> Components
+- title: Building a <code>brookjs</code> Application
+  items:
+  - id: building-the-reducer-with-combineActionReducers
+    title: Building the Reducer with <code>combineActionReducers</code>
+  - id: handling-side-effects-with-observeDelta
+    title: Handling Side Effects with <code>observeDelta</code>
+  - id: mounting-the-root-component-with-unnamedModule
+    title: Mounting the Root Component with <code>unnamedModule</code>
+  - id: starting-the-application-with-run
+    title: Starting the Application with <code>run</code>
+- title: Advanced Component Techniques
+  items:
+  - id: custom-animations-and-reconciliation-with-renderFromHTML
+    title: Custom Animations and Reconciliation with <code>renderFromHTML</code>
 - title: Modules
   items:
-    - id: action
-      title: action
     - id: component
       title: component
     - id: observeDelta
@@ -30,3 +46,7 @@
       title: children
     - id: combineActionReducers
       title: combineActionReducers
+    - id: action
+      title: action
+    - id: helpers
+      title: helpers
