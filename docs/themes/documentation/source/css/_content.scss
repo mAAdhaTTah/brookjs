@@ -1,56 +1,93 @@
+.content {
+    display: flex;
+}
+
 .page {
-  padding-left: $menuWidth;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+
+    h1 {
+        border-bottom: 1px solid $bordersColor;
+        padding: 0 40px;
+        line-height: 50px;
+        font-size: 34px;
+        font-weight: 800;
+        color: $highlightColor;
+    }
+
+    h2 {
+        font-size: 25px;
+        font-weight: 600;
+        color: $highlightColor;
+        margin-bottom: 20px;
+        margin-top: 30px;
+    }
 }
 
 .page-content {
-  padding: 40px;
-  margin: 0 auto;
-  width: 885px;
-  max-width: 100%;
-  padding-bottom: 80px;
+    padding: 20px 40px;
+    margin: 0 auto;
+    max-width: 100%;
 }
 
-img {
-  max-width: 100%;
+.menu {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid $bordersColor;
 }
 
-.switch-page {
-  position: fixed;
-  height: 55px;
-  background-color: rgba(355, 355, 355, 0.8);
-  bottom: 0;
-  left: $menuWidth;
-  right: 0;
+.logo {
+  text-align: center;
+  padding: 20px 20px;
+  font-size: 24px;
+  line-height: 46px;
+  font-weight: 300;
+  color: #666666;
+}
 
-  .previous, .next {
-    display: inline-block;
-    padding: 15px 20px;
+.menu-nav {
+  padding: 20px 25px;
+  overflow: scroll;
+
+  span {
+    color: #666666;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  a {
+    display: block;
+    color: #777777;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
     text-decoration: none;
-    position: absolute;
-    top: 0;
-
-    i, span {
-      display: inline-block;
-      vertical-align: top;
-      line-height: 20px;
-      color: $primary;
-    }
-    i {
-      font-size: 16px;
-    }
-    span {
-      font-size: 15px;
-      padding: 0 5px;
-    }
+    padding: 6px 0;
 
     &:hover {
-      text-decoration: none;
+      color: #333333;
+    }
+    &.active {
+      color: $primary;
     }
   }
-  .previous {
-    left: 0;
+
+  >.nav >li {
+    margin-bottom: 20px;
   }
-  .next {
-    right: 0;
+
+  >.nav {
+    padding: 0;
+  }
+
+  .nav {
+    list-style: none;
+    .nav {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 20px;
+    }
   }
 }

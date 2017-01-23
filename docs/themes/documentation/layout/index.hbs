@@ -8,45 +8,51 @@
     {{css "css/docs.css"}}
 </head>
 <body>
-<div class="menu">
-    <div class="logo">
-        <code>brookjs</code>
-    </div>
-    <nav class="menu-nav">
-        {{#each site.data.nav as |section|}}
-            <ul class="nav">
-                <span>{{{section.title}}}</span>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+            {{#each site.data.nav as |section|}}
                 <ul class="nav">
-                    {{#each section.items as |item|}}
-                        <li>
-                            <a href="{{url_for item.id}}.html"{{#if (compare item.id page.id)}} class="active"{{/if}}>{{{item.title}}}</a>
-                        </li>
-                    {{/each}}
+                    <span>{{{section.title}}}</span>
+                    <ul class="nav">
+                        {{#each section.items as |item|}}
+                            <li>
+                                <a href="{{url_for item.id}}.html"{{#if (compare item.id page.id)}} class="active"{{/if}}>{{{item.title}}}</a>
+                            </li>
+                        {{/each}}
+                    </ul>
                 </ul>
-            </ul>
-        {{/each}}
-    </nav>
+            {{/each}}
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1>{{{page.title}}}</h1>
+        <main class="page-content">
+            {{{page.content}}}
+            {{#if (compare page.id "changelog")}}
+                {{changelog}}
+            {{/if}}
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
     <a class="footer" href="https://github.com/valtech-nyc/brookjs">
         Project on github
     </a>
-</div>
-<div class="page">
-    <div class="page-content">
-        <h1>{{{page.title}}}</h1>
-        {{{page.content}}}
 
-        {{#if (compare page.id "changelog")}}
-            {{changelog}}
+    <div class="switch-page">
+        {{#if page.prev}}
+            <a href="{{url_for page.prev}}" class="previous">Prev</a>
+        {{/if}}
+        {{#if page.next}}
+            <a href="{{url_for page.next}}" class="next">Next</a>
         {{/if}}
     </div>
-</div>
-<div class="switch-page">
-    {{#if page.prev}}
-        <a href="{{page.prev}}" class="previous">Prev</a>
-    {{/if}}
-    {{#if page.next}}
-        <a href="{{page.next}}" class="next">Next</a>
-    {{/if}}
-</div>
+</footer>
 </body>
 </html>
