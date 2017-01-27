@@ -18,7 +18,7 @@
     title: Using a Template to <code>render</code> a Component
   - id: managing-children-components-in-a-component
     title: Managing <code>children</code> Components
-- title: Building a <code>brookjs</code> Application
+- title: Building a <code>brookjs</code> Application (Coming soon!)
   items:
   - id: building-the-reducer-with-combineActionReducers
     title: Building the Reducer with <code>combineActionReducers</code>
@@ -28,7 +28,7 @@
     title: Mounting the Root Component with <code>unnamedModule</code>
   - id: starting-the-application-with-run
     title: Starting the Application with <code>run</code>
-- title: Advanced Component Techniques
+- title: Advanced Component Techniques (Coming soon!)
   items:
   - id: custom-animations-and-reconciliation-with-renderFromHTML
     title: Custom Animations and Reconciliation with <code>renderFromHTML</code>
