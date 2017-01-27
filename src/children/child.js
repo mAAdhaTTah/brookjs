@@ -57,12 +57,16 @@ Use the second parameter to modifyChildProps.`);
             );
         }
 
-        let instance$ = preplug(factory(element, childProps$));
+        let instance$ = preplug(factory(element, childProps$), keyAttr);
 
         if (useKey) {
             instance$ = instance$.map(action => Object.assign({}, action, {
                 payload: Object.assign({}, action.payload, {
-                    key: element.getAttribute(KEY_ATTRIBUTE)
+                    get key() {
+                        console.warn(`Using key property automatically added to children Actions is deprecated.
+Use the second parameter to preplug to modify child's Action.`);
+                        return element.getAttribute(KEY_ATTRIBUTE);
+                    }
                 })
             }));
         }
