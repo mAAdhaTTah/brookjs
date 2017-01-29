@@ -1,6 +1,6 @@
 # `brookjs`
 
-[![Build Status](https://travis-ci.org/valtech-nyc/brookjs.svg?branch=master)](https://travis-ci.org/valtech-nyc/brookjs)
+[![Build Status](https://travis-ci.org/valtech-nyc/brookjs.svg?branch=master)](https://travis-ci.org/valtech-nyc/brookjs)[![npm](https://img.shields.io/npm/v/brookjs.svg)](https://www.npmjs.com/package/brookjs)
 
 # Requirements
 
