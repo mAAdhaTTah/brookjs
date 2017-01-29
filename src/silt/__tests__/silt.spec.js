@@ -5,7 +5,7 @@ import sinonChai from 'sinon-chai';
 import simulant from 'simulant';
 
 import R from 'ramda';
-import { never, pool } from 'kefir';
+import { constant, never, pool } from 'kefir';
 
 import { CLICK, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, KEYPRESS } from '../../constants';
 import { containerAttribute } from '../../helpers';
@@ -104,5 +104,33 @@ describe('silt', () => {
 
         document.body.removeChild(fixture);
         sub.unsubscribe();
+    });
+
+    it('should update the element to match the template', done => {
+        const props$ = pool();
+        const Component = silt`<div ${containerAttribute('fixture')}>
+    {{#if enabled}}Enabled{{else}}Disabled{{/if}}
+</div>`;
+        const fixture = document.createElement('div');
+        fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
+        fixture.textContent = 'Disabled';
+
+        const sub = Component(fixture, props$).observe({});
+
+        props$.plug(constant({ enabled: true }));
+
+        requestAnimationFrame(() => {
+            expect(fixture.textContent.trim()).to.equal('Enabled');
+
+            props$.plug(constant({ enabled: false }));
+
+            requestAnimationFrame(() => {
+                expect(fixture.textContent.trim()).to.equal('Disabled');
+
+                sub.unsubscribe();
+
+                done();
+            });
+        });
     });
 });
