@@ -73,7 +73,7 @@ _Note: **All functions must be curried.** `brookjs` relies on [`ramda`][ramda] f
         * `{Element}` el - Component element.
         * `{Kefir.Observable<props>}` props$ - Previous component props.
     * Returns:
-        * `{Kefir.Observable}` Observable of renders from the element.
+        * `{Kefir.Observable}` Observable of renders from the element. Should emit no actions.
 * `{Function}` children - `children$` stream returning function. Called once, when the component is mounted, passing the component element `el`.
     * Parameters:
         * `{Element}` el - Component element.

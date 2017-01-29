@@ -1,6 +1,9 @@
-# `brookjs-combineActionReducers`
+---
+id: combineActionReducers
+title: <code>combineActionReducers</code>
+---
 
-`combineActionReducers` is an alternate method for structuring your reducers. Can be used with Redux's `combineReducers` to eliminate long switch statements and encourage extracting each case into a testable function.
+`combineActionReducers` is an alternate method for structuring your reducers. Can be used with Redux's `combineReducers` to eliminate long switch statements and ease the extraction of each case into a testable function.
 
 # How to Use
 
@@ -11,17 +14,21 @@ import { combineActionReducers } from 'brookjs';
 import { ACTION_TYPE } from '../actions';
 import actionTypeReducer from './actionTypeReducer';
 
-export default combineActionReducers([
+const cond = [
     [ACTION_TYPE, actionTypeReducer]
-]);
+];
+
+const defaults = {};
+
+export default combineActionReducers(cond, defaults);
 ```
 
-`combineActionReducers` accepts an array of tuples, with the first value as the `action.type` for the reducer and the second value as the reducer function to call for that `action.type`. This syntax is inspired by ramda's [`cond`][cond].
+`combineActionReducers` accepts a default state and an array of tuples, with the first value as the `action.type` for the reducer and the second value as the reducer function to call for that `action.type`. This syntax is inspired by ramda's [`cond`][cond].
 
-An action reducer looks just like the reducer functions for `combineReducers`. The main difference is the function gets broken up by action. In redux, you'd do something like this:
+An action reducer looks just like the reducer functions for `combineReducers`. The main difference is the resulting function gets broken up by action. A common pattern in Redux is to break up the reducer using a switch statement for each action type:
 
  ```js
- export default reducer(state, { type, payload = {} }) {
+ export default function reducer(state, { type, payload }) {
      const { value } = payload;
 
      switch (type) {
@@ -35,7 +42,7 @@ An action reducer looks just like the reducer functions for `combineReducers`. T
  }
  ```
 
- Adding `combineActionReducers`, we can simplify thusly:
+ With `combineActionReducers`, the reducer can be simplified:
 
  ```js
 import { combineActionReducers } from 'brookjs';
@@ -44,15 +51,19 @@ const actionTypeReducer = (state, { payload }) =>
     Object.assign({}, state, { value: payload.value });
 
 const otherActionTypeReducer = (state, { payload }) =>
-    Object.assign({}, state, { value: !payload.value });
+    Object.assign({}, state, { value: payload.value.toUpperCase() });
 
- export default combineActionReducers([
-     [ACTION_TYPE, actionTypeReducer],
-     [OTHER_ACTION_TYPE, otherActionTypeReducer]
- ]);
+const cond = [
+    [ACTION_TYPE, actionTypeReducer],
+    [OTHER_ACTION_TYPE, otherActionTypeReducer]
+];
+
+const defaults = { value: '' };
+
+export default combineActionReducers(cond, defaults);
  ```
 
- There are two advantages to structuring your reducers like this. First, the default case is handled for you, rather than needing to remember to return the current state. Secondly, each individual `actionReducer` is smaller, which makes it both easier to test and easier to reason about.
+ There are two advantages to structuring a reducer like this. First, the default case is automatically handled, returning the current state automatically. Secondly, each individual `actionReducer` is smaller, making it both easier to test and easier to reason about.
 
 ## Using with `combineReducers`
 
@@ -62,7 +73,6 @@ When using both `combineReducers` and `combineActionReducers`, use `combineReduc
 import { combineReducers } from 'redux';
 import { combineActionReducers } from 'brookjs';
 
-// Normally, you'd import these so the names aren't so dopey.
 const valueActionTypeReducer =
     (value, { payload }) => payload.value + value;
 
@@ -80,10 +90,14 @@ const disabledActionTypeReducer =
 const disabledOtherActionTypeReducer =
     (disabled, { payload }) => disabled && payload.value < 10;
 
-const disabled = combineActionReducers([
+const cond = [
     [ACTION_TYPE, actionTypeReducer],
     [OTHER_ACTION_TYPE, otherActionTypeReducer]
-]);
+];
+
+const defaults = { value: 0 };
+
+const disabled = combineActionReducers(cond, defaults);
 
 export default combineReducers({ value, disabled });
 ```
@@ -92,7 +106,7 @@ export default combineReducers({ value, disabled });
 
 ## Action Oriented Reducer
 
-Instead of an easy-to-read way of defining long switch statements in subreducers, `combineActionCreators` can be used to structure the entire reducer. Doing so allows you to view the state as a set of transitions, rather than a series of values. While this view makes sense from a dev tools perspective, the development process, especially in brookjs, tends to be action oriented. Components are defined by the actions they emit and how they map their children's actions, and delta sources respond to and emit their own events.
+Instead of an easy-to-read way of defining long switch statements in subreducers, `combineActionCreators` can be used to structure the entire reducer. Doing so allows you to view the state as a set of transitions, rather than a series of values. While this view makes sense from a dev tools perspective, the development process tends to be action oriented. Components are defined by the actions they emit and how they map their children's actions, and delta sources respond to and emit their own actions.
 
 If there's a bug in your application, you start at the lowest-level component and ensure it emits the action you expect. You then go to the state and see if it changes the way it's supposed to. If that's not the problem, you look at the UI props (now using `modifyState`) to ensure that's what you expect. Finally, you ensure the components render the way their supposed to, given that state.
 
@@ -100,7 +114,7 @@ Overall, the debugging flow through the application becomes very clear, and the 
 
 ## Denormalized State Escape Hatch
 
-`combineActionReducers` can also help you normalize a state tree. If two pieces of state depend on each other, but don't exist in the same branch of the state tree, that value may be better off fetched from a selector function.`
+`combineActionReducers` can also help you normalize a state tree. If two pieces of state depend on each other, but don't exist in the same branch of the state tree, that value may be better off fetched from a selector function.
 
 Cross-key state dependency is a code smell; if one part of your state is depending upon another, the state isn't normalized, and properties that are merely the result of computing other properties don't belong in your state.
 
@@ -122,5 +136,4 @@ export default function reducer(state, action) {
 
 `actionTypeReducer` will be passed the entire state, allowing the codependent logic to be centralized. The computed property can then be extracted into a selector function, and reused when mapping state to props.
 
-  [main-readme]: ../README.md
   [cond]: http://ramdajs.com/0.22.1/docs/#cond

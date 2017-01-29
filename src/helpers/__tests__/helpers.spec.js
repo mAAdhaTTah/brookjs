@@ -1,5 +1,5 @@
 /*eslint-env mocha */
-import { eventAttribute, containerAttribute } from '../';
+import { eventAttribute, containerAttribute, keyAttribute } from '../';
 import { expect } from 'chai';
 
 describe('helpers', function() {
@@ -20,6 +20,12 @@ describe('helpers', function() {
     describe('container', function() {
         it('should return container attribute', function() {
             expect(containerAttribute('brkName')).to.equal('data-brk-container="brkName"');
+        });
+    });
+
+    describe('key', () => {
+        it('should return key attribute', () => {
+            expect(keyAttribute('123')).to.equals('data-brk-key="123"');
         });
     });
 });
