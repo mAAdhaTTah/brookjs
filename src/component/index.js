@@ -30,7 +30,7 @@ export default function component(config) {
         assert.equal(typeof events, 'function', '`events` should be a function');
 
         // Validate onMount$ stream generator.
-        assert.ok(typeof onMount === 'function', 'onMount should be a function');
+        assert.equal(typeof onMount, 'function', 'onMount should be a function');
 
         // Validate render function.
         assert.equal(typeof render, 'function', '`render` should be a function');
@@ -38,10 +38,10 @@ export default function component(config) {
         assert.equal(render.length, 2, '`render` should take 2 arguments');
 
         // Validate children$ stream generator.
-        assert.ok(children, '`children` should be a function');
+        assert.equal(typeof children, 'function', '`children` should be a function');
 
         // Validate shouldUpdate filter.
-        assert.ok(typeof shouldUpdate === 'function', 'shouldUpdate should be a function');
+        assert.equal(typeof shouldUpdate, 'function', 'shouldUpdate should be a function');
     }
 
     /**
