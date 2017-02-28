@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import 'es6-weak-map/implement';
+import 'core-js/shim';
 
 import { AssertionError } from 'assert';
 import { constant } from 'kefir';
@@ -145,6 +145,51 @@ describe('children', () => {
         requestAnimationFrame(() => {
             child$.plug(constant(next));
             expect(value).to.have.callCount(0);
+
+            sub.unsubscribe();
+
+            done();
+        });
+    });
+
+    it('should only bind once when appended to subelement', done => {
+        let { factory, element, instance } = createFixture();
+        const value = sinon.spy();
+        let sub = instance.observe({ value });
+
+        const untaggedElement = document.createElement('div');
+        element.appendChild(untaggedElement);
+
+        let secondChild = createChild('2');
+        untaggedElement.appendChild(secondChild);
+
+        requestAnimationFrame(() => {
+            expect(value).to.have.callCount(0);
+            // firstChild is bound during fixture creation
+            expect(factory).to.have.callCount(2);
+
+            sub.unsubscribe();
+
+            done();
+        });
+    });
+
+    it('should not bind when subelement added and removed in single tick', done => {
+        let { factory, element, instance } = createFixture();
+        const value = sinon.spy();
+        let sub = instance.observe({ value });
+
+        const untaggedElement = document.createElement('div');
+        element.appendChild(untaggedElement);
+
+        let secondChild = createChild('2');
+        untaggedElement.appendChild(secondChild);
+        untaggedElement.removeChild(secondChild);
+
+        requestAnimationFrame(() => {
+            expect(value).to.have.callCount(0);
+            // firstChild is bound during fixture creation
+            expect(factory).to.have.callCount(1);
 
             sub.unsubscribe();
 
