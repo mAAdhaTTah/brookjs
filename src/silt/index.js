@@ -3,6 +3,7 @@ import Handlebars from 'handlebars';
 import { never } from 'kefir';
 import { eventAttribute } from '../helpers';
 import component from '../component';
+import { CONTAINER_ATTRIBUTE } from '../constants';
 import children from '../children';
 import events from '../events';
 import render from '../render';
@@ -11,6 +12,8 @@ const $$attribute = '$$attribute';
 const $$config = '$$config';
 const $$key = '$$key';
 const $$onMount = '$$onMount';
+const $$partial = '$$partial';
+const $$template = '$$template';
 
 /**
  * Tagged template function for template-based component declarations.
@@ -20,49 +23,75 @@ const $$onMount = '$$onMount';
  * @returns {factory} Component factory function.
  */
 const silt = function silt(strings, ...values) {
-    const opts = {
-        onMount: R.always(never()),
+    const defaults = {
+        onMount: never,
         children: {},
-        events: {}
+        events: {},
+        template: ''
     };
 
     if (strings.length !== values.length) {
         values.push(R.identity);
     }
 
-    let hasContainer = false;
-
-    const template = R.zip(strings, values).reduce(
-        (acc, [string, func]) => {
+    const opts = R.zip(strings, values).reduce(
+        (opts, [string, func]) => {
             if (typeof func === 'string') {
-                if (func.indexOf('data-brk-container') !== -1) {
-                    hasContainer = true;
-                }
-
-                return acc + string + func;
-            }
-
-            if (func[$$onMount]) {
-                opts.onMount = func;
-            } else if (func[$$config]) {
-                Object.assign(opts[func[$$config]], {
-                    [func[$$key]]: func
+                return Object.assign(opts,{
+                    template: opts.template + string + func
                 });
             }
 
-            return acc + string + (func[$$attribute] || '');
-        }, '');
+            if (func[$$onMount]) {
+                return Object.assign(opts, {
+                    onMount: func,
+                    template: opts.template + string + (func[$$attribute] || '')
+                });
+            }
 
-    if (!hasContainer) {
+            if (func[$$config]) {
+                return Object.assign(opts, {
+                    [func[$$config]]: Object.assign(opts[func[$$config]], {
+                        [func[$$key]]: func
+                    }),
+                    template: opts.template + string + (func[$$attribute] || '')
+                });
+            }
+
+            return Object.assign(opts, {
+                template: opts.template + string + (func[$$attribute] || '')
+            });
+        }, defaults);
+
+    const hasContainerAttribute = opts.template.indexOf(CONTAINER_ATTRIBUTE) !== -1;
+    const hasContainerHelper = opts.template.indexOf('{{container') !== -1;
+
+    if (!hasContainerAttribute && !hasContainerHelper) {
         throw new Error('Component does not have container');
     }
 
-    return component({
+    let container;
+
+    if (hasContainerAttribute) {
+        [,container] = opts.template.match(/data-brk-container="([\w]*)"/);
+    }
+
+    if (hasContainerHelper) {
+        [, container] = opts.template.match(/\{\{container "(\w*)"\}\}/);
+    }
+
+    const compiledTemplate = Handlebars.compile(opts.template);
+
+    const factory = component({
         onMount: opts.onMount,
         children: children(opts.children),
         events: events(opts.events),
-        render: render(Handlebars.compile(template))
+        render: render(compiledTemplate)
     });
+
+    Handlebars.registerPartial(factory[$$partial] = container, factory[$$template] = compiledTemplate);
+
+    return factory;
 };
 
 /**
@@ -100,6 +129,27 @@ export const event = silt.event = function event(type, func) {
         },
         [$$key]: {
             value: key
+        }
+    });
+};
+
+/**
+ * Tags a function as a child function for use by silt.
+ *
+ * @param {Function} factory - Child factory function.
+ * @param {Object} opts - Child stream options.
+ * @returns {Function} Function with tagged attributes.
+ */
+export const child = silt.child = function child(factory, opts = {}) {
+    return Object.defineProperties(Object.assign({}, { factory }, opts), {
+        [$$config]: {
+            value: 'children'
+        },
+        [$$attribute]: {
+            value: `{{> ${factory[$$partial]}}}`
+        },
+        [$$key]: {
+            value: factory[$$partial]
         }
     });
 };

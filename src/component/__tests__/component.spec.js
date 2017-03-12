@@ -1,5 +1,4 @@
 /*eslint-env mocha */
-import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
 import R from 'ramda';

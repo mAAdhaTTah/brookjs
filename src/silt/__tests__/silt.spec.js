@@ -133,4 +133,65 @@ describe('silt', () => {
             });
         });
     });
+
+    it('should mount the child component', done => {
+        const props$ = pool();
+        const clickAction = { type: 'CLICK' };
+        const clickCallback = sinon.spy(e$ => e$.map(R.always(clickAction)));
+        const click = silt.event(CLICK, clickCallback);
+        const Child = silt`<div ${containerAttribute('child')}><button ${click}>{{button.text}}</button></div>`;
+
+        const preplug = sinon.spy(R.identity);
+        const child = silt.child(Child, { preplug });
+
+        const Parent = silt`<div ${containerAttribute('parent')}>${child}</div>`;
+
+        const childFixture = document.createElement('div');
+        childFixture.setAttribute(CONTAINER_ATTRIBUTE, 'child');
+        const button = document.createElement('button');
+        button.setAttribute(EVENT_ATTRIBUTES[CLICK], click.$$key);
+        button.textContent = 'Click me';
+        childFixture.appendChild(button);
+        const fixture = document.createElement('div');
+        fixture.setAttribute(CONTAINER_ATTRIBUTE, 'parent');
+        fixture.appendChild(childFixture);
+
+        document.body.appendChild(fixture);
+
+        const instance$ = Parent(fixture, props$);
+
+        props$.plug(constant({
+            button: { text: 'Click me' }
+        }));
+
+        let called;
+
+        const sub = instance$.observe({
+            value(val) {
+                called = true;
+
+                expect(val).to.equal(clickAction);
+            }
+        });
+
+        expect(preplug).to.have.callCount(1);
+        expect(clickCallback).to.have.callCount(1);
+
+        simulant.fire(button, 'click');
+
+        expect(called).to.equal(true);
+
+        props$.plug(constant({
+            button: { text: 'Do not click me' }
+        }));
+
+        requestAnimationFrame(() => {
+            expect(button.textContent).to.eql('Do not click me');
+
+            document.body.removeChild(fixture);
+            sub.unsubscribe();
+
+            done();
+        });
+    });
 });
