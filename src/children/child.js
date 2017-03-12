@@ -61,13 +61,13 @@ Use the second parameter to modifyChildProps.`);
 
         if (useKey) {
             instance$ = instance$.map(action => Object.assign({}, action, {
-                payload: Object.assign({}, action.payload, {
+                payload: Object.assign({
                     get key() {
                         console.warn(`Using key property automatically added to children Actions is deprecated.
 Use the second parameter to preplug to modify child's Action.`);
                         return element.getAttribute(KEY_ATTRIBUTE);
                     }
-                })
+                }, action.payload)
             }));
         }
 
