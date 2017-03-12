@@ -48,7 +48,7 @@ describe('silt', () => {
         fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
         fixture.setAttribute(EVENT_ATTRIBUTES[CLICK], click.$$key);
         const props$ = pool();
-        let called = false;
+        let called;
         document.body.appendChild(fixture);
         const sub = Component(fixture, props$.toProperty(R.always({}))).observe({
             value(e) {
@@ -108,9 +108,7 @@ describe('silt', () => {
 
     it('should update the element to match the template', done => {
         const props$ = pool();
-        const Component = silt`<div ${containerAttribute('fixture')}>
-    {{#if enabled}}Enabled{{else}}Disabled{{/if}}
-</div>`;
+        const Component = silt`<div ${containerAttribute('fixture')}>{{#if enabled}}Enabled{{else}}Disabled{{/if}}</div>`;
         const fixture = document.createElement('div');
         fixture.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
         fixture.textContent = 'Disabled';
@@ -125,7 +123,7 @@ describe('silt', () => {
             props$.plug(constant({ enabled: false }));
 
             requestAnimationFrame(() => {
-                expect(fixture.textContent.trim()).to.equal('Disabled');
+                expect(fixture.textContent).to.equal('Disabled');
 
                 sub.unsubscribe();
 
