@@ -34,6 +34,7 @@ describe('enhancer', function() {
     it('should call the delta with actions$ and state$', function() {
         expect(actions$).to.be.an.instanceof(Observable);
         expect(state$).to.be.an.instanceof(Observable);
+        expect(actions$.ofType).to.be.a('function');
     });
 
     it('should dispatch action to actions$', function() {
@@ -77,7 +78,6 @@ describe('enhancer', function() {
 
         delta$.plug(constant(action));
 
-        expect(store.closed).to.be.not.ok;
         expect(subscribe).to.be.calledOnce;
     });
 
