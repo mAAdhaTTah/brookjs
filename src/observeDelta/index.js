@@ -22,6 +22,31 @@ export default function observeDelta(...sources) {
     const actions$ = pool();
     const state$ = pool();
 
+    /**
+     * Filter the actions$ stream to just emit actions of
+     * the provided types.
+     *
+     * @param {Array<string>} types - Action types to filter.
+     * @returns {Observable<Action>} Stream of filtered actions.
+     */
+    actions$.ofType = function ofType(...types) {
+        return this.filter(action => {
+            const type = action.type;
+            const len = types.length;
+
+            if (len === 1) {
+                return type === types[0];
+            } else {
+                for (let i = 0; i < len; i++) {
+                    if (types[i] === type) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+    };
+
     return store => {
         store.subscription = merge(sources.map(source => source(actions$, state$.toProperty(store.getState))))
             .observe({ value: store.dispatch });
