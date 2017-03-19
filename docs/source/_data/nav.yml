@@ -18,16 +18,16 @@
     title: Using a Template to <code>render</code> a Component
   - id: managing-children-components-in-a-component
     title: Managing <code>children</code> Components
-- title: Building a <code>brookjs</code> Application (Coming soon!)
+- title: Building a <code>brookjs</code> Application
   items:
-  - id: building-the-reducer-with-combineActionReducers
-    title: Building the Reducer with <code>combineActionReducers</code>
   - id: handling-side-effects-with-observeDelta
     title: Handling Side Effects with <code>observeDelta</code>
+  - id: building-the-reducer-with-combineActionReducers
+    title: Building the Reducer with <code>combineActionReducers</code> (Coming soon!)
   - id: mounting-the-root-component-with-unnamedModule
-    title: Mounting the Root Component with <code>unnamedModule</code>
+    title: Mounting the Root Component with <code>unnamedModule</code> (Coming soon!)
   - id: starting-the-application-with-run
-    title: Starting the Application with <code>run</code>
+    title: Starting the Application with <code>run</code> (Coming soon!)
 - title: Advanced Component Techniques (Coming soon!)
   items:
   - id: custom-animations-and-reconciliation-with-renderFromHTML
