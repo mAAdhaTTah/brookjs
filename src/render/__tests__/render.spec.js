@@ -1,4 +1,9 @@
 /* eslint-env mocha */
+import 'core-js/fn/map';
+import 'core-js/fn/promise';
+import 'core-js/fn/set';
+import 'core-js/fn/array/includes';
+import 'core-js/fn/string/includes';
 import { AssertionError } from 'assert';
 import chai, { expect } from 'chai';
 import dom from 'chai-dom';
@@ -114,6 +119,7 @@ describe('render', function() {
             expect(template).to.have.been.calledWithExactly(next);
 
             expect(fixture.children).to.have.lengthOf(2);
+            expect(child.parentNode).to.eql(fixture);
             expect(child2.parentNode).to.eql(null);
 
             sub.unsubscribe();

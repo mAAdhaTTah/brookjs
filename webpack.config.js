@@ -18,7 +18,8 @@ const common = {
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
-            handlebars: 'handlebars/dist/cjs/handlebars'
+            handlebars: 'handlebars/dist/cjs/handlebars',
+            diffhtml: 'diffhtml/lib'
         }
     }
 };
