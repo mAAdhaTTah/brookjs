@@ -7,7 +7,7 @@ Now that a Component is emitting events, it needs to update the `Element` it's m
 
 **Note: Any custom render implementations for a Component must use `onMount`, not `render`, as the API for `render` is subject to change.** Use the `render` module to ensure compatibility with future `brookjs` versions.
 
-`brookjs` uses [`morphdom`][morphdom] to update the element from an HTML string, configured to take advantage of `brookjs`' custom attributes, allowing the Component to rely on Handlebars to render itself. Using a bundler like [`webpack`][webpack] and [`handlebars-loader`][hbs-loader] or [`browserify`][browserify] and [`hbsfy`][hbsfy], compile Handlebars imports to a Handlebars template function. Import that function into the Component module and pass it to `render`:
+`brookjs` uses [`diffhtml`][diffhtml] to update the element from an HTML string, configured to take advantage of `brookjs`' custom attributes, allowing a Component to rely on Handlebars to render itself. Using a bundler like [`webpack`][webpack] and [`handlebars-loader`][hbs-loader] or [`browserify`][browserify] and [`hbsfy`][hbsfy], compile Handlebars imports to a Handlebars template function. Import that function into the Component module and pass it to `render`:
 
 ```js
 // app.js
@@ -28,17 +28,13 @@ export default component({
 });
 ```
 
-For now, that's it! Now the Component's element will rerender on the next value from the Component's `Observable<props>`. The provided template function gets called with the emitted `props`, and `morphdom` uses the returned HTML to update the element.
+For now, that's it! Now the Component's element will rerender on the next value from the Component's `Observable<props>`. The provided template function gets called with the emitted `props`, and `diffhtml` uses the returned HTML to update the element.
 
-Note that `render` uses the `data-brk-container` attribute to determine the Component's boundary. This means it's important to ensure each Component has that attribute on its containing element, allowing an individual Component to render itself while parents ensure the node is still present and the same instance (as with iterated children).
+Note that `render` is responsible for the entire element it's provided. Use the Handlebars rendering context to ensure each subcomponent has access to the props it needs to render properly, and any logic should be encoded in Handlebars helpers.
 
-Using the attribute also provides the benefit of allowing a Component to blackbox sections of itself that it know won't update by decorating it with the `data-brk-container` attribute. This way, morphdom will not descend into those sections of the DOM to reconcile with the provided template string.
+If a section of the DOM needs to be hidden from diffhtml, add `data-brk-blackbox="uniqueName"` as a data-attribute to the element. When `diffhtml` goes to update the DOM, any elements with that attribute will not be updated. A unique name is required in order to ensure the element isn't removed from the DOM. Make sure the element with the matching blackbox attribute is included in the rendered template or the element will get removed.
 
-## Roadmap
-
-This modules needs to provide two lifecycle hooks is does not: running an Observable before or after `render` reconciles the DOM (a la `component{Will|Did}Update` in React), as well as before or after it adds or removes nodes during the reconciliation process, providing a easy-to-use abstraction over animating transitions in an application. Observables make it easy to compose complex animations as well as cancel them as new `props` flow into the Component. This is the vision for the `render` module.
-
-  [morphdom]: https://github.com/patrick-steele-idem/morphdom
+  [diffhtml]: https://github.com/tbranyen/diffhtml
   [webpack]: https://webpack.js.org/
   [hbs-loader]: https://github.com/pcardune/handlebars-loader
   [browserify]: http://browserify.org/

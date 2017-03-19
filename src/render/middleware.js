@@ -32,11 +32,22 @@ export default function renderMiddleware() {
      * @returns {VTree} Updated tree.
      */
     renderTask.createTreeHook = tree => {
-        if (tree.attributes[CONTAINER_ATTRIBUTE] && tree.attributes[KEY_ATTRIBUTE]) {
-            tree.key = `${tree.attributes[CONTAINER_ATTRIBUTE]}::${tree.attributes[KEY_ATTRIBUTE]}`;
-        } else {
-            // Tree should not have an attribute if above condition doesn't match.
-            tree.key = '';
+        tree.key = '';
+
+        if (tree.attributes[CONTAINER_ATTRIBUTE]) {
+            tree.key = tree.attributes[CONTAINER_ATTRIBUTE];
+
+            if (tree.attributes[KEY_ATTRIBUTE]) {
+                tree.key += `::${tree.attributes[KEY_ATTRIBUTE]}`;
+            }
+        }
+
+        if (tree.attributes[BLACKBOX_ATTRIBUTE]) {
+            if (tree.key) {
+                tree.key += '::';
+            }
+
+            tree.key += tree.attributes[BLACKBOX_ATTRIBUTE];
         }
 
         return tree;
@@ -50,34 +61,12 @@ export default function renderMiddleware() {
      * @returns {VTree} Updated tree state.
      */
     renderTask.syncTreeHook = (oldTree, newTree) => {
-        // If this is a new tree, we're going to copy anything.
-        if (!oldTree) {
-            return newTree;
+        if (oldTree && oldTree.attributes[BLACKBOX_ATTRIBUTE]) {
+            return oldTree;
         }
 
-        if (typeof newTree.attributes[CONTAINER_ATTRIBUTE] === 'undefined') {
-            return newTree;
-        }
+        return newTree;
 
-        if (newTree.attributes[CONTAINER_ATTRIBUTE] !== oldTree.attributes[CONTAINER_ATTRIBUTE]) {
-            return newTree;
-        }
-
-        // If it has a key, then it has a data-brk-key attribute, which
-        // means the keys have to match for them to be the same tree.
-        if (newTree.key && newTree.key !== oldTree.key) {
-            return newTree;
-        }
-
-        // The root node's tree needs to be updated.
-        const existingNode = NodeCache.get(oldTree) || NodeCache.get(newTree);
-        if (existingNode && existingNode === currentTransaction.domNode) {
-            return newTree;
-        }
-
-        // If all these conditions are met, then we have found a child
-        // container that should not be updated.
-        return oldTree;
 
     };
 
