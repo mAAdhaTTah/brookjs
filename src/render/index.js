@@ -2,7 +2,7 @@ import assert from 'assert';
 import { rafAction } from '../action';
 import { outerHTML, use } from 'diffhtml';
 import R from 'ramda';
-import { fromPromise, stream } from 'kefir';
+import { stream } from 'kefir';
 import renderMiddleware from './middleware';
 
 use(renderMiddleware());
@@ -48,7 +48,7 @@ export const renderFromHTML = R.curry((el, html) =>
             assert.equal(typeof html, 'string', '`template` should return a string');
         }
 
-        return fromPromise(outerHTML(el, html));
+        return outerHTML(el, html);
     }));
 
 /**

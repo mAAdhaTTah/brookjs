@@ -1,5 +1,5 @@
-import { NodeCache } from 'diffhtml/util';
-import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
+import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
+import endAsObservable from './endAsObservable';
 
 /**
  * Create an instance of the render middleware for diffhtml.
@@ -7,22 +7,15 @@ import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
  * @returns {renderTask} Render task middleware.
  */
 export default function renderMiddleware() {
-    let currentTransaction;
-
     /**
      * Maintains the current transaction, overwrites
      * the built in patch function with our observable
      * handling.
      *
      * @param {Transaction} transaction - Incoming transaction.
-     * @returns {Function} Post-transaction callback.
      */
     function renderTask(transaction) {
-        currentTransaction = transaction;
-
-        return () => {
-            currentTransaction = undefined;
-        };
+        transaction.tasks.push(endAsObservable);
     }
 
     /**
@@ -66,8 +59,6 @@ export default function renderMiddleware() {
         }
 
         return newTree;
-
-
     };
 
     return renderTask;
