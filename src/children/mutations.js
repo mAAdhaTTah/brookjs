@@ -101,8 +101,8 @@ function mapRecordsToActions(record) {
  * @returns {Array<Action>} New list of actions.
  */
 function accumulateUniqueNodes(acc, action) {
-    const listOfNodes = acc.map(R.prop('node'));
-    const indexOfNode = listOfNodes.indexOf(action.node);
+    const listOfNodes = acc.map(R.path(['payload', 'node']));
+    const indexOfNode = listOfNodes.indexOf(action.payload.node);
 
     if (indexOfNode !== -1) {
         // Since there are only two types of actions, if they
