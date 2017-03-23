@@ -16,10 +16,9 @@ use(renderMiddleware());
  */
 export const raf$ = stream(emitter => {
     let loop;
-    let enabled = false;
+    let enabled = true;
 
     (function schedule() {
-        enabled = true;
         loop = requestAnimationFrame(time => {
             emitter.value(rafAction(time));
 
