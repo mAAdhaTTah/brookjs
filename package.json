@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "A framework for building streaming applications.",
   "main": "cjs/index.js",
   "browser": "dist/brook.js",
