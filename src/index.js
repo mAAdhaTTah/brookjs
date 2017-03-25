@@ -13,7 +13,7 @@ const brook = { children, combineActionReducers, component, events, domDelta,
     observeDelta, containerAttribute, createFixture, eventAttribute,
     mapActionTo, render, RAF, rafAction, raf$, renderFromHTML };
 
-export { brook, children, combineActionReducers, component, events, domDelta,
+export { children, combineActionReducers, component, events, domDelta,
     observeDelta, containerAttribute, createFixture, eventAttribute,
     mapActionTo, render, RAF, rafAction, raf$, renderFromHTML };
 
