@@ -24,11 +24,6 @@ const common = {
 };
 
 switch (process.env.npm_lifecycle_event) {
-    case 'test:unit':
-        module.exports = merge({
-            devtool: 'inline-source-map'
-        }, common);
-        break;
     case 'build:umd:min':
         module.exports = merge({
             output: {
