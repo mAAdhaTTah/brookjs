@@ -15,6 +15,15 @@ export const CONTAINER_ATTRIBUTE = 'data-brk-container';
 export const KEY_ATTRIBUTE = 'data-brk-key';
 
 /**
+ * HTML attribute blackbox directive.
+ *
+ * For tagging a section of DOM to not update.
+ *
+ * @type {string}
+ */
+export const BLACKBOX_ATTRIBUTE = 'data-brk-blackbox';
+
+/**
  * Supported event constants.
  *
  * @type {string}
@@ -138,3 +147,5 @@ export const EVENT_ATTRIBUTES = {
     [TOUCHEND]: prefix('ontouchend'),
     [TOUCHSTART]: prefix('ontouchstart')
 };
+
+export const $$internals = Symbol('@@brookjs/internals');

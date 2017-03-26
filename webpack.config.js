@@ -18,17 +18,13 @@ const common = {
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
-            handlebars: 'handlebars/dist/cjs/handlebars'
+            handlebars: 'handlebars/dist/cjs/handlebars',
+            diffhtml: 'diffhtml/lib'
         }
     }
 };
 
 switch (process.env.npm_lifecycle_event) {
-    case 'test:unit':
-        module.exports = merge({
-            devtool: 'inline-source-map'
-        }, common);
-        break;
     case 'build:umd:min':
         module.exports = merge({
             output: {

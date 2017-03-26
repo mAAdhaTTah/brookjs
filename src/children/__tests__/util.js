@@ -1,7 +1,7 @@
 import R from 'ramda';
 import { pool } from 'kefir';
 import sinon from 'sinon';
-import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../constants';
+import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE, $$internals } from '../../constants';
 import children from '../';
 
 /**
@@ -9,9 +9,10 @@ import children from '../';
  *
  * @returns {Fixture} Children test fixture.
  */
-export function createFixture() {
-    let child$ = pool();
-    let factory = sinon.spy(() => child$);
+export function createFixture({ child$ = pool(), factory = sinon.spy(() => child$), createSourceStream } = {}) {
+    if (createSourceStream) {
+        factory[$$internals] = { createSourceStream };
+    }
     let modifyChildProps = sinon.spy(R.identity);
     let preplug = sinon.spy(R.identity);
     let generator = children({ child: { factory, modifyChildProps, preplug } });

@@ -55,7 +55,10 @@ export default component({
             modifyChildProps: (props$, key) => props$.map(mapToChildProps),
             preplug: (child$, key) => child$.map(action => {
                 if (action.type === 'CLICK') {
-                    action = Object.assign({}, action, { type: 'SUBMIT_CLICK'});
+                    action = Object.assign({}, action, {
+                        type: 'SUBMIT_CLICK',
+                        meta: { key }
+                    });
                 }
 
                 return action;
@@ -67,6 +70,6 @@ export default component({
 
 ## A Note About the `data-brk-key` Attribute
 
-If a Component is going to be iterated over in a parent, the `data-brk-key` attribute is recommended for both performance and disambiguation reasons. If the child element doesn't have the attribute, the above two functions will be called with `null` as the key. The attribute is not required, but the `modifyChildProps` function otherwise has no way to modify the values emitted from child's `props$`. If there is only one instance of that child type, this isn't a problem, but multiple children need to be distinguished in order to provide the appropriate props.
+If a Component is going to be iterated over in a parent, the `data-brk-key` attribute is recommended for performance. If the child element doesn't have the attribute, the above two functions will be called with `null` as the key. The attribute is not required, but the `modifyChildProps` function otherwise has no way to modify the values emitted from child's `props$`. If there is only one instance of that child type, this isn't a problem, but multiple children need to be distinguished in order to provide the appropriate props.
 
 The value of the attribute should be unique amongst children of the same type in a parent Component. The `render` module also uses this to reuse a Component when it's been moved to a new location but is otherwise the same instance. Rendering a Component with multiple children that share both a type and a key will result in unexpected behavior.

@@ -1271,6 +1271,10 @@ diff@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.2.0.tgz#c9ce393a4b7cbd0b058a725c93df299027868ff9"
 
+diffhtml@^0.9.2:
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/diffhtml/-/diffhtml-0.9.2.tgz#c873f89b6d050b18ad0bf372328ed3bd87f6b647"
+
 diffie-hellman@^5.0.0:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/diffie-hellman/-/diffie-hellman-5.0.2.tgz#b5835739270cfe26acf632099fded2a07f209e5e"
@@ -2713,10 +2717,6 @@ mocha@^3.2.0:
     lodash.create "3.1.1"
     mkdirp "0.5.1"
     supports-color "3.1.2"
-
-morphdom@^2.0.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/morphdom/-/morphdom-2.3.1.tgz#94247c316360b92cee49e529815370763e27da90"
 
 ms@0.7.1:
   version "0.7.1"
