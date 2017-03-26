@@ -1,4 +1,4 @@
-import { constant, merge, pool } from 'kefir';
+import { constant, merge, pool, stream } from 'kefir';
 
 /**
  * Accepts a set of delta generator functions and returns a
@@ -24,6 +24,10 @@ export default function observeDelta(...sources) {
 
     return store => {
         store.subscription = merge(sources.map(source => source(actions$, state$.toProperty(store.getState))))
+            .flatMapErrors(err => stream(emitter => {
+                console.error('Error emitted into delta', err);
+                emitter.end();
+            }))
             .observe({ value: store.dispatch });
 
         return next => action => {
