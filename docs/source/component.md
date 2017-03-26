@@ -82,7 +82,7 @@ _Note: **All functions must be curried.** `brookjs` relies on [`ramda`][ramda] f
         * `{Kefir.Observable}` Observable of events from the children. Does not need to end.
 * `{Function}` combinator - Hook to combine streams before returning them from the factory. Merges the streams by default.
     * Paramters:
-        * `{Object}` streams - Object containing a property for each component stream, including `events$`, `render$`, `children$`, and `onMount$`. Should return a new stream combining the provided events. Provides a hook to coordinate stream events, if necessary.
+        * `{Object}` streams - Object containing a property for each component stream, including `events$`, `children$`, and `onMount$`. Should return a new stream combining the provided events. Provides a hook to coordinate stream events, if necessary.
 * `{Function}` onMount - `onMount$` stream returning function. Called once, when the component is mounted, providing an entry point for any custom event or render logic.
     * Parameters:
         * `{Element}` el - Componenent element.
