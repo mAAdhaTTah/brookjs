@@ -6,15 +6,20 @@ import { KEY_ATTRIBUTE } from '../constants';
  * Create a new children stream instance from the given configuration, props$ stream & element.
  *
  * @param {string} container - Container key.
+ * @param {Function} createSourceStream - Function that generates a source stream.
  * @param {Function} factory - Instance factory function.
  * @param {Function} modifyChildProps - Creates a new props$ stream for the child.
  * @param {Function} preplug - Modify the child instance stream.
  * @param {string} key - @deprecated.
  * @returns {Kefir.Observable} Child instance.
  */
-export default function child({ container, factory, modifyChildProps = R.identity, preplug = R.identity, key }) {
+export default function child({ container, createSourceStream, factory, modifyChildProps = R.identity, preplug = R.identity, key }) {
     if (process.env.NODE_ENV !== 'production') {
-        assert.equal(typeof factory, 'function', `factory for ${container} should be a function`);
+        if (createSourceStream) {
+            assert.equal(typeof createSourceStream, 'function', `createSourceStream for ${container} should be a function`);
+        } else {
+            assert.equal(typeof factory, 'function', `factory for ${container} should be a function`);
+        }
         assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${container} should be a function`);
         assert.equal(typeof preplug, 'function', `preplug for ${container} should be a function`);
 
@@ -57,7 +62,7 @@ Use the second parameter to modifyChildProps.`);
             );
         }
 
-        let instance$ = preplug(factory(element, childProps$), keyAttr);
+        let instance$ = preplug((createSourceStream || factory)(element, childProps$), keyAttr);
 
         if (useKey) {
             instance$ = instance$.map(action => Object.assign({}, action, {

@@ -1,3 +1,4 @@
+export { default as blackboxAttribute } from './blackboxAttribute';
 export { default as containerAttribute } from './containerAttribute';
 export { default as keyAttribute } from './keyAttribute';
 export { default as createFixture } from './createFixture';

@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { rafAction } from '../action';
-import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
+import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import R from 'ramda';
 import { stream } from 'kefir';
 import morphdom from 'morphdom';
@@ -47,75 +47,38 @@ export const renderFromHTML = R.curry((el, html) =>
 
         morphdom(el, html, {
             getNodeKey: function getNodeKey(el) {
-                if (el.hasAttribute && el.hasAttribute(CONTAINER_ATTRIBUTE) && el.hasAttribute(KEY_ATTRIBUTE)) {
-                    return `${el.getAttribute(CONTAINER_ATTRIBUTE)}::${el.getAttribute(KEY_ATTRIBUTE)}`;
+                let key = '';
+
+                // Ignore text nodes.
+                if (el.nodeType === 3) {
+                    return key;
                 }
 
-                return '';
-            },
-            onBeforeElUpdated: function blackboxContainer(fromEl, toEl) {
-                /**
-                 * Always update the top level element.
-                 *
-                 * We're making a few assumptions about the main element
-                 * and its relationship to the returned template:
-                 *
-                 * 1. The container type of the template already matches
-                 * the container type of the element. This should be matched
-                 * correctly when the element is mounted.
-                 *
-                 * 2. The key of the template already matches the key of
-                 * the element. If there is no key on either, then the
-                 * attribute is `null`. This should be matched correctly
-                 * using `modifyChildProps` to emit the props with the
-                 * correct key, assuming the use of the default render.
-                 *
-                 * These assumptions get verified below outside of production.
-                 */
-                if (fromEl === el) {
-                    if (process.env.NODE_ENV !== 'production') {
-                        assert.equal(
-                            el.getAttribute(CONTAINER_ATTRIBUTE),
-                            fromEl.getAttribute(CONTAINER_ATTRIBUTE),
-                            `The template ${CONTAINER_ATTRIBUTE} should match the root element ${CONTAINER_ATTRIBUTE}.`
-                        );
-                        assert.equal(
-                            el.getAttribute(KEY_ATTRIBUTE),
-                            fromEl.getAttribute(KEY_ATTRIBUTE),
-                            `The template ${KEY_ATTRIBUTE} should match the root element ${KEY_ATTRIBUTE}.`
-                        );
+                if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                    key = el.getAttribute(CONTAINER_ATTRIBUTE);
+
+                    if (el.getAttribute(KEY_ATTRIBUTE)) {
+                        key += `::${el.getAttribute(KEY_ATTRIBUTE)}`;
+                    }
+                }
+
+                if (el.hasAttribute(BLACKBOX_ATTRIBUTE)) {
+                    if (key) {
+                        key += '::';
                     }
 
+                    key += el.getAttribute(BLACKBOX_ATTRIBUTE);
+                }
+
+                return key;
+            },
+            onBeforeElUpdated: function blackboxContainer(fromEl) {
+                if (fromEl === el) {
                     return true;
                 }
 
                 // Update anything that isn't a container.
-                if (!fromEl.hasAttribute(CONTAINER_ATTRIBUTE)) {
-                    return true;
-                }
-
-                /**
-                 * If it is a container, we're going to do our own updating
-                 * and tell morphdom to move on.
-                 *
-                 * If the container has changed, swap element ourselves.
-                 * This is similar to how React handles it: If a subtree
-                 * is a different component, it just prunes and replaces,
-                 * since the subtree could be different in myriad different
-                 * ways and a full diff would be computationally
-                 * expensive. Additionally, this allows the MutationObserver
-                 * to continue to only worry about add/remove operations
-                 * instead of attribute mutations.
-                 */
-                if (fromEl.getAttribute(CONTAINER_ATTRIBUTE) !== toEl.getAttribute(CONTAINER_ATTRIBUTE) ||
-                    fromEl.getAttribute(KEY_ATTRIBUTE) !== toEl.getAttribute(KEY_ATTRIBUTE)
-                ) {
-                    fromEl.parentNode.replaceChild(toEl, fromEl);
-                }
-
-                // Tell morphdom to move on.
-                return false;
-
+                return !fromEl.hasAttribute(BLACKBOX_ATTRIBUTE);
             }
         });
 

@@ -2,7 +2,7 @@
 import 'core-js/shim';
 
 import { AssertionError } from 'assert';
-import { constant } from 'kefir';
+import { constant, never } from 'kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
@@ -195,5 +195,24 @@ describe('children', () => {
 
             done();
         });
+    });
+
+
+    it('should use createSourceStream when available', () => {
+        let createSourceStream = sinon.spy(() => never());
+        let { factory, firstChild, instance, modifyChildProps, props$, preplug } = createFixture({ createSourceStream });
+        let sub = instance.observe();
+
+        expect(factory).to.have.callCount(0);
+        expect(createSourceStream).to.have.callCount(1);
+        expect(createSourceStream).to.have.been.calledWith(firstChild, props$);
+
+        expect(modifyChildProps).to.have.callCount(1);
+        expect(modifyChildProps).to.have.been.calledWith(props$, '1');
+
+        expect(preplug).to.have.callCount(1);
+        expect(preplug).to.have.been.calledWith(createSourceStream.getCall(0).returnValue);
+
+        sub.unsubscribe();
     });
 });

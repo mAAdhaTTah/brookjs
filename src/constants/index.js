@@ -1,4 +1,13 @@
 /**
+ * HTML attribute blackbox directive.
+ *
+ * For tagging a section of DOM to not update.
+ *
+ * @type {string}
+ */
+export const BLACKBOX_ATTRIBUTE = 'data-brk-blackbox';
+
+/**
  * HTML attribute container directive.
  *
  * @type {string}
