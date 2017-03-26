@@ -55,12 +55,12 @@ export default children({
         // factory function for child taking el & props$
         factory: kid,
         // passed parents' `props$` stream & child key.
-        // return value is passed to child factory.
-        // see below for key docuentation.
+        // return value is passed to child onMount.
+        // see below for key documentation.
         modifyChildProps: (props$, key) => props$.map(props => props.children[key]),
         // passed each child instance to modify child stream
         // return value is plugged into combined string (hence `preplug`)
-        preplug: kid$ => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION))
+        preplug: (kid$, key) => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION)).map(action => Object.assign({}, action, { meta: { key } }))
     }
 });
 ```
@@ -100,4 +100,4 @@ The parent is then responsible for iterating over the props and rendering the ch
 </div>
 ```
 
-For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props.
+For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props. This is primarily useful to provide the correct props to the child's `onMount` function.
