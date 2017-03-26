@@ -3,6 +3,7 @@ import R from 'ramda';
 import { constant, merge } from 'kefir';
 import child from './child';
 import { containerAttribute } from '../helpers';
+import { $$internals } from '../constants';
 import { getContainerNode, containerMatches, isAddedChildNode, isRemovedChildNode
 } from './util';
 import mutations$ from './mutations';
@@ -40,7 +41,13 @@ export default function children(factories) {
             definition = { factory: definition };
         }
 
-        factories[container] = child(R.merge({ container }, definition));
+        let createSourceStream = false;
+
+        if (definition.factory[$$internals]) {
+            ({ createSourceStream } = definition.factory[$$internals]);
+        }
+
+        factories[container] = child(Object.assign({ container, createSourceStream }, definition));
     }
 
     /**
