@@ -13,7 +13,7 @@ The `events` factory method takes a configuration object, with the key matching 
 import { events } from 'brookjs';
 
 export default events({
-    'emitClick': event$ => event$.map(() => ({ type: 'CLICK_EVENT' }))
+    'emitClick': event$ => event$.map(e => ({ type: 'CLICK_EVENT' }))
 });
 ```
 
@@ -29,7 +29,7 @@ This should be matched with an element decorated with a `data-brk-on{event}` att
 <button data-brk-container="button" data-brk-onclick="emitClick">Click me!</button>
 ```
 
-Make sure, when declaring the HTML structure of a component, the top-level element has a `data-brk-container` attribute, as events are scoped by container.
+Make sure, when declaring the HTML structure of a component, the top-level element has a `data-brk-container` attribute, as events are scoped by container. The emitted Event is a `ProxyEvent` around the underlying DOM `Event`. In addition to the basic `Event` properties, `ProxyEvent` provides a `decoratedTarget` (the element with the data attribute) and a `containerTarget` (the container element).
 
 The generated `events$` stream will emit an action with `type: CLICK_EVENT` and no payload:
 

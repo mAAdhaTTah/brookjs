@@ -85,10 +85,18 @@ describe('events$', function() {
                 target.setAttribute(EVENT_ATTRIBUTES[event], Object.keys(config).pop());
                 el.appendChild(target);
 
-                const e = simulant.fire(target, event);
+                simulant.fire(target, event);
 
                 expect(value).to.have.callCount(1);
-                expect(value).to.be.calledWith(e);
+                let e = value.getCall(0).args[0];
+
+                expect(e.containerTarget).to.equal(el);
+                expect(e.decoratedTarget).to.equal(target);
+                expect(e.defaultPrevented).to.eql(false);
+
+                e.preventDefault();
+
+                expect(e.defaultPrevented).to.eql(true);
             });
         }
     });
