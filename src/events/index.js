@@ -1,6 +1,7 @@
 import assert from 'assert';
 import R from 'ramda';
 import { merge, stream, never } from 'kefir';
+import * as Event from './event';
 import { CAPTURE, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 
 /**
@@ -18,7 +19,7 @@ const sources = new WeakMap();
  * @param {Emitter} emitter - source$ emitter.
  * @param {Event} ev - Event object.
  */
-const listener = R.curry(function listener(EVENT, emitter, ev) {
+const listener = R.curry(function listener(EVENT, emitter, event) {
     (function traverse(target) {
         // Base case.
         if (!target || target === document.body) {
@@ -34,12 +35,13 @@ const listener = R.curry(function listener(EVENT, emitter, ev) {
             }
 
             if (container.hasAttribute(CONTAINER_ATTRIBUTE)) {
+                const ev = Event.create(event, target, container);
                 emitter.value({ callback, container, ev });
             }
         }
 
         traverse(target.parentNode);
-    })(ev.target);
+    })(event.target);
 });
 
 
