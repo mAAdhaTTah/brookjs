@@ -1,6 +1,7 @@
 {
   "plugins": [
     "ramda",
+    "transform-object-rest-spread",
     "transform-object-assign"
   ],
   "env": {
