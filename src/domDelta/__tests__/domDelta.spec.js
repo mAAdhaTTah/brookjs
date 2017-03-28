@@ -41,10 +41,10 @@ describe('domDelta', () => {
         });
     });
 
-    it('should emit an error if incorrect component', done => {
+    it('should emit an error if incorrect view', done => {
         const actions$ = never();
         const state$ = never();
-        const delta = domDelta({ el: document.body, component: false });
+        const delta = domDelta({ el: document.body, view: false });
 
         const delta$ = delta(actions$, state$);
 
@@ -65,7 +65,7 @@ describe('domDelta', () => {
     it('should emit an error if incorrect selectProps', done => {
         const actions$ = never();
         const state$ = never();
-        const delta = domDelta({ el: document.body, component: never, selectProps: false });
+        const delta = domDelta({ el: document.body, view: never, selectProps: false });
 
         const delta$ = delta(actions$, state$);
 
