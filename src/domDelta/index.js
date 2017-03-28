@@ -10,7 +10,12 @@ const documentIsLoaded = () =>
         )
     );
 
-export default function domDelta({ el, component, selectProps }) {
+export default function domDelta({ el, component, view, selectProps }) {
+    if (component) {
+        console.warn('`component` in `domDelta` is deprecated. use `view`.');
+        view = component;
+    }
+
     let precheck$ = constant('Configuration correct');
 
     if (typeof el === 'function') {
@@ -21,7 +26,7 @@ export default function domDelta({ el, component, selectProps }) {
         precheck$ = constantError(new TypeError(`el of type ${typeof el} is not valid`));
     }
 
-    if (typeof component !== 'function') {
+    if (typeof view !== 'function') {
         precheck$ = constantError(new TypeError(`component of type ${typeof el} is not valid`));
     }
 
@@ -39,6 +44,6 @@ export default function domDelta({ el, component, selectProps }) {
             )
             .flatMap(R.always(el))
             .take(1).takeErrors(1)
-            .flatMap(el => component(el, selectProps(state$)));
+            .flatMap(el => view(el, selectProps(state$)));
     };
 }
