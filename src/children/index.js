@@ -58,10 +58,10 @@ export default function children(factories) {
      * @return {Observable<T, S>} Children stream.
      * @factory
      */
-    return R.curry((element, props$) => {
-        const nodeAddedMutationPayload$ = mutations$.filter(isAddedChildNode(element))
+    return R.curry((el, props$) => {
+        const nodeAddedMutationPayload$ = mutations$.filter(isAddedChildNode(el))
             .map(R.prop('payload'));
-        const nodeRemovedMutationPayload$ = mutations$.filter(isRemovedChildNode(element))
+        const nodeRemovedMutationPayload$ = mutations$.filter(isRemovedChildNode(el))
             .map(R.prop('payload'));
         const createElementRemoved = el => nodeRemovedMutationPayload$
             .filter(({ node }) => node === el);
@@ -71,9 +71,9 @@ export default function children(factories) {
              *
              * Filters out children that are under other containers.
              */
-            const existingEl$ = constant(element.querySelectorAll(`[${containerAttribute(container)}]`))
+            const existingEl$ = constant(el.querySelectorAll(`[${containerAttribute(container)}]`))
                 .flatten()
-                .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(element)));
+                .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(el)));
 
             /**
              * Stream of added nodes from the MutationObserver.
