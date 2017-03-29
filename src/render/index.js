@@ -73,10 +73,6 @@ export const renderFromHTML = R.curry((el, html) =>
                 return key;
             },
             onBeforeElUpdated: function blackboxContainer(fromEl) {
-                if (fromEl === el) {
-                    return true;
-                }
-
                 // Update anything that isn't a container.
                 return !fromEl.hasAttribute(BLACKBOX_ATTRIBUTE);
             }
