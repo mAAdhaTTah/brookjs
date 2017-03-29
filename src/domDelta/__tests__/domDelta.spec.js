@@ -89,7 +89,7 @@ describe('domDelta', () => {
         const props$ = never();
         const config = {
             el: sinon.spy(doc => fromCallback(cb => cb(doc.body))),
-            component: sinon.spy(() => constant({ type: 'EVENT' })),
+            view: sinon.spy(() => constant({ type: 'EVENT' })),
             selectProps: sinon.spy(() => props$)
         };
         const delta = domDelta(config);
@@ -112,8 +112,8 @@ describe('domDelta', () => {
                 expect(config.selectProps).to.have.callCount(1);
                 expect(config.selectProps).to.have.been.calledWith(state$);
 
-                expect(config.component).to.have.callCount(1);
-                expect(config.component).to.have.been.calledWith(document.body, props$);
+                expect(config.view).to.have.callCount(1);
+                expect(config.view).to.have.been.calledWith(document.body, props$);
 
                 done();
             }
