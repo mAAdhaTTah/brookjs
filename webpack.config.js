@@ -43,12 +43,7 @@ switch (process.env.npm_lifecycle_event) {
             output: {
                 library: 'brook',
                 libraryTarget: 'umd'
-            },
-            plugins: [
-                new webpack.DefinePlugin({
-                    'process.env.NODE_ENV': JSON.stringify('production')
-                })
-            ]
+            }
         }, common);
         break;
     default:
