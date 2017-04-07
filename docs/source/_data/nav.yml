@@ -20,19 +20,21 @@
     title: Managing <code>children</code> Components
 - title: Building a <code>brookjs</code> Application
   items:
-  - id: handling-side-effects-with-observeDelta
-    title: Handling Side Effects with <code>observeDelta</code>
+  - id: connecting-a-redux-store-to-the-view
+    title: Connecting a Redux Store to the View
+  - id: implementing-side-effects-with-custom-delta
+    title: Implementing Side Effects with Custom Delta
   - id: building-the-reducer-with-combineActionReducers
     title: Building the Reducer with <code>combineActionReducers</code> (Coming soon!)
-  - id: mounting-the-root-component-with-unnamedModule
-    title: Mounting the Root Component with <code>unnamedModule</code> (Coming soon!)
   - id: starting-the-application-with-run
     title: Starting the Application with <code>run</code> (Coming soon!)
 - title: Advanced Component Techniques (Coming soon!)
   items:
-  - id: custom-animations-and-reconciliation-with-renderFromHTML
-    title: Custom Animations and Reconciliation with <code>renderFromHTML</code>
-- title: Modules
+  - id: custom-component-implementations-with-blackboxing
+    title: Custom Component Implementations with Blackboxing
+  - id: animations-and-rendering-with-renderFromHTML
+    title: Animations and Rendering with <code>renderFromHTML</code>
+- title: API
   items:
     - id: component
       title: component

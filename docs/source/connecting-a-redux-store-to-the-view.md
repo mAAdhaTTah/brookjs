@@ -1,6 +1,6 @@
 ---
-id: handling-side-effects-with-observeDelta
-title: Handling Side Effects with <code>observeDelta</code>
+id: connecting-a-redux-store-to-the-view
+title: Connecting a Redux Store to the View
 ---
 
 Once the view layer is up and running, the next step is to mount the view into the application. The view layer will be mounted into a "delta". A delta is a function that takes a stream of `actions$` and a stream of `state$` from Redux and returns a new stream of actions that get emitted into the store. This is bound into the store through the `observeDelta` middleware.
