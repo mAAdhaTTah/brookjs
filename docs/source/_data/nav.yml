@@ -25,7 +25,7 @@
   - id: implementing-side-effects-with-custom-delta
     title: Implementing Side Effects with Custom Delta
   - id: building-the-reducer-with-combineActionReducers
-    title: Building the Reducer with <code>combineActionReducers</code> (Coming soon!)
+    title: Building the Reducer with <code>combineActionReducers</code>
   - id: starting-the-application-with-run
     title: Starting the Application with <code>run</code> (Coming soon!)
 - title: Advanced Component Techniques (Coming soon!)
