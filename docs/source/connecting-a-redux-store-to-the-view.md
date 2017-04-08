@@ -11,11 +11,11 @@ Once the view layer is up and running, the next step is to mount the view into t
 import { observeDelta, domDelta } from 'brookjs';
 import component from './component';
 
-const el = doc => fromCallback(cb => {
+export const el = doc => fromCallback(cb => {
     cb(doc.getElementById('app'));
 });
 
-const selectProps = state$ => state$.map(state => ({
+export const selectProps = state$ => state$.map(state => ({
     ...state,
     isProps: true
 }));
