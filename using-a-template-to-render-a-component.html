@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8"/>
+    <title>brookjs - Using a Template to render a Component</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/brookjs/css/docs.css">
+<link rel="stylesheet" href="/brookjs/css/prism-solarizedlight.css" type="text/css"></head>
+<body>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+                <ul class="nav">
+                    <span>Introduction</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/index.html">Meet <code>brookjs</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/changelog.html">Changelog</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Writing a <code>brookjs</code> Component</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/what-is-a-component.html">What is a Component?</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/defining-a-component.html">Defining a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/writing-a-components-html.html">Writing a Component's HTML</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/adding-events-to-a-component.html">Adding <code>events</code> to a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/using-a-template-to-render-a-component.html">Using a Template to <code>render</code> a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/managing-children-components-in-a-component.html">Managing <code>children</code> Components</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Building a <code>brookjs</code> Application</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/connecting-a-redux-store-to-the-view.html">Connecting a Redux Store to the View</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/implementing-side-effects-with-custom-delta.html">Implementing Side Effects with Custom Delta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/building-the-reducer-with-combineActionReducers.html">Building the Reducer with <code>combineActionReducers</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/bootstrapping-the-application.html">Bootstrapping the Application</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Advanced Component Techniques</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>API</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/component.html">component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/observeDelta.html">observeDelta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/events.html">events</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/render.html">render</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/children.html">children</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/combineActionReducers.html">combineActionReducers</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/action.html">action</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/helpers.html">helpers</a>
+                            </li>
+                    </ul>
+                </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1>Using a Template to <code>render</code> a Component</h1>
+        <main class="page-content">
+            <p>Now that a Component is emitting events, it needs to update the <code>Element</code> it’s mounted to keep it in sync with the <code>Observable&lt;props&gt;</code>.  The <code>render</code> modules provides a interface for generating a render stream for a Component using a string-returning template function. This allows <code>brookjs</code> the flexibility the change, update, or swap out the underlying render implementation.</p>
+<p><code>brookjs</code> uses <a href="https://github.com/patrick-steele-idem/morphdom" target="_blank" rel="external"><code>morphdom</code></a> to update the element from an HTML string, configured to take advantage of <code>brookjs</code>‘ custom attributes, allowing a Component to rely on any standard templating language to render itself. Assuming a bundler like <a href="https://webpack.js.org/" target="_blank" rel="external"><code>webpack</code></a> can import a string-returning Handlebars template function, pass it to <code>render</code>:</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
+<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> events<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> template <span class="token keyword">from</span> <span class="token string">'./index.hbs'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token function">onMount</span><span class="token punctuation">(</span><span class="token comment" spellcheck="true">/* el, props$ */</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> Kefir<span class="token punctuation">.</span><span class="token function">constant</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token string">'MOUNT_APP'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    events<span class="token punctuation">:</span> <span class="token function">events</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        onButtonClick<span class="token punctuation">:</span> event$ <span class="token operator">=</span><span class="token operator">></span> event$<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token comment" spellcheck="true">/* event */</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+            type<span class="token punctuation">:</span> <span class="token string">'BUTTON_CLICK'</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    render<span class="token punctuation">:</span> <span class="token function">render</span><span class="token punctuation">(</span>template<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>For now, that’s it! Now the Component’s element will rerender on the next value from the Component’s <code>Observable&lt;props&gt;</code>. The provided template function gets called with the emitted <code>props</code>, and <code>morphdom</code> uses the returned HTML to update the element.</p>
+<p>Note that <code>render</code> is responsible for the entire element it’s provided. Use the templating language’s rendering context to ensure each subcomponent has access to the props it needs to render properly. Using Handlebars, simple logic can be encoded into helpers, but avoid encoding too much logic into the template itself.</p>
+<p>If a section of the DOM needs to be hidden from <code>morpdom</code>, add <code>data-brk-blackbox=&quot;uniqueName&quot;</code> as a data-attribute to the element. When <code>morpdom</code> goes to update the DOM, any elements with that attribute will not be updated. A unique name is required in order to ensure the element isn’t removed from the DOM. Make sure the element with the matching blackbox attribute is included in the rendered template or the element will get removed. We’ll see later how to use this to implement custom component logic.</p>
+
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
+    <a class="footer" href="https://github.com/valtech-nyc/brookjs">
+        Project on github
+    </a>
+
+    <div class="switch-page">
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8"/>
+    <title>brookjs - Changelog</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/brookjs/css/docs.css">
+<link rel="stylesheet" href="/brookjs/css/prism-solarizedlight.css" type="text/css"></head>
+<body>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+                <ul class="nav">
+                    <span>Introduction</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/index.html">Meet <code>brookjs</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/changelog.html">Changelog</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Writing a <code>brookjs</code> Component</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/what-is-a-component.html">What is a Component?</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/defining-a-component.html">Defining a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/writing-a-components-html.html">Writing a Component's HTML</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/adding-events-to-a-component.html">Adding <code>events</code> to a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/using-a-template-to-render-a-component.html">Using a Template to <code>render</code> a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/managing-children-components-in-a-component.html">Managing <code>children</code> Components</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Building a <code>brookjs</code> Application</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/connecting-a-redux-store-to-the-view.html">Connecting a Redux Store to the View</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/implementing-side-effects-with-custom-delta.html">Implementing Side Effects with Custom Delta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/building-the-reducer-with-combineActionReducers.html">Building the Reducer with <code>combineActionReducers</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/bootstrapping-the-application.html">Bootstrapping the Application</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Advanced Component Techniques</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>API</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/component.html">component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/observeDelta.html">observeDelta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/events.html">events</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/render.html">render</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/children.html">children</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/combineActionReducers.html">combineActionReducers</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/action.html">action</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/helpers.html">helpers</a>
+                            </li>
+                    </ul>
+                </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1>Changelog</h1>
+        <main class="page-content">
+            
+                <h2>v0.6.0</h2><ul>
+<li>Add <code>ProxyEvent</code> to wrap DOM events<ul>
+<li>This provides an abstraction we can build upon, as well as 2 new properties: <code>containerTarget</code> &amp; <code>decoratedTarget</code></li>
+</ul>
+</li>
+<li>Modify behavior of <code>mapActionTo</code> to use <code>meta</code> instead of adding <code>source</code> directly to the <code>action</code><ul>
+<li>Deprecate the <code>source</code> property currently added to the <code>action</code></li>
+</ul>
+</li>
+<li>Deprecate <code>component</code> in favor of <code>view</code> in <code>domDelta</code></li>
+</ul>
+<p>All deprecated code will be removed in the next release.</p>
+
+<h2>v0.5.0</h2><p><strong>Published under the <em>beta</em> tag on <code>npm</code>.</strong></p>
+<p><em>Use <code>npm i brookjs@beta</code> to install.</em></p>
+<p>A number of breaking changes in this release. The first is <code>data-brk-container</code> no longer provides blackboxing; that’s handled explicitly through the new <code>data-brk-blackbox</code> attribute, which protects a node from being updated by the rendering process.</p>
+<p>The rendering process is also handled by the root node, rather than streaming props into individual components. This reduces the mismatch in how you think about the props provided to the template; you no longer end up with props coming in either from the parent template (on page loader) rather than through <code>modifyChildProps</code> (during the FE application lifecycle).</p>
+<p>If you’re heavily relying on <code>modifyChildProps</code> to thread the needle between the FE context &amp; BE context, you’re going to have a rough time upgrading. The best way to go about it is update all your <code>modifyChildProps</code> streams to pass the same props the template passes in through the Handlebars template. From there, if there’s no <code>onMount</code> in the child component, you can just remove <code>modifyChildProps</code> entirely. If you have components which you heavily relied on an internal implementation (often handled through <code>onMount</code>), you’ll just need to blackbox your component with <code>data-brk-blackbox</code> and maintain <code>modifyChildProps</code> to whatever the <code>onMount</code> needs.</p>
+<ul>
+<li><strong>BREAKING</strong>: Remove <code>render$</code> from combinator in <code>component</code>. This is a result of a change in the internals, which we’re sets up an incoming change in the rendering context.</li>
+<li><strong>BREAKING</strong>: Rendering now happens from the root component down, rather than streaming individual values into individual components. This allows Handlebars to be the only context through which the developer has to understand the data flow into the DOM.</li>
+<li><strong>BREAKING</strong>: Blackboxing is now handled explicitly through the use of <code>dat-brk-blackbox</code>. This can be used to carve out sections of the DOM from being updated, rather than the <code>&quot;container hack.&quot;</code></li>
+</ul>
+
+<h2>v0.4.0</h2><ul>
+<li>Adds <code>ofType</code> method, cribbed from <code>redux-observable</code>, to the <code>actions$</code> stream passed to the delta. This should make writing deltas a lot cleaner.</li>
+<li>Add <code>domDelta</code>. This should be used to mount the dom on page loads. Waits until DOM is ready to mount the component.</li>
+<li>Add some documentation for <code>domDelta</code>.</li>
+</ul>
+
+<h2>v0.3.8</h2><p>Still having problems with publishing to <code>npm</code>. Opened an issue with them about it: <a href="https://github.com/npm/npm/issues/16146">https://github.com/npm/npm/issues/16146</a></p>
+
+<h2>v0.3.5</h2><ul>
+<li>Fix bug in the children’s mutations$ stream where duplicate nodes were improperly removed</li>
+</ul>
+
+<h2>v0.3.4</h2><ul>
+<li>Fixed timing of the deprecation warning added to the child actions</li>
+</ul>
+
+<h2>v0.3.3</h2><p>I’m going to blame this on either my npm version or the AWS outage, but this release did work this time.</p>
+
+<h2>v0.3.2</h2>
+<h2>v0.3.1</h2><ul>
+<li>Fix a bug whereby an added node could be dispatched down the mutations$ stream twice if the parent node and child container node were appended to the DOM separately.</li>
+</ul>
+
+<h2>v0.3.0</h2><ul>
+<li>Add additional modules to the main <code>brookjs</code> export</li>
+<li>Add <code>keyAttribute</code> helper function</li>
+<li>Update <code>preplug</code> to take <code>key</code> as well<ul>
+<li>Deprecate the inclusion of <code>action.key</code></li>
+<li><code>preplug</code> should attach whatever data is needed to the <code>Action</code> from the <code>child$</code> stream</li>
+</ul>
+</li>
+<li>Add a TON of <a href="https://valtech-nyc.github.io/brookjs/">documentation</a><ul>
+<li>Some minor style changes</li>
+<li>Walkthrough of the various aspects of a Component</li>
+</ul>
+</li>
+</ul>
+
+<h2>v0.2.1</h2><ul>
+<li>Fix bug in children factory normalization</li>
+<li>Improve children unsubscription logic</li>
+</ul>
+
+<h2>v0.2.0</h2><ul>
+<li>Fix bug in rendering (again)</li>
+<li>Update <code>modifyChildProps</code> to pass the child’s key<ul>
+<li>This supersedes the use of <code>key</code> in the <code>children</code> configuration.</li>
+<li><code>key</code> is now deprecated. Will be removed in a future release.</li>
+</ul>
+</li>
+<li>Add changelog to the brookjs documentation site</li>
+</ul>
+
+<h2>v0.1.2</h2><ul>
+<li>Add missing exports to entry point. Fixes #16.</li>
+<li>Fix rendering bug when dealing with rendering children.</li>
+</ul>
+
+<h2>v0.1.1</h2><ul>
+<li>Remove use of <code>Array.from</code> (#15)<ul>
+<li>Eliminates an unneeded dependency</li>
+</ul>
+</li>
+<li>Add support to <code>combineActionReducers</code> for a default state (#14)</li>
+</ul>
+
+<h2>v0.1.0</h2><p>Initial release.</p>
+
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
+    <a class="footer" href="https://github.com/valtech-nyc/brookjs">
+        Project on github
+    </a>
+
+    <div class="switch-page">
+    </div>
+</footer>
+</body>
+</html>

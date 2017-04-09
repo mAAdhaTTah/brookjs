@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8"/>
+    <title>brookjs - Defining a Component</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/brookjs/css/docs.css">
+<link rel="stylesheet" href="/brookjs/css/prism-solarizedlight.css" type="text/css"></head>
+<body>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+                <ul class="nav">
+                    <span>Introduction</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/index.html">Meet <code>brookjs</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/changelog.html">Changelog</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Writing a <code>brookjs</code> Component</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/what-is-a-component.html">What is a Component?</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/defining-a-component.html">Defining a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/writing-a-components-html.html">Writing a Component's HTML</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/adding-events-to-a-component.html">Adding <code>events</code> to a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/using-a-template-to-render-a-component.html">Using a Template to <code>render</code> a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/managing-children-components-in-a-component.html">Managing <code>children</code> Components</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Building a <code>brookjs</code> Application</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/connecting-a-redux-store-to-the-view.html">Connecting a Redux Store to the View</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/implementing-side-effects-with-custom-delta.html">Implementing Side Effects with Custom Delta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/building-the-reducer-with-combineActionReducers.html">Building the Reducer with <code>combineActionReducers</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/bootstrapping-the-application.html">Bootstrapping the Application</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Advanced Component Techniques</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>API</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/component.html">component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/observeDelta.html">observeDelta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/events.html">events</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/render.html">render</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/children.html">children</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/combineActionReducers.html">combineActionReducers</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/action.html">action</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/helpers.html">helpers</a>
+                            </li>
+                    </ul>
+                </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1>Defining a Component</h1>
+        <main class="page-content">
+            <p>A Component is defined using the <code>component</code> function provided by <code>brookjs</code>. The function takes a configuration object and returns a Component function. Remember, a Component function is one that takes an <code>Element</code> and an <code>Observable&lt;props&gt;</code> and returns an <code>Observable&lt;Action&gt;</code>.</p>
+<p>The <code>component</code> configuration object doesn’t need anything to get started. It can take an empty object.</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>When called, the returned <code>Observable&lt;Action&gt;</code> will never emit an action or update its <code>Element</code>. The first lifecycle hook we’ll take a look at is <code>onMount</code>. It provides a direct line into Component factory function:</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
+<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token function">onMount</span><span class="token punctuation">(</span><span class="token comment" spellcheck="true">/* el, props$ */</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> Kefir<span class="token punctuation">.</span><span class="token function">constant</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token string">'MOUNT_APP'</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This is all that is needed for a basic Component; a Component can be implemented entirely bespoke, with a completely custom control over its behavior. As long as it adheres to the contract and returns an <code>Observable&lt;Action&gt;</code>, it’s valid.</p>
+
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
+    <a class="footer" href="https://github.com/valtech-nyc/brookjs">
+        Project on github
+    </a>
+
+    <div class="switch-page">
+    </div>
+</footer>
+</body>
+</html>

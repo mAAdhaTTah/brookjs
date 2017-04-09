@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8"/>
+    <title>brookjs - combineActionReducers</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/brookjs/css/docs.css">
+<link rel="stylesheet" href="/brookjs/css/prism-solarizedlight.css" type="text/css"></head>
+<body>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+                <ul class="nav">
+                    <span>Introduction</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/index.html">Meet <code>brookjs</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/changelog.html">Changelog</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Writing a <code>brookjs</code> Component</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/what-is-a-component.html">What is a Component?</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/defining-a-component.html">Defining a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/writing-a-components-html.html">Writing a Component's HTML</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/adding-events-to-a-component.html">Adding <code>events</code> to a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/using-a-template-to-render-a-component.html">Using a Template to <code>render</code> a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/managing-children-components-in-a-component.html">Managing <code>children</code> Components</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Building a <code>brookjs</code> Application</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/connecting-a-redux-store-to-the-view.html">Connecting a Redux Store to the View</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/implementing-side-effects-with-custom-delta.html">Implementing Side Effects with Custom Delta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/building-the-reducer-with-combineActionReducers.html">Building the Reducer with <code>combineActionReducers</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/bootstrapping-the-application.html">Bootstrapping the Application</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Advanced Component Techniques</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>API</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/component.html">component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/observeDelta.html">observeDelta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/events.html">events</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/render.html">render</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/children.html">children</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/combineActionReducers.html">combineActionReducers</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/action.html">action</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/helpers.html">helpers</a>
+                            </li>
+                    </ul>
+                </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1><code>combineActionReducers</code></h1>
+        <main class="page-content">
+            <p><code>combineActionReducers</code> is a function that takes an array of tuples and a default state, and returns a Redux reducer function. The reducer tuples should be array with a string, which the <code>action.type</code> is matched against, and a reducer function, that takes a <code>state</code> and the <code>action</code> and returns a new state.</p>
+<h2 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h2><ul>
+<li><code>{Array&lt;ReducerTuple&gt;} cond</code> - An array of ReducerTuples, where<ul>
+<li>type <code>ReducerTuple = [ActionType, ReducerFunction]</code></li>
+</ul>
+</li>
+<li><code>{any} defaults</code> - Default state to return when no type matches.</li>
+</ul>
+
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
+    <a class="footer" href="https://github.com/valtech-nyc/brookjs">
+        Project on github
+    </a>
+
+    <div class="switch-page">
+    </div>
+</footer>
+</body>
+</html>

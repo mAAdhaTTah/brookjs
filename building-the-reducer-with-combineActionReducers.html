@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8"/>
+    <title>brookjs - Building the Reducer with combineActionReducers</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/brookjs/css/docs.css">
+<link rel="stylesheet" href="/brookjs/css/prism-solarizedlight.css" type="text/css"></head>
+<body>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+                <ul class="nav">
+                    <span>Introduction</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/index.html">Meet <code>brookjs</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/changelog.html">Changelog</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Writing a <code>brookjs</code> Component</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/what-is-a-component.html">What is a Component?</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/defining-a-component.html">Defining a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/writing-a-components-html.html">Writing a Component's HTML</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/adding-events-to-a-component.html">Adding <code>events</code> to a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/using-a-template-to-render-a-component.html">Using a Template to <code>render</code> a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/managing-children-components-in-a-component.html">Managing <code>children</code> Components</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Building a <code>brookjs</code> Application</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/connecting-a-redux-store-to-the-view.html">Connecting a Redux Store to the View</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/implementing-side-effects-with-custom-delta.html">Implementing Side Effects with Custom Delta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/building-the-reducer-with-combineActionReducers.html">Building the Reducer with <code>combineActionReducers</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/bootstrapping-the-application.html">Bootstrapping the Application</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Advanced Component Techniques</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>API</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/component.html">component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/observeDelta.html">observeDelta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/events.html">events</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/render.html">render</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/children.html">children</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/combineActionReducers.html">combineActionReducers</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/action.html">action</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/helpers.html">helpers</a>
+                            </li>
+                    </ul>
+                </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1>Building the Reducer with <code>combineActionReducers</code></h1>
+        <main class="page-content">
+            <p><code>combineActionReducers</code> is an alternate method for structuring your reducers. Can be used with Redux’s <code>combineReducers</code> to eliminate long switch statements and ease the extraction of each case into a testable function.</p>
+<h1 id="How-to-Use"><a href="#How-to-Use" class="headerlink" title="How to Use"></a>How to Use</h1><p>Assuming you have <code>brookjs</code> installed, you can destructure it off the main export:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> combineActionReducers <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> ACTION_TYPE <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../actions'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> actionTypeReducer <span class="token keyword">from</span> <span class="token string">'./actionTypeReducer'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> cond <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> defaults <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">combineActionReducers</span><span class="token punctuation">(</span>cond<span class="token punctuation">,</span> defaults<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p><code>combineActionReducers</code> accepts a default state and an array of tuples, with the first value as the <code>action.type</code> for the reducer and the second value as the reducer function to call for that <code>action.type</code>. This syntax is inspired by ramda’s <a href="http://ramdajs.com/0.22.1/docs/#cond" target="_blank" rel="external"><code>cond</code></a>.</p>
+<p>An action reducer looks just like the reducer functions for <code>combineReducers</code>. The main difference is the resulting function gets broken up by action. A common pattern in Redux is to break up the reducer using a switch statement for each action type:</p>
+<pre class=" language-js"><code class="language-js"> <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">reducer</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token punctuation">{</span> type<span class="token punctuation">,</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+     <span class="token keyword">const</span> <span class="token punctuation">{</span> value <span class="token punctuation">}</span> <span class="token operator">=</span> payload<span class="token punctuation">;</span>
+
+     <span class="token keyword">switch</span> <span class="token punctuation">(</span>type<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+         <span class="token keyword">case</span> ACTION_TYPE<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> state<span class="token punctuation">,</span> <span class="token punctuation">{</span> value <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> OTHER_ACTION_TYPE<span class="token punctuation">:</span>
+           <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> state<span class="token punctuation">,</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token operator">!</span>value <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">default</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> state<span class="token punctuation">;</span>
+     <span class="token punctuation">}</span>
+ <span class="token punctuation">}</span>
+</code></pre>
+<p> With <code>combineActionReducers</code>, the reducer can be simplified:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> combineActionReducers <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> actionTypeReducer <span class="token operator">=</span> <span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span>
+    Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> state<span class="token punctuation">,</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> payload<span class="token punctuation">.</span>value <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> otherActionTypeReducer <span class="token operator">=</span> <span class="token punctuation">(</span>state<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span>
+    Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> state<span class="token punctuation">,</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> payload<span class="token punctuation">.</span>value<span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> cond <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> otherActionTypeReducer<span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> defaults <span class="token operator">=</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token string">''</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">combineActionReducers</span><span class="token punctuation">(</span>cond<span class="token punctuation">,</span> defaults<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p> There are two advantages to structuring a reducer like this. First, the default case is automatically handled, returning the current state automatically. Secondly, each individual <code>actionReducer</code> is smaller, making it both easier to test and easier to reason about.</p>
+<h2 id="Using-with-combineReducers"><a href="#Using-with-combineReducers" class="headerlink" title="Using with combineReducers"></a>Using with <code>combineReducers</code></h2><p>When using both <code>combineReducers</code> and <code>combineActionReducers</code>, use <code>combineReducers</code> to build up all of your branch reducers. At the point where you would normally write a long switch statement, swap out the reducer with <code>combineActionReducers</code>.</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> combineReducers <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'redux'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> combineActionReducers <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> valueActionTypeReducer <span class="token operator">=</span>
+    <span class="token punctuation">(</span>value<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> payload<span class="token punctuation">.</span>value <span class="token operator">+</span> value<span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> valueOtherActionTypeReducer <span class="token operator">=</span>
+    <span class="token punctuation">(</span>value<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> payload<span class="token punctuation">.</span>value <span class="token operator">/</span> <span class="token number">2</span> <span class="token operator">-</span> value<span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> value <span class="token operator">=</span> <span class="token function">combineActionReducers</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> otherActionTypeReducer<span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> disabledActionTypeReducer <span class="token operator">=</span>
+    <span class="token punctuation">(</span>disabled<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token operator">!</span>disabled <span class="token operator">&amp;&amp;</span> payload<span class="token punctuation">.</span>value <span class="token operator">></span> <span class="token number">50</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> disabledOtherActionTypeReducer <span class="token operator">=</span>
+    <span class="token punctuation">(</span>disabled<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> disabled <span class="token operator">&amp;&amp;</span> payload<span class="token punctuation">.</span>value <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> cond <span class="token operator">=</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> otherActionTypeReducer<span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> defaults <span class="token operator">=</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> disabled <span class="token operator">=</span> <span class="token function">combineActionReducers</span><span class="token punctuation">(</span>cond<span class="token punctuation">,</span> defaults<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">combineReducers</span><span class="token punctuation">(</span><span class="token punctuation">{</span> value<span class="token punctuation">,</span> disabled <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h1 id="Alternate-Approaches"><a href="#Alternate-Approaches" class="headerlink" title="Alternate Approaches"></a>Alternate Approaches</h1><h2 id="Action-Oriented-Reducer"><a href="#Action-Oriented-Reducer" class="headerlink" title="Action Oriented Reducer"></a>Action Oriented Reducer</h2><p>Instead of an easy-to-read way of defining long switch statements in subreducers, <code>combineActionCreators</code> can be used to structure the entire reducer. Doing so allows you to view the state as a set of transitions, rather than a series of values. While this view makes sense from a dev tools perspective, the development process tends to be action oriented. Components are defined by the actions they emit and how they map their children’s actions, and delta sources respond to and emit their own actions.</p>
+<p>If there’s a bug in your application, you start at the lowest-level component and ensure it emits the action you expect. You then go to the state and see if it changes the way it’s supposed to. If that’s not the problem, you look at the UI props (now using <code>modifyState</code>) to ensure that’s what you expect. Finally, you ensure the components render the way their supposed to, given that state.</p>
+<p>Overall, the debugging flow through the application becomes very clear, and the first half of that process is all action oriented. If the bug needs to be fixed in multiple parts of the state, <code>combineReducers</code> would require you to update multiple functions/sub-reducers, whereas most bugs occur in response to an action.</p>
+<h2 id="Denormalized-State-Escape-Hatch"><a href="#Denormalized-State-Escape-Hatch" class="headerlink" title="Denormalized State Escape Hatch"></a>Denormalized State Escape Hatch</h2><p><code>combineActionReducers</code> can also help you normalize a state tree. If two pieces of state depend on each other, but don’t exist in the same branch of the state tree, that value may be better off fetched from a selector function.</p>
+<p>Cross-key state dependency is a code smell; if one part of your state is depending upon another, the state isn’t normalized, and properties that are merely the result of computing other properties don’t belong in your state.</p>
+<p><code>combineActionReducers</code> allows you to centralize the logic for a given action with access to the whole state. Wrapping the reducer like this:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> combineActionReducer <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> combinedReducer <span class="token keyword">from</span> <span class="token string">'./reducer'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> actionReducer <span class="token operator">=</span> <span class="token function">combineActionReducer</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">reducer</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    state <span class="token operator">=</span> <span class="token function">combinedReducer</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> action<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">actionReducer</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> action<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>actionTypeReducer</code> will be passed the entire state, allowing the codependent logic to be centralized. The computed property can then be extracted into a selector function, and reused when mapping state to props.</p>
+
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
+    <a class="footer" href="https://github.com/valtech-nyc/brookjs">
+        Project on github
+    </a>
+
+    <div class="switch-page">
+    </div>
+</footer>
+</body>
+</html>

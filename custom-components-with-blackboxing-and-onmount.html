@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charSet="utf-8"/>
+    <title>brookjs - Custom Components with Blackboxing and onMount</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/brookjs/css/docs.css">
+<link rel="stylesheet" href="/brookjs/css/prism-solarizedlight.css" type="text/css"></head>
+<body>
+<div class="content">
+    <div class="menu">
+        <header class="logo">
+            <code>brookjs</code>
+        </header>
+        <nav class="menu-nav">
+                <ul class="nav">
+                    <span>Introduction</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/index.html">Meet <code>brookjs</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/changelog.html">Changelog</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Writing a <code>brookjs</code> Component</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/what-is-a-component.html">What is a Component?</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/defining-a-component.html">Defining a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/writing-a-components-html.html">Writing a Component's HTML</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/adding-events-to-a-component.html">Adding <code>events</code> to a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/using-a-template-to-render-a-component.html">Using a Template to <code>render</code> a Component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/managing-children-components-in-a-component.html">Managing <code>children</code> Components</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Building a <code>brookjs</code> Application</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/connecting-a-redux-store-to-the-view.html">Connecting a Redux Store to the View</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/implementing-side-effects-with-custom-delta.html">Implementing Side Effects with Custom Delta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/building-the-reducer-with-combineActionReducers.html">Building the Reducer with <code>combineActionReducers</code></a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/bootstrapping-the-application.html">Bootstrapping the Application</a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>Advanced Component Techniques</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
+                            </li>
+                    </ul>
+                </ul>
+                <ul class="nav">
+                    <span>API</span>
+                    <ul class="nav">
+                            <li>
+                                <a href="/brookjs/component.html">component</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/observeDelta.html">observeDelta</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/events.html">events</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/render.html">render</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/children.html">children</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/combineActionReducers.html">combineActionReducers</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/action.html">action</a>
+                            </li>
+                            <li>
+                                <a href="/brookjs/helpers.html">helpers</a>
+                            </li>
+                    </ul>
+                </ul>
+        </nav>
+    </div>
+
+    <div class="page">
+        <h1>Custom Components with Blackboxing and <code>onMount</code></h1>
+        <main class="page-content">
+            <p>Normally, a <code>brookjs</code> component takes over an entire section of the DOM, controlling its entire lifecyle. This can make it difficult to integrate with other libraries, as plugins like jQuery and the ACE editor make modifications that the <code>brookjs</code> rendering process will overwrite. To get around this, <code>brookjs</code> offers a way to blackbox parts of the DOM from the rendering process, allowing the component to implement custom logic in <code>onMount</code> and plug it into the component while taking<br>advantage of <code>brookjs</code> to emit DOM events and render the rest of the DOM.</p>
+<p>Let’s take a look at an editor mockup to consider how this might be useful:</p>
+<pre class=" language-handlebars"><code class="language-handlebars"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span> <span class="token attr-name">{{container</span> <span class="token attr-name">"app"}}</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>control-panel<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token handlebars"><span class="token delimiter punctuation">{{</span><span class="token punctuation">></span> <span class="token variable">button</span> <span class="token variable">name</span><span class="token punctuation">=</span><span class="token string">"save"</span> <span class="token variable">text</span><span class="token punctuation">=</span><span class="token string">"Save"</span><span class="token delimiter punctuation">}}</span></span>
+        <span class="token handlebars"><span class="token delimiter punctuation">{{</span><span class="token punctuation">></span> <span class="token variable">button</span> <span class="token variable">name</span><span class="token punctuation">=</span><span class="token string">"delete"</span> <span class="token variable">text</span><span class="token punctuation">=</span><span class="token string">"Delete"</span><span class="token delimiter punctuation">}}</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>editor<span class="token punctuation">"</span></span> <span class="token attr-name">{{blackbox</span> <span class="token attr-name">"editor"}}</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>Using the provided helpers, the above HTML will ensure the control panel gets updated, but nothing with the <code>.editor</code> div will be touched or changed. In our component, we can define it like this:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> children<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Editor <span class="token keyword">from</span> <span class="token string">'custom-editor-library'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> editorChange <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../action'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token function">onMount</span><span class="token punctuation">(</span>el<span class="token punctuation">,</span> props$<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> editor <span class="token operator">=</span> el<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'.editor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>editor<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> Kefir<span class="token punctuation">.</span><span class="token function">constantError</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'Invalid el passed to app'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">const</span> instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Editor</span><span class="token punctuation">(</span><span class="token punctuation">{</span> el<span class="token punctuation">:</span> editor <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">const</span> events$ <span class="token operator">=</span> Kefir<span class="token punctuation">.</span><span class="token function">fromEvents</span><span class="token punctuation">(</span>instance<span class="token punctuation">,</span> <span class="token string">'change'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>editorChange<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> render$ <span class="token operator">=</span> props$<span class="token punctuation">.</span><span class="token function">flatMapLatest</span><span class="token punctuation">(</span>props <span class="token operator">=</span><span class="token operator">></span> raf$<span class="token punctuation">.</span><span class="token function">take</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">flatMap</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> Kefir<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span>emitter <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>props<span class="token punctuation">.</span>editor<span class="token punctuation">.</span>value <span class="token operator">!==</span> instance<span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                instance<span class="token punctuation">.</span><span class="token function">val</span><span class="token punctuation">(</span>props<span class="token punctuation">.</span>editor<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">return</span> Kefir<span class="token punctuation">.</span><span class="token function">merge</span><span class="token punctuation">(</span><span class="token punctuation">[</span>events$<span class="token punctuation">,</span> render$<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    children<span class="token punctuation">:</span> <span class="token function">children</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        save<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            factory<span class="token punctuation">:</span> ButtonComponent<span class="token punctuation">,</span>
+            preplug<span class="token punctuation">:</span> R<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">mapActionTo</span><span class="token punctuation">(</span><span class="token string">'CLICK'</span><span class="token punctuation">,</span> <span class="token string">'SAVE_CLICK'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token keyword">delete</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            factory<span class="token punctuation">:</span> ButtonComponent<span class="token punctuation">,</span>
+            preplug<span class="token punctuation">:</span> R<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">mapActionTo</span><span class="token punctuation">(</span><span class="token string">'CLICK'</span><span class="token punctuation">,</span> <span class="token string">'DELETE_CLICK'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    render<span class="token punctuation">:</span> <span class="token function">render</span><span class="token punctuation">(</span>template<span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>Treating <code>custom-editor-library</code> as an ACE Editor-like library, it can take control over that portion of the DOM. Custom code binds the instance events to the stream and updates it in response to props changes. This makes it easy to drop below the framework and get direct access to the section of the DOM the component controls. It also makes it possible to add custom features not yet supported by <code>brookjs</code>.</p>
+
+        </main>
+    </div>
+</div>
+
+<footer class="brk-footer">
+    <a class="footer" href="https://github.com/valtech-nyc/brookjs">
+        Project on github
+    </a>
+
+    <div class="switch-page">
+    </div>
+</footer>
+</body>
+</html>
