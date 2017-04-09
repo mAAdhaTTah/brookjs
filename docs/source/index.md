@@ -7,6 +7,13 @@ title: Meet <code>brookjs</code>
 
 `brookjs` modules handle various aspects of an application, with the core of the library being the `component` module, handling the DOM lifecycle, and the `observeDelta` middleware, which provides an Observable-based `redux` middleware for managing side effects. Additional modules provide support for other application functionality.
 
+## Download
+
+* [Development Version][dev]
+* [Production Version][prod]
+
   [kefir]: http://rpominov.github.io/kefir/
   [ramda]: http://ramdajs.com/
   [redux]: http://redux.js.org/
+  [dev]: dist/brook.js
+  [prod]: dist/brook.min.js
