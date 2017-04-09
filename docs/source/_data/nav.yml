@@ -28,11 +28,11 @@
     title: Building the Reducer with <code>combineActionReducers</code>
   - id: bootstrapping-the-application
     title: Bootstrapping the Application
-- title: Advanced Component Techniques (Coming soon!)
+- title: Advanced Component Techniques
   items:
-  - id: custom-component-implementations-with-blackboxing
-    title: Custom Component Implementations with Blackboxing
-  - id: animations-and-rendering-with-renderFromHTML
+  - id: custom-components-with-blackboxing-and-onmount
+    title: Custom Components with Blackboxing and <code>onMount</code>
+  - id: animations-and-rendering-with-renderFromHTML (Coming soon!)
     title: Animations and Rendering with <code>renderFromHTML</code>
 - title: API
   items:
