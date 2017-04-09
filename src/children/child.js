@@ -10,10 +10,9 @@ import { KEY_ATTRIBUTE } from '../constants';
  * @param {Function} factory - Instance factory function.
  * @param {Function} modifyChildProps - Creates a new props$ stream for the child.
  * @param {Function} preplug - Modify the child instance stream.
- * @param {string} key - @deprecated.
  * @returns {Kefir.Observable} Child instance.
  */
-export default function child({ container, createSourceStream, factory, modifyChildProps = R.identity, preplug = R.identity, key }) {
+export default function child({ container, createSourceStream, factory, modifyChildProps = R.identity, preplug = R.identity }) {
     if (process.env.NODE_ENV !== 'production') {
         if (createSourceStream) {
             assert.equal(typeof createSourceStream, 'function', `createSourceStream for ${container} should be a function`);
@@ -22,13 +21,6 @@ export default function child({ container, createSourceStream, factory, modifyCh
         }
         assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${container} should be a function`);
         assert.equal(typeof preplug, 'function', `preplug for ${container} should be a function`);
-
-        if (key) {
-            console.warn(`Using key in children configuration is deprecated.
-Use the second parameter to modifyChildProps.`);
-
-            assert.equal(typeof key, 'string', `key for ${container} should be a string`);
-        }
     }
 
     /**
@@ -39,43 +31,8 @@ Use the second parameter to modifyChildProps.`);
      * @returns {Kefir.Observable} - Child stream instance.
      */
     return R.curry((element, props$) => {
-        const hasKey = element.hasAttribute(KEY_ATTRIBUTE);
         const keyAttr = element.getAttribute(KEY_ATTRIBUTE);
-        const useKey = key && hasKey;
 
-        let childProps$ = modifyChildProps(props$, keyAttr);
-
-        if (useKey) {
-            if ('@@key' === key) {
-                childProps$ = childProps$.map(R.prop(element.getAttribute(KEY_ATTRIBUTE)));
-            } else {
-                childProps$ = childProps$.map(R.find(
-                    R.pipe(R.path(key.split('.')), R.equals(element.getAttribute(KEY_ATTRIBUTE)))
-                ));
-            }
-
-            // If the key isn't found, then the child is about to
-            // be removed, so don't dispatch props down the stream.
-            // @todo this seems suboptimal. how to handle iterated children?
-            childProps$ = childProps$.filter(
-                R.pipe(R.type, R.equals('Undefined'), R.not)
-            );
-        }
-
-        let instance$ = preplug((createSourceStream || factory)(element, childProps$), keyAttr);
-
-        if (useKey) {
-            instance$ = instance$.map(action => Object.assign({}, action, {
-                payload: Object.assign({
-                    get key() {
-                        console.warn(`Using key property automatically added to children Actions is deprecated.
-Use the second parameter to preplug to modify child's Action.`);
-                        return element.getAttribute(KEY_ATTRIBUTE);
-                    }
-                }, action.payload)
-            }));
-        }
-
-        return instance$;
+        return preplug((createSourceStream || factory)(element, modifyChildProps(props$, keyAttr)), keyAttr);
     });
 }
