@@ -1,36 +1,9 @@
 import assert from 'assert';
-import { rafAction } from '../action';
-import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import R from 'ramda';
 import { stream } from 'kefir';
 import morphdom from 'morphdom';
-
-/**
- * Stream of requestAnimationFrame events.
- *
- * Used to schedule renders.
- *
- * @type {Kefir.Stream<T, S>}
- */
-export const raf$ = stream(emitter => {
-    let loop;
-    let enabled = true;
-
-    (function schedule() {
-        loop = requestAnimationFrame(time => {
-            emitter.value(rafAction(time));
-
-            if (enabled) {
-                schedule();
-            }
-        });
-    })();
-
-    return () => {
-        cancelAnimationFrame(loop);
-        enabled = false;
-    };
-});
+import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
+import { raf$ } from '../rAF';
 
 /**
  * Creates a stream that updates the element to match the provded HTML.

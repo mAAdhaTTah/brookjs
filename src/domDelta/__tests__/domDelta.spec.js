@@ -83,6 +83,27 @@ describe('domDelta', () => {
         });
     });
 
+    it('should emit an error if el returns incorrect value', done => {
+        const actions$ = never();
+        const state$ = never();
+        const delta = domDelta({ el: () => false, view: never, selectProps: x => x });
+
+        const delta$ = delta(actions$, state$);
+
+        let errored;
+
+        delta$.observe({
+            error(err) {
+                errored = true;
+                expect(err).to.be.instanceOf(TypeError);
+            },
+            end() {
+                expect(errored).to.eql(true);
+                done();
+            }
+        });
+    });
+
     it('should call provided functions with proper args', done => {
         const actions$ = never();
         const state$ = never();

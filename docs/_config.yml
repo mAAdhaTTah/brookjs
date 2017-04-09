@@ -57,7 +57,7 @@ theme: documentation
 
 deploy:
     type: git
-    repo: https://github.com/valtech-nyc/brookjs
+    repo: git@github.com:valtech-nyc/brookjs.git
     branch: gh-pages
     message: "Docs updated {{ now('YYYY-MM-DD HH:mm:ss') }}"
 

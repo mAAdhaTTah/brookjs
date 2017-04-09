@@ -1,4 +1,3 @@
-import { RAF, rafAction } from './action';
 import children from './children';
 import combineActionReducers from './combineActionReducers';
 import component from './component';
@@ -7,14 +6,13 @@ import events from './events';
 import observeDelta from './observeDelta';
 import { containerAttribute, createFixture, eventAttribute,
     mapActionTo } from './helpers';
-import render, { raf$, renderFromHTML } from './render';
+import render, { renderFromHTML } from './render';
+import { raf$ } from './rAF';
 
-const brook = { children, combineActionReducers, component, events, domDelta,
+export { children, combineActionReducers, component, events, domDelta,
     observeDelta, containerAttribute, createFixture, eventAttribute,
-    mapActionTo, render, RAF, rafAction, raf$, renderFromHTML };
+    mapActionTo, render, raf$, renderFromHTML };
 
-export { brook, children, combineActionReducers, component, events, domDelta,
+export default { children, combineActionReducers, component, events, domDelta,
     observeDelta, containerAttribute, createFixture, eventAttribute,
-    mapActionTo, render, RAF, rafAction, raf$, renderFromHTML };
-
-export default brook;
+    mapActionTo, render, raf$, renderFromHTML };

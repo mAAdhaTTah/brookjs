@@ -9,7 +9,8 @@ First, define the attribute on the HTML:
 
 ```html
 <button data-brk-container="button"
-        data-brk-key="1">
+        data-brk-key="1"
+        data-brk-onclick="onButtonClick">
     Click Me
 </button>
 ```
@@ -52,7 +53,9 @@ export default component({
 });
 ```
 
-`event$` is an `Observable<Event>`, emitting the raw `Event` object from the browser. The stream gets merged with the main Component stream, so the returned stream needs to be an `Observable<Action>`.
+`event$` is an `Observable<ProxyEvent>`, emitting a normalized wrapper around the browser's `Event`. In addition to the `Event` properties, the emitted `ProxyEvent` has two `brookjs`-specific properties: `decoratedTarget` (the element with the event attribute) and `containerTarget` (the container element for the event). This provides access to the DOM as required to pull additional information out for the event object.
+
+The stream gets merged with the main Component stream, so the returned stream needs to be an `Observable<Action>`.
 
 The events managed by event delegation, requiring a single listener at the top of the DOM, and uses the `data-brk-container` attribute to scope the event to its proper Component instance.
 
