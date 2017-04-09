@@ -3,22 +3,22 @@ id: what-is-a-component
 title: What is a Component?
 ---
 
-In simple terms, a Component in `brookjs` is a function that accepts an `Element` and a `Observable<props>` for that element and returns a `Observable<Action>`. `brookjs` is designed to be paired with [`redux`][redux], and Components can be streamed into a `redux` Store, with the Store's State streamed into the Component as its `props`.
+In simple terms, a Component in `brookjs` is a function that accepts an `Element` and an `Observable<props>` for that element and returns an `Observable<Action>`. `brookjs` is designed to be paired with [`redux`][redux], and Components can be streamed into a `redux` Store, with the Store's State streamed into the Component as its `props`.
 
-A `brookjs` Component can be paired with a `redux` Store with the following glue code:
+A `brookjs` Component can be paired with a `redux` Store with the following glue code (we'll see later how this gets wired up in a full-fledged application):
 
 ```js
 import { createStore } from 'redux';
 import Kefir from 'kefir';
 import reducer from './reducer';
-// app is a brookjs Component
-import app from './app';
+// view is a brookjs Component
+import view from './view';
 
 document.addEventListener('DOMContentLoaded', () => {
     const store = createStore(reducer);
     const props$ = Kefir.fromESObservable(store).toProperty(store.getState);
 
-    const view$ = app(document.getElementById('app'), props$);
+    const view$ = view(document.getElementById('app'), props$);
 
     const sub = view$.observe({ value: store.dispatch });
 });
