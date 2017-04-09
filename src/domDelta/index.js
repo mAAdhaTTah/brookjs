@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { constant, constantError, fromCallback, fromEvents } from 'kefir';
+import { constant, constantError, fromCallback, fromEvents, later, Observable } from 'kefir';
 
 const documentIsLoaded = () =>
     fromCallback(callback =>
@@ -20,6 +20,10 @@ export default function domDelta({ el, component, view, selectProps }) {
 
     if (typeof el === 'function') {
         el = el(document);
+
+        if (!(el instanceof Observable)) {
+            precheck$ = constantError(new TypeError(`type ${typeof el} returned from el is not valid`));
+        }
     } else if (el instanceof Element) {
         el = constant(el);
     } else {
@@ -39,7 +43,8 @@ export default function domDelta({ el, component, view, selectProps }) {
             .flatMap(documentIsLoaded)
             .flatMap(isLoaded =>
                 isLoaded ?
-                    constant(true) :
+                    // ensures async consistency
+                    later(0, true) :
                     fromEvents(document, 'DOMContentLoaded')
             )
             .flatMap(R.always(el))
