@@ -19,17 +19,11 @@ const documentIsLoaded = () =>
  * Creates a new delta for the DOM for the given configuration.
  *
  * @param {Element|Function} el - Element or function that returns Observable<Element>.
- * @param {Function} component - Component function.
  * @param {Function} view - View component.
  * @param {Function} selectProps - Select the props$ stream from the state$.
  * @returns {Delta} Delta function.
  */
-export default function domDelta({ el, component, view, selectProps }) {
-    if (component) {
-        console.warn('`component` in `domDelta` is deprecated. use `view`.');
-        view = component;
-    }
-
+export default function domDelta({ el, view, selectProps }) {
     let precheck$ = constant('Configuration correct');
 
     if (typeof el === 'function') {

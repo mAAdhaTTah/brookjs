@@ -1,7 +1,6 @@
 /*eslint-env mocha */
 import { eventAttribute, containerAttribute, keyAttribute, mapActionTo } from '../';
 import { expect } from 'chai';
-import sinon from 'sinon';
 
 describe('helpers', function() {
     describe('event', function() {
@@ -31,10 +30,6 @@ describe('helpers', function() {
     });
 
     describe('mapActionTo', () => {
-        before(() => {
-            sinon.stub(console, 'warn').callsFake(() => {});
-        });
-
         it('should be curried', () => {
             expect(mapActionTo('SOURCE')).to.be.a('function');
             expect(mapActionTo('SOURCE', 'DEST')).to.be.a('function');
@@ -60,8 +55,7 @@ describe('helpers', function() {
                 payload: { test: true },
                 meta: {
                     sources: ['SOURCE']
-                },
-                source: 'SOURCE'
+                }
             });
         });
 
@@ -79,13 +73,8 @@ describe('helpers', function() {
                 payload: { test: true },
                 meta: {
                     sources: ['PREV_SOURCE', 'SOURCE']
-                },
-                source: 'SOURCE'
+                }
             });
-        });
-
-        after(() => {
-            console.warn.restore();
         });
     });
 });

@@ -13,11 +13,6 @@ export default R.curry(function mapActionTo(source, dest, action) {
         meta: {
             ...meta,
             sources: (meta.sources || []).concat(source)
-        },
-        get source() {
-            console.warn('`source` is now located at `meta.sources`');
-
-            return source;
         }
     };
 });
