@@ -1,5 +1,6 @@
 import R from 'ramda';
 import { constant, pool } from 'kefir';
+import createElementFromTemplate from './createElementFromTemplate';
 
 /**
  * Creates object of fixtures for testing.
@@ -10,13 +11,7 @@ import { constant, pool } from 'kefir';
  * @returns {{el, instance: Observable}} Fixtures.
  */
 export default function createFixture(component, template, state) {
-    const el = (() => {
-        let html = template(state);
-        let result = document.createElement('div');
-        result.innerHTML = html;
-
-        return result.children[0];
-    })();
+    const el = createElementFromTemplate(template, state);
     const state$ = pool();
     state$.plug(constant(R.clone(state)));
 
