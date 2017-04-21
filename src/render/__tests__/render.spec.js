@@ -9,7 +9,7 @@ import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../co
 import { blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
 import render from '../';
 
-import { constant, pool } from 'kefir';
+import Kefir from 'kefir';
 
 chai.use(sinonChai);
 chai.use(dom);
@@ -19,10 +19,9 @@ describe('render', function() {
         type: 'text',
         text: 'Hello world!'
     };
-    let template, next, fixture, generator, props$, child, span, blackboxed;
+    let template, next, fixture, generator, child, span, blackboxed;
 
     beforeEach(function() {
-        props$ = pool();
         next = {
             type: 'image',
             text: 'A picture'
@@ -60,41 +59,31 @@ describe('render', function() {
     });
 
     it('should update element with new state', done => {
-        const render$ = generator(fixture, props$);
+        generator(fixture, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
+                expect(fixture).to.not.have.class(initial.type);
+                expect(fixture).to.have.class(next.type);
+                expect(span).to.not.have.text(initial.text);
+                expect(span).to.have.text(next.text);
 
-        requestAnimationFrame(() => {
-            expect(template).to.have.callCount(1);
-            expect(template).to.have.been.calledWithExactly(next);
-
-            expect(fixture).to.not.have.class(initial.type);
-            expect(fixture).to.have.class(next.type);
-            expect(span).to.not.have.text(initial.text);
-            expect(span).to.have.text(next.text);
-
-            sub.unsubscribe();
-
-            done();
+                done();
+            }
         });
     });
 
     it('should update child container element', done => {
-        const render$ = generator(fixture, props$);
+        generator(fixture, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
+                expect(child).to.have.text('Not a picture');
 
-        requestAnimationFrame(() => {
-            expect(template).to.have.callCount(1);
-            expect(template).to.have.been.calledWithExactly(next);
-
-            expect(child).to.have.text('Not a picture');
-
-            sub.unsubscribe();
-
-            done();
+                done();
+            }
         });
     });
 
@@ -105,62 +94,48 @@ describe('render', function() {
         child2.textContent = 'Another picture description';
         fixture.appendChild(child2);
 
-        const render$ = generator(fixture, props$);
+        generator(fixture, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
+                expect(fixture.children).to.have.lengthOf(3);
+                expect(child.parentNode).to.eql(fixture);
+                expect(child2.parentNode).to.eql(null);
 
-        requestAnimationFrame(() => {
-            expect(template).to.have.callCount(1);
-            expect(template).to.have.been.calledWithExactly(next);
-
-            expect(fixture.children).to.have.lengthOf(3);
-            expect(child.parentNode).to.eql(fixture);
-            expect(child2.parentNode).to.eql(null);
-
-            sub.unsubscribe();
-
-            done();
+                done();
+            }
         });
     });
 
     it('should add missing child container element', done => {
         fixture.removeChild(child);
-        const render$ = generator(fixture, props$);
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
+        generator(fixture, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
 
-        requestAnimationFrame(() => {
-            expect(template).to.have.callCount(1);
-            expect(template).to.have.been.calledWithExactly(next);
+                expect(fixture.children).to.have.lengthOf(3);
 
-            expect(fixture.children).to.have.lengthOf(3);
-
-            sub.unsubscribe();
-
-            done();
+                done();
+            }
         });
     });
 
     it('should not update blackboxed element', done => {
-        const render$ = generator(fixture, props$);
+        const render$ = generator(fixture, Kefir.constant(next));
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
-
-        requestAnimationFrame(() => {
-            setTimeout(() => {
+        render$.observe({
+            end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
                 expect(blackboxed.parentNode).to.eql(fixture);
                 expect(blackboxed).to.have.text('This should stay.');
 
-                sub.unsubscribe();
-
                 done();
-            }, 500);
+            }
         });
     });
 
@@ -170,42 +145,33 @@ describe('render', function() {
         blackboxed2.textContent = 'Another blackboxed element.';
         fixture.appendChild(blackboxed2);
 
-        const render$ = generator(fixture, props$);
+        generator(fixture, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
+                expect(fixture.children).to.have.lengthOf(3);
+                expect(child.parentNode).to.eql(fixture);
+                expect(blackboxed2.parentNode).to.eql(null);
 
-        requestAnimationFrame(() => {
-            expect(template).to.have.callCount(1);
-            expect(template).to.have.been.calledWithExactly(next);
-
-            expect(fixture.children).to.have.lengthOf(3);
-            expect(child.parentNode).to.eql(fixture);
-            expect(blackboxed2.parentNode).to.eql(null);
-
-            sub.unsubscribe();
-
-            done();
+                done();
+            }
         });
     });
 
     it('should add missing blackboxed element', done => {
         fixture.removeChild(blackboxed);
-        const render$ = generator(fixture, props$);
 
-        const sub = render$.observe({});
-        props$.plug(constant(next));
+        generator(fixture, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
 
-        requestAnimationFrame(() => {
-            expect(template).to.have.callCount(1);
-            expect(template).to.have.been.calledWithExactly(next);
+                expect(fixture.children).to.have.lengthOf(3);
+                expect(fixture.children[2]).to.have.text('This should not appear.');
 
-            expect(fixture.children).to.have.lengthOf(3);
-            expect(fixture.children[2]).to.have.text('This should not appear.');
-
-            sub.unsubscribe();
-
-            done();
+                done();
+            }
         });
     });
 });
