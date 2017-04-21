@@ -1,9 +1,10 @@
 import assert from 'assert';
 import R from 'ramda';
-import { stream } from 'kefir';
-import morphdom from 'morphdom';
-import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
+import { outerHTML, use } from 'diffhtml';
 import { raf$ } from '../rAF';
+import middleware from './middleware';
+
+use(middleware());
 
 /**
  * Creates a stream that updates the element to match the provded HTML.
@@ -13,45 +14,14 @@ import { raf$ } from '../rAF';
  * @returns {Kefir.Observable} Render stream.
  */
 export const renderFromHTML = R.curry((el, html) =>
-    raf$.take(1).flatMap(() => stream(emitter => {
+    raf$.take(1).flatMap(() => {
         if (process.env.NODE_ENV !== 'production') {
             assert.equal(typeof html, 'string', '`template` should return a string');
         }
 
-        morphdom(el, html, {
-            getNodeKey(el) {
-                let key = '';
-
-                // Ignore text nodes.
-                if (el.nodeType === 3) {
-                    return key;
-                }
-
-                if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
-                    key = el.getAttribute(CONTAINER_ATTRIBUTE);
-
-                    if (el.getAttribute(KEY_ATTRIBUTE)) {
-                        key += `::${el.getAttribute(KEY_ATTRIBUTE)}`;
-                    }
-                }
-
-                if (el.hasAttribute(BLACKBOX_ATTRIBUTE)) {
-                    if (key) {
-                        key += '::';
-                    }
-
-                    key += el.getAttribute(BLACKBOX_ATTRIBUTE);
-                }
-
-                return key;
-            },
-            onBeforeElUpdated(fromEl) {
-                return !fromEl.hasAttribute(BLACKBOX_ATTRIBUTE);
-            }
-        });
-
-        emitter.end();
-    })));
+        return outerHTML(el, html);
+    })
+);
 
 /**
  * Generates a new rendering stream that ends after the element is updated.
