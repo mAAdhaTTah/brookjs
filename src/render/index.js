@@ -19,7 +19,7 @@ export const renderFromHTML = R.curry((el, html) =>
         }
 
         morphdom(el, html, {
-            getNodeKey: function getNodeKey(el) {
+            getNodeKey(el) {
                 let key = '';
 
                 // Ignore text nodes.
@@ -45,8 +45,7 @@ export const renderFromHTML = R.curry((el, html) =>
 
                 return key;
             },
-            onBeforeElUpdated: function blackboxContainer(fromEl) {
-                // Update anything that isn't a container.
+            onBeforeElUpdated(fromEl) {
                 return !fromEl.hasAttribute(BLACKBOX_ATTRIBUTE);
             }
         });
