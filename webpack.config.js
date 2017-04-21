@@ -10,15 +10,20 @@ const common = {
                 exclude: /(node_modules)/
             },
             {
-                test: /\.json$/,
-                loader: 'json-loader'
+                test: /\.hbs$/,
+                loader: 'handlebars-loader',
+                options: {
+                    compat: true,
+                    knownHelpersOnly: false,
+                    runtimePath: 'handlebars/runtime'
+                }
             }
         ]
     },
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
-            handlebars: 'handlebars/dist/cjs/handlebars'
+            'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime'
         }
     }
 };

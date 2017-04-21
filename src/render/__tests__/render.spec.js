@@ -4,6 +4,9 @@ import chai, { expect } from 'chai';
 import dom from 'chai-dom';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import hbs from 'handlebars/runtime';
+
+import source from './fixture.hbs';
 
 import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../constants';
 import { blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
@@ -14,19 +17,23 @@ import Kefir from 'kefir';
 chai.use(sinonChai);
 chai.use(dom);
 
+hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
+hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
+hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
+
 describe('render', function() {
     const initial = {
         type: 'text',
         text: 'Hello world!'
     };
-    let template, next, fixture, generator, child, span, blackboxed;
+    const next = {
+        type: 'image',
+        text: 'A picture'
+    };
+    let template, fixture, generator, child, span, blackboxed;
 
     beforeEach(function() {
-        next = {
-            type: 'image',
-            text: 'A picture'
-        };
-        template = sinon.spy(() => `<div ${containerAttribute('parent')} class="image"><span>A picture</span><span ${containerAttribute('child')} ${keyAttribute('one')}>Not a picture</span><span ${blackboxAttribute('hidden')}>This should not appear.</span></div>`);
+        template = sinon.spy(() => source());
 
         fixture = document.createElement('div');
         fixture.classList.add(initial.type);
