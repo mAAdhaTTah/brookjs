@@ -1,5 +1,7 @@
 import { createNode } from 'diffhtml/lib/node';
-import { stream } from 'kefir';
+import Kefir from 'kefir';
+import { getContainerNode } from '../children/util';
+import { wrapEffect } from './animations';
 
 const blockText = new Set(['script', 'noscript', 'style', 'code', 'template']);
 
@@ -31,27 +33,28 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
             // Events must be lowercased otherwise they will not be set correctly.
             const name = attribute.indexOf('on') === 0 ? attribute.toLowerCase() : attribute;
 
+            let effect$ = Kefir.never();
+
             // Normal attribute value.
             if (!isObject && !isFunction && name) {
-                observables.push(stream(emitter => {
+                effect$ = Kefir.stream(emitter => {
                     const noValue = newValue === null || newValue === undefined;
 
                     // Allow the user to find the real value in the DOM Node as a
                     // property.
                     try {
                         domNode[name] = newValue;
-                    } catch (unhandledException) {}
+                    } catch (unhandledException) {} // eslint-disable-line no-empty
 
                     // Set the actual attribute, this will ensure attributes like
                     // `autofocus` aren't reset by the property call above.
                     domNode.setAttribute(name, noValue ? '' : newValue);
 
                     emitter.end();
-                }));
-            }
+                });
             // Support patching an object representation of the style object.
-            else if (isObject && name === 'style') {
-                observables.push(stream(emitter => {
+            } else if (isObject && name === 'style') {
+                effect$ = Kefir.stream(emitter => {
                     const keys = Object.keys(newValue);
 
                     for (let i = 0; i < keys.length; i++) {
@@ -59,9 +62,9 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                     }
 
                     emitter.end();
-                }));
+                });
             } else if (typeof newValue !== 'string') {
-                observables.push(stream(emitter => {
+                effect$ = Kefir.stream(emitter => {
                     // We remove and re-add the attribute to trigger a change in a web
                     // component or mutation observer. Although you could use a setter or
                     // proxy, this is more natural.
@@ -75,10 +78,18 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                     // Since this is a property value it gets set directly on the node.
                     try {
                         domNode[name] = newValue;
-                    } catch (unhandledException) {}
+                    } catch (unhandledException) {} // eslint-disable-line no-empty
 
                     emitter.end();
-                }));
+                });
+            }
+
+            // If an attribute it being added to a DOM node that's about
+            // to be added to the DOM, then we need to do this now.
+            if (!domNode.parentNode) {
+                effect$.observe({});
+            } else {
+                observables.push(wrapEffect('attributechanged', effect$, getContainerNode(domNode), domNode));
             }
         }
     }
@@ -90,10 +101,12 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
             const name = REMOVE_ATTRIBUTE[i + 1];
             const domNode = NodeCache.get(vTree);
 
-            observables.push(stream(emitter => {
+            const effect$ = Kefir.stream(emitter => {
                 removeAttribute(domNode, name);
                 emitter.end();
-            }));
+            });
+
+            observables.push(wrapEffect('attributechanged', effect$, getContainerNode(domNode), domNode));
         }
     }
 
@@ -110,19 +123,21 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                 const domNode = NodeCache.get(vTree);
                 const referenceNode = referenceTree && createNode(referenceTree);
 
-                observables.push(stream(emitter => {
-                    if (referenceTree) {
-                        protectVTree(referenceTree);
-                    }
+                if (referenceTree) {
+                    protectVTree(referenceTree);
+                }
 
-                    const newNode = createNode(newTree);
-                    protectVTree(newTree);
+                const newNode = createNode(newTree);
+                protectVTree(newTree);
 
+                const attach$ = Kefir.stream(emitter => {
                     // If refNode is `null` then it will simply append like `appendChild`.
                     domNode.insertBefore(newNode, referenceNode);
 
                     emitter.end();
-                }));
+                });
+
+                observables.push(wrapEffect('attached', attach$, getContainerNode(domNode), newNode));
             }
         }
 
@@ -132,11 +147,13 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                 const vTree = REMOVE_CHILD[i];
                 const domNode = NodeCache.get(vTree);
 
-                observables.push(stream(emitter => {
+                const detach$ = Kefir.stream(emitter => {
                     domNode.parentNode.removeChild(domNode);
                     unprotectVTree(vTree);
                     emitter.end();
-                }));
+                });
+
+                observables.push(wrapEffect('detached', detach$, getContainerNode(domNode), domNode));
             }
         }
 
@@ -148,16 +165,32 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                 const oldDomNode = NodeCache.get(oldTree);
                 const newDomNode = createNode(newTree);
 
-                observables.push(stream(emitter => {
-                    // Always insert before to allow the element to transition.
+                const attach$ = Kefir.stream(emitter => {
                     oldDomNode.parentNode.insertBefore(newDomNode, oldDomNode);
                     protectVTree(newTree);
 
+                    emitter.end();
+                });
+
+                const detach$ = Kefir.stream(emitter => {
                     oldDomNode.parentNode.replaceChild(newDomNode, oldDomNode);
                     unprotectVTree(oldTree);
 
                     emitter.end();
-                }));
+                });
+
+                const container = getContainerNode(oldDomNode);
+
+                observables.push(wrapEffect(
+                    'replaced',
+                    Kefir.merge([
+                        wrapEffect('attached', attach$, container, newDomNode),
+                        wrapEffect('detached', detach$, container, oldDomNode)
+                    ]),
+                    container,
+                    newDomNode,
+                    oldDomNode
+                ));
             }
         }
     }
@@ -167,10 +200,12 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
         for (let i = 0; i < NODE_VALUE.length; i += 3) {
             const vTree = NODE_VALUE[i];
             const nodeValue = NODE_VALUE[i + 1];
+            const domNode = NodeCache.get(vTree);
+            const containerNode = getContainerNode(domNode);
 
-            observables.push(stream(emitter => {
+            const effect$ = Kefir.stream(emitter => {
                 // Wait... this doesn't seem right...?
-                const domNode = NodeCache.get(vTree);
+                // const domNode = NodeCache.get(vTree);
                 const { parentNode } = domNode;
 
                 if (nodeValue.includes('&')) {
@@ -184,7 +219,9 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                 }
 
                 emitter.end();
-            }));
+            });
+
+            observables.push(wrapEffect('textchanged', effect$, containerNode, domNode));
         }
     }
 

@@ -4,6 +4,7 @@ import Kefir from 'kefir';
 import { outerHTML, use } from 'diffhtml/lib';
 import { $$internals } from '../constants';
 import { raf$ } from '../rAF';
+import { registerElementAnimations } from './animations';
 import middleware from './middleware';
 
 use(middleware());
@@ -46,7 +47,12 @@ export default function render(template, animations = {}) {
          * @returns {Stream<void, void>} Rendering stream.
          */
         createRenderSink: (el, props$) => props$.map(template)
-            .flatMapLatest(renderFromHTML(el))
+            .flatMapLatest(renderFromHTML(el)),
+
+        createAnimationSink: (el, props$) => registerElementAnimations(el, animations)
+            // props$ only emits a value right before it ends, ending the registration stream.
+            // delay ensures we unregister the element after the last render has completed.
+            .takeUntilBy(props$.ignoreValues().beforeEnd(() => raf$.take(1).delay(5)).flatMap(R.identity))
     };
 
     /**
@@ -57,7 +63,8 @@ export default function render(template, animations = {}) {
      * @returns {Stream<void, void>} Rendering stream.
      */
     const renderFactory = (el, props$) => Kefir.merge([
-        internals.createRenderSink(el, props$)
+        internals.createRenderSink(el, props$),
+        internals.createAnimationSink(el, props$)
     ]);
 
     renderFactory[$$internals] = internals;

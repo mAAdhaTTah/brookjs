@@ -7,9 +7,9 @@ import sinonChai from 'sinon-chai';
 import hbs from 'handlebars/runtime';
 
 import * as Desalinate from '../../desalinate';
-import { hideBlackboxed, simpleUpdate, updateChild } from './fixtures';
+import { attachDetachReplace, attributeText, hideBlackboxed, simpleUpdate, updateChild } from './fixtures';
 
-import { blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
+import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
 import render from '../';
 
 import Kefir from 'kefir';
@@ -17,6 +17,7 @@ import Kefir from 'kefir';
 chai.use(sinonChai);
 chai.use(dom);
 
+hbs.registerHelper('animate', attr => new hbs.SafeString(animateAttribute(attr)));
 hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
 hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
 hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
@@ -52,8 +53,6 @@ describe('render', function() {
                 expect(el).to.have.class(next.type);
                 expect(el).to.not.have.text(initial.text);
                 expect(el).to.have.text(next.text);
-
-
 
                 done();
             }
@@ -254,6 +253,173 @@ describe('render', function() {
 
                 expect(one).to.have.text(initial.blackboxed[0].text);
                 expect(two).to.equal(undefined);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when node added', done => {
+        const initial = {
+            children: []
+        };
+        const next = {
+            children: [{ text: 'First' }]
+        };
+        const el = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
+        const template = sinon.spy(attachDetachReplace);
+        const attached = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { attached }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(attached).to.have.callCount(1);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when node removed', done => {
+        const initial = {
+            children: [{ text: 'First' }]
+        };
+        const next = {
+            children: []
+        };
+        const el = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
+        const template = sinon.spy(attachDetachReplace);
+        const detached = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { detached }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(detached).to.have.callCount(1);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when nodes replaced', done => {
+        const initial = {
+            children: [{ text: 'First', id: 1 }]
+        };
+        const next = {
+            children: [{ text: 'Second', id: 2 }]
+        };
+        const el = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
+        const template = sinon.spy(attachDetachReplace);
+        const replaced = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { replaced }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(replaced).to.have.callCount(1);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when attribute changed', done => {
+        const initial = {
+            attribute: 'firstattr',
+            text: 'First Text'
+        };
+        const next = {
+            attribute: 'secondattr',
+            text: 'First Text'
+        };
+        const el = Desalinate.createElementFromTemplate(attributeText, initial);
+        const template = sinon.spy(attributeText);
+        const attributechanged = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { attributechanged }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(attributechanged).to.have.callCount(1);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when attribute added', done => {
+        const initial = {
+            text: 'First Text'
+        };
+        const next = {
+            attribute: 'firstattr',
+            text: 'First Text'
+        };
+        const el = Desalinate.createElementFromTemplate(attributeText, initial);
+        const template = sinon.spy(attributeText);
+        const attributechanged = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { attributechanged }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(attributechanged).to.have.callCount(1);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when attribute removed', done => {
+        const initial = {
+            attribute: 'firstattr',
+            text: 'First Text'
+        };
+        const next = {
+            text: 'First Text'
+        };
+        const el = Desalinate.createElementFromTemplate(attributeText, initial);
+        const template = sinon.spy(attributeText);
+        const attributechanged = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { attributechanged }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(attributechanged).to.have.callCount(1);
+
+                done();
+            }
+        });
+    });
+
+    it('should call callback when text changed', done => {
+        const initial = {
+            attribute: 'firstattr',
+            text: 'First Text'
+        };
+        const next = {
+            attribute: 'firstattr',
+            text: 'Second Text'
+        };
+        const el = Desalinate.createElementFromTemplate(attributeText, initial);
+        const template = sinon.spy(attributeText);
+        const textchanged = sinon.stub().onFirstCall().returnsArg(0);
+        const renderFactory = render(template, {
+            animated: { textchanged }
+        });
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(textchanged).to.have.callCount(1);
 
                 done();
             }
