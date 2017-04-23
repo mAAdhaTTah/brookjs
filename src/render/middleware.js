@@ -1,6 +1,7 @@
 import { BLACKBOX_ATTRIBUTE } from '../constants';
 import getNodeKey from './getNodeKey';
 import endAsObservable from './endAsObservable';
+import patchTask from './patchTask';
 
 /**
  * Adds the key for every newly created tree.
@@ -32,6 +33,8 @@ const syncTreeHook = (oldTree, newTree) =>
  * @returns {renderTask} Render task middleware.
  */
 export default function middleware() {
+    let patchNode;
+
     /**
      * Maintains the current transaction, overwrites
      * the built in patch function with our observable
@@ -40,8 +43,20 @@ export default function middleware() {
      * @param {Transaction} transaction - Incoming transaction.
      */
     function renderTask(transaction) {
-        transaction.tasks.push(endAsObservable);
+        const idx = transaction.tasks.indexOf(patchNode);
+
+        transaction.tasks[idx] = patchTask;
+        transaction.tasks[idx + 1] = endAsObservable;
     }
 
-    return Object.assign(renderTask, { createTreeHook, syncTreeHook });
+    /**
+     * Run when the middleware is registered with diffHTML.
+     *
+     * @param {Object} tasks - diffHTML's built-in tasks.
+     */
+    function subscribe({ tasks }) {
+        ({ patchNode } = tasks);
+    }
+
+    return Object.assign(renderTask, { createTreeHook, subscribe, syncTreeHook });
 }
