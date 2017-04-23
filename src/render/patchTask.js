@@ -1,4 +1,4 @@
-import { patchNode } from 'diffhtml/lib/node';
+import patchAsObservable from './patchAsObservable';
 
 /**
  * Replacement patch task that actually updates the DOM.
@@ -6,11 +6,11 @@ import { patchNode } from 'diffhtml/lib/node';
  * @param {Transaction} transaction - Current running transaction.
  */
 export default function patchTask(transaction) {
-    const { state: { measure, internals }, patches, promises = [] } = transaction;
+    const { state: { measure, internals }, patches, observables = [] } = transaction;
 
     measure('patch node (observable)');
-    promises.push(...patchNode(patches, internals));
+    observables.push(...patchAsObservable(patches, internals));
     measure('patch node (observable)');
 
-    transaction.promises = promises;
+    transaction.observables = observables;
 }
