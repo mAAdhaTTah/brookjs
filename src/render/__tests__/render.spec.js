@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import hbs from 'handlebars/runtime';
 
-import source from './fixture.hbs';
+import { source } from './fixtures';
 
 import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../constants';
 import { blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
