@@ -18,13 +18,16 @@ const createEnd = transaction => Kefir.stream(emitter => {
  * @returns {Observable} Render observable.
  */
 export default function endAsObservable(transaction) {
-    const { promises = [] } = transaction;
+    const { observables = [], promises = [] } = transaction;
 
     const end$ = createEnd(transaction);
 
-    if (!promises.length) {
+    if (!observables.length && !promises.length) {
         return end$;
     }
 
-    return Kefir.concat([Kefir.merge(promises), end$]);
+    return Kefir.concat([
+        Kefir.merge([...observables, ...promises.map(Kefir.fromPromise)]),
+        end$
+    ]);
 }
