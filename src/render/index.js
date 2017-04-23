@@ -1,13 +1,15 @@
 import assert from 'assert';
 import R from 'ramda';
-import { outerHTML, use } from 'diffhtml';
+import Kefir from 'kefir';
+import { outerHTML, use } from 'diffhtml/lib';
+import { $$internals } from '../constants';
 import { raf$ } from '../rAF';
 import middleware from './middleware';
 
 use(middleware());
 
 /**
- * Creates a stream that updates the element to match the provded HTML.
+ * Creates a stream that updates the element to match the provided HTML.
  *
  * @param {Element} el - Element to update.
  * @param {string} html - HTML to update to.
@@ -27,22 +29,38 @@ export const renderFromHTML = R.curry((el, html) =>
  * Generates a new rendering stream that ends after the element is updated.
  *
  * @param {Function} template - String-returning template function.
+ * @param {Object} animations - Animation definitions.
  * @returns {Function} Curried stream generating function.
  */
-export default function render(template) {
+export default function render(template, animations = {}) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof template, 'function', '`template` should be a function');
     }
 
+    const internals = {
+        /**
+         * Render sink stream generator function.
+         *
+         * @param {HTMLElement} el - Element to render against.
+         * @param {Observable<T>} props$ - Stream of component props.
+         * @returns {Stream<void, void>} Rendering stream.
+         */
+        createRenderSink: (el, props$) => props$.map(template)
+            .flatMapLatest(renderFromHTML(el))
+    };
+
     /**
-     * Render stream generator function.
+     * Create combined render/animation stream.
      *
      * @param {HTMLElement} el - Element to render against.
-     * @param {Object} prev - Previous state.
-     * @param {Object} next - Next state.
+     * @param {Observable<T>} props$ - Stream of component props.
      * @returns {Stream<void, void>} Rendering stream.
-     * @factory
      */
-    return R.curry((el, props$) =>
-        props$.map(template).flatMapLatest(renderFromHTML(el)));
+    const renderFactory = (el, props$) => Kefir.merge([
+        internals.createRenderSink(el, props$)
+    ]);
+
+    renderFactory[$$internals] = internals;
+
+    return renderFactory;
 }
