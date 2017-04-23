@@ -1,3 +1,5 @@
+import * as Elements from './elements';
+
 let range; // Create a range object for efficently rendering strings to elements.
 
 export default function createElementFromTemplate(template, state) {
@@ -17,5 +19,7 @@ export default function createElementFromTemplate(template, state) {
         fragment.innerHTML = str;
     }
 
-    return fragment.childNodes[0];
+    const el = fragment.childNodes[0];
+    Elements.register(el);
+    return el;
 }

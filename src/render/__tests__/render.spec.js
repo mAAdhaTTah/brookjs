@@ -6,9 +6,9 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import hbs from 'handlebars/runtime';
 
-import { source } from './fixtures';
+import * as Desalinate from '../../desalinate';
+import { hideBlackboxed, simpleUpdate, updateChild } from './fixtures';
 
-import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../constants';
 import { blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
 import render from '../';
 
@@ -22,41 +22,6 @@ hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(at
 hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
 
 describe('render', function() {
-    const initial = {
-        type: 'text',
-        text: 'Hello world!'
-    };
-    const next = {
-        type: 'image',
-        text: 'A picture'
-    };
-    let template, fixture, generator, child, span, blackboxed;
-
-    beforeEach(function() {
-        template = sinon.spy(() => source());
-
-        fixture = document.createElement('div');
-        fixture.classList.add(initial.type);
-        fixture.setAttribute(CONTAINER_ATTRIBUTE, 'parent');
-
-        span = document.createElement('span');
-        span.textContent = 'A picture';
-        fixture.appendChild(span);
-
-        child = document.createElement('span');
-        child.setAttribute(CONTAINER_ATTRIBUTE, 'child');
-        child.setAttribute(KEY_ATTRIBUTE, 'one');
-        child.textContent = 'Picture description';
-        fixture.appendChild(child);
-
-        blackboxed = document.createElement('span');
-        blackboxed.setAttribute(BLACKBOX_ATTRIBUTE, 'hidden');
-        blackboxed.textContent = 'This should stay.';
-        fixture.appendChild(blackboxed);
-
-        generator = render(template);
-    });
-
     it('should throw without function', function() {
         const invalid = [{}, 'string', 2, true, []];
 
@@ -66,15 +31,29 @@ describe('render', function() {
     });
 
     it('should update element with new state', done => {
-        generator(fixture, Kefir.constant(next)).observe({
+        const initial = {
+            type: 'text',
+            text: 'Hello world!'
+        };
+        const next = {
+            type: 'image',
+            text: 'A picture'
+        };
+        const el = Desalinate.createElementFromTemplate(simpleUpdate, initial);
+        const template = sinon.spy(simpleUpdate);
+        const renderFactory = render(template);
+
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(fixture).to.not.have.class(initial.type);
-                expect(fixture).to.have.class(next.type);
-                expect(span).to.not.have.text(initial.text);
-                expect(span).to.have.text(next.text);
+                expect(el).to.not.have.class(initial.type);
+                expect(el).to.have.class(next.type);
+                expect(el).to.not.have.text(initial.text);
+                expect(el).to.have.text(next.text);
+
+
 
                 done();
             }
@@ -82,12 +61,26 @@ describe('render', function() {
     });
 
     it('should update child container element', done => {
-        generator(fixture, Kefir.constant(next)).observe({
+        const initial = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 Text', id: '1' }]
+        };
+        const next = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 New Text', id: '1' }]
+        };
+        const el = Desalinate.createElementFromTemplate(updateChild, initial);
+        const [child] = el.querySelectorAll('[data-brk-container="child"]');
+        const template = sinon.spy(updateChild);
+        const renderFactory = render(template);
+
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(child).to.have.text('Not a picture');
+                expect(child).to.have.text(next.children[0].text);
+                expect(child.parentNode).to.eql(el);
 
                 done();
             }
@@ -95,19 +88,26 @@ describe('render', function() {
     });
 
     it('should remove extra child container element', done => {
-        let child2 = document.createElement('span');
-        child2.setAttribute(CONTAINER_ATTRIBUTE, 'child');
-        child2.setAttribute(KEY_ATTRIBUTE, 'two');
-        child2.textContent = 'Another picture description';
-        fixture.appendChild(child2);
+        const initial = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
+        };
+        const next = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 Text', id: '1' }]
+        };
+        const el = Desalinate.createElementFromTemplate(updateChild, initial);
+        const [child1, child2] = el.querySelectorAll('[data-brk-container="child"]');
+        const template = sinon.spy(updateChild);
+        const renderFactory = render(template);
 
-        generator(fixture, Kefir.constant(next)).observe({
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(fixture.children).to.have.lengthOf(3);
-                expect(child.parentNode).to.eql(fixture);
+                expect(el.children).to.have.lengthOf(2); // 2 -> Headline & child
+                expect(child1.parentNode).to.eql(el);
                 expect(child2.parentNode).to.eql(null);
 
                 done();
@@ -115,15 +115,60 @@ describe('render', function() {
         });
     });
 
-    it('should add missing child container element', done => {
-        fixture.removeChild(child);
+    it('should remove and modify children with matching keys', done => {
+        const initial = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
+        };
+        const next = {
+            headline: 'Children',
+            children: [{ text: 'Child 2 New Text', id: '2' }]
+        };
+        const el = Desalinate.createElementFromTemplate(updateChild, initial);
+        const [child1, child2] = el.querySelectorAll('[data-brk-container="child"]');
+        const template = sinon.spy(updateChild);
+        const renderFactory = render(template);
 
-        generator(fixture, Kefir.constant(next)).observe({
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(fixture.children).to.have.lengthOf(3);
+                expect(el.children).to.have.lengthOf(2); // 2 -> Headline & child
+                expect(child1.parentNode).to.eql(null);
+                expect(child2.parentNode).to.eql(el);
+
+                expect(child2).to.have.text(next.children[0].text);
+
+                done();
+            }
+        });
+    });
+
+    it('should add missing child container element', done => {
+        const initial = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 Text', id: '1' }]
+        };
+        const next = {
+            headline: 'Children',
+            children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
+        };
+        const el = Desalinate.createElementFromTemplate(updateChild, initial);
+        const template = sinon.spy(updateChild);
+        const renderFactory = render(template);
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
+
+                expect(el.children).to.have.lengthOf(3); // 3 -> Headline & 2 children
+
+                const [child1, child2] = el.querySelectorAll('[data-brk-container="child"]');
+
+                expect(child1).to.have.text(next.children[0].text);
+                expect(child2).to.have.text(next.children[1].text);
 
                 done();
             }
@@ -131,15 +176,27 @@ describe('render', function() {
     });
 
     it('should not update blackboxed element', done => {
-        const render$ = generator(fixture, Kefir.constant(next));
+        const initial = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+        };
+        const next = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }]
+        };
+        const el = Desalinate.createElementFromTemplate(hideBlackboxed, initial);
+        const template = sinon.spy(hideBlackboxed);
+        const renderFactory = render(template);
 
-        render$.observe({
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(blackboxed.parentNode).to.eql(fixture);
-                expect(blackboxed).to.have.text('This should stay.');
+                const blackboxed = el.querySelector('[data-brk-blackbox="1"]');
+
+                expect(blackboxed.parentNode).to.eql(el);
+                expect(blackboxed).to.have.text(initial.blackboxed[0].text);
 
                 done();
             }
@@ -147,19 +204,27 @@ describe('render', function() {
     });
 
     it('should remove extra blackboxed element', done => {
-        let blackboxed2 = document.createElement('span');
-        blackboxed2.setAttribute(BLACKBOX_ATTRIBUTE, 'removed');
-        blackboxed2.textContent = 'Another blackboxed element.';
-        fixture.appendChild(blackboxed2);
+        const initial = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+        };
+        const next = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
+        };
+        const el = Desalinate.createElementFromTemplate(hideBlackboxed, initial);
+        const template = sinon.spy(hideBlackboxed);
+        const renderFactory = render(template);
 
-        generator(fixture, Kefir.constant(next)).observe({
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(fixture.children).to.have.lengthOf(3);
-                expect(child.parentNode).to.eql(fixture);
-                expect(blackboxed2.parentNode).to.eql(null);
+                const [one, two] = el.querySelectorAll('[data-brk-blackbox]');
+
+                expect(one).to.have.text(initial.blackboxed[0].text);
+                expect(two).to.have.text(next.blackboxed[1].text);
 
                 done();
             }
@@ -167,18 +232,35 @@ describe('render', function() {
     });
 
     it('should add missing blackboxed element', done => {
-        fixture.removeChild(blackboxed);
+        const initial = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
+        };
+        const next = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
 
-        generator(fixture, Kefir.constant(next)).observe({
+        };
+        const el = Desalinate.createElementFromTemplate(hideBlackboxed, initial);
+        const template = sinon.spy(hideBlackboxed);
+        const renderFactory = render(template);
+
+        renderFactory(el, Kefir.constant(next)).observe({
             end() {
                 expect(template).to.have.callCount(1);
                 expect(template).to.have.been.calledWithExactly(next);
 
-                expect(fixture.children).to.have.lengthOf(3);
-                expect(fixture.children[2]).to.have.text('This should not appear.');
+                const [one, two] = el.querySelectorAll('[data-brk-blackbox]');
+
+                expect(one).to.have.text(initial.blackboxed[0].text);
+                expect(two).to.equal(undefined);
 
                 done();
             }
         });
+    });
+
+    afterEach(() => {
+        Desalinate.cleanup();
     });
 });
