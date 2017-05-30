@@ -266,16 +266,23 @@ describe('render', function() {
         const next = {
             children: [{ text: 'First' }]
         };
-        const el = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
+        const container = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
         const template = sinon.spy(attachDetachReplace);
         const attached = sinon.stub().onFirstCall().returnsArg(0);
         const renderFactory = render(template, {
             animated: { attached }
         });
 
-        renderFactory(el, Kefir.constant(next)).observe({
+        renderFactory(container, Kefir.constant(next)).observe({
             end() {
-                expect(attached).to.have.callCount(1);
+                const target = container.querySelector(`[${animateAttribute('animated')}]`);
+                const parent = target.parentNode;
+
+                expect(attached).to.have.callCount(1)
+                    .and.have.been.calledWithMatch(
+                        sinon.match.instanceOf(Kefir.Observable),
+                        sinon.match({ container, parent, target })
+                    );
 
                 done();
             }
@@ -289,16 +296,23 @@ describe('render', function() {
         const next = {
             children: []
         };
-        const el = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
+        const container = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
         const template = sinon.spy(attachDetachReplace);
         const detached = sinon.stub().onFirstCall().returnsArg(0);
         const renderFactory = render(template, {
             animated: { detached }
         });
 
-        renderFactory(el, Kefir.constant(next)).observe({
+        const target = container.querySelector(`[${animateAttribute('animated')}]`);
+        const parent = target.parentNode;
+
+        renderFactory(container, Kefir.constant(next)).observe({
             end() {
-                expect(detached).to.have.callCount(1);
+                expect(detached).to.have.callCount(1)
+                    .and.have.been.calledWithMatch(
+                        sinon.match.instanceOf(Kefir.Observable),
+                        sinon.match({ container, parent, target })
+                    );
 
                 done();
             }
@@ -312,16 +326,25 @@ describe('render', function() {
         const next = {
             children: [{ text: 'Second', id: 2 }]
         };
-        const el = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
+        const container = Desalinate.createElementFromTemplate(attachDetachReplace, initial);
         const template = sinon.spy(attachDetachReplace);
         const replaced = sinon.stub().onFirstCall().returnsArg(0);
         const renderFactory = render(template, {
             animated: { replaced }
         });
 
-        renderFactory(el, Kefir.constant(next)).observe({
+        const outgoing = container.querySelector(`[${animateAttribute('animated')}]`);
+        const parent = outgoing.parentNode;
+
+        renderFactory(container, Kefir.constant(next)).observe({
             end() {
-                expect(replaced).to.have.callCount(1);
+                const incoming = container.querySelector(`[${animateAttribute('animated')}]`);
+
+                expect(replaced).to.have.callCount(1)
+                    .and.have.been.calledWithMatch(
+                        sinon.match.instanceOf(Kefir.Observable),
+                        sinon.match({ container, parent, incoming, outgoing })
+                    );
 
                 done();
             }

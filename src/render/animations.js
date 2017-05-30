@@ -3,6 +3,12 @@ import { ANIMATE_ATTRIBUTE } from '../constants';
 
 const animated = new Map();
 
+const meta = {
+    'attached': (container, target, parent) => ({ container, target, parent }),
+    'detached': (container, target, parent) => ({ container, target, parent }),
+    'replaced': (container, outgoing, parent, incoming) => ({ container, parent, incoming, outgoing })
+};
+
 /**
  * Register a container element with its animation configuration.
  *
@@ -25,9 +31,10 @@ export function registerElementAnimations (el, animations) {
  * @param {Observable} effect$ - Side effect-wrapping observable.
  * @param {Element} container - Container element for effect.
  * @param {Element} target - Element effect is operating on.
+ * @param {Object} args - Extra args to pass to the meta function.
  * @returns {Observable} New side effect-wrapping observable.
  */
-export function wrapEffect(type, effect$, container, target) {
+export function wrapEffect(type, effect$, container, target, ...args) {
     if (target.nodeType === 3) {
         target = target.parentNode;
 
@@ -60,5 +67,5 @@ export function wrapEffect(type, effect$, container, target) {
         return effect$;
     }
 
-    return callback(effect$);
+    return callback(effect$, typeof meta[type] === 'function' ? meta[type](container, target, ...args) : {});
 }

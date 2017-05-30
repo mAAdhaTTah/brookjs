@@ -1,5 +1,7 @@
-import { createNode } from 'diffhtml/lib/node';
 import Kefir from 'kefir';
+import { createNode, NodeCache, protectVTree,
+    unprotectVTree, decodeEntities, escape
+    } from 'diffhtml-shared-internals';
 import { getContainerNode } from '../children/util';
 import { wrapEffect } from './animations';
 
@@ -13,7 +15,7 @@ const removeAttribute = (domNode, name) => {
     }
 };
 
-export default function patchAsObservable(patches, { NodeCache, protectVTree, unprotectVTree, decodeEntities, escape }) {
+export default function patchAsObservable(patches) {
     const observables = [];
     const { TREE_OPS, NODE_VALUE, SET_ATTRIBUTE, REMOVE_ATTRIBUTE } = patches;
 
@@ -137,7 +139,7 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                     emitter.end();
                 });
 
-                observables.push(wrapEffect('attached', attach$, getContainerNode(domNode), newNode));
+                observables.push(wrapEffect('attached', attach$, getContainerNode(domNode), newNode, domNode));
             }
         }
 
@@ -146,14 +148,14 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
             for (let i = 0; i < REMOVE_CHILD.length; i++) {
                 const vTree = REMOVE_CHILD[i];
                 const domNode = NodeCache.get(vTree);
-
                 const detach$ = Kefir.stream(emitter => {
                     domNode.parentNode.removeChild(domNode);
                     unprotectVTree(vTree);
                     emitter.end();
                 });
+                const effect$ = wrapEffect('detached', detach$, getContainerNode(domNode), domNode, domNode.parentNode);
 
-                observables.push(wrapEffect('detached', detach$, getContainerNode(domNode), domNode));
+                observables.push(effect$);
             }
         }
 
@@ -179,17 +181,22 @@ export default function patchAsObservable(patches, { NodeCache, protectVTree, un
                     emitter.end();
                 });
 
-                const container = getContainerNode(oldDomNode);
+                let container = getContainerNode(oldDomNode);
+
+                if (container === oldDomNode) {
+                    container = getContainerNode(oldDomNode.parentNode);
+                }
 
                 observables.push(wrapEffect(
                     'replaced',
                     Kefir.merge([
-                        wrapEffect('attached', attach$, container, newDomNode),
-                        wrapEffect('detached', detach$, container, oldDomNode)
+                        wrapEffect('attached', attach$, container, newDomNode, oldDomNode.parentNode),
+                        wrapEffect('detached', detach$, container, oldDomNode, oldDomNode.parentNode)
                     ]),
                     container,
-                    newDomNode,
-                    oldDomNode
+                    oldDomNode,
+                    oldDomNode.parentNode,
+                    newDomNode
                 ));
             }
         }
