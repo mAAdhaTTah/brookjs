@@ -16,7 +16,7 @@ const createTreeHook = tree => {
 };
 
 /**
- * Check if the component is a child
+ * Check if the component is a blackboxed element and ensure it doesn't change.
  *
  * @param {VTree} oldTree - Current tree state.
  * @param {VTree} newTree - New tree state.
@@ -33,8 +33,6 @@ const syncTreeHook = (oldTree, newTree) =>
  * @returns {renderTask} Render task middleware.
  */
 export default function middleware() {
-    let patchNode;
-
     /**
      * Maintains the current transaction, overwrites
      * the built in patch function with our observable
@@ -43,20 +41,12 @@ export default function middleware() {
      * @param {Transaction} transaction - Incoming transaction.
      */
     function renderTask(transaction) {
-        const idx = transaction.tasks.indexOf(patchNode);
-
-        transaction.tasks[idx] = patchTask;
-        transaction.tasks[idx + 1] = endAsObservable;
+        // @todo find index from tasks array.
+        // The internals was removed from the
+        // subscribe callback for now.
+        transaction.tasks[4] = patchTask;
+        transaction.tasks[5] = endAsObservable;
     }
 
-    /**
-     * Run when the middleware is registered with diffHTML.
-     *
-     * @param {Object} tasks - diffHTML's built-in tasks.
-     */
-    function subscribe({ tasks }) {
-        ({ patchNode } = tasks);
-    }
-
-    return Object.assign(renderTask, { createTreeHook, subscribe, syncTreeHook });
+    return Object.assign(renderTask, { createTreeHook, syncTreeHook });
 }
