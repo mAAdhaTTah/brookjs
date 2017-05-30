@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 
@@ -7,7 +8,11 @@ const common = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules)/
+                include: [
+                    path.join(__dirname, 'src'),
+                    path.join(__dirname, 'node_modules', 'diffhtml'),
+                    path.join(__dirname, 'node_modules', 'diffhtml-shared-modules'),
+                ]
             },
             {
                 test: /\.hbs$/,

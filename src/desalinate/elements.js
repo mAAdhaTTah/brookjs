@@ -1,4 +1,4 @@
-import { release as diffRelease } from 'diffhtml/lib';
+import { release as diffRelease } from 'diffhtml';
 
 const elements = new Set();
 
