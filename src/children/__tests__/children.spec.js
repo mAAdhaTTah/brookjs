@@ -31,14 +31,14 @@ describe('children', () => {
     });
 
     it('should be a function', () => {
-        let { generator } = createFixture();
+        const { generator } = createFixture();
 
         expect(generator).to.be.a('function');
     });
 
     it('should bind to child with matching key', () => {
-        let { factory, firstChild, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
-        let sub = instance.observe();
+        const { factory, firstChild, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
+        const sub = instance.observe();
 
         expect(factory).to.have.callCount(1);
         expect(factory).to.have.been.calledWith(firstChild, props$);
@@ -56,9 +56,9 @@ describe('children', () => {
         const value = sinon.spy();
         const next = { type: 'ACTION' };
 
-        let { instance, child$ } = createFixture();
+        const { instance, child$ } = createFixture();
 
-        let sub = instance.observe({ value });
+        const sub = instance.observe({ value });
         child$.plug(constant(next));
 
         expect(value).to.have.callCount(1);
@@ -68,10 +68,10 @@ describe('children', () => {
     });
 
     it('should bind to new child element', done => {
-        let { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
-        let sub = instance.observe();
+        const { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
+        const sub = instance.observe();
 
-        let secondChild = createChild('2');
+        const secondChild = createChild('2');
         element.appendChild(secondChild);
 
         requestAnimationFrame(() => {
@@ -91,11 +91,11 @@ describe('children', () => {
     });
 
     it('should bind to new subchild element', done => {
-        let { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
-        let sub = instance.observe();
+        const { factory, element, instance, modifyChildProps, props$, preplug, child$ } = createFixture();
+        const sub = instance.observe();
 
-        let nesting = document.createElement('div');
-        let secondChild = createChild('2');
+        const nesting = document.createElement('div');
+        const secondChild = createChild('2');
 
         nesting.appendChild(secondChild);
         element.appendChild(nesting);
@@ -117,11 +117,11 @@ describe('children', () => {
     });
 
     it('should not bind to grandchild element', done => {
-        let { instance, firstChild, factory } = createFixture();
+        const { instance, firstChild, factory } = createFixture();
         const value = sinon.spy();
-        let sub = instance.observe({ value });
+        const sub = instance.observe({ value });
 
-        let secondChild = createChild('2');
+        const secondChild = createChild('2');
         firstChild.appendChild(secondChild);
 
         requestAnimationFrame(() => {
@@ -135,10 +135,10 @@ describe('children', () => {
     });
 
     it('should unbind when element removed', done => {
-        let { instance, element, firstChild, child$ } = createFixture();
+        const { instance, element, firstChild, child$ } = createFixture();
         const value = sinon.spy();
         const next = { type: 'ACTION' };
-        let sub = instance.observe({ value });
+        const sub = instance.observe({ value });
 
         element.removeChild(firstChild);
 
@@ -153,14 +153,14 @@ describe('children', () => {
     });
 
     it('should only bind once when appended to subelement', done => {
-        let { factory, element, instance } = createFixture();
+        const { factory, element, instance } = createFixture();
         const value = sinon.spy();
-        let sub = instance.observe({ value });
+        const sub = instance.observe({ value });
 
         const untaggedElement = document.createElement('div');
         element.appendChild(untaggedElement);
 
-        let secondChild = createChild('2');
+        const secondChild = createChild('2');
         untaggedElement.appendChild(secondChild);
 
         requestAnimationFrame(() => {
@@ -175,14 +175,14 @@ describe('children', () => {
     });
 
     it('should not bind when subelement added and removed in single tick', done => {
-        let { factory, element, instance } = createFixture();
+        const { factory, element, instance } = createFixture();
         const value = sinon.spy();
-        let sub = instance.observe({ value });
+        const sub = instance.observe({ value });
 
         const untaggedElement = document.createElement('div');
         element.appendChild(untaggedElement);
 
-        let secondChild = createChild('2');
+        const secondChild = createChild('2');
         untaggedElement.appendChild(secondChild);
         untaggedElement.removeChild(secondChild);
 
@@ -199,9 +199,9 @@ describe('children', () => {
 
 
     it('should use createSourceStream when available', () => {
-        let createSourceStream = sinon.spy(() => never());
-        let { factory, firstChild, instance, modifyChildProps, props$, preplug } = createFixture({ createSourceStream });
-        let sub = instance.observe();
+        const createSourceStream = sinon.spy(() => never());
+        const { factory, firstChild, instance, modifyChildProps, props$, preplug } = createFixture({ createSourceStream });
+        const sub = instance.observe();
 
         expect(factory).to.have.callCount(0);
         expect(createSourceStream).to.have.callCount(1);

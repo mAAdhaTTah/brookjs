@@ -124,7 +124,7 @@ describe('component', function() {
                 const value = sinon.spy();
                 sub = instance.observe({ value });
 
-                let [el/*, props*/] = render.args[0];
+                const [el/*, props*/] = render.args[0];
 
                 expect(render).to.have.callCount(1);
                 expect(el).to.equal(fixture);

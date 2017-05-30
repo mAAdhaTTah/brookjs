@@ -13,19 +13,19 @@ export function createFixture({ child$ = pool(), factory = sinon.spy(() => child
     if (createSourceStream) {
         factory[$$internals] = { createSourceStream };
     }
-    let modifyChildProps = sinon.spy(R.identity);
-    let preplug = sinon.spy(R.identity);
-    let generator = children({ child: { factory, modifyChildProps, preplug } });
+    const modifyChildProps = sinon.spy(R.identity);
+    const preplug = sinon.spy(R.identity);
+    const generator = children({ child: { factory, modifyChildProps, preplug } });
 
-    let element = document.createElement('div');
+    const element = document.createElement('div');
     element.setAttribute(CONTAINER_ATTRIBUTE, 'parent');
-    let firstChild = createChild('1');
+    const firstChild = createChild('1');
     element.appendChild(firstChild);
 
-    let props$ = pool();
+    const props$ = pool();
 
     document.body.appendChild(element);
-    let instance = generator(element, props$);
+    const instance = generator(element, props$);
 
     return { child$, factory, modifyChildProps, preplug, generator, element, firstChild, props$, instance };
 }
@@ -37,7 +37,7 @@ export function createFixture({ child$ = pool(), factory = sinon.spy(() => child
  * @returns {Element} New child element.
  */
 export function createChild(key) {
-    let child = document.createElement('div');
+    const child = document.createElement('div');
 
     child.setAttribute(CONTAINER_ATTRIBUTE, 'child');
     child.setAttribute(KEY_ATTRIBUTE, key);
