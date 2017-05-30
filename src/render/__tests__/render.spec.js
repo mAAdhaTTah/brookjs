@@ -202,6 +202,46 @@ describe('render', function() {
         });
     });
 
+    it('should not update blackboxed element if modified between renders', done => {
+        const initial = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+        };
+        const next = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }]
+        };
+        const final = {
+            headline: 'Blackboxed',
+            blackboxed: [{ text: 'Blackboxed 1 Final Text', id: '1' }]
+        };
+        const modifiedTextContent = 'Blackboxed 1 Modified Text';
+        const el = Desalinate.createElementFromTemplate(hideBlackboxed, initial);
+        const template = sinon.spy(hideBlackboxed);
+        const renderFactory = render(template);
+        const modify$ = Kefir.stream(emitter => {
+            const blackboxed = el.querySelector('[data-brk-blackbox="1"]');
+
+            blackboxed.textContent = modifiedTextContent;
+
+            emitter.end();
+        });
+
+        renderFactory(el, Kefir.concat([Kefir.constant(next), modify$, Kefir.constant(final)])).observe({
+            end() {
+                expect(template).to.have.callCount(2);
+                expect(template).to.have.been.calledWithExactly(next);
+
+                const blackboxed = el.querySelector('[data-brk-blackbox="1"]');
+
+                expect(blackboxed.parentNode).to.eql(el);
+                expect(blackboxed).to.have.text(modifiedTextContent);
+
+                done();
+            }
+        });
+    });
+
     it('should remove extra blackboxed element', done => {
         const initial = {
             headline: 'Blackboxed',
