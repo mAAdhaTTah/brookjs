@@ -1,4 +1,4 @@
-import { constant, merge, pool, stream } from 'kefir';
+import Kefir from '../kefir';
 
 /**
  * Accepts a set of delta generator functions and returns a
@@ -13,44 +13,20 @@ import { constant, merge, pool, stream } from 'kefir';
  * observed by the store. Note that the `actions$` stream will
  * re-emit events emitted from the returned `delta$` stream.
  *
- * Exposes the returned subscription, allowing
+ * Exposes the returned subscription, allowing other middleware
+ * to terminate the delta.
  *
  * @param {...Function} sources - Source-generating function.
  * @returns {Middleware} Enhanced create store function.
  */
 export default function observeDelta(...sources) {
-    const actions$ = pool();
-    const state$ = pool();
-
-    /**
-     * Filter the actions$ stream to just emit actions of
-     * the provided types.
-     *
-     * @param {Array<string>} types - Action types to filter.
-     * @returns {Observable<Action>} Stream of filtered actions.
-     */
-    actions$.ofType = function ofType(...types) {
-        return this.filter(action => {
-            const type = action.type;
-            const len = types.length;
-
-            if (len === 1) {
-                return type === types[0];
-            } else {
-                for (let i = 0; i < len; i++) {
-                    if (types[i] === type) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        });
-    };
-
     return store => {
-        store.subscription = merge(sources.map(source => source(actions$, state$.toProperty(store.getState))))
-            .flatMapErrors(err => stream(emitter => {
-                console.error('Error emitted into delta', err);
+        const actions$ = Kefir.actions();
+        const state$ = Kefir.pool();
+
+        store.subscription = Kefir.merge(sources.map(source => source(actions$, state$.toProperty(store.getState))))
+            .flatMapErrors(err => Kefir.stream(emitter => {
+                console.error('Error emitted into delta', err); // eslint-disable-line no-console
                 emitter.end();
             }))
             .observe({ value: store.dispatch });
@@ -59,8 +35,8 @@ export default function observeDelta(...sources) {
             const result = next(action);
             const state = store.getState();
 
-            state$.plug(constant(state));
-            actions$.plug(constant(result));
+            state$.plug(Kefir.constant(state));
+            actions$.plug(Kefir.constant(result));
 
             return result;
         };
