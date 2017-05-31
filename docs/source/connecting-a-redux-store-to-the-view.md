@@ -9,8 +9,7 @@ Once the view layer is up and running, the next step is to mount the view into t
 
 ```js
 // dom.js
-import Kefir from 'kefir';
-import { observeDelta, domDelta, component } from 'brookjs';
+import { Kefir, observeDelta, domDelta, component } from 'brookjs';
 
 const view = component({
     onMount() {

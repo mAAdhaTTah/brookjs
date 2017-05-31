@@ -22,8 +22,7 @@ Let's take a look at an editor mockup to consider how this might be useful:
 Using the provided helpers, the above HTML will ensure the control panel gets updated, but nothing with the `.editor` div will be touched or changed. In our component, we can define it like this:
 
 ```js
-import Kefir from 'kefir';
-import { component, children, render } from 'brookjs';
+import { Kefir, component, children, render } from 'brookjs';
 import Editor from 'custom-editor-library'
 import { editorChange } from '../action';
 

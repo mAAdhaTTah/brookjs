@@ -9,8 +9,7 @@ Now that a Component is emitting events, it needs to update the `Element` it's m
 
 ```js
 // app.js
-import Kefir from 'kefir';
-import { component, events, render } from 'brookjs';
+import { Kefir, component, events, render } from 'brookjs';
 import template from './index.hbs';
 
 export default component({

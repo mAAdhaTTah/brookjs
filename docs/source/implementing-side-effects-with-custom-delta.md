@@ -8,8 +8,7 @@ To handle custom side effects, create a custom delta. To do so, create a functio
 Similar to [`redux-observable`][red-obs], the `actions$` stream has been enhanced with the `ofType` method, which filters the stream to only emit actions of the provided types. Multiple types can be provided.
 
 ```js
-import Kefir from 'kefir';
-import { SUBMIT_FORM, formSubmitSuccess, formSubmitFail } from './actions';
+import { Kefir, SUBMIT_FORM, formSubmitSuccess, formSubmitFail } from './actions';
 
 export default function ajaxDelta({ ajax }) {
     return (actions$, state$) => actions$.ofType(SUBMIT_FORM)
