@@ -9,7 +9,7 @@ A `brookjs` Component can be paired with a `redux` Store with the following glue
 
 ```js
 import { createStore } from 'redux';
-import Kefir from 'kefir';
+import { Kefir } from 'brookjs';
 import reducer from './reducer';
 // view is a brookjs Component
 import view from './view';

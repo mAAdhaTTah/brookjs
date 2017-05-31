@@ -14,17 +14,17 @@ Specifically, `state$` is a `Kefir.Property`, which means it retains its current
 An example `source$` stream:
 
 ```js
-import Kefir from 'kefir';
+import { Kefir } from 'brookjs';
 
 export default function exampleSourceStream(actions$, state$) {
     const save$ = actions$.filter(action => action.type === 'SAVE_THING');
-    
+
     return save$.flatMap(action => {
         const request = fetch('some/url', {
             type: 'POST',
             body: JSON.stringify(action.payload)
         });
-        
+
         return Kefir.fromPromise(request)
             .map(response => ({
                 type: 'THING_SAVED',
@@ -50,17 +50,17 @@ store.dispatch({ type: 'SAVE_THING', payload: { id: 1, name: 'The Thing to save'
 If you need to get the state on every action, use `sampledBy`:
 
 ```js
-import Kefir from 'kefir';
+import { Kefir } from 'brookjs';
 
 export default function exampleSourceStream(actions$, state$) {
     const save$ = actions$.filter(action => action.type === 'SAVE_USER_BUTTON_CLICK');
-    
+
     return state$.sampledBy(save$).flatMap(state => {
         const request = fetch('/api/user', {
             type: 'POST',
             body: JSON.stringify(state.user)
         });
-        
+
         return Kefir.fromPromise(request)
             .map(response => ({
                 type: 'USER_SAVED',

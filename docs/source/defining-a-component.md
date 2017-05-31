@@ -18,8 +18,7 @@ When called, the returned `Observable<Action>` will never emit an action or upda
 
 ```js
 // app.js
-import Kefir from 'kefir';
-import { component } from 'brookjs';
+import { Kefir, component } from 'brookjs';
 
 export default component({
     onMount(/* el, props$ */) {
