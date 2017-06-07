@@ -47,7 +47,7 @@ describe('events$', function() {
     });
 
     it('should emit events into merged stream', function() {
-        let event = new Event('fake');
+        const event = new Event('fake');
         strm$.plug(constant(event));
 
         expect(value).to.have.callCount(1);
@@ -81,14 +81,14 @@ describe('events$', function() {
                 value = sinon.spy();
                 sub = events$.observe({ value });
 
-                let target = document.createElement('input');
+                const target = document.createElement('input');
                 target.setAttribute(EVENT_ATTRIBUTES[event], Object.keys(config).pop());
                 el.appendChild(target);
 
                 simulant.fire(target, event);
 
                 expect(value).to.have.callCount(1);
-                let e = value.getCall(0).args[0];
+                const e = value.getCall(0).args[0];
 
                 expect(e.containerTarget).to.equal(el);
                 expect(e.decoratedTarget).to.equal(target);
@@ -107,7 +107,7 @@ describe('events$', function() {
 
         let count = 0;
         while (count < 3) {
-            let target = document.createElement('input');
+            const target = document.createElement('input');
             target.setAttribute(EVENT_ATTRIBUTES.input, Object.keys(config).pop());
             target.setAttribute(EVENT_ATTRIBUTES.focus, 'dummy');
             el.appendChild(target);

@@ -15,7 +15,7 @@ import { $$internals } from '../constants';
  * @factory
  */
 export default function component(config) {
-    let {
+    const {
         children = R.always(never()),
         combinator = R.pipe(R.values, merge),
         events = R.always(never()),

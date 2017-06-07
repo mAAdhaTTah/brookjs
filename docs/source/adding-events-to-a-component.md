@@ -38,8 +38,7 @@ Use the `events` module to declare the events on the Component:
 
 ```js
 // app.js
-import Kefir from 'kefir';
-import { component, events } from 'brookjs';
+import { Kefir, component, events } from 'brookjs';
 
 export default component({
     onMount(/* el, props$ */) {
@@ -63,8 +62,7 @@ This also allows for control over the rate at which events are emitted, using `d
 
 ```js
 // app.js
-import Kefir from 'kefir';
-import { component, events } from 'brookjs';
+import { Kefir, component, events } from 'brookjs';
 
 export default component({
     onMount(/* el, props$ */) {

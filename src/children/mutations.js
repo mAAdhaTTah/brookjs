@@ -127,10 +127,10 @@ function accumulateUniqueNodes(acc, action) {
  * @returns {Action} New Action with additional data.
  */
 function mapActionsWithExtraData({ type, payload }) {
-    let { node, target } = payload;
-    let container = node.getAttribute(CONTAINER_ATTRIBUTE);
-    let key = node.getAttribute(KEY_ATTRIBUTE);
-    let parent = getContainerNode(node.parentNode) || getContainerNode(target);
+    const { node, target } = payload;
+    const container = node.getAttribute(CONTAINER_ATTRIBUTE);
+    const key = node.getAttribute(KEY_ATTRIBUTE);
+    const parent = getContainerNode(node.parentNode) || getContainerNode(target);
 
     return {
         type,

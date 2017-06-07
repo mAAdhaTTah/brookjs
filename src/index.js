@@ -1,3 +1,4 @@
+import Kefir from './kefir';
 import children from './children';
 import combineActionReducers from './combineActionReducers';
 import component from './component';
@@ -9,10 +10,10 @@ import { animateAttribute, containerAttribute,
 import render, { renderFromHTML } from './render';
 import { raf$ } from './rAF';
 
-export { children, combineActionReducers, component, events, domDelta,
+export { Kefir, children, combineActionReducers, component, events, domDelta,
     observeDelta, animateAttribute, containerAttribute, eventAttribute,
     mapActionTo, render, raf$, renderFromHTML };
 
-export default { children, combineActionReducers, component, events, domDelta,
+export default { Kefir, children, combineActionReducers, component, events, domDelta,
     observeDelta, containerAttribute, eventAttribute,
     mapActionTo, render, raf$, renderFromHTML };

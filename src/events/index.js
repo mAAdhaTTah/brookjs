@@ -28,7 +28,7 @@ const listener = R.curry(function listener(EVENT, emitter, event) {
 
         if (target.hasAttribute(EVENT_ATTRIBUTES[EVENT])) {
             let container = target;
-            let callback = target.getAttribute(EVENT_ATTRIBUTES[EVENT]);
+            const callback = target.getAttribute(EVENT_ATTRIBUTES[EVENT]);
 
             while (container !== document.body && !container.hasAttribute(CONTAINER_ATTRIBUTE)) {
                 container = container.parentNode;
@@ -95,7 +95,7 @@ const eventMatches = R.curry(function eventMatches(key, el, event) {
  * @returns {Function} Events stream generator function.
  */
 export default function events(config) {
-    for (let key in config) {
+    for (const key in config) {
         if (config.hasOwnProperty(key)) {
             assert.equal(typeof config[key], 'function', `events[${key}] is not a function`);
         }
@@ -118,15 +118,15 @@ export default function events(config) {
             return sources.get(el);
         }
 
-        let mixin = {};
+        const mixin = {};
 
-        let streams = Object.keys(config)
+        const streams = Object.keys(config)
             .map(key =>
                 mixin[key] = config[key](sources$
                     .filter(eventMatches(key, el))
                     .map(getEvent)));
 
-        let events$ = Object.assign(Object.create(merge(streams)), mixin);
+        const events$ = Object.assign(Object.create(merge(streams)), mixin);
         sources.set(el, events$);
         return events$;
     });

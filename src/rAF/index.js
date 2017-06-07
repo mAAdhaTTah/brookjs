@@ -1,4 +1,4 @@
-import Kefir from 'kefir';
+import Kefir from '../kefir';
 
 /**
  * Emitted on requestAnimationFrame callbacks.

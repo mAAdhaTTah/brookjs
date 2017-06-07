@@ -18,7 +18,7 @@ export default function children(factories) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof factories, 'object', '`factories` should be an object');
 
-        for (let container in factories) {
+        for (const container in factories) {
             if (!factories.hasOwnProperty(container)) {
                 continue;
             }
@@ -34,7 +34,7 @@ export default function children(factories) {
      * or a configuration object and the children$ stream will work
      * the same both ways.
      */
-    for (let container in factories) {
+    for (const container in factories) {
         let definition = factories[container];
 
         if (typeof definition === 'function') {
