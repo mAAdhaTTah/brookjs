@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { constant, constantError, fromCallback, fromEvents, later, Observable } from 'kefir';
+import Kefir from '../kefir';
 
 /**
  * Creates a new stream that emits whether the document is loaded.
@@ -7,7 +7,7 @@ import { constant, constantError, fromCallback, fromEvents, later, Observable } 
  * @returns {Observable<boolean>} Observable indicating whether document is loaded.
  */
 const documentIsLoaded = () =>
-    fromCallback(callback =>
+    Kefir.fromCallback(callback =>
         callback(
             document.readyState === 'complete' ||
             document.readyState === 'loaded' ||
@@ -24,26 +24,26 @@ const documentIsLoaded = () =>
  * @returns {Delta} Delta function.
  */
 export default function domDelta({ el, view, selectProps }) {
-    let precheck$ = constant('Configuration correct');
+    let precheck$ = Kefir.constant('Configuration correct');
 
     if (typeof el === 'function') {
         el = el(document);
 
-        if (!(el instanceof Observable)) {
-            precheck$ = constantError(new TypeError(`type ${typeof el} returned from el is not valid`));
+        if (!(el instanceof Kefir.Observable)) {
+            precheck$ = Kefir.constantError(new TypeError(`type ${typeof el} returned from el is not valid`));
         }
     } else if (el instanceof Element) {
-        el = constant(el);
+        el = Kefir.constant(el);
     } else {
-        precheck$ = constantError(new TypeError(`el of type ${typeof el} is not valid`));
+        precheck$ = Kefir.constantError(new TypeError(`el of type ${typeof el} is not valid`));
     }
 
     if (typeof view !== 'function') {
-        precheck$ = constantError(new TypeError(`component of type ${typeof el} is not valid`));
+        precheck$ = Kefir.constantError(new TypeError(`component of type ${typeof el} is not valid`));
     }
 
     if (typeof selectProps !== 'function') {
-        precheck$ = constantError(new TypeError(`selectProps of type ${typeof el} is not valid`));
+        precheck$ = Kefir.constantError(new TypeError(`selectProps of type ${typeof el} is not valid`));
     }
 
     return (actions$, state$) => precheck$
@@ -51,8 +51,8 @@ export default function domDelta({ el, view, selectProps }) {
         .flatMap(isLoaded =>
             isLoaded ?
                 // ensures async consistency
-                later(0, true) :
-                fromEvents(document, 'DOMContentLoaded')
+                Kefir.later(0, true) :
+                Kefir.fromEvents(document, 'DOMContentLoaded')
         )
         .flatMap(R.always(el))
         .take(1).takeErrors(1)

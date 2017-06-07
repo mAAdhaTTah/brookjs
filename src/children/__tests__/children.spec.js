@@ -2,7 +2,7 @@
 import 'core-js/shim';
 
 import { AssertionError } from 'assert';
-import { constant, never } from 'kefir';
+import Kefir from '../../kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
@@ -59,7 +59,7 @@ describe('children', () => {
         const { instance, child$ } = createFixture();
 
         const sub = instance.observe({ value });
-        child$.plug(constant(next));
+        child$.plug(Kefir.constant(next));
 
         expect(value).to.have.callCount(1);
         expect(value).to.have.been.calledWith(next);
@@ -143,7 +143,7 @@ describe('children', () => {
         element.removeChild(firstChild);
 
         requestAnimationFrame(() => {
-            child$.plug(constant(next));
+            child$.plug(Kefir.constant(next));
             expect(value).to.have.callCount(0);
 
             sub.unsubscribe();
@@ -199,7 +199,7 @@ describe('children', () => {
 
 
     it('should use createSourceStream when available', () => {
-        const createSourceStream = sinon.spy(() => never());
+        const createSourceStream = sinon.spy(() => Kefir.never());
         const { factory, firstChild, instance, modifyChildProps, props$, preplug } = createFixture({ createSourceStream });
         const sub = instance.observe();
 

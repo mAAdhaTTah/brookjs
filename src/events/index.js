@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import { merge, stream, never } from 'kefir';
+import Kefir from '../kefir';
 import * as Event from './event';
 import { CAPTURE, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 
@@ -54,7 +54,7 @@ const listener = R.curry(function listener(EVENT, emitter, event) {
  *
  * @type {Stream<T, S>}
  */
-const sources$ = stream(emitter => {
+const sources$ = Kefir.stream(emitter => {
     const listeners = {};
 
     SUPPORTED_EVENTS.forEach(EVENT =>
@@ -111,7 +111,7 @@ export default function events(config) {
      */
     return R.curry(el => {
         if (!el.hasAttribute(CONTAINER_ATTRIBUTE)) {
-            return never();
+            return Kefir.never();
         }
 
         if (sources.has(el)) {
@@ -126,7 +126,7 @@ export default function events(config) {
                     .filter(eventMatches(key, el))
                     .map(getEvent)));
 
-        const events$ = Object.assign(Object.create(merge(streams)), mixin);
+        const events$ = Object.assign(Object.create(Kefir.merge(streams)), mixin);
         sources.set(el, events$);
         return events$;
     });

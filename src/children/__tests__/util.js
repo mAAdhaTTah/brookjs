@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { pool } from 'kefir';
+import Kefir from '../../kefir';
 import sinon from 'sinon';
 import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE, $$internals } from '../../constants';
 import children from '../';
@@ -9,7 +9,7 @@ import children from '../';
  *
  * @returns {Fixture} Children test fixture.
  */
-export function createFixture({ child$ = pool(), factory = sinon.spy(() => child$), createSourceStream } = {}) {
+export function createFixture({ child$ = Kefir.pool(), factory = sinon.spy(() => child$), createSourceStream } = {}) {
     if (createSourceStream) {
         factory[$$internals] = { createSourceStream };
     }
@@ -22,7 +22,7 @@ export function createFixture({ child$ = pool(), factory = sinon.spy(() => child
     const firstChild = createChild('1');
     element.appendChild(firstChild);
 
-    const props$ = pool();
+    const props$ = Kefir.pool();
 
     document.body.appendChild(element);
     const instance = generator(element, props$);

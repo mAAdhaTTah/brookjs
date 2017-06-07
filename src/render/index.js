@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import { stream } from 'kefir';
+import Kefir from '../kefir';
 import morphdom from 'morphdom';
 import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import { raf$ } from '../rAF';
@@ -13,7 +13,7 @@ import { raf$ } from '../rAF';
  * @returns {Kefir.Observable} Render stream.
  */
 export const renderFromHTML = R.curry((el, html) =>
-    raf$.take(1).flatMap(() => stream(emitter => {
+    raf$.take(1).flatMap(() => Kefir.stream(emitter => {
         if (process.env.NODE_ENV !== 'production') {
             assert.equal(typeof html, 'string', '`template` should return a string');
         }

@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-import { constant, Observable, pool } from 'kefir';
+import Kefir from '../../kefir';
 import { applyMiddleware, createStore } from 'redux';
 import observeDelta from '../index';
 import chai, { expect } from 'chai';
@@ -14,7 +14,7 @@ describe('enhancer', function() {
 
     beforeEach(function() {
         delta = sinon.spy(function() {
-            return delta$ = pool();
+            return delta$ = Kefir.pool();
         });
         deltaMiddlware = observeDelta(delta);
         initial = { changed: false };
@@ -32,8 +32,8 @@ describe('enhancer', function() {
     });
 
     it('should call the delta with actions$ and state$', function() {
-        expect(actions$).to.be.an.instanceof(Observable);
-        expect(state$).to.be.an.instanceof(Observable);
+        expect(actions$).to.be.an.instanceof(Kefir.Observable);
+        expect(state$).to.be.an.instanceof(Kefir.Observable);
         expect(actions$.ofType).to.be.a('function');
     });
 
@@ -65,7 +65,7 @@ describe('enhancer', function() {
         const value = sinon.spy();
         sub = actions$.observe({ value });
 
-        delta$.plug(constant(action));
+        delta$.plug(Kefir.constant(action));
 
         expect(value).to.have.been.calledOnce;
         expect(value).to.have.been.calledWithExactly(action);
@@ -76,7 +76,7 @@ describe('enhancer', function() {
         const subscribe = sinon.spy();
         store.subscribe(subscribe);
 
-        delta$.plug(constant(action));
+        delta$.plug(Kefir.constant(action));
 
         expect(subscribe).to.be.calledOnce;
     });
