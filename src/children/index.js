@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import { constant, merge } from 'kefir';
+import Kefir from '../kefir';
 import child from './child';
 import { containerAttribute } from '../helpers';
 import { $$internals } from '../constants';
@@ -71,7 +71,7 @@ export default function children(factories) {
              *
              * Filters out children that are under other containers.
              */
-            const existingEl$ = constant(el.querySelectorAll(`[${containerAttribute(container)}]`))
+            const existingEl$ = Kefir.constant(el.querySelectorAll(`[${containerAttribute(container)}]`))
                 .flatten()
                 .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(el)));
 
@@ -84,7 +84,7 @@ export default function children(factories) {
                 .filter(containerMatches(container))
                 .map(R.prop('node'));
 
-            const instance$ = merge([existingEl$, addedEl$])
+            const instance$ = Kefir.merge([existingEl$, addedEl$])
                 .flatMap(el => factory(el, props$)
                     .takeUntilBy(createElementRemoved(el)));
 
@@ -100,6 +100,6 @@ export default function children(factories) {
          */
         const mixin = mapFactoriesToMixin(factories);
 
-        return Object.assign(Object.create(merge(R.values(mixin))), mixin);
+        return Object.assign(Object.create(Kefir.merge(R.values(mixin))), mixin);
     });
 }

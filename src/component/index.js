@@ -1,6 +1,6 @@
 import R from 'ramda';
 import assert from 'assert';
-import { Observable, merge, never } from 'kefir';
+import Kefir from '../kefir';
 import { $$internals } from '../constants';
 
 /**
@@ -16,11 +16,11 @@ import { $$internals } from '../constants';
  */
 export default function component(config) {
     const {
-        children = R.always(never()),
-        combinator = R.pipe(R.values, merge),
-        events = R.always(never()),
-        onMount = R.always(never()),
-        render = R.curryN(2, R.always(never())),
+        children = R.always(Kefir.never()),
+        combinator = R.pipe(R.values, Kefir.merge),
+        events = R.always(Kefir.never()),
+        onMount = R.always(Kefir.never()),
+        render = R.curryN(2, R.always(Kefir.never())),
         shouldUpdate = R.T } = config;
 
     if (process.env.NODE_ENV !== 'production') {
@@ -61,15 +61,15 @@ export default function component(config) {
             const children$ = children(el, props$);
 
             if (process.env.NODE_ENV !== 'production') {
-                assert.ok(children$ instanceof Observable, '`children$` is not a `Kefir.Observable`');
-                assert.ok(events$ instanceof Observable, '`events$` is not a `Kefir.Observable`');
-                assert.ok(onMount$ instanceof Observable, '`onMount$` is not a `Kefir.Observable`');
+                assert.ok(children$ instanceof Kefir.Observable, '`children$` is not a `Kefir.Observable`');
+                assert.ok(events$ instanceof Kefir.Observable, '`events$` is not a `Kefir.Observable`');
+                assert.ok(onMount$ instanceof Kefir.Observable, '`onMount$` is not a `Kefir.Observable`');
             }
 
             const source$ = combinator({ onMount$, events$, children$ });
 
             if (process.env.NODE_ENV !== 'production') {
-                assert.ok(source$ instanceof Observable, '`source$` is not a `Kefir.Observable`');
+                assert.ok(source$ instanceof Kefir.Observable, '`source$` is not a `Kefir.Observable`');
             }
 
             return source$;
@@ -87,7 +87,7 @@ export default function component(config) {
             const sink$ = render(el, props$);
 
             if (process.env.NODE_ENV !== 'production') {
-                assert.ok(sink$ instanceof Observable, '`sink$` is not a `Kefir.Observable`');
+                assert.ok(sink$ instanceof Kefir.Observable, '`sink$` is not a `Kefir.Observable`');
             }
 
             return sink$;
@@ -104,10 +104,10 @@ export default function component(config) {
     const componentFactory = R.curry((el, props$) => {
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
-            assert.ok(props$ instanceof Observable, '`props$` is not a `Kefir.Observable`');
+            assert.ok(props$ instanceof Kefir.Observable, '`props$` is not a `Kefir.Observable`');
         }
 
-        return merge([
+        return Kefir.merge([
             internals.createSinkStream(el, props$),
             internals.createSourceStream(el, props$)
         ]);

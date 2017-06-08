@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import { constant, Observable, pool } from 'kefir';
+import Kefir from '../../kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES,
     SUPPORTED_EVENTS } from '../../constants';
 
@@ -17,7 +17,7 @@ describe('events$', function() {
 
     beforeEach(function() {
         callback = sinon.spy(evt$ => {
-            strm$ = pool();
+            strm$ = Kefir.pool();
             strm$.plug(evt$);
             return strm$;
         });
@@ -35,7 +35,7 @@ describe('events$', function() {
     });
 
     it('should return an Observable', function() {
-        expect(events$).to.be.instanceof(Observable);
+        expect(events$).to.be.instanceof(Kefir.Observable);
     });
 
     it('should have modified Observable', function() {
@@ -43,12 +43,12 @@ describe('events$', function() {
     });
 
     it('should pass the event Observable', function() {
-        expect(callback.args[0][0]).to.be.instanceof(Observable);
+        expect(callback.args[0][0]).to.be.instanceof(Kefir.Observable);
     });
 
     it('should emit events into merged stream', function() {
         const event = new Event('fake');
-        strm$.plug(constant(event));
+        strm$.plug(Kefir.constant(event));
 
         expect(value).to.have.callCount(1);
         expect(value).to.be.calledWith(event);

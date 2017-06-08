@@ -1,6 +1,6 @@
 import R from 'ramda';
 import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
-import { stream } from 'kefir';
+import Kefir from '../kefir';
 import { nodeAdded, nodeRemoved } from './actions';
 import { getContainerNode } from './util';
 
@@ -145,7 +145,7 @@ function mapActionsWithExtraData({ type, payload }) {
  *
  * @type {Observable<T, S>}
  */
-export default stream(emitter => {
+export default Kefir.stream(emitter => {
     const observer = new MutationObserver(emitter.value);
 
     observer.observe(document.body, {

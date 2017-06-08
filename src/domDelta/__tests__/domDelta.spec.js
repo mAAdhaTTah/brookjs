@@ -2,7 +2,7 @@
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { constant, fromCallback, never } from 'kefir';
+import Kefir from '../../kefir';
 
 import domDelta from '../';
 
@@ -21,8 +21,8 @@ describe('domDelta', () => {
     });
 
     it('should emit an error if incorrect el', done => {
-        const actions$ = never();
-        const state$ = never();
+        const actions$ = Kefir.never();
+        const state$ = Kefir.never();
         const delta = domDelta({ el: false });
 
         const delta$ = delta(actions$, state$);
@@ -42,8 +42,8 @@ describe('domDelta', () => {
     });
 
     it('should emit an error if incorrect view', done => {
-        const actions$ = never();
-        const state$ = never();
+        const actions$ = Kefir.never();
+        const state$ = Kefir.never();
         const delta = domDelta({ el: document.body, view: false });
 
         const delta$ = delta(actions$, state$);
@@ -63,9 +63,9 @@ describe('domDelta', () => {
     });
 
     it('should emit an error if incorrect selectProps', done => {
-        const actions$ = never();
-        const state$ = never();
-        const delta = domDelta({ el: document.body, view: never, selectProps: false });
+        const actions$ = Kefir.never();
+        const state$ = Kefir.never();
+        const delta = domDelta({ el: document.body, view: Kefir.never, selectProps: false });
 
         const delta$ = delta(actions$, state$);
 
@@ -84,9 +84,9 @@ describe('domDelta', () => {
     });
 
     it('should emit an error if el returns incorrect value', done => {
-        const actions$ = never();
-        const state$ = never();
-        const delta = domDelta({ el: () => false, view: never, selectProps: x => x });
+        const actions$ = Kefir.never();
+        const state$ = Kefir.never();
+        const delta = domDelta({ el: () => false, view: Kefir.never, selectProps: x => x });
 
         const delta$ = delta(actions$, state$);
 
@@ -105,12 +105,12 @@ describe('domDelta', () => {
     });
 
     it('should call provided functions with proper args', done => {
-        const actions$ = never();
-        const state$ = never();
-        const props$ = never();
+        const actions$ = Kefir.never();
+        const state$ = Kefir.never();
+        const props$ = Kefir.never();
         const config = {
-            el: sinon.spy(doc => fromCallback(cb => cb(doc.body))),
-            view: sinon.spy(() => constant({ type: 'EVENT' })),
+            el: sinon.spy(doc => Kefir.fromCallback(cb => cb(doc.body))),
+            view: sinon.spy(() => Kefir.constant({ type: 'EVENT' })),
             selectProps: sinon.spy(() => props$)
         };
         const delta = domDelta(config);

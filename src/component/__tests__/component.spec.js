@@ -3,7 +3,7 @@ import 'es6-weak-map/implement';
 import { AssertionError } from 'assert';
 
 import R from 'ramda';
-import { constant, Observable, never, pool } from 'kefir';
+import Kefir from '../../kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
@@ -30,8 +30,8 @@ describe('component', function() {
         fixture.classList.add(initial.type);
         fixture.textContent = initial.text;
 
-        pluggable$ = pool();
-        pluggable$.plug(constant(initial));
+        pluggable$ = Kefir.pool();
+        pluggable$.plug(Kefir.constant(initial));
 
         props$ = pluggable$.toProperty();
 
@@ -74,7 +74,7 @@ describe('component', function() {
         });
 
         it('should return an observable', function() {
-            expect(instance).to.be.an.instanceof(Observable);
+            expect(instance).to.be.an.instanceof(Kefir.Observable);
         });
     });
 
@@ -83,7 +83,7 @@ describe('component', function() {
             let events;
 
             beforeEach(function() {
-                events = sinon.spy(() => never());
+                events = sinon.spy(() => Kefir.never());
                 setup({ events });
                 document.body.appendChild(fixture);
             });
@@ -108,7 +108,7 @@ describe('component', function() {
             let render;
 
             beforeEach(() => {
-                render = sinon.spy(() => never());
+                render = sinon.spy(() => Kefir.never());
                 setup({ render: R.curryN(2, render) });
             });
 
@@ -136,7 +136,7 @@ describe('component', function() {
             let onMount, return$;
 
             beforeEach(function() {
-                return$ = pool();
+                return$ = Kefir.pool();
                 onMount = sinon.spy(() => return$);
 
                 setup({ onMount });
@@ -167,7 +167,7 @@ describe('component', function() {
                 };
 
                 sub = instance.observe({ value });
-                return$.plug(constant(state));
+                return$.plug(Kefir.constant(state));
 
                 expect(value).to.have.been.calledWithExactly(state);
             });
