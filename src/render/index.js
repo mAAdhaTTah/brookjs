@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import Kefir from 'kefir';
+import Kefir from '../kefir';
 import { outerHTML, use } from 'diffhtml';
 import { $$internals } from '../constants';
 import { raf$ } from '../rAF';

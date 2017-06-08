@@ -1,4 +1,4 @@
-import Kefir from 'kefir';
+import Kefir from '../kefir';
 import { ANIMATE_ATTRIBUTE } from '../constants';
 
 const animated = new Map();

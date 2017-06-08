@@ -12,7 +12,7 @@ import { attachDetachReplace, attributeText, hideBlackboxed, simpleUpdate, updat
 import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
 import render from '../';
 
-import Kefir from 'kefir';
+import Kefir from '../../kefir';
 
 chai.use(sinonChai);
 chai.use(dom);

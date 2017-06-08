@@ -1,4 +1,4 @@
-import Kefir from 'kefir';
+import Kefir from '../kefir';
 import { Internals } from 'diffhtml';
 import { getContainerNode } from '../children/util';
 import { wrapEffect } from './animations';

@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { constant, pool } from 'kefir';
+import Kefir from '../kefir';
 import createElementFromTemplate from './createElementFromTemplate';
 
 /**
@@ -12,8 +12,8 @@ import createElementFromTemplate from './createElementFromTemplate';
  */
 export default function createFixture(component, template, state) {
     const el = createElementFromTemplate(template, state);
-    const state$ = pool();
-    state$.plug(constant(R.clone(state)));
+    const state$ = Kefir.pool();
+    state$.plug(Kefir.constant(R.clone(state)));
 
     const instance = component(el, state$.toProperty());
 
