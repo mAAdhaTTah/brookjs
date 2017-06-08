@@ -1,7 +1,10 @@
+import { Internals } from 'diffhtml';
 import { BLACKBOX_ATTRIBUTE } from '../constants';
 import getNodeKey from './getNodeKey';
 import endAsObservable from './endAsObservable';
 import patchTask from './patchTask';
+
+const { patchNode } = Internals.tasks;
 
 /**
  * Adds the key for every newly created tree.
@@ -41,11 +44,10 @@ export default function middleware() {
      * @param {Transaction} transaction - Incoming transaction.
      */
     function renderTask(transaction) {
-        // @todo find index from tasks array.
-        // The internals was removed from the
-        // subscribe callback for now.
-        transaction.tasks[4] = patchTask;
-        transaction.tasks[5] = endAsObservable;
+        const idx = transaction.tasks.indexOf(patchNode);
+
+        transaction.tasks[idx] = patchTask;
+        transaction.tasks[idx + 1] = endAsObservable;
     }
 
     return Object.assign(renderTask, { createTreeHook, syncTreeHook });

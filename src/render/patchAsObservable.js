@@ -1,9 +1,10 @@
 import Kefir from 'kefir';
-import { createNode, NodeCache, protectVTree,
-    unprotectVTree, decodeEntities, escape
-    } from 'diffhtml-shared-internals';
+import { Internals } from 'diffhtml';
 import { getContainerNode } from '../children/util';
 import { wrapEffect } from './animations';
+
+const { createNode, NodeCache, memory, decodeEntities, escape } = Internals;
+const { protectVTree, unprotectVTree } = memory;
 
 const blockText = new Set(['script', 'noscript', 'style', 'code', 'template']);
 
