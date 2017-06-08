@@ -9,7 +9,7 @@ import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../../co
 import { blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
 import render from '../';
 
-import Kefir from '../../kefir';
+import { constant, pool } from 'kefir';
 
 chai.use(sinonChai);
 chai.use(dom);
@@ -22,7 +22,7 @@ describe('render', function() {
     let template, next, fixture, generator, props$, child, span, blackboxed;
 
     beforeEach(function() {
-        props$ = Kefir.pool();
+        props$ = pool();
         next = {
             type: 'image',
             text: 'A picture'
@@ -63,7 +63,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
@@ -84,7 +84,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
@@ -99,7 +99,7 @@ describe('render', function() {
     });
 
     it('should remove extra child container element', done => {
-        const child2 = document.createElement('span');
+        let child2 = document.createElement('span');
         child2.setAttribute(CONTAINER_ATTRIBUTE, 'child');
         child2.setAttribute(KEY_ATTRIBUTE, 'two');
         child2.textContent = 'Another picture description';
@@ -108,7 +108,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
@@ -129,7 +129,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
@@ -147,7 +147,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             setTimeout(() => {
@@ -165,7 +165,7 @@ describe('render', function() {
     });
 
     it('should remove extra blackboxed element', done => {
-        const blackboxed2 = document.createElement('span');
+        let blackboxed2 = document.createElement('span');
         blackboxed2.setAttribute(BLACKBOX_ATTRIBUTE, 'removed');
         blackboxed2.textContent = 'Another blackboxed element.';
         fixture.appendChild(blackboxed2);
@@ -173,7 +173,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
@@ -194,7 +194,7 @@ describe('render', function() {
         const render$ = generator(fixture, props$);
 
         const sub = render$.observe({});
-        props$.plug(Kefir.constant(next));
+        props$.plug(constant(next));
 
         requestAnimationFrame(() => {
             expect(template).to.have.callCount(1);
