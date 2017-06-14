@@ -32,6 +32,8 @@
   items:
   - id: custom-components-with-blackboxing-and-onmount
     title: Custom Components with Blackboxing and <code>onMount</code>
+  - id: animating-a-component
+    title: Animating a Component
 - title: API
   items:
     - id: component
