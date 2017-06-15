@@ -172,25 +172,6 @@ describe('component', function() {
                 expect(value).to.have.been.calledWithExactly(state);
             });
         });
-
-        describe('shouldUpdate', function() {
-            let shouldUpdate;
-
-            beforeEach(function() {
-                shouldUpdate = sinon.spy(R.F);
-                setup({ shouldUpdate });
-            });
-
-            it('should throw without function', function() {
-                const invalid = [{}, 'string', 2, true, []];
-
-                invalid.forEach(shUp => {
-                    expect(() => component({ shouldUpdate: shUp })).to.throw(AssertionError);
-                });
-            });
-
-            it.skip('should be called with previous and next props');
-        });
     });
 
     afterEach(function() {

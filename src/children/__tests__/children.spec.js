@@ -215,4 +215,22 @@ describe('children', () => {
 
         sub.unsubscribe();
     });
+
+    it('should not use createSourceStream if called with use factory', () => {
+        const createSourceStream = sinon.spy(() => Kefir.never());
+        const { factory, firstChild, instance, modifyChildProps, props$, preplug } = createFixture({ createSourceStream, config: { useFactory: true } });
+        const sub = instance.observe();
+
+        expect(factory).to.have.callCount(1);
+        expect(createSourceStream).to.have.callCount(0);
+        expect(factory).to.have.been.calledWith(firstChild, props$);
+
+        expect(modifyChildProps).to.have.callCount(1);
+        expect(modifyChildProps).to.have.been.calledWith(props$, '1');
+
+        expect(preplug).to.have.callCount(1);
+        expect(preplug).to.have.been.calledWith(factory.getCall(0).returnValue);
+
+        sub.unsubscribe();
+    });
 });

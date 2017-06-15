@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import { KEY_ATTRIBUTE } from '../constants';
+import { $$internals, KEY_ATTRIBUTE } from '../constants';
 
 /**
  * Create a new children stream instance from the given configuration, props$ stream & element.
@@ -12,13 +12,9 @@ import { KEY_ATTRIBUTE } from '../constants';
  * @param {Function} preplug - Modify the child instance stream.
  * @returns {Kefir.Observable} Child instance.
  */
-export default function child({ container, createSourceStream, factory, modifyChildProps = R.identity, preplug = R.identity }) {
+export default function child({ container, factory, modifyChildProps = R.identity, preplug = R.identity }) {
     if (process.env.NODE_ENV !== 'production') {
-        if (createSourceStream) {
-            assert.equal(typeof createSourceStream, 'function', `createSourceStream for ${container} should be a function`);
-        } else {
-            assert.equal(typeof factory, 'function', `factory for ${container} should be a function`);
-        }
+        assert.equal(typeof factory, 'function', `factory for ${container} should be a function`);
         assert.equal(typeof modifyChildProps, 'function', `modifyChildProps for ${container} should be a function`);
         assert.equal(typeof preplug, 'function', `preplug for ${container} should be a function`);
     }
@@ -30,9 +26,14 @@ export default function child({ container, createSourceStream, factory, modifyCh
      * @param {Kefir.Observable} props$ - Child props stream.
      * @returns {Kefir.Observable} - Child stream instance.
      */
-    return R.curry((element, props$) => {
+    return R.curry((element, props$, { useFactory = false }) => {
         const keyAttr = element.getAttribute(KEY_ATTRIBUTE);
+        let func = factory;
 
-        return preplug((createSourceStream || factory)(element, modifyChildProps(props$, keyAttr)), keyAttr);
+        if (!useFactory && factory[$$internals]) {
+            func = factory[$$internals].createSourceStream;
+        }
+
+        return preplug(func(element, modifyChildProps(props$, keyAttr)), keyAttr);
     });
 }
