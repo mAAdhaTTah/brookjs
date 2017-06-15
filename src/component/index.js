@@ -6,23 +6,21 @@ import { $$internals } from '../constants';
 /**
  * Create a new Component with the provided configuration.
  *
- * @param {Object} config - Component configuration.
- * @param {Function} [config.combinator] - Called with component streams, returns combined stream.
- * @param {Function} [config.events] - `events$` stream generating function.
- * @param {Function} [config.render] - `render$` stream generating function.
- * @param {Function} [config.shouldUpdate] - Whether the component should rerender.
+ * @param {Function} children - `children$` generating function.
+ * @param {Function} combinator - Called with component streams, returns combined stream.
+ * @param {Function} events - `events$` stream generating function.
+ * @param {Function} onMount - `onMount$` stream generating function.
+ * @param {Function} render - `render$` stream generating function.
  * @returns {factory} Component factory function.
  * @factory
  */
-export default function component(config) {
-    const {
-        children = R.always(Kefir.never()),
-        combinator = R.pipe(R.values, Kefir.merge),
-        events = R.always(Kefir.never()),
-        onMount = R.always(Kefir.never()),
-        render = false,
-        shouldUpdate = R.T } = config;
-
+export default function component({
+  children = R.always(Kefir.never()),
+  combinator = R.pipe(R.values, Kefir.merge),
+  events = R.always(Kefir.never()),
+  onMount = R.always(Kefir.never()),
+  render = false
+}) {
     if (process.env.NODE_ENV !== 'production') {
         // Validate combinator
         assert.equal(typeof combinator, 'function', '`combinator` should be a function');
@@ -42,9 +40,6 @@ export default function component(config) {
 
         // Validate children$ stream generator.
         assert.equal(typeof children, 'function', '`children` should be a function');
-
-        // Validate shouldUpdate filter.
-        assert.equal(typeof shouldUpdate, 'function', 'shouldUpdate should be a function');
     }
 
     const internals = {

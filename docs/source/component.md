@@ -88,12 +88,6 @@ _Note: **All functions must be curried.** `brookjs` relies on [`ramda`][ramda] f
         * `{Kefir.Observable}` props$ - Observable of props. Used to render children.
     * Returns:
         * `{Kefir.Observable}` - Observable of events from the component.
-* `{Function}` shouldUpdate - Determines whether to re-render the element. Called with the previous and next props, returning a boolean indicating whether the component should re-render. Returns true be default.
-    * Parameters:
-        * `{Object}` prev - Previous props.
-        * `{Object}` next - Next props.
-    * Returns:
-        * `{boolean}` Whether the component should re-render.
 
   [fsa]: https://github.com/acdlite/flux-standard-action
   [ramda]: ramdajs.com
