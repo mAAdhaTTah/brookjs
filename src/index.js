@@ -5,15 +5,15 @@ import component from './component';
 import domDelta from './domDelta';
 import events from './events';
 import observeDelta from './observeDelta';
-import { containerAttribute, createFixture, eventAttribute,
-    mapActionTo } from './helpers';
+import { animateAttribute, containerAttribute,
+    eventAttribute, mapActionTo } from './helpers';
 import render, { renderFromHTML } from './render';
 import { raf$ } from './rAF';
 
 export { Kefir, children, combineActionReducers, component, events, domDelta,
-    observeDelta, containerAttribute, createFixture, eventAttribute,
+    observeDelta, animateAttribute, containerAttribute, eventAttribute,
     mapActionTo, render, raf$, renderFromHTML };
 
 export default { Kefir, children, combineActionReducers, component, events, domDelta,
-    observeDelta, containerAttribute, createFixture, eventAttribute,
+    observeDelta, containerAttribute, eventAttribute,
     mapActionTo, render, raf$, renderFromHTML };

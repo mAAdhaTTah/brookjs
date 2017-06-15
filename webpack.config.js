@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 
@@ -7,18 +8,27 @@ const common = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules)/
+                include: [
+                    path.join(__dirname, 'src'),
+                    path.join(__dirname, 'node_modules', 'diffhtml'),
+                    path.join(__dirname, 'node_modules', 'diffhtml-shared-modules'),
+                ]
             },
             {
-                test: /\.json$/,
-                loader: 'json-loader'
+                test: /\.hbs$/,
+                loader: 'handlebars-loader',
+                options: {
+                    compat: true,
+                    knownHelpersOnly: false,
+                    runtimePath: 'handlebars/runtime'
+                }
             }
         ]
     },
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
-            handlebars: 'handlebars/dist/cjs/handlebars'
+            'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime'
         }
     }
 };

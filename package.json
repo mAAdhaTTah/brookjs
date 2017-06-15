@@ -47,7 +47,8 @@
     "cross-env": "^4.0.0",
     "eslint": "^3.2.2",
     "eslint-config-valtech": "^1.0.0",
-    "handlebars": "^4.0.5",
+    "handlebars": "^4.0.6",
+    "handlebars-loader": "^1.4.0",
     "json-loader": "^0.5.4",
     "karma": "^1.4.0",
     "karma-chai": "^0.1.0",
@@ -68,6 +69,7 @@
     "webpack-merge": "^2.4.0"
   },
   "dependencies": {
+    "diffhtml": "1.0.0-beta.4",
     "kefir": "^3.3.0",
     "morphdom": "^2.0.1",
     "ramda": "^0.23.0",

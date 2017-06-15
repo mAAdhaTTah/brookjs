@@ -1,4 +1,13 @@
 /**
+ * HTML attribute animate directive.
+ *
+ * For tagging a section of DOM to be animated.
+ *
+ * @type {string}
+ */
+export const ANIMATE_ATTRIBUTE = 'data-brk-animate';
+
+/**
  * HTML attribute blackbox directive.
  *
  * For tagging a section of DOM to not update.
@@ -9,6 +18,8 @@ export const BLACKBOX_ATTRIBUTE = 'data-brk-blackbox';
 
 /**
  * HTML attribute container directive.
+ *
+ * For tagging a section of DOM as a component's container.
  *
  * @type {string}
  */

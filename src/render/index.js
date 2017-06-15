@@ -1,78 +1,73 @@
 import assert from 'assert';
 import R from 'ramda';
-import { stream } from 'kefir';
-import morphdom from 'morphdom';
-import { BLACKBOX_ATTRIBUTE, CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
+import Kefir from '../kefir';
+import { outerHTML, use } from 'diffhtml';
+import { $$internals } from '../constants';
 import { raf$ } from '../rAF';
+import { registerElementAnimations } from './animations';
+import middleware from './middleware';
+
+use(middleware());
 
 /**
- * Creates a stream that updates the element to match the provded HTML.
+ * Creates a stream that updates the element to match the provided HTML.
  *
  * @param {Element} el - Element to update.
  * @param {string} html - HTML to update to.
  * @returns {Kefir.Observable} Render stream.
  */
 export const renderFromHTML = R.curry((el, html) =>
-    raf$.take(1).flatMap(() => stream(emitter => {
+    raf$.take(1).flatMap(() => {
         if (process.env.NODE_ENV !== 'production') {
             assert.equal(typeof html, 'string', '`template` should return a string');
         }
 
-        morphdom(el, html, {
-            getNodeKey(el) {
-                let key = '';
-
-                // Ignore text nodes.
-                if (el.nodeType === 3) {
-                    return key;
-                }
-
-                if (el.hasAttribute(CONTAINER_ATTRIBUTE)) {
-                    key = el.getAttribute(CONTAINER_ATTRIBUTE);
-
-                    if (el.getAttribute(KEY_ATTRIBUTE)) {
-                        key += `::${el.getAttribute(KEY_ATTRIBUTE)}`;
-                    }
-                }
-
-                if (el.hasAttribute(BLACKBOX_ATTRIBUTE)) {
-                    if (key) {
-                        key += '::';
-                    }
-
-                    key += el.getAttribute(BLACKBOX_ATTRIBUTE);
-                }
-
-                return key;
-            },
-            onBeforeElUpdated(fromEl) {
-                return !fromEl.hasAttribute(BLACKBOX_ATTRIBUTE);
-            }
-        });
-
-        emitter.end();
-    })));
+        return outerHTML(el, html);
+    })
+);
 
 /**
  * Generates a new rendering stream that ends after the element is updated.
  *
  * @param {Function} template - String-returning template function.
+ * @param {Object} animations - Animation definitions.
  * @returns {Function} Curried stream generating function.
  */
-export default function render(template) {
+export default function render(template, animations = {}) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof template, 'function', '`template` should be a function');
     }
 
+    const internals = {
+        /**
+         * Render sink stream generator function.
+         *
+         * @param {HTMLElement} el - Element to render against.
+         * @param {Observable<T>} props$ - Stream of component props.
+         * @returns {Stream<void, void>} Rendering stream.
+         */
+        createRenderSink: (el, props$) => props$.map(template)
+            .flatMapLatest(renderFromHTML(el)),
+
+        createAnimationSink: (el, props$) => registerElementAnimations(el, animations)
+            // props$ only emits a value right before it ends, ending the registration stream.
+            // delay ensures we unregister the element after the last render has completed.
+            .takeUntilBy(props$.ignoreValues().beforeEnd(() => raf$.take(1).delay(5)).flatMap(R.identity))
+    };
+
     /**
-     * Render stream generator function.
+     * Create combined render/animation stream.
      *
      * @param {HTMLElement} el - Element to render against.
-     * @param {Object} prev - Previous state.
-     * @param {Object} next - Next state.
+     * @param {Observable<T>} props$ - Stream of component props.
      * @returns {Stream<void, void>} Rendering stream.
-     * @factory
      */
-    return R.curry((el, props$) =>
-        props$.map(template).flatMapLatest(renderFromHTML(el)));
+    const renderFactory = (el, props$) => Kefir.merge([
+        internals.createRenderSink(el, props$),
+        internals.createAnimationSink(el, props$)
+    ]);
+
+    renderFactory[$$internals] = internals;
+
+    return renderFactory;
 }
