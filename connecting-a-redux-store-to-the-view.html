@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -111,8 +114,7 @@
             <p>Once the view layer is up and running, the next step is to mount the view into the application. The view layer will be mounted into a “delta”. A delta is a function that takes a stream of <code>actions$</code> and a stream of <code>state$</code> from Redux and returns a new stream of actions that get emitted into the store. This is bound into the store through the <code>observeDelta</code> middleware.</p>
 <p><code>domDelta</code> is implemented as a function that returns a delta, and all userland deltas should be implemented this way. First, define the relevant functions for the :</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// dom.js</span>
-<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> observeDelta<span class="token punctuation">,</span> domDelta<span class="token punctuation">,</span> component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir<span class="token punctuation">,</span> observeDelta<span class="token punctuation">,</span> domDelta<span class="token punctuation">,</span> component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> view <span class="token operator">=</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
     <span class="token function">onMount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>

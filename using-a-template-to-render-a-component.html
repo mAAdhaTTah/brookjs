@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -111,8 +114,7 @@
             <p>Now that a Component is emitting events, it needs to update the <code>Element</code> it’s mounted to keep it in sync with the <code>Observable&lt;props&gt;</code>.  The <code>render</code> modules provides a interface for generating a render stream for a Component using a string-returning template function. This allows <code>brookjs</code> the flexibility the change, update, or swap out the underlying render implementation.</p>
 <p><code>brookjs</code> uses <a href="https://github.com/patrick-steele-idem/morphdom" target="_blank" rel="external"><code>morphdom</code></a> to update the element from an HTML string, configured to take advantage of <code>brookjs</code>‘ custom attributes, allowing a Component to rely on any standard templating language to render itself. Assuming a bundler like <a href="https://webpack.js.org/" target="_blank" rel="external"><code>webpack</code></a> can import a string-returning Handlebars template function, pass it to <code>render</code>:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
-<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> events<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir<span class="token punctuation">,</span> component<span class="token punctuation">,</span> events<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> template <span class="token keyword">from</span> <span class="token string">'./index.hbs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>

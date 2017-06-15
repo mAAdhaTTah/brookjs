@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -109,7 +112,23 @@
         <h1>Changelog</h1>
         <main class="page-content">
             
-                <h2>v0.6.0</h2><ul>
+                <h2>v0.8.0</h2><ul>
+<li><strong>New Feature</strong>: Animation support</li>
+<li>New rendering engine: <a href="https://github.com/tbranyen/diffhtml"><code>diffhtml</code></a></li>
+<li>Allow mounting DOM without template</li>
+<li>Export Kefir through the<ul>
+<li>Extend the library with custom ActionObservable</li>
+</ul>
+</li>
+<li>Internal: Test improvements</li>
+</ul>
+
+<h2>v0.7.0</h2><ul>
+<li><strong>BREAKING</strong>: All deprecated code removed. If you saw no warnings in your console, this release comes with no changes. If not, you’ll need to update your deprecated code before <code>v0.8.0</code>, which will introduce animations.</li>
+<li>Major Documentation Overhaul: All docs have been written and should cover everything you need to write a <code>brookjs</code> application.</li>
+</ul>
+
+<h2>v0.6.0</h2><ul>
 <li>Add <code>ProxyEvent</code> to wrap DOM events<ul>
 <li>This provides an abstraction we can build upon, as well as 2 new properties: <code>containerTarget</code> &amp; <code>decoratedTarget</code></li>
 </ul>

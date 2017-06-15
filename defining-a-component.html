@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -117,8 +120,7 @@
 </code></pre>
 <p>When called, the returned <code>Observable&lt;Action&gt;</code> will never emit an action or update its <code>Element</code>. The first lifecycle hook we’ll take a look at is <code>onMount</code>. It provides a direct line into Component factory function:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
-<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir<span class="token punctuation">,</span> component <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
     <span class="token function">onMount</span><span class="token punctuation">(</span><span class="token comment" spellcheck="true">/* el, props$ */</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>

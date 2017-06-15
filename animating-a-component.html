@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charSet="utf-8"/>
-    <title>brookjs - Helpers</title>
+    <title>brookjs - Animating a Component</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.0.0/normalize.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="/brookjs/css/docs.css">
@@ -109,45 +109,35 @@
     </div>
 
     <div class="page">
-        <h1>Helpers</h1>
+        <h1>Animating a Component</h1>
         <main class="page-content">
-            <p>The helpers module isn’t a separate module but a collection of functions to assist with common tasks in <code>brookjs</code>.</p>
-<h2 id="mapActionTo-Function"><a href="#mapActionTo-Function" class="headerlink" title="mapActionTo {Function}"></a><code>mapActionTo</code> {Function}</h2><p><code>mapActionTo</code> is a simple function designed to simplify the process of mapping child events to the parents events. It modifies the action’s <code>type</code> and maintains the previous source in the Action’s <code>meta</code>.</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> mapActionTo <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+            <p><code>brookjs</code> provides lifecycle hooks for managing the changes that can take place on a component. Enable those hooks by adding a data attribute to the element you want to animate in your component’s HTML:</p>
+<pre class=" language-hbs"><code class="language-hbs"><div data-brk-container="parent">
+    <ul>
+        {{#each option}}
+            <li data-brk-animate="listItem" class="{{class}}">{{text}}</li>
+        {{/each}}
+    </ul>
+</div>
+</code></pre>
+<p>Now, the <code>li</code> element can be animated by passing in a configuration object as the second parameter to the render function:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> template <span class="token keyword">from</span> <span class="token string">'./index.hbs'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">const</span> child <span class="token operator">=</span> <span class="token punctuation">{</span>
-    type<span class="token punctuation">:</span> <span class="token string">'CHILD'</span><span class="token punctuation">,</span>
-    payload<span class="token punctuation">:</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-
-<span class="token keyword">const</span> parent <span class="token operator">=</span> <span class="token function">mapActionTo</span><span class="token punctuation">(</span><span class="token string">'CHILD'</span><span class="token punctuation">,</span> <span class="token string">'PARENT'</span><span class="token punctuation">,</span> child<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token function">assert</span><span class="token punctuation">(</span>parent <span class="token operator">===</span> <span class="token punctuation">{</span>
-    type<span class="token punctuation">:</span> <span class="token string">'PARENT'</span><span class="token punctuation">,</span>
-    payload<span class="token punctuation">:</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    meta<span class="token punctuation">:</span> <span class="token punctuation">{</span> sources<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'CHILD'</span><span class="token punctuation">]</span> <span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    render<span class="token punctuation">:</span> <span class="token function">render</span><span class="token punctuation">(</span>template<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        listItem<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            attached<span class="token punctuation">:</span> <span class="token punctuation">(</span>effect$<span class="token punctuation">,</span> <span class="token punctuation">{</span> container<span class="token punctuation">,</span> parent<span class="token punctuation">,</span> target <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> effect$<span class="token punctuation">,</span>
+            detached<span class="token punctuation">:</span> <span class="token punctuation">(</span>effect$<span class="token punctuation">,</span> <span class="token punctuation">{</span> container<span class="token punctuation">,</span> parent<span class="token punctuation">,</span> target <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> effect$<span class="token punctuation">,</span>
+            replaced<span class="token punctuation">:</span> <span class="token punctuation">(</span>effect$<span class="token punctuation">,</span> <span class="token punctuation">{</span> container<span class="token punctuation">,</span> parent<span class="token punctuation">,</span> incoming<span class="token punctuation">,</span> outgoing <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> effect$<span class="token punctuation">,</span>
+            attributechanged<span class="token punctuation">:</span> effect$ <span class="token operator">=</span><span class="token operator">></span> effect$<span class="token punctuation">,</span>
+            textchanged<span class="token punctuation">:</span> effect$ <span class="token operator">=</span><span class="token operator">></span> effect$
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p>If the source action doesn’t match, the action is returned:</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> mapActionTo <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
-
-<span class="token keyword">const</span> child <span class="token operator">=</span> <span class="token punctuation">{</span>
-    type<span class="token punctuation">:</span> <span class="token string">'OTHER_CHILD'</span><span class="token punctuation">,</span>
-    payload<span class="token punctuation">:</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span>
-
-<span class="token keyword">const</span> parent <span class="token operator">=</span> <span class="token function">mapActionTo</span><span class="token punctuation">(</span><span class="token string">'CHILD'</span><span class="token punctuation">,</span> <span class="token string">'PARENT'</span><span class="token punctuation">,</span> child<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token function">assert</span><span class="token punctuation">(</span>parent <span class="token operator">===</span> child<span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre>
-<h3 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h3><ul>
-<li>{string} source - Action type to modify.</li>
-<li>{string} dest - Action type to map.</li>
-<li>{Action} action - Action to modify.</li>
-</ul>
-<h3 id="Returns"><a href="#Returns" class="headerlink" title="Returns"></a>Returns</h3><ul>
-<li>{Action} Modified action if <code>type</code> matches, original action if it doesn’t.</li>
-</ul>
+<p>When the given event occurs, the corresponding function receives an Observable, representing the side effect about to take place, and an optional <code>meta</code> object, which holds information about the side effect. The callback can wrap the provided effect and return a new Observable, allowing DOM modifications to the element both before and after the change takes place.</p>
+<p>Note that the attached &amp; detached lifecycle hooks run before a corresponding replace hook, and the <code>effect$</code> Observable passed to replace is the result of merging the effects returned by attached and detached.</p>
 
         </main>
     </div>

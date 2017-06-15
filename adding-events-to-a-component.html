@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -131,8 +134,7 @@ Handlebars<span class="token punctuation">.</span><span class="token function">r
 </code></pre>
 <p>Use the <code>events</code> module to declare the events on the Component:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
-<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> events <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir<span class="token punctuation">,</span> component<span class="token punctuation">,</span> events <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
     <span class="token function">onMount</span><span class="token punctuation">(</span><span class="token comment" spellcheck="true">/* el, props$ */</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -150,8 +152,7 @@ Handlebars<span class="token punctuation">.</span><span class="token function">r
 <p>The events managed by event delegation, requiring a single listener at the top of the DOM, and uses the <code>data-brk-container</code> attribute to scope the event to its proper Component instance.</p>
 <p>This also allows for control over the rate at which events are emitted, using <code>debounce</code> or <code>throttle</code>:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
-<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> events <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir<span class="token punctuation">,</span> component<span class="token punctuation">,</span> events <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
     <span class="token function">onMount</span><span class="token punctuation">(</span><span class="token comment" spellcheck="true">/* el, props$ */</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>

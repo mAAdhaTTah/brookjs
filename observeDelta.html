@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -112,7 +115,7 @@
 <p>When the middleware gets applied, each source function will be called with two parameters: <code>actions$</code> and <code>state$</code>. These are <code>Kefir.Observable</code>s, with the <code>actions$</code> stream emitting every action dispatched through the middleware, and the <code>state$</code> emitting each new state after each action. Each source function should return a Kefir stream, which are combined into a <code>delta$</code> stream that emits actions into the Redux store.</p>
 <p>Specifically, <code>state$</code> is a <code>Kefir.Property</code>, which means it retains its current value when it gets subscribed to. Additionally, note that the <code>state$</code> will have its value emitted before the <code>action$</code>, ensuring that any combination of the stream will have the latest state when the action is emitted.</p>
 <h1 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h1><p>An example <code>source$</code> stream:</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">exampleSourceStream</span><span class="token punctuation">(</span>actions$<span class="token punctuation">,</span> state$<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">const</span> save$ <span class="token operator">=</span> actions$<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>action <span class="token operator">=</span><span class="token operator">></span> action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'SAVE_THING'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -142,7 +145,7 @@
 store<span class="token punctuation">.</span><span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token string">'SAVE_THING'</span><span class="token punctuation">,</span> payload<span class="token punctuation">:</span> <span class="token punctuation">{</span> id<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> name<span class="token punctuation">:</span> <span class="token string">'The Thing to save'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>If you need to get the state on every action, use <code>sampledBy</code>:</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">exampleSourceStream</span><span class="token punctuation">(</span>actions$<span class="token punctuation">,</span> state$<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">const</span> save$ <span class="token operator">=</span> actions$<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>action <span class="token operator">=</span><span class="token operator">></span> action<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'SAVE_USER_BUTTON_CLICK'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>

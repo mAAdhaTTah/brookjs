@@ -71,6 +71,9 @@
                             <li>
                                 <a href="/brookjs/custom-components-with-blackboxing-and-onmount.html">Custom Components with Blackboxing and <code>onMount</code></a>
                             </li>
+                            <li>
+                                <a href="/brookjs/animating-a-component.html">Animating a Component</a>
+                            </li>
                     </ul>
                 </ul>
                 <ul class="nav">
@@ -111,7 +114,7 @@
             <p>In simple terms, a Component in <code>brookjs</code> is a function that accepts an <code>Element</code> and an <code>Observable&lt;props&gt;</code> for that element and returns an <code>Observable&lt;Action&gt;</code>. <code>brookjs</code> is designed to be paired with <a href="http://redux.js.org/" target="_blank" rel="external"><code>redux</code></a>, and Components can be streamed into a <code>redux</code> Store, with the Store’s State streamed into the Component as its <code>props</code>.</p>
 <p>A <code>brookjs</code> Component can be paired with a <code>redux</code> Store with the following glue code (we’ll see later how this gets wired up in a full-fledged application):</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> createStore <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'redux'</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> Kefir <span class="token keyword">from</span> <span class="token string">'kefir'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> reducer <span class="token keyword">from</span> <span class="token string">'./reducer'</span><span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// view is a brookjs Component</span>
 <span class="token keyword">import</span> view <span class="token keyword">from</span> <span class="token string">'./view'</span><span class="token punctuation">;</span>
