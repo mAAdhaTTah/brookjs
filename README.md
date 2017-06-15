@@ -1,5 +1,7 @@
 # `brookjs`
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/valtech-nyc/brookjs.svg)](https://greenkeeper.io/)
+
 A framework for building streaming applications.
 
 [![Build Status](https://travis-ci.org/valtech-nyc/brookjs.svg?branch=master)](https://travis-ci.org/valtech-nyc/brookjs)[![npm](https://img.shields.io/npm/v/brookjs.svg)](https://www.npmjs.com/package/brookjs)
