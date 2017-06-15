@@ -62,10 +62,10 @@ export default function render(template, animations = {}) {
      * @param {Observable<T>} props$ - Stream of component props.
      * @returns {Stream<void, void>} Rendering stream.
      */
-    const renderFactory = (el, props$) => Kefir.merge([
+    const renderFactory = R.curry((el, props$) => Kefir.merge([
         internals.createRenderSink(el, props$),
         internals.createAnimationSink(el, props$)
-    ]);
+    ]));
 
     renderFactory[$$internals] = internals;
 
