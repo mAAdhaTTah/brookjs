@@ -3,9 +3,7 @@ import R from 'ramda';
 import Kefir from '../kefir';
 import child from './child';
 import { containerAttribute } from '../helpers';
-import { $$internals } from '../constants';
-import { getContainerNode, containerMatches, isAddedChildNode, isRemovedChildNode
-} from './util';
+import { getContainerNode, containerMatches, isAddedChildNode, isRemovedChildNode } from './util';
 import mutations$ from './mutations';
 
 /**
@@ -41,13 +39,7 @@ export default function children(factories) {
             definition = { factory: definition };
         }
 
-        let createSourceStream = false;
-
-        if (definition.factory[$$internals]) {
-            ({ createSourceStream } = definition.factory[$$internals]);
-        }
-
-        factories[container] = child(Object.assign({ container, createSourceStream }, definition));
+        factories[container] = child(Object.assign({ container }, definition));
     }
 
     /**
@@ -58,7 +50,7 @@ export default function children(factories) {
      * @return {Observable<T, S>} Children stream.
      * @factory
      */
-    return R.curry((el, props$) => {
+    return R.curry((el, props$, config = {}) => {
         const nodeAddedMutationPayload$ = mutations$.filter(isAddedChildNode(el))
             .map(R.prop('payload'));
         const nodeRemovedMutationPayload$ = mutations$.filter(isRemovedChildNode(el))
@@ -85,7 +77,7 @@ export default function children(factories) {
                 .map(R.prop('node'));
 
             const instance$ = Kefir.merge([existingEl$, addedEl$])
-                .flatMap(el => factory(el, props$)
+                .flatMap(el => factory(el, props$, config)
                     .takeUntilBy(createElementRemoved(el)));
 
             return [container, instance$];

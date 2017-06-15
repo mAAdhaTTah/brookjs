@@ -9,7 +9,7 @@ import children from '../';
  *
  * @returns {Fixture} Children test fixture.
  */
-export function createFixture({ child$ = Kefir.pool(), factory = sinon.spy(() => child$), createSourceStream } = {}) {
+export function createFixture({ child$ = Kefir.pool(), factory = sinon.spy(() => child$), createSourceStream, config } = {}) {
     if (createSourceStream) {
         factory[$$internals] = { createSourceStream };
     }
@@ -25,7 +25,7 @@ export function createFixture({ child$ = Kefir.pool(), factory = sinon.spy(() =>
     const props$ = Kefir.pool();
 
     document.body.appendChild(element);
-    const instance = generator(element, props$);
+    const instance = generator(element, props$, config);
 
     return { child$, factory, modifyChildProps, preplug, generator, element, firstChild, props$, instance };
 }
