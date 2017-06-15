@@ -15,11 +15,11 @@ import { $$internals } from '../constants';
  * @factory
  */
 export default function component({
-  children = R.always(Kefir.never()),
-  combinator = R.pipe(R.values, Kefir.merge),
-  events = R.always(Kefir.never()),
-  onMount = R.always(Kefir.never()),
-  render = false
+    children = R.always(Kefir.never()),
+    combinator = R.pipe(R.values, Kefir.merge),
+    events = R.always(Kefir.never()),
+    onMount = R.always(Kefir.never()),
+    render = false
 }) {
     if (process.env.NODE_ENV !== 'production') {
         // Validate combinator

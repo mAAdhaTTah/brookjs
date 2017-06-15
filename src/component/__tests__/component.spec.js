@@ -1,5 +1,5 @@
 /*eslint-env mocha */
-import 'es6-weak-map/implement';
+import 'core-js/shim';
 import { AssertionError } from 'assert';
 
 import R from 'ramda';
