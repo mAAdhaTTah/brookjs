@@ -5,7 +5,7 @@ title: Animating a Component
 
 `brookjs` provides lifecycle hooks for managing the changes that can take place on a component. Enable those hooks by adding a data attribute to the element you want to animate in your component's HTML:
 
-```hbs
+```handlebars
 <div data-brk-container="parent">
     <ul>
         {{#each option}}
