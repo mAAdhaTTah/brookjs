@@ -80,8 +80,8 @@ const valueOtherActionTypeReducer =
     (value, { payload }) => payload.value / 2 - value;
 
 const value = combineActionReducers([
-    [ACTION_TYPE, actionTypeReducer],
-    [OTHER_ACTION_TYPE, otherActionTypeReducer]
+    [ACTION_TYPE, valueActionTypeReducer],
+    [OTHER_ACTION_TYPE, valueOtherActionTypeReducer]
 ]);
 
 const disabledActionTypeReducer =
@@ -91,8 +91,8 @@ const disabledOtherActionTypeReducer =
     (disabled, { payload }) => disabled && payload.value < 10;
 
 const cond = [
-    [ACTION_TYPE, actionTypeReducer],
-    [OTHER_ACTION_TYPE, otherActionTypeReducer]
+    [ACTION_TYPE, disabledActionTypeReducer],
+    [OTHER_ACTION_TYPE, disabledOtherActionTypeReducer]
 ];
 
 const defaults = { value: 0 };
