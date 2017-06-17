@@ -36,3 +36,53 @@ export function getContainerNode(parent) {
 
     return getContainerNode(parent.parentNode);
 }
+
+/**
+ * Adds the provided action to the array if it's not a duplicate,
+ * and removes Actions that cancel each other out.
+ *
+ * @param {Array<Action>} acc - List of accumulated actions.
+ * @param {Action} action - Next action to add.
+ * @returns {Array<Action>} New list of actions.
+ */
+function accumulateUniqueNodes(acc, action) {
+    const listOfNodes = acc.map(R.path(['payload', 'node']));
+    const indexOfNode = listOfNodes.indexOf(action.payload.node);
+
+    if (indexOfNode !== -1) {
+        // Since there are only two types of actions, if they
+        // don't match here but have the same node, it means
+        // one was an `ADDED` and one was a `REMOVED`, so they
+        // cancel each other out, so remove both.
+        if (acc[indexOfNode].type !== action.type) {
+            acc.splice(indexOfNode, 1);
+        }
+
+        return acc;
+    }
+
+    return acc.concat(action);
+}
+
+export const dedupeListOfMutationActions = R.pipe(
+    R.groupWith((a, b) => a.payload.node === b.payload.node),
+    R.map(R.groupWith((a, b) => a.type === b.type)),
+    R.map(actions => {
+        // If only one type, than use it.
+        if (actions.length === 1) {
+            return actions[0];
+        }
+
+        if (actions[0].length === actions[1].length) {
+            return [];
+        }
+
+        if (actions[0].length > actions[1].length) {
+            return actions[0][0];
+        }
+
+        return actions[1][0];
+    }),
+    R.flatten,
+    R.reduce(accumulateUniqueNodes, [])
+);
