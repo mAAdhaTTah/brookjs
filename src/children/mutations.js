@@ -2,7 +2,7 @@ import R from 'ramda';
 import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
 import Kefir from '../kefir';
 import { nodeAdded, nodeRemoved } from './actions';
-import { getContainerNode } from './util';
+import { getContainerNode, dedupeListOfMutationActions } from './util';
 
 /**
  * Determines whether the node is a brook container node.
@@ -93,33 +93,6 @@ function mapRecordsToActions(record) {
 }
 
 /**
- * Adds the provided action to the array if it's not a duplicate,
- * and removes Actions that cancel each other out.
- *
- * @param {Array<Action>} acc - List of accumulated actions.
- * @param {Action} action - Next action to add.
- * @returns {Array<Action>} New list of actions.
- */
-function accumulateUniqueNodes(acc, action) {
-    const listOfNodes = acc.map(R.path(['payload', 'node']));
-    const indexOfNode = listOfNodes.indexOf(action.payload.node);
-
-    if (indexOfNode !== -1) {
-        // Since there are only two types of actions, if they
-        // don't match here but have the same node, it means
-        // one was an `ADDED` and one was a `REMOVED`, so they
-        // cancel each other out, so remove both.
-        if (acc[indexOfNode].type !== action.type) {
-            acc.splice(indexOfNode, 1);
-        }
-
-        return acc;
-    }
-
-    return acc.concat(action);
-}
-
-/**
  * Map simple actions to new actions with additional data.
  *
  * @param {string} type - Action type.
@@ -159,7 +132,6 @@ export default Kefir.stream(emitter => {
 })
     .flatten(R.pipe(
         R.chain(mapRecordsToActions),
-        R.reduce(accumulateUniqueNodes, []),
+        dedupeListOfMutationActions,
         R.map(mapActionsWithExtraData)
-    ))
-;
+    ));
