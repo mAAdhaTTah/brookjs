@@ -170,8 +170,8 @@
     <span class="token punctuation">(</span>value<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> payload<span class="token punctuation">.</span>value <span class="token operator">/</span> <span class="token number">2</span> <span class="token operator">-</span> value<span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> value <span class="token operator">=</span> <span class="token function">combineActionReducers</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
-    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> otherActionTypeReducer<span class="token punctuation">]</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> valueActionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> valueOtherActionTypeReducer<span class="token punctuation">]</span>
 <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> disabledActionTypeReducer <span class="token operator">=</span>
@@ -181,8 +181,8 @@
     <span class="token punctuation">(</span>disabled<span class="token punctuation">,</span> <span class="token punctuation">{</span> payload <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> disabled <span class="token operator">&amp;&amp;</span> payload<span class="token punctuation">.</span>value <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> cond <span class="token operator">=</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> actionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> otherActionTypeReducer<span class="token punctuation">]</span>
+    <span class="token punctuation">[</span>ACTION_TYPE<span class="token punctuation">,</span> disabledActionTypeReducer<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">[</span>OTHER_ACTION_TYPE<span class="token punctuation">,</span> disabledOtherActionTypeReducer<span class="token punctuation">]</span>
 <span class="token punctuation">]</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> defaults <span class="token operator">=</span> <span class="token punctuation">{</span> value<span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>

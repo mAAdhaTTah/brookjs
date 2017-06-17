@@ -112,13 +112,13 @@
         <h1>Animating a Component</h1>
         <main class="page-content">
             <p><code>brookjs</code> provides lifecycle hooks for managing the changes that can take place on a component. Enable those hooks by adding a data attribute to the element you want to animate in your component’s HTML:</p>
-<pre class=" language-hbs"><code class="language-hbs"><div data-brk-container="parent">
-    <ul>
-        {{#each option}}
-            <li data-brk-animate="listItem" class="{{class}}">{{text}}</li>
-        {{/each}}
-    </ul>
-</div>
+<pre class=" language-handlebars"><code class="language-handlebars"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-brk-container</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>parent<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token punctuation">></span></span>
+        <span class="token handlebars"><span class="token delimiter punctuation">{{</span><span class="token block keyword">#each</span> <span class="token variable">option</span><span class="token delimiter punctuation">}}</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">data-brk-animate</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>listItem<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>{{class}}<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token handlebars"><span class="token delimiter punctuation">{{</span><span class="token variable">text</span><span class="token delimiter punctuation">}}</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+        <span class="token handlebars"><span class="token delimiter punctuation">{{</span><span class="token block keyword">/each</span><span class="token delimiter punctuation">}}</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 </code></pre>
 <p>Now, the <code>li</code> element can be animated by passing in a configuration object as the second parameter to the render function:</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> render <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
