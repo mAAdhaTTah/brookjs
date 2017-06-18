@@ -1,7 +1,7 @@
 {
   "plugins": [
     "ramda",
-    ["transform-object-rest-spread", { "useBuiltins": true}]
+    ["transform-object-rest-spread", { "useBuiltIns": true}]
   ],
   "env": {
     "test": {
