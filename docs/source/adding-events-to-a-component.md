@@ -31,7 +31,9 @@ Register the helper with the Handlebars runtime like this:
 import { eventAttribute } from 'brookjs'
 import Handlebars from 'handlebars/runtime';
 
-Handlebars.registerHelper('event', eventAttribute);
+Handlebars.registerHelper('event', (event, key) =>
+  new Handlebars.SafeString(eventAttribute(event, key))
+);
 ```
 
 Use the `events` module to declare the events on the Component:
@@ -56,7 +58,7 @@ export default component({
 
 The stream gets merged with the main Component stream, so the returned stream needs to be an `Observable<Action>`.
 
-The events managed by event delegation, requiring a single listener at the top of the DOM, and uses the `data-brk-container` attribute to scope the event to its proper Component instance.
+The events are bound with event delegation, requiring a single listener at the top of the DOM, and using the `data-brk-container` attribute to scope the event to its proper Component instance.
 
 This also allows for control over the rate at which events are emitted, using `debounce` or `throttle`:
 

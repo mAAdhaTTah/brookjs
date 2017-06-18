@@ -3,7 +3,7 @@ id: managing-children-components-in-a-component
 title: Managing <code>children</code> Components in a Component
 ---
 
-A Component should encapsulate a specific piece of functionality, making it easy to reuse them in other Components. The `children` module handles this functionality, managing the creation of child components and plugging their streams into the parent. It uses the child component's `data-brk-container` attribute to mount and unmount the component when it enters and exits the DOM.
+A Component should encapsulate a specific piece of functionality, making it easy to reuse them in other Components. The `children` module handles this, managing the creation of child components and plugging their streams into the parent. It uses the child component's `data-brk-container` attribute to mount and unmount the component when it enters and exits the DOM.
 
 The `children` function accepts multiple configurations, depending on how much customization the component requires. The simplest configuration maps a child's `data-brk-container` attribute to its Component factory function. Given a child that looks like this:
 

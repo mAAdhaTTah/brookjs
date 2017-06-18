@@ -3,7 +3,7 @@ id: what-is-a-component
 title: What is a Component?
 ---
 
-In simple terms, a Component in `brookjs` is a function that accepts an `Element` and an `Observable<props>` for that element and returns an `Observable<Action>`. `brookjs` is designed to be paired with [`redux`][redux], and Components can be streamed into a `redux` Store, with the Store's State streamed into the Component as its `props`.
+In simple terms, a Component in `brookjs` is a function that accepts an `Element` and an `Observable<props>` for that element and returns an `Observable<Action>`. `brookjs` is designed to be paired with [`redux`][redux], and Component actions can be streamed into a `redux` Store, with the Store's State streamed back into the Component as its `props`.
 
 A `brookjs` Component can be paired with a `redux` Store with the following glue code (we'll see later how this gets wired up in a full-fledged application):
 

@@ -11,7 +11,7 @@ Here's how this HTML could look:
 <button data-brk-container="button">Click Me</button>
 ```
 
-This could be rendered by any given templating language; `brookjs` recommends the uses [Mustache][mstc] / [Handlebars][hbs] throughout this tutorial, because there are a number of cross-platform implementations of these templating languages.
+This could be rendered by any given templating language; `brookjs` recommends the uses [Mustache][mstc] / [Handlebars][hbs] throughout this tutorial, because there are a number of cross-platform implementations of these templating languages. Additionally, future optimizations to the rendering pipeline will assume a Handlebars context.
 
 In the above case, a Handlebars helper can be used to render the container attribute:
 
@@ -43,8 +43,8 @@ Both of these helpers can be registered with the Handlebars runtime:
 import { containerAttribute, keyAttribute } from 'brookjs'
 import Handlebars from 'handlebars/runtime';
 
-Handlebars.registerHelper('container', containerAttribute);
-Handlebars.registerHelper('key', keyAttribute);
+Handlebars.registerHelper('container', key => new Handlebars.SafeString(containerAttribute(key)));
+Handlebars.registerHelper('key', key => new Handlebars.SafeString(keyAttribute(key)));
 ```
 
 Helpers for other Handlebars implementations are on the roadmap.

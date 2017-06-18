@@ -5,7 +5,7 @@ title: <code>observeDelta</code>
 
 `observeDelta` is a Redux middleware for binding a set of delta source streams to a Redux store.
 
-When the middleware gets applied, each source function will be called with two parameters: `actions$` and `state$`. These are `Kefir.Observable`s, with the `actions$` stream emitting every action dispatched through the middleware, and the `state$` emitting each new state after each action. Each source function should return a Kefir stream, which are combined into a `delta$` stream that emits actions into the Redux store.
+When the middleware gets applied, each source function will be called with two parameters: `actions$` and `state$`. These are `Kefir.Observable`s, with the `actions$` stream emitting every action dispatched through the application, and the `state$` emitting each new state after each action. Each source function should return a Kefir stream, which are combined into a `delta$` stream that emits actions into the Redux store.
 
 Specifically, `state$` is a `Kefir.Property`, which means it retains its current value when it gets subscribed to. Additionally, note that the `state$` will have its value emitted before the `action$`, ensuring that any combination of the stream will have the latest state when the action is emitted.
 

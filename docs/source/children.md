@@ -27,7 +27,9 @@ This needs to be registered with the Handlebars runtime:
 import { containerAttribute } from 'brookjs'
 import Handlebars from 'handlebars/runtime';
 
-Handlebars.registerHelper('container', containerAttribute);
+Handlebars.registerHelper('container', key =>
+  new Handlebars.SafeString(containerAttribute(key))
+);
 ```
 
 The compiled templates will now provide the required container attribute through the helper.
@@ -37,7 +39,7 @@ The compiled templates will now provide the required container attribute through
 The `children` stream accepts a configuration object. The object's keys should match the container attribute for the given component. The value can be either a component factory function:
 
 ```js
-import children from 'brookjs/children';
+import { children } from 'brookjs';
 import kid from './kid';
 
 export default children({ kid });
@@ -46,8 +48,8 @@ export default children({ kid });
 or a configuration object for that component, which defines the behavior of the child in relation to the parent:
 
 ```js
-import children from 'brookjs/children';
-import { mapActionTo } from 'brookjs/helpers';
+import { children, mapActionTo } from 'brookjs';
+import kid from './kid';
 
 export default children({
     kid: {
@@ -60,7 +62,11 @@ export default children({
         modifyChildProps: (props$, key) => props$.map(props => props.children[key]),
         // passed each child instance to modify child stream
         // return value is plugged into combined string (hence `preplug`)
-        preplug: (kid$, key) => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION)).map(action => Object.assign({}, action, { meta: { key } }))
+        preplug: (kid$, key) => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION))
+            .map(action => ({
+              ...action,
+              meta: { key }
+            }))
     }
 });
 ```
@@ -87,7 +93,9 @@ This also needs to be registered with the Handlebars runtime:
 import { keyAttribute } from 'brookjs'
 import Handlebars from 'handlebars/runtime';
 
-Handlebars.registerHelper('key', keyAttribute);
+Handlebars.registerHelper('key', id =>
+  new Handlebars.SafeString(keyAttribute(id))
+);
 ```
 
 The parent is then responsible for iterating over the props and rendering the children.
@@ -95,9 +103,11 @@ The parent is then responsible for iterating over the props and rendering the ch
 ```handlebars
 <div data-brk-container="parent">
     {{#each kids}}
-        {{> kid}}
+        {{> kid this}}
     {{/each}}
 </div>
 ```
 
-For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props. This is primarily useful to provide the correct props to the child's `onMount` function.
+For each child, when it's mounted or added to the DOM, `modifyChildProps` is called with the parent's `props$` stream and the value of the child's key attribute. The returned stream should be of the child's props.
+
+The child instance is then passed to `preplug`, allowing the stream to be modified before it's plugged into the parent stream. The returned stream should be an `Observable<Action>`.

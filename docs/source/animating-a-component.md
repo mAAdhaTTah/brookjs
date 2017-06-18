@@ -9,10 +9,24 @@ title: Animating a Component
 <div data-brk-container="parent">
     <ul>
         {{#each option}}
-            <li data-brk-animate="listItem" class="{{class}}">{{text}}</li>
+            <li class="{{class}}"
+                    {{animate "listItem"}}>
+                {{text}}
+            </li>
         {{/each}}
     </ul>
 </div>
+```
+
+Registering the Handlebars helper:
+
+```js
+import { animateAttribute } from 'brookjs'
+import Handlebars from 'handlebars/runtime';
+
+Handlebars.registerHelper('animate', (key) =>
+  new Handlebars.SafeString(animateAttribute(key))
+);
 ```
 
 Now, the `li` element can be animated by passing in a configuration object as the second parameter to the render function:
