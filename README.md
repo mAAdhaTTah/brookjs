@@ -10,11 +10,10 @@ ___
 
 `brookjs` is distributed on npm. In order to use it in a browser, bundle the application with [`webpack`][webpack] or [`browserify`][browserify]. In addition, `brookjs` uses new JavaScript features that require polyfills transforms in older environments, including:
 
-* `WeakMap`
+* `Map` / `WeakMap`
+* `Set` / `WeakSet`
 * `Object.assign`
 * `MutationObserver`
-
-`Object.assign` & `Array.from` are transpiled with a pair of babel plugins, so polyfills for `WeakMap` & `MutationObserver` are required.
 
 ## Quick Start
 
