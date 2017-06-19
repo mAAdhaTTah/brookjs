@@ -65,7 +65,7 @@
     "simulant": "^0.2.2",
     "sinon": "^2.0.0-pre.2",
     "sinon-chai": "^2.8.0",
-    "webpack": "^2.2.0",
+    "webpack": "^3.0.0",
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
