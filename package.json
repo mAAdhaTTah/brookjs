@@ -69,7 +69,7 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "diffhtml": "1.0.0-beta.6",
+    "diffhtml": "1.0.0-beta.7",
     "kefir": "^3.3.0",
     "morphdom": "^2.0.1",
     "ramda": "^0.24.1",
