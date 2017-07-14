@@ -208,12 +208,10 @@ export default function patchAsObservable(patches) {
         for (let i = 0; i < NODE_VALUE.length; i += 3) {
             const vTree = NODE_VALUE[i];
             const nodeValue = NODE_VALUE[i + 1];
-            const domNode = NodeCache.get(vTree);
+            const domNode = createNode(vTree);
             const containerNode = getContainerNode(domNode);
 
             const effect$ = Kefir.stream(emitter => {
-                // Wait... this doesn't seem right...?
-                // const domNode = NodeCache.get(vTree);
                 const { parentNode } = domNode;
 
                 if (nodeValue.includes('&')) {
