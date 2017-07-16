@@ -130,7 +130,9 @@
 <pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> eventAttribute <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span>
 <span class="token keyword">import</span> Handlebars <span class="token keyword">from</span> <span class="token string">'handlebars/runtime'</span><span class="token punctuation">;</span>
 
-Handlebars<span class="token punctuation">.</span><span class="token function">registerHelper</span><span class="token punctuation">(</span><span class="token string">'event'</span><span class="token punctuation">,</span> eventAttribute<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Handlebars<span class="token punctuation">.</span><span class="token function">registerHelper</span><span class="token punctuation">(</span><span class="token string">'event'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>event<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span>
+  <span class="token keyword">new</span> <span class="token class-name">Handlebars<span class="token punctuation">.</span>SafeString</span><span class="token punctuation">(</span><span class="token function">eventAttribute</span><span class="token punctuation">(</span>event<span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>Use the <code>events</code> module to declare the events on the Component:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
@@ -149,7 +151,7 @@ Handlebars<span class="token punctuation">.</span><span class="token function">r
 </code></pre>
 <p><code>event$</code> is an <code>Observable&lt;ProxyEvent&gt;</code>, emitting a normalized wrapper around the browser’s <code>Event</code>. In addition to the <code>Event</code> properties, the emitted <code>ProxyEvent</code> has two <code>brookjs</code>-specific properties: <code>decoratedTarget</code> (the element with the event attribute) and <code>containerTarget</code> (the container element for the event). This provides access to the DOM as required to pull additional information out for the event object.</p>
 <p>The stream gets merged with the main Component stream, so the returned stream needs to be an <code>Observable&lt;Action&gt;</code>.</p>
-<p>The events managed by event delegation, requiring a single listener at the top of the DOM, and uses the <code>data-brk-container</code> attribute to scope the event to its proper Component instance.</p>
+<p>The events are bound with event delegation, requiring a single listener at the top of the DOM, and using the <code>data-brk-container</code> attribute to scope the event to its proper Component instance.</p>
 <p>This also allows for control over the rate at which events are emitted, using <code>debounce</code> or <code>throttle</code>:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>
 <span class="token keyword">import</span> <span class="token punctuation">{</span> Kefir<span class="token punctuation">,</span> component<span class="token punctuation">,</span> events <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>

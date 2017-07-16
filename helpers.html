@@ -112,7 +112,7 @@
         <h1>Helpers</h1>
         <main class="page-content">
             <p>The helpers module isn’t a separate module but a collection of functions to assist with common tasks in <code>brookjs</code>.</p>
-<h2 id="mapActionTo-Function"><a href="#mapActionTo-Function" class="headerlink" title="mapActionTo {Function}"></a><code>mapActionTo</code> {Function}</h2><p><code>mapActionTo</code> is a simple function designed to simplify the process of mapping child events to the parents events. It modifies the action’s <code>type</code> and maintains the previous source in the Action’s <code>meta</code>.</p>
+<h2 id="mapActionTo-Function"><a href="#mapActionTo-Function" class="headerlink" title="mapActionTo {Function}"></a><code>mapActionTo</code> {Function}</h2><p><code>mapActionTo</code> is a simple function designed to simplify the process of mapping child events to its parent’s events. It modifies the action’s <code>type</code> and maintains the previous source in the Action’s <code>meta</code>.</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> mapActionTo <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> child <span class="token operator">=</span> <span class="token punctuation">{</span>
@@ -139,6 +139,16 @@
 <span class="token keyword">const</span> parent <span class="token operator">=</span> <span class="token function">mapActionTo</span><span class="token punctuation">(</span><span class="token string">'CHILD'</span><span class="token punctuation">,</span> <span class="token string">'PARENT'</span><span class="token punctuation">,</span> child<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token function">assert</span><span class="token punctuation">(</span>parent <span class="token operator">===</span> child<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>This function is curried, so it can be used to map child events to their parent’s actions using preplug:</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    children<span class="token punctuation">:</span> <span class="token function">children</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        child<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+          factory<span class="token punctuation">:</span> ChildComponent<span class="token punctuation">,</span>
+          preplug<span class="token punctuation">:</span> instance$ <span class="token operator">=</span><span class="token operator">></span> instance$<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">mapActionTo</span><span class="token punctuation">(</span><span class="token string">'CHILD'</span><span class="token punctuation">,</span> <span class="token string">'PARENT'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <h3 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h3><ul>
 <li>{string} source - Action type to modify.</li>
