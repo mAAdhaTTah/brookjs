@@ -7,7 +7,8 @@ import sinonChai from 'sinon-chai';
 import hbs from 'handlebars/runtime';
 
 import * as Desalinate from '../../desalinate';
-import { attachDetachReplace, attributeText, hideBlackboxed, simpleUpdate, updateChild } from './fixtures';
+import { attachDetachReplace, attributeText, hideBlackboxed, simpleUpdate,
+    updateChild, rootBlackboxed } from './fixtures';
 
 import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
 import render from '../';
@@ -242,7 +243,7 @@ describe('render', function() {
         });
     });
 
-    it('should remove extra blackboxed element', done => {
+    it('should add missing blackboxed element', done => {
         const initial = {
             headline: 'Blackboxed',
             blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
@@ -270,7 +271,7 @@ describe('render', function() {
         });
     });
 
-    it('should add missing blackboxed element', done => {
+    it('should remove extra blackboxed element', done => {
         const initial = {
             headline: 'Blackboxed',
             blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
@@ -278,7 +279,6 @@ describe('render', function() {
         const next = {
             headline: 'Blackboxed',
             blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
-
         };
         const el = Desalinate.createElementFromTemplate(hideBlackboxed, initial);
         const template = sinon.spy(hideBlackboxed);
@@ -293,6 +293,31 @@ describe('render', function() {
 
                 expect(one).to.have.text(initial.blackboxed[0].text);
                 expect(two).to.equal(undefined);
+
+                done();
+            }
+        });
+    });
+
+    it('should render root blackboxed element', done => {
+        const initial = {
+            text: 'Initial text'
+        };
+        const next = {
+            text: 'Next text'
+        };
+
+        const el = Desalinate.createElementFromTemplate(rootBlackboxed, initial);
+
+        const template = sinon.spy(rootBlackboxed);
+        const renderFactory = render(template);
+
+        renderFactory(el, Kefir.constant(next)).observe({
+            end() {
+                expect(template).to.have.callCount(1);
+                expect(template).to.have.been.calledWithExactly(next);
+
+                expect(el.textContent).to.equal(next.text);
 
                 done();
             }
