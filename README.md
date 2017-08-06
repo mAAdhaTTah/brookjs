@@ -14,6 +14,8 @@ ___
 * `Set` / `WeakSet`
 * `Object.assign`
 * `MutationObserver`
+* `Array#includes`
+* `String#includes`
 
 ## Quick Start
 
