@@ -4,6 +4,7 @@ import getNodeKey from './getNodeKey';
 import endAsObservable from './endAsObservable';
 import patchTask from './patchTask';
 
+const { createNode } = Internals;
 const { patchNode } = Internals.tasks;
 
 /**
@@ -19,31 +20,35 @@ const createTreeHook = tree => {
 };
 
 /**
- * Check if the component is a blackboxed element and ensure it doesn't change.
- *
- * @param {VTree} oldTree - Current tree state.
- * @param {VTree} newTree - New tree state.
- * @returns {VTree} Updated tree state.
- */
-const syncTreeHook = (oldTree, newTree) =>
-    oldTree && oldTree.attributes && oldTree.attributes[BLACKBOX_ATTRIBUTE]
-        ? oldTree
-        : newTree;
-
-/**
  * Create an instance of the render middleware for diffhtml.
  *
  * @returns {renderTask} Render task middleware.
  */
 export default function middleware() {
+    let rootRenderNode;
+
     /**
-     * Maintains the current transaction, overwrites
+     * Check if the component is a blackboxed element and ensure it doesn't change.
+     *
+     * @param {VTree} oldTree - Current tree state.
+     * @param {VTree} newTree - New tree state.
+     * @returns {VTree} Updated tree state.
+     */
+    const syncTreeHook = (oldTree, newTree) =>
+        oldTree && oldTree.attributes && oldTree.attributes[BLACKBOX_ATTRIBUTE] && createNode(oldTree) !== rootRenderNode
+            ? oldTree
+            : newTree;
+
+    /**
+     * Maintains the current transaction, overwriting
      * the built in patch function with our observable
      * handling.
      *
      * @param {Transaction} transaction - Incoming transaction.
      */
     function renderTask(transaction) {
+        rootRenderNode = transaction.domNode;
+
         const idx = transaction.tasks.indexOf(patchNode);
 
         transaction.tasks[idx] = patchTask;
