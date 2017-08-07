@@ -1312,9 +1312,9 @@ diff@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.2.0.tgz#c9ce393a4b7cbd0b058a725c93df299027868ff9"
 
-diffhtml@1.0.0-beta.7:
-  version "1.0.0-beta.7"
-  resolved "https://registry.yarnpkg.com/diffhtml/-/diffhtml-1.0.0-beta.7.tgz#1b723b8f6953edfedc68703f7c9f64a78439d92a"
+diffhtml@1.0.0-beta.8:
+  version "1.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/diffhtml/-/diffhtml-1.0.0-beta.8.tgz#86e31a22368ebd307ae215a70a8112581dae6669"
 
 diffie-hellman@^5.0.0:
   version "5.0.2"
@@ -3692,7 +3692,7 @@ sinon-chai@^2.8.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-2.9.0.tgz#34d820042bc9661a14527130d401eb462c49bb84"
 
-sinon@3.0.0:
+sinon@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-3.0.0.tgz#f6919755c8c705e0b4ae977e8351bbcbaf6d91de"
   dependencies:
