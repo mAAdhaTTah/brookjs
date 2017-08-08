@@ -19,3 +19,12 @@ script:
 
 after_script:
   - greenkeeper-lockfile-upload
+
+deploy:
+  provider: npm
+  email: jamesorodig@gmail.com
+  api_key:
+    secure: SwWOtf60pIVK5qhzosz44yUbZM+0+cI0T/fLXFJ/QLSmedE3lEiUn9FBy2ezMMrbiVfT19ARsf5Cs6CZ33nuUyALu6V0P0QgldnYRQ4WuYAt8l2DSP2+gpPMD7GchD662JgYqCO3JUXtPZ5EGNbCckGAtmEVeNkYedIDxOYepT8mq3gXKAEo0qRZ0JQA4BShlnM+ztx8QH4WRlMD9NUyc6p6gUg9BJnSQHmr3Atz7CpStYpEl1lkIrT2j6UF8n91yCxczN7wxu51wmS7tm+iWK1Mg0WzFB3xqdE3WN8zZD9Mtu58qAVbyE6AAvf9bBvgp6Wq/gS6JSViFoxWCFoHdha/t0sS0W3Ex56WJah53dwxiuBezLDb1+uFhGvTJP/k9r3Joa1lIGVTs6DLHkPpb8PB0OsKjNqEu1ecH5/5eMlBAZiKORK0PQfpVY/AYnl/IfDyxJiXuF1vSkuc9UUfchOLOsoaOohv+5aMjk/TYCF+qs+SPdgYlPG4Os94dPbetHGDMIIQAvWI4sRuIIHkLjYEkLpjgxYJr6Vo0/fJawqw3bOk31oib/n/VhcM3XIBPguWPjohv/w5rD6SVQTWdb+289qP+27ec9S7hrPvKE3yKDVBWkj5FSAuNHh/6ZLndZ9uzpk8x1bYo65am9HDbDoEbBr6K7UECMD4tVR3i14=
+  on:
+    tags: true
+    repo: valtech-nyc/brookjs
