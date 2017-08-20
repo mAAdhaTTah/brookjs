@@ -3,6 +3,7 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { init } from './actions';
 import {} from './deltas';
+import { el, view } from './dom';
 import {} from './reducers';
 import { selectProps } from './selectors';
 

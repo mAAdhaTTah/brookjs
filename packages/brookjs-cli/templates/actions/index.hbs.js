@@ -1,1 +1,1 @@
-export * from './app.hbs';
+export * from './app';
