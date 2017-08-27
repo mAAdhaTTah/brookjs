@@ -14,3 +14,5 @@ export const prompt = questions =>
 export const error = msg => log(chalk.red(msg));
 
 export const success = msg => log(chalk.green(msg));
+
+export const info = msg => log(chalk.yellow(msg));
