@@ -16,6 +16,9 @@ export const lDescription = R.lensProp('description');
 export const lKeywords = R.lensProp('keywords');
 export const lLicense = R.lensProp('license');
 
+/**
+ * Namespace property lenses
+ */
 export const lAppName = R.compose(lApp, lName);
 export const lAppDir = R.compose(lApp, lDir);
 export const lAppAuthor = R.compose(lApp, lAuthor);
