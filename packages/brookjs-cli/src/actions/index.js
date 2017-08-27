@@ -1,3 +1,5 @@
+export * from './npm';
+
 export const RUN = 'RUN';
 
 /**
