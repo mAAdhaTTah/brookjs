@@ -1,20 +1,14 @@
 import R from 'ramda';
+import { lName, lOpts, lArgs } from './properties';
 
 /**
  * Namespace lens.
  */
-export const lCommand = R.lensProp('command');
-
-/**
- * Property lenses.
- */
-export const lName = R.lensProp('name');
-export const lOpts = R.lensProp('opts');
-export const lArgs = R.lensProp('args');
+export const nslCommand = R.lensProp('command');
 
 /**
  * Namespace property lenses.
  */
-export const lCommandName = R.compose(lCommand, lName);
-export const lCommandOpts = R.compose(lCommand, R.lensProp('opts'));
-export const lCommandArgs = R.compose(lCommand, R.lensProp('args'));
+export const lCommandName = R.compose(nslCommand, lName);
+export const lCommandOpts = R.compose(nslCommand, lOpts);
+export const lCommandArgs = R.compose(nslCommand, lArgs);

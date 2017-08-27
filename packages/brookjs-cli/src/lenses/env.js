@@ -1,16 +1,12 @@
 import R from 'ramda';
+import { lCwd } from './properties';
 
 /**
  * Namespace lens.
  */
-export const lEnv = R.lensProp('env');
-
-/**
- * Property lenses.
- */
-export const lCwd = R.lensProp('cwd');
+export const nslEnv = R.lensProp('env');
 
 /**
  * Namespace property lenses.
  */
-export const lEnvCwd = R.compose(lEnv, lCwd);
+export const lEnvCwd = R.compose(nslEnv, lCwd);

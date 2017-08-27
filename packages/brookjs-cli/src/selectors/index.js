@@ -1,12 +1,12 @@
 import path from 'path';
 import R from 'ramda';
-import { lApp, lAppAuthor, lAppDescription, lAppDir,
+import { nslApp, lAppAuthor, lAppDescription, lAppDir,
     lAppLicense, lAppName, lAppVersion } from '../lenses';
 
 export const selectConfirmMessage  = state =>
     `Confirm your app configuration:
 
-${JSON.stringify(R.view(lApp, state), null, '  ')}
+${JSON.stringify(R.view(nslApp, state), null, '  ')}
 
 Is this ok?`;
 

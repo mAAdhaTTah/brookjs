@@ -1,28 +1,19 @@
 import R from 'ramda';
+import { lName, lDir, lAuthor, lVersion,
+    lDescription, lKeywords, lLicense } from './properties';
 
 /**
  * Namespace lens.
  */
-export const lApp = R.lensProp('app');
-
-/**
- * Property lenses.
- */
-export const lName = R.lensProp('name');
-export const lDir = R.lensProp('dir');
-export const lAuthor = R.lensProp('author');
-export const lVersion = R.lensProp('version');
-export const lDescription = R.lensProp('description');
-export const lKeywords = R.lensProp('keywords');
-export const lLicense = R.lensProp('license');
+export const nslApp = R.lensProp('app');
 
 /**
  * Namespace property lenses
  */
-export const lAppName = R.compose(lApp, lName);
-export const lAppDir = R.compose(lApp, lDir);
-export const lAppAuthor = R.compose(lApp, lAuthor);
-export const lAppVersion = R.compose(lApp, lVersion);
-export const lAppDescription = R.compose(lApp, lDescription);
-export const lAppKeywords = R.compose(lApp, lKeywords);
-export const lAppLicense = R.compose(lApp, lLicense);
+export const lAppName = R.compose(nslApp, lName);
+export const lAppDir = R.compose(nslApp, lDir);
+export const lAppAuthor = R.compose(nslApp, lAuthor);
+export const lAppVersion = R.compose(nslApp, lVersion);
+export const lAppDescription = R.compose(nslApp, lDescription);
+export const lAppKeywords = R.compose(nslApp, lKeywords);
+export const lAppLicense = R.compose(nslApp, lLicense);
