@@ -1,7 +1,7 @@
 import R from 'ramda';
 import { Kefir } from 'brookjs';
 import { INIT_CONFIG_RESPONSE, RUN, SCAFFOLD_ERROR, FILE_CREATED,
-    initConfigResponse, confirmConfig } from '../actions';
+    NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH, initConfigResponse, confirmConfig } from '../actions';
 import { selectConfirmMessage } from '../selectors';
 
 const newProjectPrompt = ({ ui }, actions$, state$) => {
@@ -58,6 +58,8 @@ const log = ({ ui }, actions$/*, state$*/) => {
         switch (type) {
             case FILE_CREATED:
                 return ui.success(`created file ${payload.path}`);
+            case NPM_COMMAND_FINISH:
+                return ui.success(`npm finished with code ${payload.code}`);
             default:
                 return Kefir.never();
         }
@@ -72,9 +74,19 @@ const log = ({ ui }, actions$/*, state$*/) => {
         }
     });
 
+    const info$ = actions$.flatMap(({ type, payload }) => {
+        switch (type) {
+            case NPM_COMMAND_OUTPUT:
+                return ui.info(`npm says: ${payload.output}`);
+            default:
+                return Kefir.never();
+        }
+    });
+
     return Kefir.merge([
         success$,
-        error$
+        error$,
+        info$
     ]);
 };
 
