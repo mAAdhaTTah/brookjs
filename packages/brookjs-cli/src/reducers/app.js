@@ -14,18 +14,16 @@ const defaults = {
     license: 'ISC'
 };
 
-const mapPayloadToSetter = R.converge((...funcs) => R.pipe(...funcs), [
-    R.pipe(R.prop('name'), R.set(lName)),
-    R.pipe(R.prop('dir'), R.set(lDir)),
-    R.pipe(R.prop('author'), R.set(lAuthor)),
-    R.pipe(R.prop('version'), R.set(lVersion)),
-    R.pipe(R.prop('description'), R.set(lDescription)),
-    R.pipe(R.prop('keywords'), R.set(lKeywords)),
-    R.pipe(R.prop('license'), R.set(lLicense))
-]);
-
 const cond = [
-    [INIT_CONFIG_RESPONSE, (state, { payload }) => mapPayloadToSetter(payload)(state)]
+    [INIT_CONFIG_RESPONSE, (state, { payload }) => R.pipe(
+        R.set(lName, payload.name),
+        R.set(lDir, payload.dir),
+        R.set(lAuthor, payload.author),
+        R.set(lVersion, payload.version),
+        R.set(lDescription, payload.description),
+        R.set(lKeywords, payload.keywords),
+        R.set(lLicense, payload.license)
+    )(state)]
 ];
 
 export default combineActionReducers(cond, defaults);
