@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable import/unambiguous */
-require('babel-register');
-const program = require('../src').default;
+const program = require('../src');
 
 program.parse(process.argv);

@@ -1,14 +1,15 @@
-import prog from 'caporal';
-import pkg from '../package.json';
-import main from './main';
+require('babel-register');
+
+const prog = require('caporal');
+const pkg  = require('../package.json');
+const main = require('./main').default;
 
 prog
     .version(pkg.version)
-    .description(pkg.description)
-    .help('@TODO');
+    .description(pkg.description);
 
 prog
     .command('new', 'Create a new brookjs application.')
     .action(main('new'));
 
-export default prog;
+module.exports = prog;

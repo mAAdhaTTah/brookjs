@@ -2,10 +2,7 @@ module.exports = {
     root: true,
     parserOptions: {
         ecmaVersion: 6,
-        sourceType: 'module',
-        ecmaFeatures: {
-            experimentalObjectRestSpread: true
-        }
+        sourceType: 'module'
     },
     env: {
         es6: true,
@@ -34,7 +31,6 @@ module.exports = {
         'import/no-named-as-default-member': 1,
         'import/no-duplicates': 1,
         'import/no-deprecated': 1,
-        'import/unambiguous': 1,
         'import/order': [1, {
             groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
             'newlines-between': 'never'
