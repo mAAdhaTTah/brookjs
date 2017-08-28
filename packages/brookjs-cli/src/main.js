@@ -10,7 +10,7 @@ export default R.curry(function main (name, args, options) {
     const store = createStore(
         combineReducers({ app, command, env }),
         applyMiddleware(observeDelta(
-            envDelta({ process }),
+            envDelta({ process, require }),
             npmDelta({ npm }),
             scaffoldDelta({ scaffold }),
             terminalDelta({ ui })

@@ -1,7 +1,7 @@
 import path from 'path';
 import R from 'ramda';
 import { nslApp, lAppAuthor, lAppDescription, lAppDir,
-    lAppLicense, lAppName, lAppVersion } from '../lenses';
+    lAppLicense, lAppName, lAppVersion, lEnvCwd } from '../lenses';
 
 export const selectConfirmMessage  = state =>
     `Confirm your app configuration:
@@ -9,6 +9,9 @@ export const selectConfirmMessage  = state =>
 ${JSON.stringify(R.view(nslApp, state), null, '  ')}
 
 Is this ok?`;
+
+export const selectRcPath = state =>
+    path.join(R.view(lEnvCwd, state), '.beaverrc.js');
 
 export const selectRoot = state =>
     path.join(state.env.cwd, R.view(lAppName, state));

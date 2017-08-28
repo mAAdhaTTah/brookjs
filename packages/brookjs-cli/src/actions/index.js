@@ -55,6 +55,20 @@ export function readEnv (cwd) {
     };
 }
 
+export const READ_RC_FILE = 'READ_RC_FILE';
+
+export const readRcFile = ({ dir }) => ({
+    type: READ_RC_FILE,
+    payload: { dir }
+});
+
+export const READ_RC_FILE_ERROR = 'READ_RC_FILE_ERROR';
+
+export const readRcFileError = error => ({
+    type: READ_RC_FILE_ERROR,
+    payload: { error },
+    error: true
+});
 
 export const SCAFFOLD_ERROR = 'SCAFFOLD_ERROR';
 
