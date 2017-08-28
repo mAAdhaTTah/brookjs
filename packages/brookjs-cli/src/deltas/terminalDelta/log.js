@@ -1,5 +1,5 @@
 import { Kefir } from 'brookjs';
-import {  SCAFFOLD_ERROR, FILE_CREATED,
+import {  SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
     NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH } from '../../actions';
 
 export default ({ ui }, actions$/*, state$*/) => {
@@ -18,6 +18,8 @@ export default ({ ui }, actions$/*, state$*/) => {
         switch (type) {
             case SCAFFOLD_ERROR:
                 return ui.error(`error scaffolding file: ${payload.error.message}`);
+            case READ_RC_FILE_ERROR:
+                return ui.error(`error reading .beaverrc.js: ${payload.error.message}`);
             default:
                 return Kefir.never();
         }
