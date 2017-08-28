@@ -12,4 +12,9 @@ prog
     .command('new', 'Create a new brookjs application.')
     .action(main('new'));
 
+prog
+    .command('make', 'Create a new file of a given type for brookjs application.')
+    .action(main('make'))
+    .argument('<type>', 'Type to make.', ['delta']);
+
 module.exports = prog;
