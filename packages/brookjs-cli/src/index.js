@@ -17,4 +17,19 @@ prog
     .action(main('make'))
     .argument('<type>', 'Type to make.', ['delta']);
 
+prog
+    .command('dev', 'Develop the brookjs application.')
+    .action(main('test'))
+    .argument('<type>', 'Development style.', ['app', 'tdd']);
+
+prog
+    .command('test', 'Run the brookjs application tests.')
+    .action(main('test'))
+    .argument('<type>', 'Tests to run.', ['unit', 'e2e']);
+
+prog
+    .command('build', 'Build the brookjs application files.')
+    .action(main('build'))
+    .argument('<env>', 'Build environment target.', ['development', 'production']);
+
 module.exports = prog;

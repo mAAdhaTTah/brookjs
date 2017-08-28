@@ -20,6 +20,10 @@ export default R.curry((services, actions$, state$) =>
                     makeCommandPrompt(services, actions$, state$),
                     log(services, actions$, state$)
                 ]);
+            case 'dev':
+            case 'test':
+            case 'build':
+                return log(services, actions$, state$);
             default:
                 return commandNotFound(services, actions$, state$);
         }
