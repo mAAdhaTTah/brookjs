@@ -1,6 +1,6 @@
 import R from 'ramda';
 import { combineActionReducers } from 'brookjs';
-import { INIT_CONFIG_RESPONSE } from '../actions';
+import { INIT_CONFIG_RESPONSE, READ_RC_FILE } from '../actions';
 import { lName, lDir, lAuthor, lVersion,
     lDescription, lKeywords, lLicense } from '../lenses';
 
@@ -23,6 +23,9 @@ const cond = [
         R.set(lDescription, payload.description),
         R.set(lKeywords, payload.keywords),
         R.set(lLicense, payload.license)
+    )(state)],
+    [READ_RC_FILE, (state, { payload }) => R.pipe(
+        R.set(lDir, payload.dir)
     )(state)]
 ];
 
