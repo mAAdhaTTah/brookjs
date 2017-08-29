@@ -1,8 +1,8 @@
 import R from 'ramda';
 import { Kefir } from 'brookjs';
 import {  RUN } from '../../actions';
-import { makeCommandPrompt, newCommandPrompt } from './prompts';
 import log from './log';
+import newCommandPrompt from './newCommandPrompt';
 
 const commandNotFound = ({ ui }, actions$, state$) =>
     state$.take(1).flatMap(state => ui.error(`Command not found: ${state.command.name}.`));
@@ -16,10 +16,6 @@ export default R.curry((services, actions$, state$) =>
                     log(services, actions$, state$)
                 ]);
             case 'make':
-                return Kefir.concat([
-                    makeCommandPrompt(services, actions$, state$),
-                    log(services, actions$, state$)
-                ]);
             case 'dev':
             case 'test':
             case 'build':

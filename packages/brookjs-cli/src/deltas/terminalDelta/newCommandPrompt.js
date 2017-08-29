@@ -1,10 +1,8 @@
-import R from 'ramda';
 import { Kefir } from 'brookjs';
-import { INIT_CONFIG_RESPONSE, initConfigResponse, confirmConfig } from '../../../actions';
-import { lCommandArgs, lCommandName } from '../../../lenses';
-import { selectConfirmMessage } from '../../../selectors';
+import { INIT_CONFIG_RESPONSE, initConfigResponse, confirmConfig } from '../../actions';
+import { selectConfirmMessage } from '../../selectors';
 
-export const newCommandPrompt = ({ ui }, actions$, state$) => {
+export default ({ ui }, actions$, state$) => {
     const prompt$ = state$.take(1).flatMap((/* state */) => ui.prompt([
         {
             type: 'input',
@@ -52,7 +50,3 @@ export const newCommandPrompt = ({ ui }, actions$, state$) => {
         confirm$
     ]);
 };
-
-export const makeCommandPrompt = ({ ui }, actions$, state$) =>
-    state$.take(1).flatMap(state =>
-        ui.success(`Ran command '${R.view(lCommandName, state)}' with type '${R.view(lCommandArgs, state).type}'.`));
