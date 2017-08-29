@@ -157,11 +157,10 @@ jspm_packages/
 # Typescript v1 declaration files
 typings/
 
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
+# Optional cache
 .eslintcache
+.esm-cache
+.npm
 
 # Optional REPL history
 .node_repl_history
@@ -175,5 +174,5 @@ typings/
 # dotenv environment variables file
 .env
 
-
+# Test app directory
 test-app
