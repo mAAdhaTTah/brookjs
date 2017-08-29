@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import R from 'ramda';
 import { Kefir } from 'brookjs';
-import { npmCommandFinish, npmCommandOutput } from '../actions';
+import { npmCommandSpawned, npmCommandFinish, npmCommandOutput } from '../actions';
 import { selectRoot } from '../selectors';
 
 const partitionByEnv = R.partition(R.prop('dev'));
@@ -14,9 +14,12 @@ export const install = R.curry((specs, state) => { // eslint-disable-line import
 
     if (devs.length) {
         stream$ = stream$.concat(Kefir.stream(emitter => {
-            const child = spawn('npm', R.concat(['i', '--save-dev'], pkgsFromSpec(devs)), {
+            const args = R.concat(['i', '--save-dev'], pkgsFromSpec(devs));
+            const child = spawn('npm', args, {
                 cwd: selectRoot(state)
             });
+
+            emitter.value(npmCommandSpawned(R.concat('npm ', args.join(' '))));
 
             child.stdout.on('data', data => {
                 emitter.value(npmCommandOutput(data.toString()));
@@ -31,9 +34,12 @@ export const install = R.curry((specs, state) => { // eslint-disable-line import
 
     if (prods.length) {
         stream$ = stream$.concat(Kefir.stream(emitter => {
-            const child = spawn('npm', R.concat(['i', '--save'], pkgsFromSpec(prods)), {
+            const args = R.concat(['i', '--save'], pkgsFromSpec(prods));
+            const child = spawn('npm', args, {
                 cwd: selectRoot(state)
             });
+
+            emitter.value(npmCommandSpawned(R.concat('npm ', args.join(' '))));
 
             child.stdout.on('data', data => {
                 emitter.value(npmCommandOutput(data.toString()));

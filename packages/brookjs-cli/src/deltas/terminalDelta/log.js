@@ -1,6 +1,6 @@
 import { Kefir } from 'brookjs';
 import {  SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
-    NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH } from '../../actions';
+    NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH } from '../../actions';
 
 export default ({ ui }, actions$/*, state$*/) => {
     const success$ = actions$.flatMap(({ type, payload }) => {
@@ -27,6 +27,8 @@ export default ({ ui }, actions$/*, state$*/) => {
 
     const info$ = actions$.flatMap(({ type, payload }) => {
         switch (type) {
+            case NPM_COMMAND_SPAWNED:
+                return ui.info(`running ${payload.command}`);
             case NPM_COMMAND_OUTPUT:
                 return ui.info(`npm says: ${payload.output}`);
             default:
