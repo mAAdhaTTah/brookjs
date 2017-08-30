@@ -13,7 +13,8 @@ program
 program
     .command('make', 'Create a new file of a given type for brookjs application.')
     .action(main('make'))
-    .argument('<type>', 'Type to make.', ['delta']);
+    .argument('<type>', 'Type to make.', ['delta'])
+    .argument('<name>', 'Name of the file/type created.');
 
 program
     .command('dev', 'Develop the brookjs application.')
