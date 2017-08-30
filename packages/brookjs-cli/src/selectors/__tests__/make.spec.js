@@ -1,14 +1,25 @@
+import R from 'ramda';
 import test from 'ava';
-import { selectMakePath, selectMakeTemplate, selectMakeContext } from '../make';
+import { lCommandName } from '../../lenses';
+import { isMakeCommand, selectMakePath, selectMakeTemplate, selectMakeContext } from '../make';
 
 const state = {
     command: {
+        name: 'make',
         args: {
             type: 'delta',
             name: 'testDelta'
         }
     }
 };
+
+test('isMakeCommand returns true when running make', t => {
+    t.true(isMakeCommand(state));
+});
+
+test('isMakeCommand returns false when not running make', t => {
+    t.false(isMakeCommand(R.set(lCommandName, 'new', state)));
+});
 
 test('selectMakePath should get target path', t => {
     t.is('deltas/testDelta.js', selectMakePath(state));

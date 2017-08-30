@@ -1,7 +1,8 @@
 import path from 'path';
 import R from 'ramda';
-import { lCommandNameArg, lCommandTypeArg } from '../lenses';
+import { lCommandName, lCommandNameArg, lCommandTypeArg } from '../lenses';
 
+export const isMakeCommand = R.pipe(R.view(lCommandName), R.equals('make'));
 export const selectMakePath = state => path.join(
     R.view(lCommandTypeArg, state) + 's',
     R.view(lCommandNameArg, state) + '.js'
