@@ -2,13 +2,11 @@ import R from 'ramda';
 import { Kefir } from 'brookjs';
 import {  RUN } from '../../actions';
 import log from './log';
+import commandNotFound from './commandNotFound';
 import newCommandPrompt from './newCommandPrompt';
 
-const commandNotFound = ({ ui }, actions$, state$) =>
-    state$.take(1).flatMap(state => ui.error(`Command not found: ${state.command.name}.`));
-
 export default R.curry((services, actions$, state$) =>
-    state$.sampledBy(actions$.ofType(RUN)).flatMap(state => {
+    state$.sampledBy(actions$.ofType(RUN)).take(1).flatMap(state => {
         switch (state.command.name) {
             case 'new':
                 return Kefir.concat([
