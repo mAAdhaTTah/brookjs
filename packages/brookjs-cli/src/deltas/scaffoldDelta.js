@@ -1,9 +1,11 @@
 import R from 'ramda';
-import { CONFIRM_CONFIG } from '../actions';
-import { selectPkgContext, selectRcContext, selectAppJsContext } from '../selectors';
+import { Kefir } from 'brookjs';
+import { RUN, CONFIRM_CONFIG, READ_ENV, READ_RC_FILE } from '../actions';
+import { selectPkgContext, selectRcContext, selectAppJsContext,
+    selectMakePath, selectMakeTemplate, selectMakeContext, isMakeCommand } from '../selectors';
 
-export default R.curry(({ scaffold }, actions$, state$) =>
-    state$.sampledBy(actions$.ofType(CONFIRM_CONFIG)).take(1).delay(0)
+export default R.curry(({ scaffold }, actions$, state$) => {
+    const new$ = state$.sampledBy(actions$.ofType(CONFIRM_CONFIG)).take(1).delay(0)
         .flatMap(scaffold([
             {
                 action: scaffold.CREATE,
@@ -80,5 +82,19 @@ export default R.curry(({ scaffold }, actions$, state$) =>
                 path: 'components/index.js',
                 content: '\n'
             },
-        ]))
-);
+        ]));
+
+    const make$ = state$.sampledBy(actions$.ofType(READ_RC_FILE, READ_ENV, RUN).bufferWithCount(3))
+        .take(1).filter(isMakeCommand).flatMap(scaffold([{
+            action: scaffold.CREATE,
+            target: scaffold.APP,
+            path: selectMakePath,
+            template: selectMakeTemplate,
+            context: selectMakeContext
+        }]));
+
+    return Kefir.merge([
+        make$,
+        new$
+    ]);
+});
