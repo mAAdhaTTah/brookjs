@@ -2,7 +2,7 @@ import { Kefir } from 'brookjs';
 import {  SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
     NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH } from '../../actions';
 
-export default ({ ui }, actions$/*, state$*/) => {
+export default ({ ui }, actions$/*, state$ */) => {
     const success$ = actions$.flatMap(({ type, payload }) => {
         switch (type) {
             case FILE_CREATED:
@@ -36,9 +36,17 @@ export default ({ ui }, actions$/*, state$*/) => {
         }
     });
 
+    // Leaving this as it's useful debugging code until we get proper verbose outputs
+    // or debugging tools.
+    // const silly$ = Kefir.zip([actions$, state$]).flatMap(([action, state]) => Kefir.concat([
+    //     ui.log(`action: ${JSON.stringify(action, null, '  ')}`),
+    //     ui.log(`state: ${JSON.stringify(state, null, '  ')}`)
+    // ]));
+
     return Kefir.merge([
         success$,
         error$,
-        info$
+        info$,
+        // silly$
     ]);
 };
