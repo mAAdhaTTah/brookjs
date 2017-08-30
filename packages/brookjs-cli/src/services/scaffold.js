@@ -45,6 +45,14 @@ const mapSpecToStreams = R.curry((state, spec) => {
                     .map(() => fileCreated(spec.path));
             }
 
+            if (typeof spec.template === 'function') {
+                spec = R.merge(spec, { template: spec.template(state) });
+            }
+
+            if (typeof spec.path === 'function') {
+                spec = R.merge(spec, { path: spec.path(state) });
+            }
+
             if (typeof spec.template === 'string') {
                 return template(spec.template)
                     .map(tmpl => tmpl(selectContext(state, spec)))
