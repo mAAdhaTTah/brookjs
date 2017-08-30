@@ -3,6 +3,8 @@ import R from 'ramda';
 import { nslApp, lAppAuthor, lAppDescription, lAppDir,
     lAppLicense, lAppName, lAppVersion, lEnvCwd } from '../lenses';
 
+export * from './make';
+
 export const selectConfirmMessage  = state =>
     `Confirm your app configuration:
 
