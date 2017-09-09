@@ -11,7 +11,7 @@ webpackConfig.devtool = 'inline-source-map';
 module.exports = function (config) {
     const tests = '!(node_modules)/**/__tests__/*.spec.js';
 
-    config.set({
+    const opts = {
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
@@ -83,5 +83,65 @@ module.exports = function (config) {
         client: {
             useIframe: false
         }
-    });
+    };
+
+    if (process.env.SAUCE_USERNAME && process.env.SAUCE_ACCESS_KEY) {
+        opts.sauceLabs = {
+            testName: 'brookjs unit tests',
+            recordScreenshots: false
+        };
+
+        opts.customLaunchers = {
+            sl_ie_11: {
+                base: 'SauceLabs',
+                browserName: 'internet explorer',
+                platform: 'Windows 7',
+                version: '11'
+            },
+            sl_chrome: {
+                base: 'SauceLabs',
+                browserName: 'chrome',
+                platform: 'Windows 10',
+                version: 'dev'
+            },
+            sl_firefox: {
+                base: 'SauceLabs',
+                browserName: 'firefox',
+                platform: 'Windows 10',
+                version: 'dev'
+            },
+            sl_edge: {
+                base: 'SauceLabs',
+                browserName: 'Microsoft Edge',
+                platform: 'Windows 10',
+                version: '15.15063'
+            },
+            sl_osx_safari: {
+                base: 'SauceLabs',
+                browserName: 'Safari',
+                platform: 'macOS 10.12',
+                version: '10.0'
+            },
+            sl_ios_safari: {
+                base: 'SauceLabs',
+                browserName: 'Safari',
+                deviceName: 'iPhone 7 Simulator',
+                platformVersion: '10.3',
+                platformName: 'iOS'
+            },
+            sl_android: {
+                base: 'SauceLabs',
+                browserName: 'Browser',
+                platform: 'Android',
+                version: '4.4',
+                deviceName: 'Samsung Galaxy S3 Emulator',
+                deviceOrientation: 'portrait'
+            }
+        };
+
+        opts.browsers = Object.keys(opts.customLaunchers);
+        opts.reporters.push('saucelabs');
+    }
+
+    config.set(opts);
 };
