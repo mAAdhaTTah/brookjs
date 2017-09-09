@@ -1,4 +1,5 @@
 import R from 'ramda';
+import loader from '@std/esm';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { observeDelta } from 'brookjs';
 import { run } from './actions';
@@ -10,7 +11,7 @@ export default R.curry(function main (name, args, options) {
     const store = createStore(
         combineReducers({ app, command, env }),
         applyMiddleware(observeDelta(
-            envDelta({ process, require }),
+            envDelta({ process, require: loader(module, { esm: 'js' }) }),
             npmDelta({ npm }),
             scaffoldDelta({ scaffold }),
             terminalDelta({ ui })
