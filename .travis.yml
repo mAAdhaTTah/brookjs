@@ -9,16 +9,16 @@ addons:
 
 cache:
   directories:
-  - $HOME/.yarn-cache
+    - node_modules
 
 before_install:
-  - yarn global add greenkeeper-lockfile@1
+  - npm i -g greenkeeper-lockfile@1
 
 before_script:
   - greenkeeper-lockfile-update
 
 script:
-  - yarn test
+  - npm test
 
 after_script:
   - greenkeeper-lockfile-upload
