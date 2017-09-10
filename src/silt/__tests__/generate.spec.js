@@ -26,6 +26,16 @@ describe('generate', () => {
         expect(generate(ast, context)).to.eql(expected);
     });
 
+    it('should generate a plain div with an attribute', () => {
+        const ast = ['div', [
+            ['class', 'my-class']
+        ], []];
+        const context = {};
+        const expected = createTree('div', { class: 'my-class' }, []);
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
     it('should generate a div with text', () => {
         const ast = ['div', [], [
             ['#text', 'Some text']
@@ -48,6 +58,31 @@ describe('generate', () => {
         }];
         const context = { foo: 'bar' };
         const expected = createTree('#text', 'bar');
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
+    it('should generate a div with dynamic attribute name and value', () => {
+        const ast = ['div', [
+            [
+                ['hbs:expression', {
+                    args: undefined,
+                    context: undefined,
+                    expression: VARIABLE,
+                    name: 'foo',
+                    unescaped: false
+                }],
+                ['hbs:expression', {
+                    args: undefined,
+                    context: undefined,
+                    expression: VARIABLE,
+                    name: 'bar',
+                    unescaped: false
+                }]
+            ]
+        ], []];
+        const context = { foo: 'class', bar: 'my-class' };
+        const expected = createTree('div', { class: 'my-class' }, []);
 
         expect(generate(ast, context)).to.eql(expected);
     });

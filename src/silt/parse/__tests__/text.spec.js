@@ -5,7 +5,7 @@ import { parseText } from '../text';
 
 describe('text', () => {
     it('should replace placeholder with expression', () => {
-        const text = '__SILT_0__';
+        const text = '__silt_0__';
         const expressions = [
             ['hbs:expression']
         ];

@@ -1,6 +1,6 @@
 import { parseExpression, regex as expressionRegex } from './expression';
 
-export const regex = /(__SILT_\d+__)/;
+export const regex = /(__silt_\d+__)/;
 
 /**
  * Find each handlebars expression or block and replace them
@@ -14,7 +14,7 @@ export function placeholderize (html) {
     const blocks = [];
 
     html = html.replace(expressionRegex, match => {
-        const placeholder = `__SILT_${expressions.length}__`;
+        const placeholder = `__silt_${expressions.length}__`;
 
         expressions.push(parseExpression(match));
 

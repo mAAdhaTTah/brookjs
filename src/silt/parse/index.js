@@ -39,7 +39,7 @@ export default function parse(source, opts = {}, tree = ['#document-fragment', [
         onopentag: (tagname, attributes) => {
             path.push(active);
 
-            const child = [tagname, parseAttributes(attributes), []];
+            const child = [tagname, parseAttributes(attributes, expressions), []];
 
             active[2].push(child);
 

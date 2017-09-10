@@ -1,5 +1,6 @@
 import R from 'ramda';
 import { createTree } from 'diffhtml';
+import { generateAttributes } from './attributes';
 import { handleExpression } from './expression';
 
 /**
@@ -30,7 +31,7 @@ export default R.curry(function generate(ast, context) {
     if (ast.length === 3) {
         ast = [
             ast[0],
-            R.fromPairs(ast[1]),
+            generateAttributes(ast[1], context),
             R.map(child => generate(child, context), ast[2])
         ];
     }

@@ -42,6 +42,15 @@ describe('parse', () => {
         expect(parse(source)).to.eql(expected);
     });
 
+    it('should parse a div with an attribute', () => {
+        const source = `<div class="my-class"></div>`;
+        const expected = ['div', [
+            ['class', 'my-class']
+        ], []];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
     it('should parse an expression', () => {
         const source = '{{foo}}';
         const expected = ['hbs:expression', {
@@ -51,6 +60,36 @@ describe('parse', () => {
             name: 'foo',
             unescaped: false
         }];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
+    it('should parse an expression as attribute name', () => {
+        const source = `<div {{foo}}="my-class"></div>`;
+        const expected = ['div', [
+            [['hbs:expression', {
+                args: undefined,
+                context: undefined,
+                expression: VARIABLE,
+                name: 'foo',
+                unescaped: false
+            }], 'my-class']
+        ], []];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
+    it('should parse an expression as attribute value', () => {
+        const source = `<div class="{{foo}}"></div>`;
+        const expected = ['div', [
+            ['class', ['hbs:expression', {
+                args: undefined,
+                context: undefined,
+                expression: VARIABLE,
+                name: 'foo',
+                unescaped: false
+            }]]
+        ], []];
 
         expect(parse(source)).to.eql(expected);
     });
