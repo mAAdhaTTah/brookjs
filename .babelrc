@@ -12,6 +12,11 @@
         ["es2015", { "loose": false, "modules": false }]
       ]
     },
+    "test:ci": {
+      "presets": [
+        ["es2015", { "loose": false, "modules": false }]
+      ]
+    },
     "commonjs": {
       "presets": [
         ["es2015", { "loose": false, "modules": "commonjs" }]

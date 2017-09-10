@@ -1,3 +1,5 @@
+import R from 'ramda';
+
 const ALL_PROPS = [
     'altKey', 'bubbles', 'cancelable', 'ctrlKey',
     'eventPhase', 'metaKey', 'relatedTarget', 'shiftKey',
@@ -42,7 +44,15 @@ class ProxyEvent {
     }
 
     preventDefault() {
-        return this[$$event].preventDefault();
+        const returned = this[$$event].preventDefault();
+
+        if (!this[$$event].defaultPrevented) {
+            Object.defineProperty(this, 'defaultPrevented', {
+                get: R.T
+            });
+        }
+
+        return returned;
     }
 }
 

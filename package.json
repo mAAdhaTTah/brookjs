@@ -13,15 +13,16 @@
     "src"
   ],
   "scripts": {
-    "test": "npm run test:lint && npm run test:unit",
+    "test": "npm run test:lint && npm run test:unit && if test \"$SAUCE_USERNAME\" != ''; then npm run test:ci; fi",
     "test:lint": "eslint src --cache true --fix",
-    "test:unit": "cross-env BABEL_ENV=test karma start karma.conf.js --single-run",
-    "dev": "cross-env BABEL_ENV=test karma start karma.conf.js",
+    "test:unit": "cross-env NODE_ENV=test karma start karma.conf.js --single-run",
+    "test:ci": "cross-env NODE_ENV=test:ci karma start karma.conf.ci.js --single-run",
+    "dev": "cross-env NODE_ENV=test karma start karma.conf.js",
     "clean": "rimraf cjs dist es coverage",
-    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --ignore __tests__ --out-dir cjs",
-    "build:es": "cross-env BABEL_ENV=es babel src --ignore __tests__ --out-dir es",
-    "build:umd": "cross-env BABEL_ENV=es webpack src/index.js dist/brook.js",
-    "build:umd:min": "cross-env BABEL_ENV=es webpack src/index.js dist/brook.min.js",
+    "build:commonjs": "cross-env NODE_ENV=commonjs babel src --ignore __tests__ --out-dir cjs",
+    "build:es": "cross-env NODE_ENV=es babel src --ignore __tests__ --out-dir es",
+    "build:umd": "cross-env NODE_ENV=es webpack src/index.js dist/brook.js",
+    "build:umd:min": "cross-env NODE_ENV=es webpack src/index.js dist/brook.min.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "prepublishOnly": "npm run clean && npm test && npm run build"
   },
