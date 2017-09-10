@@ -1,6 +1,7 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import { createTree } from 'diffhtml';
+import { VARIABLE } from '../parse/expression';
 
 import generate from '../generate';
 
@@ -33,6 +34,20 @@ describe('generate', () => {
         const expected = createTree('div', {}, [
             createTree('#text', 'Some text')
         ]);
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
+    it('should generate a text node from context', () => {
+        const ast = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expression: VARIABLE,
+            name: 'foo',
+            unescaped: false
+        }];
+        const context = { foo: 'bar' };
+        const expected = createTree('#text', 'bar');
 
         expect(generate(ast, context)).to.eql(expected);
     });

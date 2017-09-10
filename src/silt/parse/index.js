@@ -1,7 +1,7 @@
 import { Parser } from 'htmlparser2';
 import parseAttributes from './attributes';
 import { placeholderize } from './placeholder';
-import parseText from './text';
+import { parseText } from './text';
 
 const defaults = {
     root: true,
@@ -24,7 +24,7 @@ const defaults = {
  */
 export default function parse(source, opts = {}, tree = ['#document-fragment', null, []]) {
     const config = Object.assign({}, defaults, opts, { knownHelpers: defaults.knownHelpers.concat(opts.knownHelpers) });
-    const [/* expressions */, /* blocks */, html] = placeholderize(source);
+    const [expressions, /* blocks */, html] = placeholderize(source);
 
     const path = [];
     let active = tree;
@@ -52,9 +52,7 @@ export default function parse(source, opts = {}, tree = ['#document-fragment', n
          * @param {string} text - Text node contexts.
          */
         ontext: text => {
-            if (text) {
-                active[2].push(...parseText(text));
-            }
+            active[2].push(...parseText(text, expressions));
         },
 
         /**
