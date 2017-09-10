@@ -22,7 +22,7 @@ const defaults = {
  * @param {Object|Object[]} tree - Compiled tree.
  * @returns {Object} Template spec.
  */
-export default function parse(source, opts = {}, tree = ['#document-fragment', null, []]) {
+export default function parse(source, opts = {}, tree = ['#document-fragment', [], []]) {
     const config = Object.assign({}, defaults, opts, { knownHelpers: defaults.knownHelpers.concat(opts.knownHelpers) });
     const [expressions, /* blocks */, html] = placeholderize(source);
 
@@ -77,7 +77,7 @@ export default function parse(source, opts = {}, tree = ['#document-fragment', n
     }
 
     if (tree[2].length > 1) {
-        throw new Error('Only one root node allowed.');
+        return tree;
     }
 
     return tree[2].pop() || null;

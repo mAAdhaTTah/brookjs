@@ -6,7 +6,7 @@ import parse from '../parse';
 
 describe('parse', () => {
     it('should throw with multiple root nodes', () => {
-        expect(() => parse('<div></div><div></div>')).to.throw(Error);
+        expect(() => parse()).to.throw(Error);
     });
 
     it('should return null from an empty string', () => {
@@ -16,14 +16,24 @@ describe('parse', () => {
         expect(parse(source)).to.equal(expected);
     });
 
-    it('should parseExpression a plain div', () => {
+    it('should parse a plain div', () => {
         const source = '<div></div>';
         const expected = ['div', [], []];
 
         expect(parse(source)).to.eql(expected);
     });
 
-    it('should parseExpression a div with text', () => {
+    it('should parse 2 divs as #document-fragment', () => {
+        const source = '<div></div><div></div>';
+        const expected = ['#document-fragment', [], [
+            ['div', [], []],
+            ['div', [], []]
+        ]];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
+    it('should parse a div with text', () => {
         const source = `<div>Some text</div>`;
         const expected = ['div', [], [
             ['#text', 'Some text']
@@ -32,7 +42,7 @@ describe('parse', () => {
         expect(parse(source)).to.eql(expected);
     });
 
-    it('should parseExpression an expression', () => {
+    it('should parse an expression', () => {
         const source = '{{foo}}';
         const expected = ['hbs:expression', {
             args: undefined,
