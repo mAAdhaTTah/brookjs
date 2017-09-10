@@ -1,6 +1,7 @@
-export const regex = /(\{\{\{?)([a-zA-Z\s\-_]+)(\}\}\}?)/g;
+export const regex = /(\{\{\{?)([a-zA-Z\s\-_\>]+)(\}\}\}?)/g;
 
 export const VARIABLE = 'VARIABLE';
+export const PARTIAL = 'PARTIAL';
 
 /**
  * Compiles a Handlebars expression into a precompiled template spec.
@@ -9,15 +10,20 @@ export const VARIABLE = 'VARIABLE';
  * @returns {Object} Precompiled template spec.
  */
 export function parseExpression(text) {
-    let context, args;
+    const args = undefined;
+    const context = undefined;
+    const type = 'hbs:expression';
+    let expression = VARIABLE;
 
     const [,open, contents,] = regex.exec(text);
-
-    const name = readName(contents);
-
-    const type = 'hbs:expression';
-    const expression = VARIABLE;
     const unescaped = open === '{{{';
+
+    let name = readName(contents);
+
+    if (name === '>') {
+        expression = PARTIAL;
+        [,name] = />\s+([\w]+)/.exec(contents);
+    }
 
     return [type, { expression, name, unescaped, context, args }];
 }

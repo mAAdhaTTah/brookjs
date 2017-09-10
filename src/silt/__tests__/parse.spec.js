@@ -1,14 +1,10 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
-import { VARIABLE } from '../parse/expression';
+import { PARTIAL, VARIABLE } from '../parse/expression';
 
 import parse from '../parse';
 
 describe('parse', () => {
-    it('should throw with multiple root nodes', () => {
-        expect(() => parse()).to.throw(Error);
-    });
-
     it('should return null from an empty string', () => {
         const source = '';
         const expected = null;
@@ -34,7 +30,7 @@ describe('parse', () => {
     });
 
     it('should parse a div with text', () => {
-        const source = `<div>Some text</div>`;
+        const source = '<div>Some text</div>';
         const expected = ['div', [], [
             ['#text', 'Some text']
         ]];
@@ -43,7 +39,7 @@ describe('parse', () => {
     });
 
     it('should parse a div with an attribute', () => {
-        const source = `<div class="my-class"></div>`;
+        const source = '<div class="my-class"></div>';
         const expected = ['div', [
             ['class', 'my-class']
         ], []];
@@ -65,7 +61,7 @@ describe('parse', () => {
     });
 
     it('should parse an expression as attribute name', () => {
-        const source = `<div {{foo}}="my-class"></div>`;
+        const source = '<div {{foo}}="my-class"></div>';
         const expected = ['div', [
             [['hbs:expression', {
                 args: undefined,
@@ -80,7 +76,7 @@ describe('parse', () => {
     });
 
     it('should parse an expression as attribute value', () => {
-        const source = `<div class="{{foo}}"></div>`;
+        const source = '<div class="{{foo}}"></div>';
         const expected = ['div', [
             ['class', ['hbs:expression', {
                 args: undefined,
@@ -90,6 +86,19 @@ describe('parse', () => {
                 unescaped: false
             }]]
         ], []];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
+    it('should parse a partial expression', () => {
+        const source = '{{> foo}}';
+        const expected = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expression: PARTIAL,
+            name: 'foo',
+            unescaped: false
+        }];
 
         expect(parse(source)).to.eql(expected);
     });
