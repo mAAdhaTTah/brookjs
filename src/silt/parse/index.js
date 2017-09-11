@@ -24,7 +24,7 @@ const defaults = {
  */
 export default function parse(source, opts = {}, tree = ['#document-fragment', [], []]) {
     const config = Object.assign({}, defaults, opts, { knownHelpers: defaults.knownHelpers.concat(opts.knownHelpers) });
-    const [expressions, /* blocks */, html] = placeholderize(source);
+    const [expressions, blocks, html] = placeholderize(source);
 
     const path = [];
     let active = tree;
@@ -53,6 +53,21 @@ export default function parse(source, opts = {}, tree = ['#document-fragment', [
          */
         ontext: text => {
             active[2].push(...parseText(text, expressions));
+        },
+
+        /**
+         * Swaps out a processing instruction for the compiled block expression.
+         *
+         * @param {string} tagname - Processing instruction tagname. Use '?hbs'.
+         * @param {string} attributes - Instruction attributes. Used to fetch block index.
+         */
+        onprocessinginstruction: function onprocessinginstruction(tagname, attributes) {
+            if (tagname === '?hbs') {
+                const index = parseInt(attributes.replace(tagname, '').trim(), 10);
+                const block = blocks[index];
+
+                active[2].push(block);
+            }
         },
 
         /**
