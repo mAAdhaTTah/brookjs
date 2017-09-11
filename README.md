@@ -13,9 +13,12 @@ ___
 * `Map` / `WeakMap`
 * `Set` / `WeakSet`
 * `Object.assign`
-* `MutationObserver`
 * `Array#includes`
 * `String#includes`
+
+With those polyfills, `brookjs` has been tested to work in the following browsers:
+
+[![Build Status](https://saucelabs.com/browser-matrix/mAAdhaTTah.svg)](https://saucelabs.com/beta/builds/696506b874ed47e297f6773e9de66693)
 
 ## Quick Start
 
