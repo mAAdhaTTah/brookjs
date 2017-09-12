@@ -9,7 +9,7 @@ import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 
-describe('enhancer', function() {
+describe('observeDelta', function() {
     let delta, delta$, deltaMiddlware, reducer, initial, store, actions$, state$, sub;
 
     beforeEach(function() {

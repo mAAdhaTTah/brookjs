@@ -47,34 +47,40 @@ describe('events$', function() {
     });
 
     it('should emit events into merged stream', function() {
-        const event = new Event('fake');
+        const event = simulant('click');
         strm$.plug(Kefir.constant(event));
 
         expect(value).to.have.callCount(1);
         expect(value).to.be.calledWith(event);
     });
 
-    SUPPORTED_EVENTS.forEach(event => {
-        let skip = false;
-
-        switch (event) {
-            case 'cut':
-            case 'paste':
-                if (!window.ClipboardEvent) {
-                    skip = true;
-                }
-                break;
-            case 'load':
-            case 'touchstart':
-            case 'touchend':
-            case 'touchcancel':
-                if (window.callPhantom) {
-                    skip = true;
-                }
-                break;
+    // Source: https://stackoverflow.com/questions/2877393/detecting-support-for-a-given-javascript-event
+    const isEventSupported = (function() {
+        const TAGNAMES = {
+            'select': 'input','change': 'input',
+            'submit': 'form','reset': 'form',
+            'error': 'img','load': 'img','abort': 'img'
+        };
+        const IE_SIMULANT_FAILURES = ['paste', 'load', 'cut'];
+        function isEventSupported(eventName) {
+            if (simulant.mode === 'legacy' && IE_SIMULANT_FAILURES.includes(eventName)) {
+                return false;
+            }
+            let el = document.createElement(TAGNAMES[eventName] || 'div');
+            eventName = 'on' + eventName;
+            let isSupported = (eventName in el);
+            if (!isSupported) {
+                el.setAttribute(eventName, 'return;');
+                isSupported = typeof el[eventName] === 'function';
+            }
+            el = null;
+            return isSupported;
         }
+        return isEventSupported;
+    })();
 
-        if (skip) {
+    SUPPORTED_EVENTS.forEach(event => {
+        if (!isEventSupported(event)) {
             it.skip(`should emit ${event} event`);
         } else {
             it(`should emit ${event} event`, function() {
