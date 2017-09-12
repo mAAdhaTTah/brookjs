@@ -1,7 +1,9 @@
 {
   "plugins": [
     "ramda",
-    ["transform-object-rest-spread", { "useBuiltIns": true}]
+    ["transform-object-rest-spread", { "useBuiltIns": true}],
+    "syntax-flow",
+    "transform-flow-strip-types"
   ],
   "env": {
     "test": {
