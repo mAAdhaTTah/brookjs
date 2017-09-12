@@ -1,4 +1,4 @@
-import { parseExpression, regex as expressionRegex } from './expression';
+import { parseExpression, regexWithEscape } from './expression';
 import parse from './index';
 
 export const regex = /(__silt_\d+__)/;
@@ -66,10 +66,31 @@ export function placeholderize (html) {
 
     const expressions = [];
 
-    snipped = snipped.replace(expressionRegex, match => {
-        const placeholder = `__silt_${expressions.length}__`;
+    snipped = snipped.replace(regexWithEscape, match => {
+        let placeholder = `__silt_${expressions.length}__`;
 
-        expressions.push(parseExpression(match));
+        (function escape(match) {
+            if (match.startsWith('\\')) {
+                const escaped = match[1]; // Find what was escaped.
+
+                // If we're escaping an expression,
+                // remove escape char and return as is.
+                if (escaped === '{') {
+                    placeholder = match.substr(1);
+                    return;
+                }
+
+                // If we're escaping an escape character,
+                // keep it with the placeholder and reparse.
+                if (escaped === '\\') {
+                    placeholder = '\\' + placeholder;
+
+                    return escape(match.substr(2));
+                }
+            }
+
+            expressions.push(parseExpression(match));
+        })(match);
 
         return placeholder;
     });
