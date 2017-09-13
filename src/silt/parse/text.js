@@ -1,3 +1,6 @@
+// @flow
+import type { SiltExpressionNode, SiltNode } from '../ast';
+import R from 'ramda';
 import { regex } from './placeholder';
 
 /**
@@ -7,19 +10,32 @@ import { regex } from './placeholder';
  * @param {Expression[]} expressions -
  * @returns {vTreeNode[]} - Array of vTree Node's.
  */
-export const parseText = (text, expressions) =>
-    text.split(regex)
-        .map(val => {
-            if (!val) {
-                return null;
+export const parseText = (text: string, expressions: Array<SiltExpressionNode>): Array<SiltNode> => {
+    const texts = text.split(regex);
+    const nodes = [];
+
+    for (const val of texts) {
+        if (val === '') {
+            continue;
+        }
+
+        if (regex.test(val)) {
+            const match = val.match(/(\d+)/);
+
+            // == intended for flow to pass
+            if (match == null || typeof match[0] === 'undefined') {
+                continue;
             }
 
-            if (regex.test(val)) {
-                const [match] = val.match(/(\d+)/);
+            const item = R.nth(parseInt(match[0], 10), expressions);
 
-                return expressions[match];
+            if (item) {
+                nodes.push(item);
             }
+        } else {
+            nodes.push(['#text', [], val]);
+        }
+    }
 
-            return ['#text', [], val];
-        })
-        .filter(child => child !== null);
+    return nodes;
+};

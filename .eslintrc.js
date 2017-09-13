@@ -19,6 +19,7 @@ module.exports = {
     ],
     extends: 'valtech',
     rules: {
+        eqeqeq: [2, 'smart'],
         'wrap-iife': [2, 'inside'],
         'flowtype/define-flow-type': 1,
         'flowtype/use-flow-type': 1
