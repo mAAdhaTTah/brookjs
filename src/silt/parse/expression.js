@@ -13,31 +13,32 @@ export const EACH = 'each';
  * @returns {Object} Precompiled template spec.
  */
 export function parseExpression(text) {
-    regex.lastIndex = 0;
     const args = undefined;
     let context = undefined;
-    let type = 'hbs:expression';
-    let expression = VARIABLE;
 
+    // Reset last check point before exec.
+    // Otherwise, it returns `null` half the time.
+    // Regex walk strings and remember where they're at.
+    regex.lastIndex = 0;
     const [,open, contents,] = regex.exec(text);
-    const unescaped = open === '{{{';
-
     let name = readName(contents);
 
+    if (name.startsWith('#')) {
+        const block = name.substr(1);
+        context = contents.split(' ').pop();
+
+        return ['hbs:block', { block, context, args }, []];
+    }
+
+    const unescaped = open === '{{{';
+    let expr = VARIABLE;
+
     if (name === '>') {
-        expression = PARTIAL;
+        expr = PARTIAL;
         [,name] = />\s+([\w]+)/.exec(contents);
     }
 
-    if (name.startsWith('#')) {
-        type = 'hbs:block';
-        expression = name.substr(1);
-        context = contents.split(' ').pop();
-
-        return [type, { expression, unescaped, context, args }, []];
-    }
-
-    return [type, { expression, name, unescaped, context, args }, []];
+    return ['hbs:expression', { expr, name, unescaped, context, args }, []];
 }
 
 /**

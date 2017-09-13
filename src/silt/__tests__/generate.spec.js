@@ -52,7 +52,7 @@ describe('generate', () => {
         const ast = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expression: VARIABLE,
+            expr: VARIABLE,
             name: 'foo',
             unescaped: false
         }, []];
@@ -68,14 +68,14 @@ describe('generate', () => {
                 ['hbs:expression', {
                     args: undefined,
                     context: undefined,
-                    expression: VARIABLE,
+                    expr: VARIABLE,
                     name: 'foo',
                     unescaped: false
                 }],
                 ['hbs:expression', {
                     args: undefined,
                     context: undefined,
-                    expression: VARIABLE,
+                    expr: VARIABLE,
                     name: 'bar',
                     unescaped: false
                 }]

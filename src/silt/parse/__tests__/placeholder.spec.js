@@ -9,7 +9,7 @@ describe('placeholder', () => {
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expression: VARIABLE,
+                expr: VARIABLE,
                 name: 'foo',
                 unescaped: false
             }, []]
@@ -21,7 +21,7 @@ describe('placeholder', () => {
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expression: VARIABLE,
+                expr: VARIABLE,
                 name: 'foo',
                 unescaped: false
             }, []]

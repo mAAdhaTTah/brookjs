@@ -1,3 +1,5 @@
+// @flow
+import type { ExpressionMeta } from '../ast';
 import { VARIABLE } from '../parse/expression';
 
 /**
@@ -7,8 +9,8 @@ import { VARIABLE } from '../parse/expression';
  * @param {Object} context - Context object.
  * @returns {vTree} Generated vTree.
  */
-export function handleExpression (meta, context) {
-    switch (meta.expression) {
+export function handleExpression (meta: ExpressionMeta, context: Object) {
+    switch (meta.expr) {
         case VARIABLE:
             return context[meta.name];
         default:

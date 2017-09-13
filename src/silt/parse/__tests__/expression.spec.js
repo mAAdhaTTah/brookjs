@@ -9,7 +9,7 @@ describe('expression', () => {
         const actual = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expression: VARIABLE,
+            expr: VARIABLE,
             name: 'foo',
             unescaped: false
         }, []];

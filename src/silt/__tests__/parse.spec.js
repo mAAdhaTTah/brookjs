@@ -52,7 +52,7 @@ describe('parse', () => {
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expression: VARIABLE,
+            expr: VARIABLE,
             name: 'foo',
             unescaped: false
         }, []];
@@ -74,7 +74,7 @@ describe('parse', () => {
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expression: VARIABLE,
+                expr: VARIABLE,
                 name: 'foo',
                 unescaped: false
             }, []]
@@ -89,7 +89,7 @@ describe('parse', () => {
             [['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expression: VARIABLE,
+                expr: VARIABLE,
                 name: 'foo',
                 unescaped: false
             }, []], 'my-class']
@@ -104,7 +104,7 @@ describe('parse', () => {
             ['class', ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expression: VARIABLE,
+                expr: VARIABLE,
                 name: 'foo',
                 unescaped: false
             }, []]]
@@ -118,7 +118,7 @@ describe('parse', () => {
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expression: PARTIAL,
+            expr: PARTIAL,
             name: 'foo',
             unescaped: false
         }, []];
@@ -132,13 +132,12 @@ describe('parse', () => {
             ['hbs:block', {
                 args: undefined,
                 context: 'names',
-                expression: EACH,
-                unescaped: false
+                block: EACH,
             }, [
                 ['hbs:expression', {
                     args: undefined,
                     context: undefined,
-                    expression: VARIABLE,
+                    expr: VARIABLE,
                     name: 'this',
                     unescaped: false
                 }, []]
