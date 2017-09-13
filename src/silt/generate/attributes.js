@@ -11,11 +11,11 @@ import { handleExpression } from './expression';
 export function generateAttributes (attributes, context) {
     return R.fromPairs(R.map(([key, value]) => {
         if (Array.isArray(key)) {
-            [, key] = handleExpression(key[1], context);
+            key = handleExpression(key[1], context);
         }
 
         if (Array.isArray(value)) {
-            [, value] = handleExpression(value[1], context);
+            value = handleExpression(value[1], context);
         }
 
         return [key, value];

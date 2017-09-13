@@ -24,7 +24,13 @@ export default R.curry(function generate(ast, context) {
 
     switch (tag) {
         case 'hbs:expression':
-            return generate(handleExpression(meta, context), context);
+            const next = handleExpression(meta, context);
+
+            if (typeof next === 'string') {
+                return generate(['#text', next], context);
+            }
+
+            return generate(next, context);
     }
 
     // #text nodes only have 1 or 2 values.

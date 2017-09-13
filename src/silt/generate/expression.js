@@ -10,7 +10,7 @@ import { VARIABLE } from '../parse/expression';
 export function handleExpression (meta, context) {
     switch (meta.expression) {
         case VARIABLE:
-            return ['#text', context[meta.name]];
+            return context[meta.name];
         default:
             return null;
     }
