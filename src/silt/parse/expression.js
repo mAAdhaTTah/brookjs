@@ -34,10 +34,10 @@ export function parseExpression(text) {
         expression = name.substr(1);
         context = contents.split(' ').pop();
 
-        return [type, { expression, unescaped, context, args }];
+        return [type, { expression, unescaped, context, args }, []];
     }
 
-    return [type, { expression, name, unescaped, context, args }];
+    return [type, { expression, name, unescaped, context, args }, []];
 }
 
 /**

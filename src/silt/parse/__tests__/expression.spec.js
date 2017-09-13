@@ -12,7 +12,7 @@ describe('expression', () => {
             expression: VARIABLE,
             name: 'foo',
             unescaped: false
-        }];
+        }, []];
 
         expect(parseExpression(text)).to.eql(actual);
     });

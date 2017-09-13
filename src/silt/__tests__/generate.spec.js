@@ -38,11 +38,11 @@ describe('generate', () => {
 
     it('should generate a div with text', () => {
         const ast = ['div', [], [
-            ['#text', 'Some text']
+            ['#text', [], 'Some text']
         ]];
         const context = {};
         const expected = createTree('div', {}, [
-            createTree('#text', 'Some text')
+            createTree('#text', {}, 'Some text')
         ]);
 
         expect(generate(ast, context)).to.eql(expected);
@@ -55,7 +55,7 @@ describe('generate', () => {
             expression: VARIABLE,
             name: 'foo',
             unescaped: false
-        }];
+        }, []];
         const context = { foo: 'bar' };
         const expected = createTree('#text', 'bar');
 

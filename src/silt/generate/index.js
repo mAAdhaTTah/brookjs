@@ -27,20 +27,15 @@ export default R.curry(function generate(ast, context) {
             const next = handleExpression(meta, context);
 
             if (typeof next === 'string') {
-                return generate(['#text', next], context);
+                return generate(['#text', [], next], context);
             }
 
             return generate(next, context);
     }
 
-    // #text nodes only have 1 or 2 values.
-    if (ast.length === 3) {
-        ast = [
-            ast[0],
-            generateAttributes(ast[1], context),
-            R.map(child => generate(child, context), ast[2])
-        ];
-    }
-
-    return createTree(...ast);
+    return createTree(
+        ast[0],
+        generateAttributes(ast[1], context),
+        Array.isArray(ast[2]) ? R.map(child => generate(child, context), ast[2]) : ast[2]
+    );
 });

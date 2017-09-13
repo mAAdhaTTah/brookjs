@@ -5,7 +5,7 @@ const parseAttribute = (text, expressions) => {
     const results = parseText(text, expressions)[0];
 
     if (results[0] === '#text') {
-        return results[1];
+        return results[2];
     }
 
     return results;

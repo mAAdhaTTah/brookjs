@@ -32,7 +32,7 @@ describe('parse', () => {
     it('should parse a div with text', () => {
         const source = '<div>Some text</div>';
         const expected = ['div', [], [
-            ['#text', 'Some text']
+            ['#text', [], 'Some text']
         ]];
 
         expect(parse(source)).to.eql(expected);
@@ -55,14 +55,14 @@ describe('parse', () => {
             expression: VARIABLE,
             name: 'foo',
             unescaped: false
-        }];
+        }, []];
 
         expect(parse(source)).to.eql(expected);
     });
 
     it('should not parse an escaped expression', () => {
         const source = '\\{{foo}}';
-        const expected = ['#text', '{{foo}}'];
+        const expected = ['#text', [], '{{foo}}'];
 
         expect(parse(source)).to.eql(expected);
     });
@@ -70,14 +70,14 @@ describe('parse', () => {
     it('should parse an escaped escaped expression', () => {
         const source = '\\\\{{foo}}';
         const expected = ['#document-fragment', [], [
-            ['#text', '\\'],
+            ['#text', [], '\\'],
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
                 expression: VARIABLE,
                 name: 'foo',
                 unescaped: false
-            }]
+            }, []]
         ]];
 
         expect(parse(source)).to.eql(expected);
@@ -92,7 +92,7 @@ describe('parse', () => {
                 expression: VARIABLE,
                 name: 'foo',
                 unescaped: false
-            }], 'my-class']
+            }, []], 'my-class']
         ], []];
 
         expect(parse(source)).to.eql(expected);
@@ -107,7 +107,7 @@ describe('parse', () => {
                 expression: VARIABLE,
                 name: 'foo',
                 unescaped: false
-            }]]
+            }, []]]
         ], []];
 
         expect(parse(source)).to.eql(expected);
@@ -121,7 +121,7 @@ describe('parse', () => {
             expression: PARTIAL,
             name: 'foo',
             unescaped: false
-        }];
+        }, []];
 
         expect(parse(source)).to.eql(expected);
     });
@@ -141,7 +141,7 @@ describe('parse', () => {
                     expression: VARIABLE,
                     name: 'this',
                     unescaped: false
-                }]
+                }, []]
             ]]
         ]];
 

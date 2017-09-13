@@ -12,7 +12,7 @@ describe('placeholder', () => {
                 expression: VARIABLE,
                 name: 'foo',
                 unescaped: false
-            }]
+            }, []]
         ], [], '__silt_0__']);
     });
 
@@ -24,7 +24,7 @@ describe('placeholder', () => {
                 expression: VARIABLE,
                 name: 'foo',
                 unescaped: false
-            }]
+            }, []]
         ], [], '\\__silt_0__']);
     });
 });

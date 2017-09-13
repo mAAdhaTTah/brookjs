@@ -20,6 +20,6 @@ export const parseText = (text, expressions) =>
                 return expressions[match];
             }
 
-            return ['#text', val];
+            return ['#text', [], val];
         })
         .filter(child => child !== null);
