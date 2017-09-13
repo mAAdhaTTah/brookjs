@@ -53,6 +53,7 @@
     "diffhtml-render-to-string": "^1.0.0-beta.8",
     "eslint": "^4.0.0",
     "eslint-config-valtech": "^1.0.0",
+    "eslint-plugin-flowtype": "^2.35.1",
     "flow-bin": "^0.54.1",
     "handlebars": "^4.0.6",
     "handlebars-loader": "^1.4.0",

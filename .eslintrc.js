@@ -14,8 +14,13 @@ module.exports = {
         node: true,
         browser: true
     },
+    plugins: [
+        'flowtype'
+    ],
     extends: 'valtech',
     rules: {
-        'wrap-iife': [2, 'inside']
+        'wrap-iife': [2, 'inside'],
+        'flowtype/define-flow-type': 1,
+        'flowtype/use-flow-type': 1
     }
 };
