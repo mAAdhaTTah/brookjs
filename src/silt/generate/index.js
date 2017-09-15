@@ -12,7 +12,7 @@ import { handleExpression } from './expression';
  */
 export default R.curry(function generate(ast, context) {
     // We'll handle null special, since it's valid.
-    if (ast === null) {
+    if (ast == null) {
         return createTree(null);
     }
 

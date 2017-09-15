@@ -62,6 +62,20 @@ describe('generate', () => {
         expect(generate(ast, context)).to.eql(expected);
     });
 
+    it('should generate a text node from dot context', () => {
+        const ast = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: VARIABLE,
+            name: 'foo.bar',
+            unescaped: false
+        }, []];
+        const context = { foo: { bar: 'baz' } };
+        const expected = createTree('#text', 'baz');
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
     it('should generate a div with dynamic attribute name and value', () => {
         const ast = ['div', [
             [

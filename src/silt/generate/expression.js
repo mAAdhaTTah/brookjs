@@ -1,6 +1,7 @@
 // @flow
-import type { ExpressionMeta } from '../ast';
+import type { ExpressionMeta, SiltNode } from '../ast';
 import { VARIABLE } from '../parse/expression';
+import { getContextValue } from '../context';
 
 /**
  * Handles an expression's meta
@@ -9,11 +10,11 @@ import { VARIABLE } from '../parse/expression';
  * @param {Object} context - Context object.
  * @returns {vTree} Generated vTree.
  */
-export function handleExpression (meta: ExpressionMeta, context: Object) {
+export function handleExpression (meta: ExpressionMeta, context: Object = {}) : string | SiltNode {
     switch (meta.expr) {
         case VARIABLE:
-            return context[meta.name];
+            return getContextValue(meta.name, context);
         default:
-            return null;
+            return '';
     }
 }

@@ -60,6 +60,19 @@ describe('parse', () => {
         expect(parse(source)).to.eql(expected);
     });
 
+    it('should parse an expression', () => {
+        const source = '{{foo.bar}}';
+        const expected = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: VARIABLE,
+            name: 'foo.bar',
+            unescaped: false
+        }, []];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
     it('should not parse an escaped expression', () => {
         const source = '\\{{foo}}';
         const expected = ['#text', [], '{{foo}}'];

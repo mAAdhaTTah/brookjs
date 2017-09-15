@@ -1,5 +1,5 @@
-export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\s\-_\>#]+)(\}\}\}?)/g;
-export const regex = /(\{\{\{?)([a-zA-Z\s\-_\>#]+)(\}\}\}?)/g;
+export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\s\-_\>#\.]+)(\}\}\}?)/g;
+export const regex = /(\{\{\{?)([a-zA-Z\s\-_\>#\.]+)(\}\}\}?)/g;
 
 export const VARIABLE = 'VARIABLE';
 export const PARTIAL = 'PARTIAL';
