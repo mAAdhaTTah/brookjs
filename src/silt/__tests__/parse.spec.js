@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
-import { PARTIAL, VARIABLE, EACH } from '../parse/expression';
+import { PARTIAL, VARIABLE, EACH, UNLESS } from '../parse/expression';
 
 import parse from '../parse';
 
@@ -139,7 +139,7 @@ describe('parse', () => {
         expect(parse(source)).to.eql(expected);
     });
 
-    it('should parse a block', () => {
+    it('should parse an each block', () => {
         const source = '<div>{{#each names}}{{this}}{{/each}}</div>';
         const expected = ['div', [], [
             ['hbs:block', {
@@ -154,6 +154,21 @@ describe('parse', () => {
                     name: 'this',
                     unescaped: false
                 }, []]
+            ]]
+        ]];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
+    it('should parse an unless block', () => {
+        const source = '<div>{{#unless bar}}foo!{{/each}}</div>';
+        const expected = ['div', [], [
+            ['hbs:block', {
+                args: undefined,
+                context: 'bar',
+                block: UNLESS,
+            }, [
+                ['#text', [], 'foo!']
             ]]
         ]];
 

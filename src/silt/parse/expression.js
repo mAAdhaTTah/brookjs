@@ -5,6 +5,7 @@ export const VARIABLE = 'VARIABLE';
 export const PARTIAL = 'PARTIAL';
 
 export const EACH = 'each';
+export const UNLESS = 'unless';
 
 /**
  * Compiles a Handlebars expression into a precompiled template spec.
