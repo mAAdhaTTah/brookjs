@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import { createTree } from 'diffhtml';
-import { VARIABLE } from '../parse/expression';
+import { VARIABLE, UNLESS, IF } from '../parse/expression';
 
 import generate from '../generate';
 
@@ -97,6 +97,36 @@ describe('generate', () => {
         ], []];
         const context = { foo: 'class', bar: 'my-class' };
         const expected = createTree('div', { class: 'my-class' }, []);
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
+    it('should generate an if block if the context is true', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: IF,
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: true };
+        const expected = createTree('#document-fragment', {}, [
+            createTree('#text', {}, 'foo!')
+        ]);
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
+    it('should not generate an unless block if the context is false', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: IF,
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: false };
+        const expected = createTree(null);
 
         expect(generate(ast, context)).to.eql(expected);
     });
