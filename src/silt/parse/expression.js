@@ -1,11 +1,12 @@
-export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\s\-_\>#\.]+)(\}\}\}?)/g;
-export const regex = /(\{\{\{?)([a-zA-Z\s\-_\>#\.]+)(\}\}\}?)/g;
+export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
+export const regex = /(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
 
 export const VARIABLE = 'VARIABLE';
 export const PARTIAL = 'PARTIAL';
 
 export const EACH = 'each';
 export const UNLESS = 'unless';
+export const IF = 'if';
 
 /**
  * Compiles a Handlebars expression into a precompiled template spec.

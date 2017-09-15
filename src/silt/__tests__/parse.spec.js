@@ -60,13 +60,26 @@ describe('parse', () => {
         expect(parse(source)).to.eql(expected);
     });
 
-    it('should parse an expression', () => {
+    it('should parse a dotted expression', () => {
         const source = '{{foo.bar}}';
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
             expr: VARIABLE,
             name: 'foo.bar',
+            unescaped: false
+        }, []];
+
+        expect(parse(source)).to.eql(expected);
+    });
+
+    it('should parse an expression with numbers', () => {
+        const source = '{{num1}}';
+        const expected = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: VARIABLE,
+            name: 'num1',
             unescaped: false
         }, []];
 
