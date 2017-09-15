@@ -100,4 +100,34 @@ describe('generate', () => {
 
         expect(generate(ast, context)).to.eql(expected);
     });
+
+    it('should generate an unless block if the context is false', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: UNLESS,
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: false };
+        const expected = createTree('#document-fragment', {}, [
+            createTree('#text', {}, 'foo!')
+        ]);
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
+
+    it('should not generate an unless block if the context is true', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: UNLESS,
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: true };
+        const expected = createTree(null);
+
+        expect(generate(ast, context)).to.eql(expected);
+    });
 });

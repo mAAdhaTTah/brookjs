@@ -1,10 +1,10 @@
 // @flow
-import { EACH, VARIABLE } from '../parse/expression';
+import { EACH, UNLESS, VARIABLE } from '../parse/expression';
 
 export type BlockMeta = {
-    block: EACH;
+    block: EACH | UNLESS;
     args: ?Object;
-    context: ?Object;
+    context: string;
 };
 export type SiltBlockNode = ['hbs:block', BlockMeta, Array<SiltNode>]; // eslint-disable-line no-use-before-define
 
