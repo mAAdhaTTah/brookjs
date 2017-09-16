@@ -1,3 +1,6 @@
+// @flow
+import type { SiltNode } from '../ast/index';
+import type { ContextSource } from '../context/index';
 import R from 'ramda';
 import { createTree } from 'diffhtml';
 import { generateAttributes } from './attributes';
@@ -11,7 +14,7 @@ import { handleBlock } from './block';
  * @param {Object|Array} context - Context to apply to the AST.
  * @returns {vTree} diffhtml vTree.
  */
-export default R.curry(function generate (ast, context) {
+export default R.curry(function generate (ast: SiltNode, context: ContextSource): vTree {
     // We'll handle null special, since it's valid.
     if (ast == null) {
         return createTree(null);
@@ -25,6 +28,7 @@ export default R.curry(function generate (ast, context) {
 
     switch (tag) {
         case 'hbs:expression':
+            // $FlowFixMe
             const next = handleExpression(attributes, context);
 
             if (typeof next === 'string') {
@@ -33,6 +37,7 @@ export default R.curry(function generate (ast, context) {
 
             return generate(next, context);
         case 'hbs:block':
+            // $FlowFixMe
             return handleBlock(attributes, children, context);
     }
 
@@ -40,6 +45,7 @@ export default R.curry(function generate (ast, context) {
         tag,
         generateAttributes(attributes, context),
         Array.isArray(children) ?
+            // $FlowFixMe
             R.map(child => generate(child, context), children) :
             children
     );
