@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 
-import { parseExpression, VARIABLE } from '../expression';
+import { parseExpression } from '../expression';
 
 describe('expression', () => {
     it('should parse basic variable expression', () => {
@@ -9,7 +9,7 @@ describe('expression', () => {
         const actual = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: VARIABLE,
+            expr: 'variable',
             name: 'foo',
             unescaped: false
         }, []];

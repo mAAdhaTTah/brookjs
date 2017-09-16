@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import { createTree } from 'diffhtml';
-import { VARIABLE, UNLESS, IF } from '../parse/expression';
 
 import generate from '../generate';
 
@@ -52,7 +51,7 @@ describe('generate', () => {
         const ast = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: VARIABLE,
+            expr: 'variable',
             name: 'foo',
             unescaped: false
         }, []];
@@ -66,7 +65,7 @@ describe('generate', () => {
         const ast = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: VARIABLE,
+            expr: 'variable',
             name: 'foo.bar',
             unescaped: false
         }, []];
@@ -82,14 +81,14 @@ describe('generate', () => {
                 ['hbs:expression', {
                     args: undefined,
                     context: undefined,
-                    expr: VARIABLE,
+                    expr: 'variable',
                     name: 'foo',
                     unescaped: false
                 }],
                 ['hbs:expression', {
                     args: undefined,
                     context: undefined,
-                    expr: VARIABLE,
+                    expr: 'variable',
                     name: 'bar',
                     unescaped: false
                 }]
@@ -105,7 +104,7 @@ describe('generate', () => {
         const ast = ['hbs:block', {
             args: undefined,
             context: 'bar',
-            block: IF,
+            block: 'if',
         }, [
             ['#text', [], 'foo!']
         ]];
@@ -121,7 +120,7 @@ describe('generate', () => {
         const ast = ['hbs:block', {
             args: undefined,
             context: 'bar',
-            block: IF,
+            block: 'if',
         }, [
             ['#text', [], 'foo!']
         ]];
@@ -135,7 +134,7 @@ describe('generate', () => {
         const ast = ['hbs:block', {
             args: undefined,
             context: 'bar',
-            block: UNLESS,
+            block: 'unless',
         }, [
             ['#text', [], 'foo!']
         ]];
@@ -151,7 +150,7 @@ describe('generate', () => {
         const ast = ['hbs:block', {
             args: undefined,
             context: 'bar',
-            block: UNLESS,
+            block: 'unless',
         }, [
             ['#text', [], 'foo!']
         ]];

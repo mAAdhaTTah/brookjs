@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import { placeholderize } from '../placeholder';
-import { VARIABLE } from '../expression';
 
 describe('placeholder', () => {
     it('should placeholderize regular', () => {
@@ -9,7 +8,7 @@ describe('placeholder', () => {
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expr: VARIABLE,
+                expr: 'variable',
                 name: 'foo',
                 unescaped: false
             }, []]
@@ -21,7 +20,7 @@ describe('placeholder', () => {
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expr: VARIABLE,
+                expr: 'variable',
                 name: 'foo',
                 unescaped: false
             }, []]

@@ -1,6 +1,5 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
-import { PARTIAL, VARIABLE, EACH, UNLESS } from '../parse/expression';
 
 import parse from '../parse';
 
@@ -52,7 +51,7 @@ describe('parse', () => {
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: VARIABLE,
+            expr: 'variable',
             name: 'foo',
             unescaped: false
         }, []];
@@ -65,7 +64,7 @@ describe('parse', () => {
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: VARIABLE,
+            expr: 'variable',
             name: 'foo.bar',
             unescaped: false
         }, []];
@@ -78,7 +77,7 @@ describe('parse', () => {
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: VARIABLE,
+            expr: 'variable',
             name: 'num1',
             unescaped: false
         }, []];
@@ -100,7 +99,7 @@ describe('parse', () => {
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expr: VARIABLE,
+                expr: 'variable',
                 name: 'foo',
                 unescaped: false
             }, []]
@@ -115,7 +114,7 @@ describe('parse', () => {
             [['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expr: VARIABLE,
+                expr: 'variable',
                 name: 'foo',
                 unescaped: false
             }, []], 'my-class']
@@ -130,7 +129,7 @@ describe('parse', () => {
             ['class', ['hbs:expression', {
                 args: undefined,
                 context: undefined,
-                expr: VARIABLE,
+                expr: 'variable',
                 name: 'foo',
                 unescaped: false
             }, []]]
@@ -144,7 +143,7 @@ describe('parse', () => {
         const expected = ['hbs:expression', {
             args: undefined,
             context: undefined,
-            expr: PARTIAL,
+            expr: 'partial',
             name: 'foo',
             unescaped: false
         }, []];
@@ -158,12 +157,12 @@ describe('parse', () => {
             ['hbs:block', {
                 args: undefined,
                 context: 'names',
-                block: EACH,
+                block: 'each',
             }, [
                 ['hbs:expression', {
                     args: undefined,
                     context: undefined,
-                    expr: VARIABLE,
+                    expr: 'variable',
                     name: 'this',
                     unescaped: false
                 }, []]
@@ -179,7 +178,7 @@ describe('parse', () => {
             ['hbs:block', {
                 args: undefined,
                 context: 'bar',
-                block: UNLESS,
+                block: 'unless',
             }, [
                 ['#text', [], 'foo!']
             ]]

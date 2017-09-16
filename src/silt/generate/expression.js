@@ -1,6 +1,5 @@
 // @flow
 import type { ExpressionMeta, SiltNode } from '../ast';
-import { VARIABLE } from '../parse/expression';
 import { getContextValue } from '../context';
 
 /**
@@ -12,7 +11,7 @@ import { getContextValue } from '../context';
  */
 export function handleExpression (meta: ExpressionMeta, context: Object = {}) : string | SiltNode {
     switch (meta.expr) {
-        case VARIABLE:
+        case 'variable':
             return getContextValue(meta.name, context);
         default:
             return '';

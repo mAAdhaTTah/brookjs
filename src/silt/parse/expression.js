@@ -1,12 +1,8 @@
+// @flow
+import type { BlockType, SiltBlockNode, SiltExpressionNode } from '../ast/index';
+
 export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
 export const regex = /(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
-
-export const VARIABLE = 'VARIABLE';
-export const PARTIAL = 'PARTIAL';
-
-export const EACH = 'each';
-export const UNLESS = 'unless';
-export const IF = 'if';
 
 /**
  * Compiles a Handlebars expression into a precompiled template spec.
@@ -14,7 +10,7 @@ export const IF = 'if';
  * @param {string} text - Handlebars expressiong, like '{{variable}}'.
  * @returns {Object} Precompiled template spec.
  */
-export function parseExpression(text) {
+export function parseExpression(text: string): SiltExpressionNode | SiltBlockNode {
     const args = undefined;
     let context = undefined;
 
@@ -26,17 +22,18 @@ export function parseExpression(text) {
     let name = readName(contents);
 
     if (name.startsWith('#')) {
-        const block = name.substr(1);
+        // $FlowFixMe
+        const block: BlockType = name.substr(1);
         context = contents.split(' ').pop();
 
         return ['hbs:block', { block, context, args }, []];
     }
 
     const unescaped = open === '{{{';
-    let expr = VARIABLE;
+    let expr = 'variable';
 
     if (name === '>') {
-        expr = PARTIAL;
+        expr = 'partial';
         [,name] = />\s+([\w]+)/.exec(contents);
     }
 
@@ -50,7 +47,7 @@ export function parseExpression(text) {
  * @param {number} start - Where to start reading from.
  * @returns {string} Value extracted from expression/
  */
-function readName(text, start = 0) {
+function readName(text: string, start: number = 0) {
     const chr = text[start];
 
     if ((chr === '"') || (chr === '\'')) {
@@ -68,7 +65,7 @@ function readName(text, start = 0) {
  * @param {string} endStr - End string to look for.
  * @returns {string} Chunk of string.
  */
-function readUntil(text, start, endStr) {
+function readUntil(text: string, start: number, endStr: string) {
     let closer = start;
 
     do {

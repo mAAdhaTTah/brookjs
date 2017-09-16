@@ -1,19 +1,18 @@
 // @flow
 import type { BlockMeta, SiltNode } from '../ast';
 import type { ContextSource } from '../context';
-import { IF, UNLESS } from '../parse/expression';
 import { getContextValue } from '../context';
 import generate from './index';
 
 export function handleBlock (meta: BlockMeta, children: SiltNode, context: ContextSource) {
     switch (meta.block) {
-        case IF:
+        case 'if':
             if (getContextValue(meta.context, context)) {
                 return generate(['#document-fragment', [], children], context);
             }
 
             return null;
-        case UNLESS:
+        case 'unless':
             if (!getContextValue(meta.context, context)) {
                 return generate(['#document-fragment', [], children], context);
             }

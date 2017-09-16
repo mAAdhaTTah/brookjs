@@ -1,15 +1,15 @@
 // @flow
-import { EACH, UNLESS, VARIABLE } from '../parse/expression';
-
+export type BlockType = 'each' | 'unless';
 export type BlockMeta = {
-    block: EACH | UNLESS;
+    block: BlockType;
     args: ?Object;
     context: string;
 };
 export type SiltBlockNode = ['hbs:block', BlockMeta, Array<SiltNode>]; // eslint-disable-line no-use-before-define
 
+export type ExpressionType = 'variable' | 'partial';
 export type ExpressionMeta = {
-    expr: VARIABLE;
+    expr: ExpressionType;
     name: string;
     unescaped: boolean;
     args: ?Object;
