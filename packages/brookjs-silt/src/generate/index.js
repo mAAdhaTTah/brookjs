@@ -1,8 +1,8 @@
 // @flow
-import type { SiltNode } from '../ast/index';
-import type { ContextSource } from '../context/index';
 import R from 'ramda';
 import { createTree } from 'diffhtml';
+import type { SiltNode } from '../ast';
+import type { ContextSource } from '../context';
 import { generateAttributes } from './attributes';
 import { handleExpression } from './expression';
 import { handleBlock } from './block';

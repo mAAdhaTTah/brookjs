@@ -1,6 +1,6 @@
 // @flow
-import type { SiltExpressionNode, SiltNode } from '../ast';
 import R from 'ramda';
+import type { SiltExpressionNode, SiltNode } from '../ast';
 import { regex } from './placeholder';
 
 /**

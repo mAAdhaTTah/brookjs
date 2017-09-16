@@ -1,5 +1,5 @@
 // @flow
-import type { BlockType, SiltBlockNode, SiltExpressionNode } from '../ast/index';
+import type { BlockType, SiltBlockNode, SiltExpressionNode } from '../ast';
 
 export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
 export const regex = /(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;

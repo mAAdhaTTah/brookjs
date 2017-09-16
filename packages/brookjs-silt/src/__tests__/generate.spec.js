@@ -1,7 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai';
 import { createTree } from 'diffhtml';
-
 import generate from '../generate';
 
 describe('generate', () => {

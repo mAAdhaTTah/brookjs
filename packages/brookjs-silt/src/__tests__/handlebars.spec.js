@@ -1,8 +1,7 @@
 /* eslint-env mocha */
-
 import { expect } from 'chai';
 import renderToString from 'diffhtml-render-to-string';
-import basic from 'handlebars-spec/spec/basic.json';
+import basic from 'handlebars-spec/spec/basic.json'; // eslint-disable-line import/no-internal-modules
 import { parse, generate } from '../index';
 
 const runSpec = spec => {

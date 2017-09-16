@@ -1,10 +1,12 @@
 import assert from 'assert';
 import R from 'ramda';
 import Kefir from '../kefir';
-import child from './child';
 import { containerAttribute } from '../helpers';
+import child from './child';
 import { getContainerNode, containerMatches, isAddedChildNode, isRemovedChildNode } from './util';
 import mutations$ from './mutations';
+
+export { getContainerNode };
 
 /**
  * Generates a function to create new children streams.

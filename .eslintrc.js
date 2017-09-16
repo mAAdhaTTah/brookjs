@@ -1,32 +1,44 @@
+const path = require('path');
+
 module.exports = {
     root: true,
+    parser: 'babel-eslint',
     parserOptions: {
         ecmaVersion: 6,
-        sourceType: 'module'
+        sourceType: 'module',
+        ecmaFeatures: {
+            experimentalObjectRestSpread: true,
+            impliedStrict: true
+        }
     },
     env: {
         es6: true,
-        node: true
+        node: true,
+        browser: true
     },
     plugins: [
-        'import'
+        'import',
+        'flowtype'
     ],
     extends: 'valtech',
     rules: {
-        // analysis/correctness
+        eqeqeq: [2, 'smart'],
+        'wrap-iife': [2, 'inside'],
+        'flowtype/define-flow-type': 1,
+        'flowtype/use-flow-type': 1,
+
         'import/no-unresolved': 2,
         'import/named': 2,
         'import/namespace': 2,
         'import/default': 2,
         'import/export': 2,
         'import/no-absolute-path': 2,
-        'import/no-internal-modules': 2,
+        'import/no-internal-modules': 1,
         'import/no-extraneous-dependencies': 2,
         'import/first': 2,
         'import/newline-after-import': 2,
-        'import/prefer-default-export': 2,
 
-        // red flags (thus, warnings)
+        'import/prefer-default-export': 1,
         'import/no-named-as-default': 1,
         'import/no-named-as-default-member': 1,
         'import/no-duplicates': 1,
@@ -35,5 +47,15 @@ module.exports = {
             groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
             'newlines-between': 'never'
         }],
+    },
+    settings: {
+        'import/resolver': {
+            node: {
+                moduleDirectory: [
+                    'node_modules',
+                    path.join(__dirname, 'packages')
+                ]
+            }
+        }
     }
 };

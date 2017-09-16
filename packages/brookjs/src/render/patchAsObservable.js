@@ -1,6 +1,6 @@
-import Kefir from '../kefir';
 import { Internals } from 'diffhtml';
-import { getContainerNode } from '../children/util';
+import Kefir from '../kefir';
+import { getContainerNode } from '../children';
 import { wrapEffect } from './animations';
 
 const { createNode, NodeCache, memory, decodeEntities, escape } = Internals;
