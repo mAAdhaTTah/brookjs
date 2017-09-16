@@ -13,15 +13,6 @@ const common = {
                     path.join(__dirname, 'node_modules', 'diffhtml'),
                     path.join(__dirname, 'node_modules', 'diffhtml-shared-modules'),
                 ]
-            },
-            {
-                test: /\.hbs$/,
-                loader: 'handlebars-loader',
-                options: {
-                    compat: true,
-                    knownHelpersOnly: false,
-                    runtimePath: 'handlebars/runtime'
-                }
             }
         ]
     },
