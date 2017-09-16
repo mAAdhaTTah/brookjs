@@ -38,7 +38,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['spec', 'coverage'],
+        reporters: ['mocha', 'coverage'],
 
         // specify the coverage information
         coverageReporter: {
@@ -77,6 +77,10 @@ module.exports = function (config) {
         // Ensure Karma doesn't use an iFrame.
         client: {
             useIframe: false
+        },
+
+        mochaReporter: {
+            showDiff: true
         }
     });
 };
