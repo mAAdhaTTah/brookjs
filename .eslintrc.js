@@ -1,5 +1,6 @@
 module.exports = {
     root: true,
+    parser: 'babel-eslint',
     parserOptions: {
         ecmaVersion: 6,
         sourceType: 'module',
@@ -13,8 +14,14 @@ module.exports = {
         node: true,
         browser: true
     },
+    plugins: [
+        'flowtype'
+    ],
     extends: 'valtech',
     rules: {
-        'wrap-iife': [2, 'inside']
+        eqeqeq: [2, 'smart'],
+        'wrap-iife': [2, 'inside'],
+        'flowtype/define-flow-type': 1,
+        'flowtype/use-flow-type': 1
     }
 };
