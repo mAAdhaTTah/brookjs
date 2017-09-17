@@ -1,22 +1,14 @@
 {
   "plugins": [
     "ramda",
-    ["transform-object-rest-spread", { "useBuiltIns": true}],
+    ["transform-object-rest-spread", { "useBuiltIns": true }],
     "syntax-flow",
     "transform-flow-strip-types"
   ],
   "env": {
     "test": {
-      "plugins": [
-        "istanbul"
-      ],
       "presets": [
-        ["es2015", { "loose": false, "modules": false }]
-      ]
-    },
-    "test:ci": {
-      "presets": [
-        ["es2015", { "loose": false, "modules": false }]
+        ["es2015", { "loose": false, "modules": "commonjs" }]
       ]
     },
     "commonjs": {
