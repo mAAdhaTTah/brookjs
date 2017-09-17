@@ -1,10 +1,9 @@
-/* eslint-env mocha */
-import { expect } from 'chai';
+/* eslint-env jest */
 import { placeholderize } from '../placeholder';
 
 describe('placeholder', () => {
     it('should placeholderize regular', () => {
-        expect(placeholderize('{{foo}}')).to.eql([[
+        expect(placeholderize('{{foo}}')).toEqual([[
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
@@ -16,7 +15,7 @@ describe('placeholder', () => {
     });
 
     it('should placeholderize escaped escape character', () => {
-        expect(placeholderize('\\\\{{foo}}')).to.eql([[
+        expect(placeholderize('\\\\{{foo}}')).toEqual([[
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,

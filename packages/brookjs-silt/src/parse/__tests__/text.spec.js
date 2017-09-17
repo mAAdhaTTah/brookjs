@@ -1,6 +1,4 @@
-/* eslint-env mocha */
-import { expect } from 'chai';
-
+/* eslint-env jest */
 import { parseText } from '../text';
 
 describe('text', () => {
@@ -13,6 +11,6 @@ describe('text', () => {
             ['hbs:expression']
         ];
 
-        expect(parseText(text, expressions)).to.eql(actual);
+        expect(parseText(text, expressions)).toEqual(actual);
     });
 });

@@ -1,6 +1,4 @@
-/* eslint-env mocha */
-import { expect } from 'chai';
-
+/* eslint-env jest */
 import { parseExpression } from '../expression';
 
 describe('expression', () => {
@@ -14,6 +12,6 @@ describe('expression', () => {
             unescaped: false
         }, []];
 
-        expect(parseExpression(text)).to.eql(actual);
+        expect(parseExpression(text)).toEqual(actual);
     });
 });

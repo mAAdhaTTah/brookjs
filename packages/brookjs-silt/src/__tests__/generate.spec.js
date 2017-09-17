@@ -1,11 +1,10 @@
-/* eslint-env mocha */
-import { expect } from 'chai';
+/* eslint-env jest */
 import { createTree } from 'diffhtml';
 import generate from '../generate';
 
 describe('generate', () => {
     it('should create a template function', () => {
-        expect(generate([])).to.be.a('function');
+        expect(typeof generate([])).toBe('function');
     });
 
     it('should generate a null value', () => {
@@ -13,7 +12,7 @@ describe('generate', () => {
         const context = {};
         const expected = createTree(null);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate a plain div', () => {
@@ -21,7 +20,7 @@ describe('generate', () => {
         const context = {};
         const expected = createTree('div', {}, []);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate a plain div with an attribute', () => {
@@ -31,7 +30,7 @@ describe('generate', () => {
         const context = {};
         const expected = createTree('div', { class: 'my-class' }, []);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate a div with text', () => {
@@ -43,7 +42,7 @@ describe('generate', () => {
             createTree('#text', {}, 'Some text')
         ]);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate a text node from context', () => {
@@ -57,7 +56,7 @@ describe('generate', () => {
         const context = { foo: 'bar' };
         const expected = createTree('#text', 'bar');
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate a text node from dot context', () => {
@@ -71,7 +70,7 @@ describe('generate', () => {
         const context = { foo: { bar: 'baz' } };
         const expected = createTree('#text', 'baz');
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate a div with dynamic attribute name and value', () => {
@@ -96,7 +95,7 @@ describe('generate', () => {
         const context = { foo: 'class', bar: 'my-class' };
         const expected = createTree('div', { class: 'my-class' }, []);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate an if block if the context is true', () => {
@@ -112,7 +111,7 @@ describe('generate', () => {
             createTree('#text', {}, 'foo!')
         ]);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should not generate an unless block if the context is false', () => {
@@ -126,7 +125,7 @@ describe('generate', () => {
         const context = { bar: false };
         const expected = createTree(null);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should generate an unless block if the context is false', () => {
@@ -142,7 +141,7 @@ describe('generate', () => {
             createTree('#text', {}, 'foo!')
         ]);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 
     it('should not generate an unless block if the context is true', () => {
@@ -156,6 +155,6 @@ describe('generate', () => {
         const context = { bar: true };
         const expected = createTree(null);
 
-        expect(generate(ast, context)).to.eql(expected);
+        expect(generate(ast, context)).toEqual(expected);
     });
 });
