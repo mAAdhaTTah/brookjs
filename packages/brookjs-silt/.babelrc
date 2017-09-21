@@ -11,6 +11,11 @@
         ["es2015", { "loose": false, "modules": "commonjs" }]
       ]
     },
+    "test:int": {
+      "presets": [
+        ["es2015", { "loose": false, "modules": "commonjs" }]
+      ]
+    },
     "commonjs": {
       "presets": [
         ["es2015", { "loose": false, "modules": "commonjs" }]
