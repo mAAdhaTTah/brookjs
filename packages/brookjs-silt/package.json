@@ -7,7 +7,7 @@
     "test": "npm run test:lint && npm run test:type && npm run test:unit",
     "test:lint": "eslint src --cache true --fix",
     "test:unit": "jest --config jest.config.json --coverage",
-    "test:int": "cross-env NODE_ENV=test:int tape -r babel-register int/test.js",
+    "test:int": "cross-env NODE_ENV=test:int tape -r babel-register int/run.js",
     "test:type": "flow check",
     "dev": "cross-env NODE_ENV=test karma start karma.conf.js",
     "clean": "rimraf cjs dist es coverage",
