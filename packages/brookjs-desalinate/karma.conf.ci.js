@@ -39,7 +39,7 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'chai'],
+        frameworks: ['tap'],
 
         // list of files / patterns to load in the browser
         files: [
@@ -52,7 +52,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            [tests]: ['webpack', 'sourcemap']
+            [tests]: ['webpack']
         },
 
         webpack: webpackConfig,
@@ -64,7 +64,11 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['mocha', 'saucelabs'],
+        reporters: ['tap-pretty', 'saucelabs'],
+
+        tapReporter: {
+            prettify: require('tap-spec')
+        },
 
         // web server port
         port: 9876,

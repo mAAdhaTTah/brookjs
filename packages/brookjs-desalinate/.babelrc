@@ -14,7 +14,7 @@
         ["es2015", { "loose": false, "modules": "commonjs" }]
       ]
     },
-    "test:ci": {
+    "test:browser": {
       "presets": [
         ["es2015", { "loose": false, "modules": false }]
       ]
