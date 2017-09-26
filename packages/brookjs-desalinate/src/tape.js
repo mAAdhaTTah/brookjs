@@ -1,7 +1,7 @@
 import $$observable from 'symbol-observable';
-import test from 'tape';
+import tape from 'tape';
 
-test.Test.prototype.run = function() {
+tape.Test.prototype.run = function() {
     if (this._skip) {
         this.comment('SKIP ' + this.name);
     }
@@ -28,4 +28,4 @@ test.Test.prototype.run = function() {
     this.emit('run');
 };
 
-export default test;
+export default tape;
