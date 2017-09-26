@@ -24,7 +24,7 @@
     "build:umd": "cross-env NODE_ENV=es webpack src/index.js dist/brook.js",
     "build:umd:min": "cross-env NODE_ENV=es webpack src/index.js dist/brook.min.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "prepublishOnly": "npm run clean && npm test && npm run build"
+    "prepublishOnly": "npm install && npm run clean && npm test && npm run build"
   },
   "authors": [
     "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
