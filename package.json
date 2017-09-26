@@ -64,7 +64,7 @@
     "mocha": "^3.2.0",
     "rimraf": "^2.5.4",
     "simulant": "^0.2.2",
-    "sinon": "^3.0.0",
+    "sinon": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "webpack": "^3.0.0",
     "webpack-merge": "^4.1.0"
