@@ -1,4 +1,4 @@
-import test from 'ava';
+import { test } from 'brookjs-desalinate';
 import { Kefir } from 'brookjs';
 import { run, readEnv, readRcFile, readRcFileError } from '../../actions';
 import envDelta from '../envDelta';

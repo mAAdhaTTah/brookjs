@@ -9,13 +9,14 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint ./ --cache true --fix",
-    "test:unit": "ava"
+    "test:unit": "tape -r @std/esm **/__tests__/*.spec.js | tap-spec"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
     "@std/esm": "^0.9.2",
     "brookjs": "^0.8.6",
+    "brookjs-desalinate": "^0.0.0",
     "caporal": "^0.7.0",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
@@ -26,7 +27,6 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
-    "ava": "^0.22.0",
     "babel-eslint": "^8.0.0",
     "eslint": "^4.7.0",
     "eslint-config-valtech": "^1.1.0",
@@ -37,8 +37,5 @@
   "@std/esm": {
     "esm": "js",
     "cjs": true
-  },
-  "ava": {
-    "require": "@std/esm"
   }
 }

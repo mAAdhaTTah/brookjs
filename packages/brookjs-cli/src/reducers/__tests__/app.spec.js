@@ -1,8 +1,10 @@
-import test from 'ava';
+import { test } from 'brookjs-desalinate';
 import { initConfigResponse } from '../../actions';
 import app from '../app';
 
 test('will return same state on random action', t => {
+    t.plan(1);
+
     const state = {
         name: '',
         dir: 'src',
@@ -17,6 +19,8 @@ test('will return same state on random action', t => {
 });
 
 test('will update state from config response', t => {
+    t.plan(1);
+
     const state = {
         name: '',
         dir: 'src',
