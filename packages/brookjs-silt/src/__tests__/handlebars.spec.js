@@ -1,21 +1,21 @@
-/* eslint-env jest */
+import { test } from 'brookjs-desalinate';
 import renderToString from 'diffhtml-render-to-string';
 import basic from 'handlebars-spec/spec/basic.json'; // eslint-disable-line import/no-internal-modules
 import { parse, generate } from '../index';
 
 const runSpec = spec => {
-    describe(spec[0].description, () => {
+    test.skip(spec[0].description, t => {
         for (const test of spec) {
-            it(test.it, () => {
+            t.test(test.it, t => {
+                t.plan(1);
+
                 const vdom = generate(parse(test.template), test.data);
                 const actual = renderToString(vdom);
 
-                expect(actual).toBe(test.expected);
+                t.deepEquals(actual, test.expected);
             });
         }
     });
 };
 
-describe.skip('spec', () => {
-    runSpec(basic);
-});
+runSpec(basic);

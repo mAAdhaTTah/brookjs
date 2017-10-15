@@ -1,187 +1,215 @@
-/* eslint-env jest */
+import { test } from 'brookjs-desalinate';
 import parse from '../parse';
 
-describe('parse', () => {
-    it('should return null from an empty string', () => {
-        const source = '';
-        const expected = null;
+test('should return null from an empty string', t => {
+    t.plan(1);
 
-        expect(parse(source)).toBe(expected);
-    });
+    const source = '';
+    const expected = null;
 
-    it('should parse a plain div', () => {
-        const source = '<div></div>';
-        const expected = ['div', [], []];
+    t.equal(parse(source), expected);
+});
 
-        expect(parse(source)).toEqual(expected);
-    });
+test('should parse a plain div', t => {
+    t.plan(1);
 
-    it('should parse 2 divs as #document-fragment', () => {
-        const source = '<div></div><div></div>';
-        const expected = ['#document-fragment', [], [
-            ['div', [], []],
-            ['div', [], []]
-        ]];
+    const source = '<div></div>';
+    const expected = ['div', [], []];
 
-        expect(parse(source)).toEqual(expected);
-    });
+    t.deepEquals(parse(source), expected);
+});
 
-    it('should parse a div with text', () => {
-        const source = '<div>Some text</div>';
-        const expected = ['div', [], [
-            ['#text', [], 'Some text']
-        ]];
+test('should parse 2 divs as #document-fragment', t => {
+    t.plan(1);
 
-        expect(parse(source)).toEqual(expected);
-    });
+    const source = '<div></div><div></div>';
+    const expected = ['#document-fragment', [], [
+        ['div', [], []],
+        ['div', [], []]
+    ]];
 
-    it('should parse a div with an attribute', () => {
-        const source = '<div class="my-class"></div>';
-        const expected = ['div', [
-            ['class', 'my-class']
-        ], []];
+    t.deepEquals(parse(source), expected);
+});
 
-        expect(parse(source)).toEqual(expected);
-    });
+test('should parse a div wtesth text', t => {
+    t.plan(1);
 
-    it('should parse an expression', () => {
-        const source = '{{foo}}';
-        const expected = ['hbs:expression', {
+    const source = '<div>Some text</div>';
+    const expected = ['div', [], [
+        ['#text', [], 'Some text']
+    ]];
+
+    t.deepEquals(parse(source), expected);
+});
+
+test('should parse a div wtesth an attribute', t => {
+    t.plan(1);
+
+    const source = '<div class="my-class"></div>';
+    const expected = ['div', [
+        ['class', 'my-class']
+    ], []];
+
+    t.deepEquals(parse(source), expected);
+});
+
+test('should parse an expression', t => {
+    t.plan(1);
+
+    const source = '{{foo}}';
+    const expected = ['hbs:expression', {
+        args: undefined,
+        context: undefined,
+        expr: 'variable',
+        name: 'foo',
+        unescaped: false
+    }, []];
+
+    t.deepEquals(parse(source), expected);
+});
+
+test('should parse a dotted expression', t => {
+    t.plan(1);
+
+    const source = '{{foo.bar}}';
+    const expected = ['hbs:expression', {
+        args: undefined,
+        context: undefined,
+        expr: 'variable',
+        name: 'foo.bar',
+        unescaped: false
+    }, []];
+
+    t.deepEquals(parse(source), expected);
+});
+
+test('should parse an expression wtesth numbers', t => {
+    t.plan(1);
+
+    const source = '{{num1}}';
+    const expected = ['hbs:expression', {
+        args: undefined,
+        context: undefined,
+        expr: 'variable',
+        name: 'num1',
+        unescaped: false
+    }, []];
+
+    t.deepEquals(parse(source), expected);
+});
+
+test('should not parse an escaped expression', t => {
+    t.plan(1);
+
+    const source = '\\{{foo}}';
+    const expected = ['#text', [], '{{foo}}'];
+
+    t.deepEquals(parse(source), expected);
+});
+
+test('should parse an escaped escaped expression', t => {
+    t.plan(1);
+
+    const source = '\\\\{{foo}}';
+    const expected = ['#document-fragment', [], [
+        ['#text', [], '\\'],
+        ['hbs:expression', {
             args: undefined,
             context: undefined,
             expr: 'variable',
             name: 'foo',
             unescaped: false
-        }, []];
+        }, []]
+    ]];
 
-        expect(parse(source)).toEqual(expected);
-    });
+    t.deepEquals(parse(source), expected);
+});
 
-    it('should parse a dotted expression', () => {
-        const source = '{{foo.bar}}';
-        const expected = ['hbs:expression', {
+test('should parse an expression as attribute name', t => {
+    t.plan(1);
+
+    const source = '<div {{foo}}="my-class"></div>';
+    const expected = ['div', [
+        [['hbs:expression', {
             args: undefined,
             context: undefined,
             expr: 'variable',
-            name: 'foo.bar',
+            name: 'foo',
             unescaped: false
-        }, []];
+        }, []], 'my-class']
+    ], []];
 
-        expect(parse(source)).toEqual(expected);
-    });
+    t.deepEquals(parse(source), expected);
+});
 
-    it('should parse an expression with numbers', () => {
-        const source = '{{num1}}';
-        const expected = ['hbs:expression', {
+test('should parse an expression as attribute value', t => {
+    t.plan(1);
+
+    const source = '<div class="{{foo}}"></div>';
+    const expected = ['div', [
+        ['class', ['hbs:expression', {
             args: undefined,
             context: undefined,
             expr: 'variable',
-            name: 'num1',
+            name: 'foo',
             unescaped: false
-        }, []];
+        }, []]]
+    ], []];
 
-        expect(parse(source)).toEqual(expected);
-    });
+    t.deepEquals(parse(source), expected);
+});
 
-    it('should not parse an escaped expression', () => {
-        const source = '\\{{foo}}';
-        const expected = ['#text', [], '{{foo}}'];
+test('should parse a partial expression', t => {
+    t.plan(1);
 
-        expect(parse(source)).toEqual(expected);
-    });
+    const source = '{{> foo}}';
+    const expected = ['hbs:expression', {
+        args: undefined,
+        context: undefined,
+        expr: 'partial',
+        name: 'foo',
+        unescaped: false
+    }, []];
 
-    it('should parse an escaped escaped expression', () => {
-        const source = '\\\\{{foo}}';
-        const expected = ['#document-fragment', [], [
-            ['#text', [], '\\'],
+    t.deepEquals(parse(source), expected);
+});
+
+test('should parse an each block', t => {
+    t.plan(1);
+
+    const source = '<div>{{#each names}}{{this}}{{/each}}</div>';
+    const expected = ['div', [], [
+        ['hbs:block', {
+            args: undefined,
+            context: 'names',
+            block: 'each',
+        }, [
             ['hbs:expression', {
                 args: undefined,
                 context: undefined,
                 expr: 'variable',
-                name: 'foo',
+                name: 'this',
                 unescaped: false
             }, []]
-        ]];
+        ]]
+    ]];
 
-        expect(parse(source)).toEqual(expected);
-    });
+    t.deepEquals(parse(source), expected);
+});
 
-    it('should parse an expression as attribute name', () => {
-        const source = '<div {{foo}}="my-class"></div>';
-        const expected = ['div', [
-            [['hbs:expression', {
-                args: undefined,
-                context: undefined,
-                expr: 'variable',
-                name: 'foo',
-                unescaped: false
-            }, []], 'my-class']
-        ], []];
+test('should parse an unless block', t => {
+    t.plan(1);
 
-        expect(parse(source)).toEqual(expected);
-    });
-
-    it('should parse an expression as attribute value', () => {
-        const source = '<div class="{{foo}}"></div>';
-        const expected = ['div', [
-            ['class', ['hbs:expression', {
-                args: undefined,
-                context: undefined,
-                expr: 'variable',
-                name: 'foo',
-                unescaped: false
-            }, []]]
-        ], []];
-
-        expect(parse(source)).toEqual(expected);
-    });
-
-    it('should parse a partial expression', () => {
-        const source = '{{> foo}}';
-        const expected = ['hbs:expression', {
+    const source = '<div>{{#unless bar}}foo!{{/each}}</div>';
+    const expected = ['div', [], [
+        ['hbs:block', {
             args: undefined,
-            context: undefined,
-            expr: 'partial',
-            name: 'foo',
-            unescaped: false
-        }, []];
+            context: 'bar',
+            block: 'unless',
+        }, [
+            ['#text', [], 'foo!']
+        ]]
+    ]];
 
-        expect(parse(source)).toEqual(expected);
-    });
-
-    it('should parse an each block', () => {
-        const source = '<div>{{#each names}}{{this}}{{/each}}</div>';
-        const expected = ['div', [], [
-            ['hbs:block', {
-                args: undefined,
-                context: 'names',
-                block: 'each',
-            }, [
-                ['hbs:expression', {
-                    args: undefined,
-                    context: undefined,
-                    expr: 'variable',
-                    name: 'this',
-                    unescaped: false
-                }, []]
-            ]]
-        ]];
-
-        expect(parse(source)).toEqual(expected);
-    });
-
-    it('should parse an unless block', () => {
-        const source = '<div>{{#unless bar}}foo!{{/each}}</div>';
-        const expected = ['div', [], [
-            ['hbs:block', {
-                args: undefined,
-                context: 'bar',
-                block: 'unless',
-            }, [
-                ['#text', [], 'foo!']
-            ]]
-        ]];
-
-        expect(parse(source)).toEqual(expected);
-    });
+    t.deepEquals(parse(source), expected);
 });

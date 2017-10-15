@@ -1,28 +1,30 @@
-/* eslint-env jest */
+import { test } from 'brookjs-desalinate';
 import { placeholderize } from '../placeholder';
 
-describe('placeholder', () => {
-    it('should placeholderize regular', () => {
-        expect(placeholderize('{{foo}}')).toEqual([[
-            ['hbs:expression', {
-                args: undefined,
-                context: undefined,
-                expr: 'variable',
-                name: 'foo',
-                unescaped: false
-            }, []]
-        ], [], '__silt_0__']);
-    });
+test('should placeholderize regular', t => {
+    t.plan(1);
 
-    it('should placeholderize escaped escape character', () => {
-        expect(placeholderize('\\\\{{foo}}')).toEqual([[
-            ['hbs:expression', {
-                args: undefined,
-                context: undefined,
-                expr: 'variable',
-                name: 'foo',
-                unescaped: false
-            }, []]
-        ], [], '\\__silt_0__']);
-    });
+    t.deepEquals(placeholderize('{{foo}}'), [[
+        ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: 'variable',
+            name: 'foo',
+            unescaped: false
+        }, []]
+    ], [], '__silt_0__']);
+});
+
+test('should placeholderize escaped escape character',t => {
+    t.plan(1);
+
+    t.deepEquals(placeholderize('\\\\{{foo}}'), [[
+        ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: 'variable',
+            name: 'foo',
+            unescaped: false
+        }, []]
+    ], [], '\\__silt_0__']);
 });

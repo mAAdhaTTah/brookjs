@@ -1,16 +1,16 @@
-/* eslint-env jest */
+import { test } from 'brookjs-desalinate';
 import { parseText } from '../text';
 
-describe('text', () => {
-    it('should replace placeholder with expression', () => {
-        const text = '__silt_0__';
-        const expressions = [
-            ['hbs:expression']
-        ];
-        const actual = [
-            ['hbs:expression']
-        ];
+test('should replace placeholder with expression', t => {
+    t.plan(1);
 
-        expect(parseText(text, expressions)).toEqual(actual);
-    });
+    const text = '__silt_0__';
+    const expressions = [
+        ['hbs:expression']
+    ];
+    const actual = [
+        ['hbs:expression']
+    ];
+
+    t.deepEquals(parseText(text, expressions), actual);
 });

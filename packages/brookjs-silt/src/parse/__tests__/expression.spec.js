@@ -1,17 +1,17 @@
-/* eslint-env jest */
+import { test } from 'brookjs-desalinate';
 import { parseExpression } from '../expression';
 
-describe('expression', () => {
-    it('should parse basic variable expression', () => {
-        const text = '{{foo}}';
-        const actual = ['hbs:expression', {
-            args: undefined,
-            context: undefined,
-            expr: 'variable',
-            name: 'foo',
-            unescaped: false
-        }, []];
+test('should parse basic variable expression', t => {
+    t.plan(1);
 
-        expect(parseExpression(text)).toEqual(actual);
-    });
+    const text = '{{foo}}';
+    const actual = ['hbs:expression', {
+        args: undefined,
+        context: undefined,
+        expr: 'variable',
+        name: 'foo',
+        unescaped: false
+    }, []];
+
+    t.deepEquals(parseExpression(text), actual);
 });
