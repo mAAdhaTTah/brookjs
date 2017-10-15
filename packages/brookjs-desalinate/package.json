@@ -4,7 +4,7 @@
   "description": "Testing tools for brookjs components.",
   "main": "cjs/index.js",
   "scripts": {
-    "test": "npm run test:lint && npm run test:type && npm run test:node && npm run test:browser && if test \"$SAUCE_USERNAME\" != ''; then npm run test:ci; fi",
+    "test": "npm run test:lint && npm run test:type && npm run test:browser && if test \"$SAUCE_USERNAME\" != ''; then npm run test:ci; fi",
     "test:lint": "eslint src --cache true --fix",
     "test:type": "flow check",
     "test:node": "cross-env NODE_ENV=test:node nyc tape -r babel-register **/__tests__/*.spec.js | tap-spec",
@@ -24,6 +24,7 @@
   "dependencies": {
     "brookjs": "^0.8.6",
     "diffhtml": "^1.0.0-beta.8",
+    "kefir": "^3.7.4",
     "ramda": "^0.24.1",
     "symbol-observable": "^1.0.4",
     "tape": "^4.8.0"
