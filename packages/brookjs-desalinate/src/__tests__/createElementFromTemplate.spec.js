@@ -1,3 +1,7 @@
+import 'core-js/fn/object/assign';
+import 'core-js/fn/object/values';
+import 'core-js/fn/set';
+import 'core-js/fn/symbol';
 import test from '../tape';
 import createElementFromTemplate from '../createElementFromTemplate';
 
