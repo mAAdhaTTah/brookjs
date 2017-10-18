@@ -1,5 +1,5 @@
-import R from 'ramda';
 import assert from 'assert';
+import R from 'ramda';
 import Kefir from '../kefir';
 import { $$internals } from '../constants';
 
@@ -19,7 +19,7 @@ export default function component({
     combinator = R.pipe(R.values, Kefir.merge),
     events = R.always(Kefir.never()),
     onMount = R.always(Kefir.never()),
-    render = false
+    render = null
 }) {
     if (process.env.NODE_ENV !== 'production') {
         // Validate combinator
@@ -32,7 +32,7 @@ export default function component({
         assert.equal(typeof onMount, 'function', 'onMount should be a function');
 
         // Validate render function.
-        if (render !== false) {
+        if (render !== null) {
             assert.equal(typeof render, 'function', '`render` should be a function');
             assert.equal(typeof render({}), 'function', '`render` should be curried');
             assert.equal(render.length, 2, '`render` should take 2 arguments');
@@ -63,7 +63,12 @@ export default function component({
                 assert.ok(onMount$ instanceof Kefir.Observable, '`onMount$` is not a `Kefir.Observable`');
             }
 
-            const source$ = combinator({ onMount$, events$, children$ });
+            const source$ = combinator(
+                Object.assign(
+                    Object.create(Kefir.merge([onMount$, events$, children$])),
+                    { onMount$, events$, children$ }
+                )
+            );
 
             if (process.env.NODE_ENV !== 'production') {
                 assert.ok(source$ instanceof Kefir.Observable, '`source$` is not a `Kefir.Observable`');
@@ -81,7 +86,7 @@ export default function component({
          * @returns {Observable<Action>} Stream of actions from the DOM.
          */
         createSinkStream(el, props$) {
-            if (render === false) {
+            if (render === null) {
                 return Kefir.never();
             }
 
