@@ -1,0 +1,4 @@
+--reporter spec
+--ui bdd
+--require @std/esm
+src/**/__tests__/*.spec.js
