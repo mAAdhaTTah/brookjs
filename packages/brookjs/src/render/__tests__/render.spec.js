@@ -4,7 +4,7 @@ import chai, { expect } from 'chai';
 import dom from 'chai-dom';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import hbs from 'handlebars/runtime';
+import hbs from 'handlebars';
 
 import * as Desalinate from '../../desalinate';
 import { attachDetachReplace, attributeText, hideBlackboxed, simpleUpdate,

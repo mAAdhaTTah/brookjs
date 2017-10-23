@@ -7,11 +7,13 @@ import Kefir from '../../kefir';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import chaiKefir, { send } from 'chai-kefir';
 
 import { createFixture, createChild } from './util';
 import children from '../';
 
 chai.use(sinonChai);
+chai.use(chaiKefir);
 
 describe('children', () => {
     it('should throw if config not an object or function', () => {
@@ -53,18 +55,13 @@ describe('children', () => {
     });
 
     it('should emit child events', () => {
-        const value = sinon.spy();
         const next = { type: 'ACTION' };
 
         const { instance, child$ } = createFixture();
 
-        const sub = instance.observe({ value });
-        child$.plug(Kefir.constant(next));
-
-        expect(value).to.have.callCount(1);
-        expect(value).to.have.been.calledWith(next);
-
-        sub.unsubscribe();
+        expect(instance).to.emit([next], () => {
+            send(child$, [next]);
+        });
     });
 
     it('should bind to new child element', done => {
@@ -143,7 +140,7 @@ describe('children', () => {
         element.removeChild(firstChild);
 
         requestAnimationFrame(() => {
-            child$.plug(Kefir.constant(next));
+            send(child$, [next]);
             expect(value).to.have.callCount(0);
 
             sub.unsubscribe();
