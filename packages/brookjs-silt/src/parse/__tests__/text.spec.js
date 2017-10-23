@@ -1,16 +1,17 @@
-import { test } from 'brookjs-desalinate';
+/* eslint-env mocha */
+import { expect } from 'chai';
 import { parseText } from '../text';
 
-test('should replace placeholder with expression', t => {
-    t.plan(1);
+describe('text', () => {
+    it('should replace placeholder with expression', () => {
+        const text = '__silt_0__';
+        const expressions = [
+            ['hbs:expression']
+        ];
+        const actual = [
+            ['hbs:expression']
+        ];
 
-    const text = '__silt_0__';
-    const expressions = [
-        ['hbs:expression']
-    ];
-    const actual = [
-        ['hbs:expression']
-    ];
-
-    t.deepEquals(parseText(text, expressions), actual);
+        expect(parseText(text, expressions)).to.deep.equal(actual);
+    });
 });

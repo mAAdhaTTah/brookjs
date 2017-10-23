@@ -1,21 +1,22 @@
-import { test } from 'brookjs-desalinate';
+/* eslint-env mocha */
+import { expect } from 'chai';
 import renderToString from 'diffhtml-render-to-string';
 import basic from 'handlebars-spec/spec/basic.json'; // eslint-disable-line import/no-internal-modules
 import { parse, generate } from '../index';
 
 const runSpec = spec => {
-    test.skip(spec[0].description, t => {
+    describe(spec[0].description, () => {
         for (const test of spec) {
-            t.test(test.it, t => {
-                t.plan(1);
-
+            it(test.it, () => {
                 const vdom = generate(parse(test.template), test.data);
                 const actual = renderToString(vdom);
 
-                t.deepEquals(actual, test.expected);
+                expect(actual).to.equal(test.expected);
             });
         }
     });
 };
 
-runSpec(basic);
+describe.skip('spec', () => {
+    runSpec(basic);
+});

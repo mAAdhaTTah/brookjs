@@ -1,183 +1,161 @@
+/* eslint-env mocha */
+import { expect } from 'chai';
 import { createTree } from 'diffhtml';
-import { test } from 'brookjs-desalinate';
 import generate from '../generate';
 
+describe('generate', () => {
+    it('should create a template function', () => {
+        expect(typeof generate([])).to.equal('function');
+    });
 
-test('should create a template function', t => {
-    t.plan(1);
+    it('should generate a null value', () => {
+        const ast = null;
+        const context = {};
+        const expected = createTree(null);
 
-    t.equal(typeof generate([]), 'function');
-});
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-test('should generate a null value', t => {
-    t.plan(1);
+    it('should generate a plain div', () => {
+        const ast = ['div', [], []];
+        const context = {};
+        const expected = createTree('div', {}, []);
 
-    const ast = null;
-    const context = {};
-    const expected = createTree(null);
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-    t.deepEqual(generate(ast, context), expected);
-});
+    it('should generate a plain div with an attribute', () => {
+        const ast = ['div', [
+            ['class', 'my-class']
+        ], []];
+        const context = {};
+        const expected = createTree('div', { class: 'my-class' }, []);
 
-test('should generate a plain div', t => {
-    t.plan(1);
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-    const ast = ['div', [], []];
-    const context = {};
-    const expected = createTree('div', {}, []);
+    it('should generate a div with text', () => {
+        const ast = ['div', [], [
+            ['#text', [], 'Some text']
+        ]];
+        const context = {};
+        const expected = createTree('div', {}, [
+            createTree('#text', {}, 'Some text')
+        ]);
 
-    t.deepEqual(generate(ast, context), expected);
-});
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-test('should generate a plain div wtesth an attribute', t => {
-    t.plan(1);
+    it('should generate a text node from context', () => {
+        const ast = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: 'variable',
+            name: 'foo',
+            unescaped: false
+        }, []];
+        const context = { foo: 'bar' };
+        const expected = createTree('#text', 'bar');
 
-    const ast = ['div', [
-        ['class', 'my-class']
-    ], []];
-    const context = {};
-    const expected = createTree('div', { class: 'my-class' }, []);
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-    t.deepEqual(generate(ast, context), expected);
-});
+    it('should generate a text node from dot context', () => {
+        const ast = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: 'variable',
+            name: 'foo.bar',
+            unescaped: false
+        }, []];
+        const context = { foo: { bar: 'baz' } };
+        const expected = createTree('#text', 'baz');
 
-test('should generate a div wtesth text', t => {
-    t.plan(1);
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-    const ast = ['div', [], [
-        ['#text', [], 'Some text']
-    ]];
-    const context = {};
-    const expected = createTree('div', {}, [
-        createTree('#text', {}, 'Some text')
-    ]);
+    it('should generate a div with dynamic attribute name and value', () => {
+        const ast = ['div', [
+            [
+                ['hbs:expression', {
+                    args: undefined,
+                    context: undefined,
+                    expr: 'variable',
+                    name: 'foo',
+                    unescaped: false
+                }],
+                ['hbs:expression', {
+                    args: undefined,
+                    context: undefined,
+                    expr: 'variable',
+                    name: 'bar',
+                    unescaped: false
+                }]
+            ]
+        ], []];
+        const context = { foo: 'class', bar: 'my-class' };
+        const expected = createTree('div', { class: 'my-class' }, []);
 
-    t.deepEqual(generate(ast, context), expected);
-});
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-test('should generate a text node from context', t => {
-    t.plan(1);
+    it('should generate an if block if the context is true', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: 'if',
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: true };
+        const expected = createTree('#document-fragment', {}, [
+            createTree('#text', {}, 'foo!')
+        ]);
 
-    const ast = ['hbs:expression', {
-        args: undefined,
-        context: undefined,
-        expr: 'variable',
-        name: 'foo',
-        unescaped: false
-    }, []];
-    const context = { foo: 'bar' };
-    const expected = createTree('#text', 'bar');
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-    t.deepEqual(generate(ast, context), expected);
-});
+    it('should not generate an unless block if the context is false', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: 'if',
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: false };
+        const expected = createTree(null);
 
-test('should generate a text node from dot context', t => {
-    t.plan(1);
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-    const ast = ['hbs:expression', {
-        args: undefined,
-        context: undefined,
-        expr: 'variable',
-        name: 'foo.bar',
-        unescaped: false
-    }, []];
-    const context = { foo: { bar: 'baz' } };
-    const expected = createTree('#text', 'baz');
+    it('should generate an unless block if the context is false', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: 'unless',
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: false };
+        const expected = createTree('#document-fragment', {}, [
+            createTree('#text', {}, 'foo!')
+        ]);
 
-    t.deepEqual(generate(ast, context), expected);
-});
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 
-test('should generate a div wtesth dynamic attribute name and value', t => {
-    t.plan(1);
+    it('should not generate an unless block if the context is true', () => {
+        const ast = ['hbs:block', {
+            args: undefined,
+            context: 'bar',
+            block: 'unless',
+        }, [
+            ['#text', [], 'foo!']
+        ]];
+        const context = { bar: true };
+        const expected = createTree(null);
 
-    const ast = ['div', [
-        [
-            ['hbs:expression', {
-                args: undefined,
-                context: undefined,
-                expr: 'variable',
-                name: 'foo',
-                unescaped: false
-            }],
-            ['hbs:expression', {
-                args: undefined,
-                context: undefined,
-                expr: 'variable',
-                name: 'bar',
-                unescaped: false
-            }]
-        ]
-    ], []];
-    const context = { foo: 'class', bar: 'my-class' };
-    const expected = createTree('div', { class: 'my-class' }, []);
-
-    t.deepEqual(generate(ast, context), expected);
-});
-
-test('should generate an if block if the context is true', t => {
-    t.plan(1);
-
-    const ast = ['hbs:block', {
-        args: undefined,
-        context: 'bar',
-        block: 'if',
-    }, [
-        ['#text', [], 'foo!']
-    ]];
-    const context = { bar: true };
-    const expected = createTree('#document-fragment', {}, [
-        createTree('#text', {}, 'foo!')
-    ]);
-
-    t.deepEqual(generate(ast, context), expected);
-});
-
-test('should not generate an unless block if the context is false', t => {
-    t.plan(1);
-
-    const ast = ['hbs:block', {
-        args: undefined,
-        context: 'bar',
-        block: 'if',
-    }, [
-        ['#text', [], 'foo!']
-    ]];
-    const context = { bar: false };
-    const expected = createTree(null);
-
-    t.deepEqual(generate(ast, context), expected);
-});
-
-test('should generate an unless block if the context is false', t => {
-    t.plan(1);
-
-    const ast = ['hbs:block', {
-        args: undefined,
-        context: 'bar',
-        block: 'unless',
-    }, [
-        ['#text', [], 'foo!']
-    ]];
-    const context = { bar: false };
-    const expected = createTree('#document-fragment', {}, [
-        createTree('#text', {}, 'foo!')
-    ]);
-
-    t.deepEqual(generate(ast, context), expected);
-});
-
-test('should not generate an unless block if the context is true', t => {
-    t.plan(1);
-
-    const ast = ['hbs:block', {
-        args: undefined,
-        context: 'bar',
-        block: 'unless',
-    }, [
-        ['#text', [], 'foo!']
-    ]];
-    const context = { bar: true };
-    const expected = createTree(null);
-
-    t.deepEqual(generate(ast, context), expected);
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
 });
