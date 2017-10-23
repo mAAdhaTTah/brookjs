@@ -29,9 +29,6 @@ const common = {
         alias: {
             'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime'
         }
-    },
-    node: {
-        fs: 'empty'
     }
 };
 

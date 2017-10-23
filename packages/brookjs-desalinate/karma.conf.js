@@ -11,7 +11,7 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['tap'],
+        frameworks: ['mocha'],
 
         // list of files / patterns to load in the browser
         files: [
@@ -36,11 +36,7 @@ module.exports = function (config) {
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['tap-pretty'],
-
-        tapReporter: {
-            prettify: require('tap-spec')
-        },
+        reporters: ['mocha'],
 
         // web server port
         port: 9876,
