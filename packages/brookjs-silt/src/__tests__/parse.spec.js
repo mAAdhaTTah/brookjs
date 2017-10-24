@@ -1,4 +1,5 @@
-/* eslint-env jest */
+/* eslint-env mocha */
+import { expect } from 'chai';
 import parse from '../parse';
 
 describe('parse', () => {
@@ -6,14 +7,14 @@ describe('parse', () => {
         const source = '';
         const expected = null;
 
-        expect(parse(source)).toBe(expected);
+        expect(parse(source)).to.equal(expected);
     });
 
     it('should parse a plain div', () => {
         const source = '<div></div>';
         const expected = ['div', [], []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse 2 divs as #document-fragment', () => {
@@ -23,7 +24,7 @@ describe('parse', () => {
             ['div', [], []]
         ]];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse a div with text', () => {
@@ -32,7 +33,7 @@ describe('parse', () => {
             ['#text', [], 'Some text']
         ]];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse a div with an attribute', () => {
@@ -41,7 +42,7 @@ describe('parse', () => {
             ['class', 'my-class']
         ], []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an expression', () => {
@@ -54,7 +55,7 @@ describe('parse', () => {
             unescaped: false
         }, []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse a dotted expression', () => {
@@ -67,7 +68,7 @@ describe('parse', () => {
             unescaped: false
         }, []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an expression with numbers', () => {
@@ -80,14 +81,14 @@ describe('parse', () => {
             unescaped: false
         }, []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should not parse an escaped expression', () => {
         const source = '\\{{foo}}';
         const expected = ['#text', [], '{{foo}}'];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an escaped escaped expression', () => {
@@ -103,7 +104,7 @@ describe('parse', () => {
             }, []]
         ]];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an expression as attribute name', () => {
@@ -118,7 +119,7 @@ describe('parse', () => {
             }, []], 'my-class']
         ], []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an expression as attribute value', () => {
@@ -133,7 +134,7 @@ describe('parse', () => {
             }, []]]
         ], []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse a partial expression', () => {
@@ -146,7 +147,7 @@ describe('parse', () => {
             unescaped: false
         }, []];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an each block', () => {
@@ -167,7 +168,7 @@ describe('parse', () => {
             ]]
         ]];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 
     it('should parse an unless block', () => {
@@ -182,6 +183,6 @@ describe('parse', () => {
             ]]
         ]];
 
-        expect(parse(source)).toEqual(expected);
+        expect(parse(source)).to.deep.equal(expected);
     });
 });

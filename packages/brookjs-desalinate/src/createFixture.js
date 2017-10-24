@@ -1,5 +1,5 @@
 import R from 'ramda';
-import Kefir from '../kefir';
+import { Kefir } from 'brookjs';
 import createElementFromTemplate from './createElementFromTemplate';
 
 /**

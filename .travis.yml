@@ -17,7 +17,7 @@ before_script:
   - greenkeeper-lockfile-update
 
 script:
-  - npx lerna run test
+  - npx lerna run test --concurrency 1
 
 after_script:
   - greenkeeper-lockfile-upload

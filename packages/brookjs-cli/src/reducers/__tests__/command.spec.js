@@ -1,19 +1,22 @@
-import test from 'ava';
+/* eslint-env mocha */
+import { expect } from 'chai';
 import { run } from '../../actions';
 import command from '../command';
 
-test('will return same state on random action', t => {
-    const state = {};
+describe('reducer#command', () => {
+    it('will return same state on random action', () => {
+        const state = {};
 
-    t.is(command(state, { type: 'RANDOM' }), state);
-});
+        expect(command(state, { type: 'RANDOM' })).to.equal(state);
+    });
 
-test('will update the values to match action', t => {
-    const state = {};
+    it('will update the values to match action', () => {
+        const state = {};
 
-    t.deepEqual(command(state, run('command', {}, {})), {
-        name: 'command',
-        args: {},
-        opts: {}
+        expect(command(state, run('command', {}, {}))).to.deep.equal({
+            name: 'command',
+            args: {},
+            opts: {}
+        });
     });
 });

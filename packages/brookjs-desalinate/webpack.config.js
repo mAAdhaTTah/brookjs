@@ -11,7 +11,6 @@ const common = {
                 include: [
                     path.join(__dirname, 'src'),
                     path.join(__dirname, 'node_modules', 'diffhtml'),
-                    path.join(__dirname, 'node_modules', 'diffhtml-shared-modules'),
                 ]
             },
             {
@@ -28,8 +27,7 @@ const common = {
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
-            'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
-            'handlebars': 'handlebars/dist/cjs/handlebars.runtime',
+            'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime'
         }
     }
 };

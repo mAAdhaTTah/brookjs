@@ -51,8 +51,10 @@ export default function middleware() {
 
         const idx = transaction.tasks.indexOf(patchNode);
 
-        transaction.tasks[idx] = patchTask;
-        transaction.tasks[idx + 1] = endAsObservable;
+        if (idx !== -1) {
+            transaction.tasks[idx] = patchTask;
+            transaction.tasks[idx + 1] = endAsObservable;
+        }
     }
 
     return Object.assign(renderTask, { createTreeHook, syncTreeHook });

@@ -1,22 +1,21 @@
+/* eslint-env mocha */
 import path from 'path';
 import fs from 'fs';
 import glob from 'glob';
 import Kefir from 'kefir';
 import hbs from 'handlebars';
-import test from 'tape';
+import { expect } from 'chai';
 import { Internals } from 'diffhtml/dist/cjs';
 import { parse, generate } from '../es';
 
-test('integration', t => {
+describe('integration', done => {
     Kefir.fromNodeCallback(callback => glob(path.join(__dirname, '*.int.hbs'), callback))
         .flatten()
         .observe({
             value: filename => {
                 const [, name] = filename.match(/(\w+)\.int\.hbs/);
 
-                t.test(name, t => {
-                    t.plan(1);
-
+                it(name, () => {
                     const contents = fs.readFileSync(filename).toString();
                     const handlebars = context => {
                         const func = hbs.compile(contents);
@@ -29,9 +28,9 @@ test('integration', t => {
                     const actual = silt(context);
                     const expected = handlebars(context);
 
-                    t.deepEqual(actual, expected);
+                    expect(actual).to.deep.equal(expected);
                 });
             },
-            end: () => t.end()
+            end: done
         });
 });

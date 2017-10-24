@@ -1,9 +1,13 @@
-import test from 'ava';
+/* eslint-env mocha */
 import { Kefir } from 'brookjs';
+import { expect, use } from 'chai';
+import chaiKefir, { prop, stream, send } from 'chai-kefir';
 import { run, readEnv, readRcFile, readRcFileError } from '../../actions';
 import envDelta from '../envDelta';
 
 Kefir.Observable.prototype.ofType = Kefir.ActionObservable.prototype.ofType;
+
+use(chaiKefir);
 
 const beaverrc = {
     dir: '/path/to/dir'
@@ -11,100 +15,79 @@ const beaverrc = {
 const cwd = '/path/to/cwd';
 const state = { env: { cwd } };
 
-const createMockServices = t => ({
+const createMockServices = () => ({
     process: {
         cwd () {
-            t.pass();
-
             return cwd;
         }
     },
-    require(path) {
-        t.is(path, cwd + '/.beaverrc.js');
+    require (path) {
+        expect(path).to.equal(cwd + '/.beaverrc.js');
 
         return beaverrc;
     }
 });
 
-test('does nothing on random action', t => {
-    t.plan(0);
+describe('delta#envDelta', () => {
+    let actions$, state$;
 
-    return envDelta(
-        createMockServices(t),
-        Kefir.constant({ type: 'RANDOM' }),
-        Kefir.constant(state)
-    )
-        .map(() => t.fail('should not emit any actions'));
-});
+    beforeEach(() => {
+        // Create delta streams and prefill state.
+        actions$ = stream();
+        state$ = prop();
 
-test('reads cwd but not .beaverrc on new command', t => {
-    t.plan(2);
+        send(state$, [state]);
+    });
 
-    return envDelta(
-        createMockServices(t),
-        Kefir.constant(run('new', {}, {})),
-        Kefir.constant(state)
-    )
-        .map(action => t.deepEqual(action, readEnv('/path/to/cwd')));
-});
+    it('should do nothing on random action', () => {
+        const delta$ = envDelta(
+            createMockServices(),
+            actions$,
+            state$
+        );
 
-test('reads cwd and .beaverrc on non-new command', t => {
-    t.plan(5);
+        expect(delta$).to.emit([], () =>
+            send(actions$, [{ type: 'RANDOM' }]));
+    });
 
-    let planned = [readEnv(cwd), readRcFile(beaverrc)];
+    it('reads cwd but not .beaverrc on new command', () => {
+        const delta$ = envDelta(
+            createMockServices(),
+            actions$,
+            state$
+        );
 
-    return envDelta(
-        createMockServices(t),
-        Kefir.constant(run('test', {}, {})),
-        Kefir.constant(state)
-    )
-        .map(action => {
-            for (let i = 0; planned.length > i; i++) {
-                const plan = planned[i];
+        expect(delta$).to.emit([readEnv('/path/to/cwd'), '<end>'], () =>
+            send(actions$, [run('new', {}, {})]));
+    });
 
-                if (plan.type === action.type) {
-                    planned = planned.filter(src => src !== plan);
+    it('reads cwd and .beaverrc on non-new command', () => {
+        const delta$ = envDelta(
+            createMockServices(),
+            actions$,
+            state$
+        );
 
-                    return t.deepEqual(plan, action);
-                }
-            }
+        expect(delta$).to.emit([readRcFile(beaverrc), readEnv(cwd), '<end>'], () =>
+            send(actions$, [run('test', {}, {})]));
+    });
 
-            return t.fail('unplanned action: ' + action.type);
-        })
-        .beforeEnd(() => t.is(0, planned.length));
-});
+    it('reads cwd but error .beaverrc on new command', () => {
+        const error = new TypeError();
+        const services = createMockServices();
+        // Overwrite require
+        services.require = path => {
+            expect(path).to.equal(cwd + '/.beaverrc.js');
 
-test('reads cwd but error .beaverrc on new command', t => {
-    t.plan(5);
+            throw error;
+        };
+        const delta$ = envDelta(
+            services,
+            actions$,
+            state$
+        );
 
-    const error = new TypeError();
-    const services = createMockServices(t);
-    // Overwrite require
-    services.require = path => {
-        t.is(path, cwd + '/.beaverrc.js');
-
-        throw error;
-    };
-
-    let planned = [readEnv(cwd), readRcFileError(error)];
-
-    return envDelta(
-        services,
-        Kefir.constant(run('test', {}, {})),
-        Kefir.constant(state)
-    )
-        .map(action => {
-            for (let i = 0; planned.length > i; i++) {
-                const plan = planned[i];
-
-                if (plan.type === action.type) {
-                    planned = planned.filter(src => src !== plan);
-
-                    return t.deepEqual(plan, action);
-                }
-            }
-
-            return t.fail('unplanned action: ' + action.type);
-        })
-        .beforeEnd(() => t.is(0, planned.length));
+        expect(delta$).to.emit([readRcFileError(error), readEnv(cwd), '<end>'], () =>
+            send(actions$, [run('test', {}, {})]));
+    });
 });

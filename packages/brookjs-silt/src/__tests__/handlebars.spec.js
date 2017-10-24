@@ -1,4 +1,5 @@
-/* eslint-env jest */
+/* eslint-env mocha */
+import { expect } from 'chai';
 import renderToString from 'diffhtml-render-to-string';
 import basic from 'handlebars-spec/spec/basic.json'; // eslint-disable-line import/no-internal-modules
 import { parse, generate } from '../index';
@@ -10,7 +11,7 @@ const runSpec = spec => {
                 const vdom = generate(parse(test.template), test.data);
                 const actual = renderToString(vdom);
 
-                expect(actual).toBe(test.expected);
+                expect(actual).to.equal(test.expected);
             });
         }
     });

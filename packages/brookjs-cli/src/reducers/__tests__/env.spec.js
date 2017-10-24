@@ -1,18 +1,21 @@
-import test from 'ava';
+/* eslint-env mocha */
+import { expect } from 'chai';
 import { readEnv } from '../../actions';
 import env from '../env';
 
-test('will return same state on random action', t => {
-    const state = {};
+describe('reducer#env', () => {
+    it('will return same state on random action', () => {
+        const state = {};
 
-    t.is(env(state, { type: 'RANDOM' }), state);
-});
+        expect(env(state, { type: 'RANDOM' })).to.equal(state);
+    });
 
-test('will update state from env read', t => {
-    const state = {};
-    const action = readEnv('/path/to/cwd');
+    it('will update state from env read', () => {
+        const state = {};
+        const action = readEnv('/path/to/cwd');
 
-    t.deepEqual(env(state, action), {
-        cwd: '/path/to/cwd'
+        expect(env(state, action)).to.deep.equal({
+            cwd: '/path/to/cwd'
+        });
     });
 });

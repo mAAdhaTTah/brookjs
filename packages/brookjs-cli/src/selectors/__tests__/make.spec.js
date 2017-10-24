@@ -1,5 +1,7 @@
+/* eslint-env mocha */
+import { expect, use } from 'chai';
+import dirty from 'dirty-chai';
 import R from 'ramda';
-import test from 'ava';
 import { lCommandName } from '../../lenses';
 import { isMakeCommand, selectMakePath, selectMakeTemplate, selectMakeContext } from '../make';
 
@@ -13,22 +15,26 @@ const state = {
     }
 };
 
-test('isMakeCommand returns true when running make', t => {
-    t.true(isMakeCommand(state));
-});
+use(dirty);
 
-test('isMakeCommand returns false when not running make', t => {
-    t.false(isMakeCommand(R.set(lCommandName, 'new', state)));
-});
+describe('selector#make', () => {
+    it('isMakeCommand returns true when running make', () => {
+        expect(isMakeCommand(state)).to.be.true();
+    });
 
-test('selectMakePath should get target path', t => {
-    t.is('deltas/testDelta.js', selectMakePath(state));
-});
+    it('isMakeCommand returns false when not running make', () => {
+        expect(isMakeCommand(R.set(lCommandName, 'new', state))).to.be.false();
+    });
 
-test('selectMakeTemplate should get template file', t => {
-    t.is('deltas/template.hbs.js', selectMakeTemplate(state));
-});
+    it('selectMakePath should get target path', () => {
+        expect('deltas/testDelta.js').to.equal(selectMakePath(state));
+    });
 
-test('selectMakeContext should get template context', t => {
-    t.deepEqual({ name: 'testDelta' }, selectMakeContext(state));
+    it('selectMakeTemplate should get template file', () => {
+        expect('deltas/template.hbs.js').to.equal(selectMakeTemplate(state));
+    });
+
+    it('selectMakeContext should get template context', () => {
+        expect({ name: 'testDelta' }).to.deep.equal(selectMakeContext(state));
+    });
 });

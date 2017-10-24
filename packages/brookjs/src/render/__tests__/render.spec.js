@@ -4,16 +4,13 @@ import chai, { expect } from 'chai';
 import dom from 'chai-dom';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import hbs from 'handlebars/runtime';
+import hbs from 'handlebars';
 
-import * as Desalinate from '../../desalinate';
+import * as Desalinate from 'brookjs-desalinate';
 import { attachDetachReplace, attributeText, hideBlackboxed, simpleUpdate,
     updateChild, rootBlackboxed } from './fixtures';
 
-import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute } from '../../helpers';
-import render from '../';
-
-import Kefir from '../../kefir';
+import { animateAttribute, render, Kefir, blackboxAttribute, containerAttribute, keyAttribute } from '../../../es';
 
 chai.use(sinonChai);
 chai.use(dom);

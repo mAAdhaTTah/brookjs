@@ -6,15 +6,15 @@
     "transform-flow-strip-types"
   ],
   "env": {
-    "test": {
+    "test:node": {
       "plugins": [
         "istanbul"
       ],
       "presets": [
-        ["es2015", { "loose": false, "modules": false }]
+        ["es2015", { "loose": false, "modules": "commonjs" }]
       ]
     },
-    "test:ci": {
+    "test:karma": {
       "presets": [
         ["es2015", { "loose": false, "modules": false }]
       ]
