@@ -57,9 +57,9 @@ export function readEnv (cwd) {
 
 export const READ_RC_FILE = 'READ_RC_FILE';
 
-export const readRcFile = ({ dir }) => ({
+export const readRcFile = ({ dir, mocha }) => ({
     type: READ_RC_FILE,
-    payload: { dir }
+    payload: { dir, mocha }
 });
 
 export const READ_RC_FILE_ERROR = 'READ_RC_FILE_ERROR';
