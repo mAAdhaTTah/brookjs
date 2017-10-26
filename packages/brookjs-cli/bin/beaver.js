@@ -25,7 +25,8 @@ program
 program
     .command('test', 'Run the brookjs application tests.')
     .action(main('test'))
-    .argument('<type>', 'Tests to run.', ['unit', 'e2e']);
+    .argument('<type>', 'Tests to run.', ['unit', 'e2e'])
+    .option('--coverage <enable>', 'Whether to generate test coverage (true/false).', program.BOOLEAN);
 
 program
     .command('build', 'Build the brookjs application files.')
