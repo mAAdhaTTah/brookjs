@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint ./ --cache true --fix",
-    "test:unit": "nyc mocha --opts mocha.opts"
+    "test:unit": "beaver test unit"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
@@ -24,8 +24,11 @@
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
     "inquirer": "^3.2.3",
+    "mocha": "^4.0.1",
+    "nyc": "^11.2.1",
     "ramda": "^0.24.1",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "shelljs": "^0.7.8"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
@@ -37,9 +40,7 @@
     "eslint-config-valtech": "^1.1.0",
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-plugin-flowtype": "^2.35.1",
-    "eslint-plugin-import": "^2.7.0",
-    "mocha": "^4.0.1",
-    "nyc": "^11.2.1"
+    "eslint-plugin-import": "^2.7.0"
   },
   "@std/esm": {
     "esm": "js",
