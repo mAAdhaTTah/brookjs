@@ -26,7 +26,8 @@ program
     .command('test', 'Run the brookjs application tests.')
     .action(main('test'))
     .argument('<type>', 'Tests to run.', ['unit', 'e2e'])
-    .option('--coverage <enable>', 'Whether to generate test coverage (true/false).', program.BOOLEAN);
+    .option('--coverage <enable>', 'Whether to generate test coverage (true/false).', program.BOOLEAN)
+    .option('--env <node-env>', 'Value to set for the NODE_ENV for the test run.');
 
 program
     .command('build', 'Build the brookjs application files.')
