@@ -64,25 +64,26 @@ function accumulateUniqueNodes(acc, action) {
     return acc.concat(action);
 }
 
+const groupWithNodes = R.groupWith((a, b) => a.payload.node === b.payload.node);
+const eliminateRedundantActions = R.pipe(R.groupBy(action => action.type), R.values, actions => {
+    // If only one type, than use it.
+    if (actions.length === 1) {
+        return actions[0];
+    }
+
+    if (actions[0].length === actions[1].length) {
+        return [];
+    }
+
+    if (actions[0].length > actions[1].length) {
+        return actions[0][0];
+    }
+
+    return actions[1][0];
+});
 export const dedupeListOfMutationActions = R.pipe(
-    R.groupWith((a, b) => a.payload.node === b.payload.node),
-    R.map(R.groupWith((a, b) => a.type === b.type)),
-    R.map(actions => {
-        // If only one type, than use it.
-        if (actions.length === 1) {
-            return actions[0];
-        }
-
-        if (actions[0].length === actions[1].length) {
-            return [];
-        }
-
-        if (actions[0].length > actions[1].length) {
-            return actions[0][0];
-        }
-
-        return actions[1][0];
-    }),
+    groupWithNodes,
+    R.map(eliminateRedundantActions),
     R.flatten,
     R.reduce(accumulateUniqueNodes, [])
 );
