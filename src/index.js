@@ -13,7 +13,3 @@ import { raf$ } from './rAF';
 export { Kefir, children, combineActionReducers, component, events, domDelta,
     observeDelta, animateAttribute, containerAttribute, eventAttribute,
     mapActionTo, render, raf$, renderFromHTML };
-
-export default { Kefir, children, combineActionReducers, component, events, domDelta,
-    observeDelta, containerAttribute, eventAttribute,
-    mapActionTo, render, raf$, renderFromHTML };
