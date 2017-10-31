@@ -1,8 +1,8 @@
 // @flow
-import type { BlockType, SiltBlockNode, SiltExpressionNode } from '../ast';
+import type { BlockType, SiltBlockNode, SiltExpressionNode, SiltCommentNode } from '../ast';
 
-export const regexWithEscape = /(?:\\+)?(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
-export const regex = /(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
+export const regexWithEscape = /(?:\\+)?(\{\{\{?)([../]*[a-zA-Z\d\s\-_\>\!#\.]+)(\}\}\}?)/g;
+export const regex = /(\{\{\{?)([../]*[a-zA-Z\d\s\-_\>\!#\.]+)(\}\}\}?)/g;
 
 /**
  * Compiles a Handlebars expression into a precompiled template spec.
@@ -10,7 +10,7 @@ export const regex = /(\{\{\{?)([a-zA-Z\d\s\-_\>#\.]+)(\}\}\}?)/g;
  * @param {string} text - Handlebars expressiong, like '{{variable}}'.
  * @returns {Object} Precompiled template spec.
  */
-export function parseExpression(text: string): SiltExpressionNode | SiltBlockNode {
+export function parseExpression(text: string): SiltExpressionNode | SiltBlockNode | SiltCommentNode {
     const args = undefined;
     let context = undefined;
 
@@ -27,6 +27,12 @@ export function parseExpression(text: string): SiltExpressionNode | SiltBlockNod
         context = contents.split(' ').pop();
 
         return ['hbs:block', { block, context, args }, []];
+    }
+
+    if (name.startsWith('!')) {
+        const text = contents.substr(1).trim();
+
+        return ['hbs:comment', { text }, []];
     }
 
     const unescaped = open === '{{{';

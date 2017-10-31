@@ -137,6 +137,19 @@ describe('parse', () => {
         expect(parse(source)).to.deep.equal(expected);
     });
 
+    it('should parse an expression climbing up a context', () => {
+        const source = '{{../foo}}';
+        const expected = ['hbs:expression', {
+            args: undefined,
+            context: undefined,
+            expr: 'variable',
+            name: '../foo',
+            unescaped: false
+        }, []];
+
+        expect(parse(source)).to.deep.equal(expected);
+    });
+
     it('should parse a partial expression', () => {
         const source = '{{> foo}}';
         const expected = ['hbs:expression', {
@@ -182,6 +195,15 @@ describe('parse', () => {
                 ['#text', [], 'foo!']
             ]]
         ]];
+
+        expect(parse(source)).to.deep.equal(expected);
+    });
+
+    it('should parse a comment block', () => {
+        const source = '{{! this is a comment }}';
+        const expected = ['hbs:comment', {
+            text: 'this is a comment'
+        }, []];
 
         expect(parse(source)).to.deep.equal(expected);
     });
