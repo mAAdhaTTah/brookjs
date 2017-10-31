@@ -4,6 +4,7 @@ import * as template from './template';
 import * as ui from './ui';
 
 export { default as scaffold } from './scaffold';
+export { default as glob } from './glob';
 export { hd, npm, template, ui };
 
 

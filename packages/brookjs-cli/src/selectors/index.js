@@ -4,6 +4,7 @@ import { nslApp, lAppAuthor, lAppDescription, lAppDir,
     lAppLicense, lAppName, lAppVersion, lEnvCwd } from '../lenses';
 
 export * from './make';
+export * from './test';
 
 export const selectConfirmMessage  = state =>
     `Confirm your app configuration:

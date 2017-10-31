@@ -68,8 +68,10 @@ describe('delta#envDelta', () => {
             state$
         );
 
-        expect(delta$).to.emit([readRcFile(beaverrc), readEnv(cwd), '<end>'], () =>
-            send(actions$, [run('test', {}, {})]));
+        expect(delta$).to.emit([readEnv(cwd), readRcFile(beaverrc), '<end>'], () => {
+            send(actions$, [run('test', {}, {})]);
+            send(actions$, [readEnv(cwd)]);
+        });
     });
 
     it('reads cwd but error .beaverrc on new command', () => {
@@ -87,7 +89,9 @@ describe('delta#envDelta', () => {
             state$
         );
 
-        expect(delta$).to.emit([readRcFileError(error), readEnv(cwd), '<end>'], () =>
-            send(actions$, [run('test', {}, {})]));
+        expect(delta$).to.emit([readEnv(cwd), readRcFileError(error), '<end>'], () => {
+            send(actions$, [run('test', {}, {})]);
+            send(actions$, [readEnv(cwd)]);
+        });
     });
 });

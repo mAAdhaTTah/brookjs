@@ -1,4 +1,4 @@
-export const dir = '{{dir}}';
+export const dir = 'src';
 
 /**
  * Mocha testing configuration.
@@ -6,5 +6,7 @@ export const dir = '{{dir}}';
 export const mocha = {
     reporter: 'spec',
     ui: 'bdd',
-    requires: []
+    requires: [
+        '@std/esm'
+    ]
 };
