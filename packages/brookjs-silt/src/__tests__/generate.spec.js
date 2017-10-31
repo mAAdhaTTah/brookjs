@@ -99,6 +99,14 @@ describe('generate', () => {
         expect(generate(ast, context)).to.deep.equal(expected);
     });
 
+    it('should not generate a comment block', () => {
+        const ast = ['hbs:comment', { text: 'this is a comment' }, []];
+        const context = {};
+        const expected = createTree(null);
+
+        expect(generate(ast, context)).to.deep.equal(expected);
+    });
+
     it('should generate an if block if the context is true', () => {
         const ast = ['hbs:block', {
             args: undefined,
@@ -115,15 +123,15 @@ describe('generate', () => {
         expect(generate(ast, context)).to.deep.equal(expected);
     });
 
-    it('should not generate an unless block if the context is false', () => {
+    it('should not generate an unless block if the context is true', () => {
         const ast = ['hbs:block', {
             args: undefined,
             context: 'bar',
-            block: 'if',
+            block: 'unless',
         }, [
             ['#text', [], 'foo!']
         ]];
-        const context = { bar: false };
+        const context = { bar: true };
         const expected = createTree(null);
 
         expect(generate(ast, context)).to.deep.equal(expected);

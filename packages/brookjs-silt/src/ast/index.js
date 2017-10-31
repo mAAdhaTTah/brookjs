@@ -1,4 +1,9 @@
 // @flow
+export type CommentMeta = {
+    text: string;
+};
+export type SiltCommentNode = ['hbs:comment', CommentMeta, []];
+
 export type BlockType = 'each' | 'unless';
 export type BlockMeta = {
     block: BlockType;
@@ -23,4 +28,4 @@ export type SiltDOMNodeAttributeValue = string | SiltExpressionNode;
 export type SiltDOMNodeAttribute = [SiltDOMNodeAttributeKey, SiltDOMNodeAttributeValue];
 export type SiltDOMNode = [SiltDOMNodeName, Array<SiltDOMNodeAttribute>, Array<SiltNode> | string]; // eslint-disable-line no-use-before-define
 
-export type SiltNode = SiltDOMNode | SiltExpressionNode | SiltBlockNode;
+export type SiltNode = SiltDOMNode | SiltExpressionNode | SiltBlockNode | SiltCommentNode;

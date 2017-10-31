@@ -27,6 +27,8 @@ export default R.curry(function generate (ast: SiltNode, context: ContextSource)
     const [tag, attributes, children] = ast;
 
     switch (tag) {
+        case 'hbs:comment':
+            return createTree(null);
         case 'hbs:expression':
             // $FlowFixMe
             const next = handleExpression(attributes, context);
