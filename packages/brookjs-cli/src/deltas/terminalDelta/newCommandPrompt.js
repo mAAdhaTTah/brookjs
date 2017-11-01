@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import { Kefir, ofType } from 'brookjs';
 import { INIT_CONFIG_RESPONSE, initConfigResponse, confirmConfig } from '../../actions';
 import { selectConfirmMessage } from '../../selectors';
 
@@ -37,7 +37,7 @@ export default ({ ui }, actions$, state$) => {
     ]))
         .map(initConfigResponse);
 
-    const confirm$ = state$.sampledBy(actions$.ofType(INIT_CONFIG_RESPONSE)).take(1)
+    const confirm$ = state$.sampledBy(actions$.thru(ofType(INIT_CONFIG_RESPONSE))).take(1)
         .flatMap(state => ui.prompt([{
             type: 'confirm',
             name: 'confirmed',

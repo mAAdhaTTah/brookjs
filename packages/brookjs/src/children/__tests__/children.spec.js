@@ -194,7 +194,6 @@ describe('children', () => {
         });
     });
 
-
     it('should use createSourceStream when available', () => {
         const createSourceStream = sinon.spy(() => Kefir.never());
         const { factory, firstChild, instance, modifyChildProps, props$, preplug } = createFixture({ createSourceStream });

@@ -1,10 +1,8 @@
 import assert from 'assert';
 import R from 'ramda';
 import { outerHTML, use } from 'diffhtml';
-import Kefir from '../kefir';
 import { $$internals } from '../constants';
 import { raf$ } from '../rAF';
-import { registerElementAnimations } from './animations';
 import middleware from './middleware';
 
 use(middleware());
@@ -30,10 +28,9 @@ export const renderFromHTML = R.curry((el, html) =>
  * Generates a new rendering stream that ends after the element is updated.
  *
  * @param {Function} template - String-returning template function.
- * @param {Object} animations - Animation definitions.
  * @returns {Function} Curried stream generating function.
  */
-export default function render(template, animations = {}) {
+export default function render(template) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof template, 'function', '`template` should be a function');
     }
@@ -47,12 +44,7 @@ export default function render(template, animations = {}) {
          * @returns {Stream<void, void>} Rendering stream.
          */
         createRenderSink: (el, props$) => props$.map(template)
-            .flatMapLatest(renderFromHTML(el)),
-
-        createAnimationSink: (el, props$) => registerElementAnimations(el, animations)
-            // props$ only emits a value right before it ends, ending the registration stream.
-            // delay ensures we unregister the element after the last render has completed.
-            .takeUntilBy(props$.ignoreValues().beforeEnd(() => raf$.take(1).delay(5)).flatMap(R.identity))
+            .flatMapLatest(renderFromHTML(el))
     };
 
     /**
@@ -62,10 +54,7 @@ export default function render(template, animations = {}) {
      * @param {Observable<T>} props$ - Stream of component props.
      * @returns {Stream<void, void>} Rendering stream.
      */
-    const renderFactory = R.curry((el, props$) => Kefir.merge([
-        internals.createRenderSink(el, props$),
-        internals.createAnimationSink(el, props$)
-    ]));
+    const renderFactory = R.curry(internals.createRenderSink);
 
     renderFactory[$$internals] = internals;
 

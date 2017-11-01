@@ -5,14 +5,14 @@ title: Implementing Side Effects with Custom Delta
 
 To handle custom side effects, create a custom delta. To do so, create a function that takes an options object and returns a function that takes a stream of `actions$` and `state$`. The returned function should return its own stream of `actions$` that will be piped into the store.
 
-Similar to [`redux-observable`][red-obs], the `actions$` stream has been enhanced with the `ofType` method, which filters the stream to only emit actions of the provided types. Multiple types can be provided.
+`observeDelta` also comes with a helper function for use with Kefir's `thru` method. `ofType` takes a varying number of string constants to compare against `action.type` and returns a function that can be passed to `thru`. This function will filter the provided observable by the provided types. See below for an example.
 
 ```js
-import { Kefir } from 'brookjs';
+import { Kefir, ofType } from 'brookjs';
 import { SUBMIT_FORM, formSubmitSuccess, formSubmitFail } from './actions';
 
 export default function ajaxDelta({ ajax }) {
-    return (actions$, state$) => actions$.ofType(SUBMIT_FORM)
+    return (actions$, state$) => actions$.thru(ofType(SUBMIT_FORM))
         .flatMap(action => ajax.post('/api', action.payload))
         .map(formSubmitted)
         .flatMapErrors(err => Kefir.constant(formSubmitFail(err)))

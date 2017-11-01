@@ -1,11 +1,8 @@
 /* eslint-env mocha */
-import { Kefir } from 'brookjs';
 import { expect, use } from 'chai';
 import chaiKefir, { prop, stream, send } from 'chai-kefir';
 import { run, readEnv, readRcFile, readRcFileError } from '../../actions';
 import envDelta from '../envDelta';
-
-Kefir.Observable.prototype.ofType = Kefir.ActionObservable.prototype.ofType;
 
 use(chaiKefir);
 

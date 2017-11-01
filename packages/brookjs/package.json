@@ -88,7 +88,7 @@
   "dependencies": {
     "diffhtml": "1.0.0-beta.8",
     "htmlparser2": "^3.9.2",
-    "kefir": "^3.3.0",
+    "kefir": "^3.8.0",
     "ramda": "^0.24.1",
     "redux": "^3.5.2"
   }

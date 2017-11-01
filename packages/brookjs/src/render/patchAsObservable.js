@@ -1,18 +1,25 @@
 import { Internals } from 'diffhtml';
 import Kefir from '../kefir';
-import { getContainerNode } from '../children';
-import { wrapEffect } from './animations';
+import { getContainerNode } from '../children/util';
 
 const { createNode, NodeCache, memory, decodeEntities, escape } = Internals;
 const { protectVTree, unprotectVTree } = memory;
 
 const blockText = new Set(['script', 'noscript', 'style', 'code', 'template']);
+const blacklist = new Set();
 
 const removeAttribute = (domNode, name) => {
     domNode.removeAttribute(name);
 
-    if (name in domNode) {
-        domNode[name] = undefined;
+    // Runtime checking if the property can be set.
+    const blacklistName = domNode.nodeName + '-' + name;
+
+    if (!blacklist.has(blacklistName)) {
+        try {
+            domNode[name] = undefined;
+        } catch (unhandledException) {
+            blacklist.add(blacklistName);
+        }
     }
 };
 
@@ -36,6 +43,9 @@ export default function patchAsObservable(patches) {
             // Events must be lowercased otherwise they will not be set correctly.
             const name = attribute.indexOf('on') === 0 ? attribute.toLowerCase() : attribute;
 
+            // Runtime checking if the property can be set.
+            const blacklistName = vTree.nodeName + '-' + name;
+
             let effect$ = Kefir.never();
 
             // Normal attribute value.
@@ -43,11 +53,16 @@ export default function patchAsObservable(patches) {
                 effect$ = Kefir.stream(emitter => {
                     const noValue = newValue === null || newValue === undefined;
 
-                    // Allow the user to find the real value in the DOM Node as a
-                    // property.
-                    try {
-                        domNode[name] = newValue;
-                    } catch (unhandledException) {} // eslint-disable-line no-empty
+                    // If the property has not been blacklisted then use try/catch to try
+                    // and set it.
+                    if (!blacklist.has(blacklistName)) {
+                        try {
+                            domNode[name] = newValue;
+                        } catch (unhandledException) {
+                            blacklist.add(blacklistName);
+                        }
+                    }
+
 
                     // Set the actual attribute, this will ensure attributes like
                     // `autofocus` aren't reset by the property call above.
@@ -68,6 +83,15 @@ export default function patchAsObservable(patches) {
                 });
             } else if (typeof newValue !== 'string') {
                 effect$ = Kefir.stream(emitter => {
+                    // Since this is a property value it gets set directly on the node.
+                    if (!blacklist.has(blacklistName)) {
+                        try {
+                            domNode[name] = newValue;
+                        } catch (unhandledException) {
+                            blacklist.add(blacklistName);
+                        }
+                    }
+
                     // We remove and re-add the attribute to trigger a change in a web
                     // component or mutation observer. Although you could use a setter or
                     // proxy, this is more natural.
@@ -78,10 +102,18 @@ export default function patchAsObservable(patches) {
                     // Necessary to track the attribute/prop existence.
                     domNode.setAttribute(name, '');
 
-                    // Since this is a property value it gets set directly on the node.
-                    try {
-                        domNode[name] = newValue;
-                    } catch (unhandledException) {} // eslint-disable-line no-empty
+                    // FIXME This is really unfortunate, but after trigger a change via
+                    // attr, we need to reset the actual value in the instance for things
+                    // like event handlers. In the future it would be great to limit this
+                    // to actual attr -> prop keys. Custom attributes do not suffer from
+                    // this problem as they are not translated.
+                    if (!blacklist.has(blacklistName)) {
+                        try {
+                            domNode[name] = newValue;
+                        } catch (unhandledException) {
+                            blacklist.add(blacklistName);
+                        }
+                    }
 
                     emitter.end();
                 });
@@ -92,7 +124,7 @@ export default function patchAsObservable(patches) {
             if (!domNode.parentNode) {
                 effect$.observe({});
             } else {
-                observables.push(wrapEffect('attributechanged', effect$, getContainerNode(domNode), domNode));
+                observables.push(effect$);
             }
         }
     }
@@ -109,7 +141,7 @@ export default function patchAsObservable(patches) {
                 emitter.end();
             });
 
-            observables.push(wrapEffect('attributechanged', effect$, getContainerNode(domNode), domNode));
+            observables.push(effect$);
         }
     }
 
@@ -140,7 +172,7 @@ export default function patchAsObservable(patches) {
                     emitter.end();
                 });
 
-                observables.push(wrapEffect('attached', attach$, getContainerNode(domNode), newNode, domNode));
+                observables.push(attach$);
             }
         }
 
@@ -154,9 +186,8 @@ export default function patchAsObservable(patches) {
                     unprotectVTree(vTree);
                     emitter.end();
                 });
-                const effect$ = wrapEffect('detached', detach$, getContainerNode(domNode), domNode, domNode.parentNode);
 
-                observables.push(effect$);
+                observables.push(detach$);
             }
         }
 
@@ -188,17 +219,10 @@ export default function patchAsObservable(patches) {
                     container = getContainerNode(oldDomNode.parentNode);
                 }
 
-                observables.push(wrapEffect(
-                    'replaced',
-                    Kefir.merge([
-                        wrapEffect('attached', attach$, container, newDomNode, oldDomNode.parentNode),
-                        wrapEffect('detached', detach$, container, oldDomNode, oldDomNode.parentNode)
-                    ]),
-                    container,
-                    oldDomNode,
-                    oldDomNode.parentNode,
-                    newDomNode
-                ));
+                observables.push(Kefir.merge([
+                    attach$,
+                    detach$
+                ]));
             }
         }
     }
@@ -209,7 +233,6 @@ export default function patchAsObservable(patches) {
             const vTree = NODE_VALUE[i];
             const nodeValue = NODE_VALUE[i + 1];
             const domNode = createNode(vTree);
-            const containerNode = getContainerNode(domNode);
 
             const effect$ = Kefir.stream(emitter => {
                 const { parentNode } = domNode;
@@ -227,7 +250,7 @@ export default function patchAsObservable(patches) {
                 emitter.end();
             });
 
-            observables.push(wrapEffect('textchanged', effect$, containerNode, domNode));
+            observables.push(effect$);
         }
     }
 

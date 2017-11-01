@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { Kefir } from 'brookjs';
+import { Kefir, ofType } from 'brookjs';
 import { FILE_CREATED } from '../actions';
 
 const pathIsPkgJson = R.pipe(
@@ -9,7 +9,7 @@ const pathIsPkgJson = R.pipe(
 
 export default R.curry(({ npm }, actions$, state$) => {
     const new$ = state$.sampledBy(
-        actions$.ofType(FILE_CREATED).filter(pathIsPkgJson).take(1)
+        actions$.thru(ofType(FILE_CREATED)).filter(pathIsPkgJson).take(1)
     )
         .flatMap(npm.install([
             {

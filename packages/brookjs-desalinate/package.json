@@ -25,10 +25,8 @@
   "dependencies": {
     "brookjs": "^0.8.6",
     "diffhtml": "^1.0.0-beta.8",
-    "kefir": "^3.7.4",
     "ramda": "^0.24.1",
-    "symbol-observable": "^1.0.4",
-    "tape": "^4.8.0"
+    "symbol-observable": "^1.0.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

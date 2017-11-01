@@ -2,7 +2,7 @@
 
 import Kefir from '../../kefir';
 import { applyMiddleware, createStore } from 'redux';
-import observeDelta from '../index';
+import { observeDelta } from '../index';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
@@ -34,7 +34,6 @@ describe('observeDelta', function() {
     it('should call the delta with actions$ and state$', function() {
         expect(actions$).to.be.an.instanceof(Kefir.Observable);
         expect(state$).to.be.an.instanceof(Kefir.Observable);
-        expect(actions$.ofType).to.be.a('function');
     });
 
     it('should dispatch action to actions$', function() {
