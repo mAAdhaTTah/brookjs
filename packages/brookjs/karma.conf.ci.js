@@ -1,7 +1,7 @@
 const R = require('ramda');
 const webpackConfig = R.clone(require('./webpack.config'));
 
-webpackConfig.devtool = '';
+webpackConfig.devtool = 'inline-source-map';
 
 module.exports = function (config) {
     const tests = '!(node_modules)/**/__tests__/*.spec.js';
