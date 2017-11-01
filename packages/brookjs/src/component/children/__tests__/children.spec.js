@@ -1,19 +1,19 @@
 /* eslint-env mocha */
 import 'core-js/shim';
-
-import { AssertionError } from 'assert';
+import R from 'ramda';import { AssertionError } from 'assert';
 import Kefir from '../../../kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import chaiKefir, { send } from 'chai-kefir';
-
-import { createFixture, createChild } from './util';
+import chaiKefir from 'chai-kefir';
+import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE, $$internals } from '../../constants';
 import children from '../';
 
+const { plugin, send, value, prop, stream } = chaiKefir(Kefir);
+
 chai.use(sinonChai);
-chai.use(chaiKefir);
+chai.use(plugin);
 
 describe('children', () => {
     it('should throw if config not an object or function', () => {
@@ -59,8 +59,8 @@ describe('children', () => {
 
         const { instance, child$ } = createFixture();
 
-        expect(instance).to.emit([next], () => {
-            send(child$, [next]);
+        expect(instance).to.emit([value(next)], () => {
+            send(child$, [value(next)]);
         });
     });
 
@@ -133,15 +133,15 @@ describe('children', () => {
 
     it('should unbind when element removed', done => {
         const { instance, element, firstChild, child$ } = createFixture();
-        const value = sinon.spy();
+        const spy = sinon.spy();
         const next = { type: 'ACTION' };
-        const sub = instance.observe({ value });
+        const sub = instance.observe({ value: spy });
 
         element.removeChild(firstChild);
 
         requestAnimationFrame(() => {
-            send(child$, [next]);
-            expect(value).to.have.callCount(0);
+            send(child$, [value(next)]);
+            expect(spy).to.have.callCount(0);
 
             sub.unsubscribe();
 
@@ -230,3 +230,44 @@ describe('children', () => {
         sub.unsubscribe();
     });
 });
+
+/**
+ * Create new children test fixture.
+ *
+ * @returns {Fixture} Children test fixture.
+ */
+function createFixture({ child$ = stream(), factory = sinon.spy(() => child$), createSourceStream, config } = {}) {
+    if (createSourceStream) {
+        factory[$$internals] = { createSourceStream };
+    }
+    const modifyChildProps = sinon.spy(R.identity);
+    const preplug = sinon.spy(R.identity);
+    const generator = children({ child: { factory, modifyChildProps, preplug } });
+
+    const element = document.createElement('div');
+    element.setAttribute(CONTAINER_ATTRIBUTE, 'parent');
+    const firstChild = createChild('1');
+    element.appendChild(firstChild);
+
+    const props$ = prop();
+
+    document.body.appendChild(element);
+    const instance = generator(element, props$, config);
+
+    return { child$, factory, modifyChildProps, preplug, generator, element, firstChild, props$, instance };
+}
+
+/**
+ * Create a new element with the provided key.
+ *
+ * @param {string} key - Child key.
+ * @returns {Element} New child element.
+ */
+function createChild(key) {
+    const child = document.createElement('div');
+
+    child.setAttribute(CONTAINER_ATTRIBUTE, 'child');
+    child.setAttribute(KEY_ATTRIBUTE, key);
+
+    return child;
+}

@@ -4,13 +4,16 @@ import { AssertionError } from 'assert';
 import R from 'ramda';
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
-import chaiKefir, { prop } from 'chai-kefir';
+import chaiKefir from 'chai-kefir';
 import dom from 'chai-dom';
 import { component } from '../';
+import Kefir from '../../kefir';
 
 chai.use(dom);
 chai.use(sinonChai);
-chai.use(chaiKefir);
+
+const { plugin, prop } = chaiKefir(Kefir);
+chai.use(plugin);
 
 describe('component', () => {
     describe('module', () => {
