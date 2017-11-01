@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import Kefir from '../kefir';
+import Kefir from '../../kefir';
 import { containerAttribute } from '../helpers';
 import child from './child';
 import { getContainerNode, containerMatches, isAddedChildNode, isRemovedChildNode } from './util';

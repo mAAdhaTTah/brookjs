@@ -1,5 +1,5 @@
 import { Internals } from 'diffhtml';
-import Kefir from '../kefir';
+import Kefir from '../../kefir';
 import { getContainerNode } from '../children/util';
 
 const { createNode, NodeCache, memory, decodeEntities, escape } = Internals;

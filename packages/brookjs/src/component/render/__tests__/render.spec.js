@@ -9,7 +9,7 @@ import hbs from 'handlebars';
 import * as Desalinate from 'brookjs-desalinate';
 import { hideBlackboxed, simpleUpdate, updateChild, rootBlackboxed } from './fixtures';
 
-import { animateAttribute, render, Kefir, blackboxAttribute, containerAttribute, keyAttribute } from '../../../es';
+import { animateAttribute, render, Kefir, blackboxAttribute, containerAttribute, keyAttribute } from '../../../../es';
 
 chai.use(sinonChai);
 chai.use(dom);

@@ -1,6 +1,6 @@
 import assert from 'assert';
 import R from 'ramda';
-import Kefir from '../kefir';
+import Kefir from '../../kefir';
 import * as Event from './event';
 import { CAPTURE, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 

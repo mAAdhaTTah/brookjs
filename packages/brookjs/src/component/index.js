@@ -1,7 +1,15 @@
 import assert from 'assert';
 import R from 'ramda';
 import Kefir from '../kefir';
-import { $$internals } from '../constants';
+import { $$internals } from './constants';
+
+export { default as children } from './children';
+export { default as events } from './events';
+export { default as render, renderFromHTML } from './render';
+export { animateAttribute, containerAttribute, blackboxAttribute,
+    keyAttribute, eventAttribute, mapActionTo } from './helpers';
+export { raf$ } from './rAF';
+
 
 /**
  * Create a new Component with the provided configuration.
@@ -14,7 +22,7 @@ import { $$internals } from '../constants';
  * @returns {factory} Component factory function.
  * @factory
  */
-export default function component({
+export function component({
     children = R.always(Kefir.never()),
     combinator = R.pipe(R.values, Kefir.merge),
     events = R.always(Kefir.never()),

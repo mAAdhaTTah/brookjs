@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import Kefir from '../../kefir';
+import Kefir from '../../../kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES,
     SUPPORTED_EVENTS } from '../../constants';
 

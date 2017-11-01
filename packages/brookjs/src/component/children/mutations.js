@@ -1,6 +1,6 @@
 import R from 'ramda';
 import { CONTAINER_ATTRIBUTE, KEY_ATTRIBUTE } from '../constants';
-import Kefir from '../kefir';
+import Kefir from '../../kefir';
 import { nodeAdded, nodeRemoved } from './actions';
 import { getContainerNode, dedupeListOfMutationActions } from './util';
 

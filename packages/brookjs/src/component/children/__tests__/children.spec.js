@@ -2,7 +2,7 @@
 import 'core-js/shim';
 
 import { AssertionError } from 'assert';
-import Kefir from '../../kefir';
+import Kefir from '../../../kefir';
 
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
