@@ -2,24 +2,28 @@
 import 'core-js/shim';
 import { AssertionError } from 'assert';
 import R from 'ramda';
+import sinon from 'sinon';
 import chai, { expect } from 'chai';
+import sinonChai from 'sinon-chai';
 import chaiKefir from 'chai-kefir';
 import hbs from 'handlebars';
 import { createElementFromTemplate, cleanup } from 'brookjs-desalinate';
 import simulant from 'simulant';
 import Kefir from '../../kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
-import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute } from '../helpers';
-import { component, events, render } from '../';
-import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed } from './fixtures';
+import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } from '../helpers';
+import { component, children, events, render } from '../';
+import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, toggleChild, toggleSubChild  } from './fixtures';
 
 const { plugin, prop, send, value, end } = chaiKefir(Kefir);
 chai.use(plugin);
+chai.use(sinonChai);
 
 hbs.registerHelper('animate', attr => new hbs.SafeString(animateAttribute(attr)));
 hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
 hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
 hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
+hbs.registerHelper('event', (...args) => new hbs.SafeString(eventAttribute(...args)));
 
 describe('component', () => {
     describe('module', () => {
@@ -460,6 +464,179 @@ describe('component', () => {
             } })], () => {
                 simulant.fire(target, 'input');
                 document.body.removeChild(el);
+            });
+        });
+    });
+
+    const toggled = component({
+        events: events({
+            onClick: evt$ => evt$.map(() => ({
+                type: 'CLICK'
+            }))
+        })
+    });
+
+    const withToggledChild = component({
+        children: children({ toggled })
+    });
+
+    describe('children', () => {
+        it('should throw with invalid config typed', () => {
+            const invalid = ['string', 2, true];
+
+            invalid.forEach(config => {
+                expect(() => {
+                    component({
+                        children: children(config)
+                    });
+                }, `${typeof config} did not throw`).to.throw(AssertionError);
+            });
+        });
+
+        it('should throw if children config not an object or function', () => {
+            const invalid = ['string', 2, true];
+
+            invalid.forEach(config => {
+                expect(() => {
+                    component({
+                        children: children({ config })
+                    });
+                }, `${typeof config} did not throw`).to.throw(AssertionError);
+            });
+        });
+
+        it('should emit child events', () => {
+            const initial = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            document.body.appendChild(el);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ toggled }),
+                render: render(toggleChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            simulant.fire(el.querySelector('button'), 'click');
+
+            expect(spy).to.have.callCount(1).and.have.been.calledWith({
+                type: 'CLICK'
+            });
+
+            document.body.removeChild(el);
+            sub.unsubscribe();
+        });
+
+        it('should bind to new child', done => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            document.body.appendChild(el);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ toggled }),
+                render: render(toggleChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                simulant.fire(el.querySelector('button'), 'click');
+
+                expect(spy).to.have.callCount(1).and.have.been.calledWith({
+                    type: 'CLICK'
+                });
+
+                document.body.removeChild(el);
+                sub.unsubscribe();
+                done();
+            });
+        });
+
+        it('should unbind to removed child element', done => {
+            const initial = {
+                show: true
+            };
+            const next = {
+                show: false
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            const button = el.querySelector('button');
+            document.body.appendChild(el);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ toggled }),
+                render: render(toggleChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                simulant.fire(button, 'click');
+
+                expect(spy).to.have.callCount(0);
+
+                document.body.removeChild(el);
+                sub.unsubscribe();
+                done();
+            });
+        });
+
+        it('should bind to new subchild element', done => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleSubChild, initial);
+            document.body.appendChild(el);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ withToggledChild }),
+                render: render(toggleSubChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                simulant.fire(el.querySelector('button'), 'click');
+
+                expect(spy).to.have.callCount(1).and.have.been.calledWith({
+                    type: 'CLICK'
+                });
+
+                document.body.removeChild(el);
+                sub.unsubscribe();
+                done();
             });
         });
     });

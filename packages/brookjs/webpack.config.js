@@ -16,12 +16,21 @@ const common = {
             },
             {
                 test: /\.hbs$/,
-                loader: 'handlebars-loader',
-                options: {
-                    compat: true,
-                    knownHelpersOnly: false,
-                    runtimePath: 'handlebars/runtime'
-                }
+                use: [{
+                    loader: 'handlebars-loader',
+                    options: {
+                        compat: true,
+                        partialDirs: [
+                            path.join(__dirname, 'src', 'component', '__tests__', 'fixtures')
+                        ],
+                        knownHelpersOnly: false,
+                        knownHelpers: [
+                            'container',
+                            'event'
+                        ],
+                        runtimePath: 'handlebars/runtime'
+                    }
+                }]
             }
         ]
     },
@@ -30,6 +39,7 @@ const common = {
         alias: {
             'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
             'handlebars': 'handlebars/dist/cjs/handlebars.runtime',
+            [require.resolve('handlebars/dist/cjs/handlebars.runtime')]: 'handlebars/dist/cjs/handlebars.runtime'
         }
     }
 };
