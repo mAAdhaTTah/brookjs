@@ -13,7 +13,7 @@ import Kefir from '../../kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } from '../helpers';
 import { component, children, events, render } from '../';
-import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, toggleChild, toggleSubChild  } from './fixtures';
+import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild  } from './fixtures';
 
 const { plugin, prop, send, value, end } = chaiKefir(Kefir);
 chai.use(plugin);
@@ -26,16 +26,6 @@ hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
 hbs.registerHelper('event', (...args) => new hbs.SafeString(eventAttribute(...args)));
 
 describe('component', () => {
-    describe('module', () => {
-        it('should be a function', () => {
-            expect(component).to.be.a('function');
-        });
-
-        it('should return a factory function', () => {
-            expect(component({})).to.be.a('function');
-        });
-    });
-
     describe('factory', () => {
         it('should require an HTMLElement', () => {
             const invalid = [{}, 'string', 2, true, [], R.identity];
@@ -357,10 +347,6 @@ describe('component', () => {
 
             send(props$, [value(next), end()]);
         });
-
-        afterEach(() => {
-            cleanup();
-        });
     });
 
     describe('events', () => {
@@ -394,15 +380,8 @@ describe('component', () => {
                 it.skip(`should emit ${event} event`);
             } else {
                 it(`should emit ${event} event`, () => {
-                    // @todo move to fixture
-                    const el = document.createElement('div');
-                    el.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
-
-                    const target = document.createElement('input');
-                    target.setAttribute(EVENT_ATTRIBUTES[event], 'onevent');
-                    el.appendChild(target);
-
-                    document.body.appendChild(el);
+                    const el = createElementFromTemplate(chooseEvent, { targets: [{ customEvent: event }] });
+                    const target = el.querySelector('input');
 
                     const factory = component({
                         events: events({
@@ -423,15 +402,14 @@ describe('component', () => {
                         defaultPrevented: false
                     } })], () => {
                         simulant.fire(target, event);
-                        document.body.removeChild(el);
                     });
                 });
             }
         });
 
         it('should only emit events for the triggered element', () => {
-            const el = document.createElement('div');
-            el.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
+            const el = createElementFromTemplate(chooseEvent, { targets: [{ customEvent: 'input' }, { customEvent: 'input' }, { customEvent: 'input' }] });
+            const target = el.querySelector('input');
             const factory = component({
                 events: events({
                     onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
@@ -445,25 +423,12 @@ describe('component', () => {
                 })
             });
 
-            let count = 0;
-            while (count < 3) {
-                const target = document.createElement('input');
-                target.setAttribute(EVENT_ATTRIBUTES.input, 'onevent');
-                target.setAttribute(EVENT_ATTRIBUTES.focus, 'dummy');
-                el.appendChild(target);
-                count++;
-            }
-
-            const target = el.querySelector('input');
-            document.body.appendChild(el);
-
             expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
                 containerTarget: el,
                 decoratedTarget: target,
                 defaultPrevented: false
             } })], () => {
                 simulant.fire(target, 'input');
-                document.body.removeChild(el);
             });
         });
     });
@@ -510,7 +475,6 @@ describe('component', () => {
                 show: true
             };
             const el = createElementFromTemplate(toggleChild, initial);
-            document.body.appendChild(el);
             const props$ = send(prop(), [value(initial)]);
             const spy = sinon.spy();
 
@@ -529,7 +493,6 @@ describe('component', () => {
                 type: 'CLICK'
             });
 
-            document.body.removeChild(el);
             sub.unsubscribe();
         });
 
@@ -541,7 +504,6 @@ describe('component', () => {
                 show: true
             };
             const el = createElementFromTemplate(toggleChild, initial);
-            document.body.appendChild(el);
             const props$ = send(prop(), [value(initial)]);
             const spy = sinon.spy();
 
@@ -563,7 +525,6 @@ describe('component', () => {
                     type: 'CLICK'
                 });
 
-                document.body.removeChild(el);
                 sub.unsubscribe();
                 done();
             });
@@ -578,7 +539,6 @@ describe('component', () => {
             };
             const el = createElementFromTemplate(toggleChild, initial);
             const button = el.querySelector('button');
-            document.body.appendChild(el);
             const props$ = send(prop(), [value(initial)]);
             const spy = sinon.spy();
 
@@ -598,7 +558,6 @@ describe('component', () => {
 
                 expect(spy).to.have.callCount(0);
 
-                document.body.removeChild(el);
                 sub.unsubscribe();
                 done();
             });
@@ -612,7 +571,6 @@ describe('component', () => {
                 show: true
             };
             const el = createElementFromTemplate(toggleSubChild, initial);
-            document.body.appendChild(el);
             const props$ = send(prop(), [value(initial)]);
             const spy = sinon.spy();
 
@@ -634,10 +592,13 @@ describe('component', () => {
                     type: 'CLICK'
                 });
 
-                document.body.removeChild(el);
                 sub.unsubscribe();
                 done();
             });
         });
+    });
+
+    afterEach(() => {
+        cleanup();
     });
 });
