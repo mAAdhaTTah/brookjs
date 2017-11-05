@@ -42,6 +42,7 @@ switch (process.env.npm_lifecycle_event) {
                 libraryTarget: 'umd'
             },
             plugins: [
+                new webpack.optimize.ModuleConcatenationPlugin(),
                 new webpack.DefinePlugin({
                     'process.env.NODE_ENV': JSON.stringify('production')
                 }),
