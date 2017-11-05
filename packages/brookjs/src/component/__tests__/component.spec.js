@@ -6,9 +6,11 @@ import chai, { expect } from 'chai';
 import chaiKefir from 'chai-kefir';
 import hbs from 'handlebars';
 import { createElementFromTemplate, cleanup } from 'brookjs-desalinate';
+import simulant from 'simulant';
 import Kefir from '../../kefir';
+import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute } from '../helpers';
-import { component, render } from '../';
+import { component, events, render } from '../';
 import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed } from './fixtures';
 
 const { plugin, prop, send, value, end } = chaiKefir(Kefir);
@@ -354,6 +356,111 @@ describe('component', () => {
 
         afterEach(() => {
             cleanup();
+        });
+    });
+
+    describe('events', () => {
+        // Source: https://stackoverflow.com/questions/2877393/detecting-support-for-a-given-javascript-event
+        const isEventSupported = (() => {
+            const TAGNAMES = {
+                'select': 'input','change': 'input',
+                'submit': 'form','reset': 'form',
+                'error': 'img','load': 'img','abort': 'img'
+            };
+            const IE_SIMULANT_FAILURES = ['paste', 'load', 'cut'];
+            function isEventSupported(eventName) {
+                if (simulant.mode === 'legacy' && IE_SIMULANT_FAILURES.includes(eventName)) {
+                    return false;
+                }
+                let el = document.createElement(TAGNAMES[eventName] || 'div');
+                eventName = 'on' + eventName;
+                let isSupported = (eventName in el);
+                if (!isSupported) {
+                    el.setAttribute(eventName, 'return;');
+                    isSupported = typeof el[eventName] === 'function';
+                }
+                el = null;
+                return isSupported;
+            }
+            return isEventSupported;
+        })();
+
+        SUPPORTED_EVENTS.forEach(event => {
+            if (!isEventSupported(event)) {
+                it.skip(`should emit ${event} event`);
+            } else {
+                it(`should emit ${event} event`, () => {
+                    // @todo move to fixture
+                    const el = document.createElement('div');
+                    el.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
+
+                    const target = document.createElement('input');
+                    target.setAttribute(EVENT_ATTRIBUTES[event], 'onevent');
+                    el.appendChild(target);
+
+                    document.body.appendChild(el);
+
+                    const factory = component({
+                        events: events({
+                            onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
+                                type: 'event',
+                                e: {
+                                    containerTarget,
+                                    decoratedTarget,
+                                    defaultPrevented
+                                }
+                            }))
+                        })
+                    });
+
+                    expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
+                        containerTarget: el,
+                        decoratedTarget: target,
+                        defaultPrevented: false
+                    } })], () => {
+                        simulant.fire(target, event);
+                        document.body.removeChild(el);
+                    });
+                });
+            }
+        });
+
+        it('should only emit events for the triggered element', () => {
+            const el = document.createElement('div');
+            el.setAttribute(CONTAINER_ATTRIBUTE, 'fixture');
+            const factory = component({
+                events: events({
+                    onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
+                        type: 'event',
+                        e: {
+                            containerTarget,
+                            decoratedTarget,
+                            defaultPrevented
+                        }
+                    }))
+                })
+            });
+
+            let count = 0;
+            while (count < 3) {
+                const target = document.createElement('input');
+                target.setAttribute(EVENT_ATTRIBUTES.input, 'onevent');
+                target.setAttribute(EVENT_ATTRIBUTES.focus, 'dummy');
+                el.appendChild(target);
+                count++;
+            }
+
+            const target = el.querySelector('input');
+            document.body.appendChild(el);
+
+            expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
+                containerTarget: el,
+                decoratedTarget: target,
+                defaultPrevented: false
+            } })], () => {
+                simulant.fire(target, 'input');
+                document.body.removeChild(el);
+            });
         });
     });
 });
