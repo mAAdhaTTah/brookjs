@@ -13,7 +13,7 @@ import Kefir from '../../kefir';
 import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
 import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } from '../helpers';
 import { component, children, events, render } from '../';
-import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild  } from './fixtures';
+import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
 const { plugin, prop, send, value, end } = chaiKefir(Kefir);
 chai.use(plugin);
@@ -24,6 +24,9 @@ hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr
 hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
 hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
 hbs.registerHelper('event', (...args) => new hbs.SafeString(eventAttribute(...args)));
+
+hbs.registerPartial('child/toggled', toggled);
+hbs.registerPartial('child/withToggledChild', withToggledChild);
 
 describe('component', () => {
     describe('factory', () => {
