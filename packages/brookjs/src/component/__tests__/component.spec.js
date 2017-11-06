@@ -1,182 +1,606 @@
 /*eslint-env mocha */
 import 'core-js/shim';
 import { AssertionError } from 'assert';
-
 import R from 'ramda';
-import Kefir from '../../kefir';
-
-import chai, { expect } from 'chai';
 import sinon from 'sinon';
+import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
-import dom from 'chai-dom';
+import chaiKefir from 'chai-kefir';
+import hbs from 'handlebars';
+import { createElementFromTemplate, cleanup } from 'brookjs-desalinate';
+import simulant from 'simulant';
+import Kefir from '../../kefir';
+import { SUPPORTED_EVENTS } from '../constants';
+import { blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } from '../helpers';
+import { component, children, events, render } from '../';
+import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
-import component from '../index';
-
-chai.use(dom);
+const { plugin, prop, send, value, end } = chaiKefir(Kefir);
+chai.use(plugin);
 chai.use(sinonChai);
 
-describe('component', function() {
-    let factory, fixture, pluggable$, props$, instance, initial, sub;
+hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
+hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
+hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));
+hbs.registerHelper('event', (...args) => new hbs.SafeString(eventAttribute(...args)));
 
-    function setup (config = {}) {
-        initial = {
-            type: 'text',
-            text: 'Hello world!'
-        };
+hbs.registerPartial('child/toggled', toggled);
+hbs.registerPartial('child/withToggledChild', withToggledChild);
 
-        factory = component(config);
-
-        fixture = document.createElement('div');
-        fixture.classList.add(initial.type);
-        fixture.textContent = initial.text;
-
-        pluggable$ = Kefir.pool();
-        pluggable$.plug(Kefir.constant(initial));
-
-        props$ = pluggable$.toProperty();
-
-        instance = factory(fixture, props$);
-    }
-
-    describe('module', function() {
-        beforeEach(function() {
-            setup();
-        });
-
-        it('should be a function', function() {
-            expect(component).to.be.a('function');
-        });
-
-        it('should return a factory function', function() {
-            expect(factory).to.be.a('function');
-        });
-    });
-
-    describe('factory', function() {
-        beforeEach(function() {
-            setup();
-        });
-
-        it('should require an HTMLElement', function() {
+describe('component', () => {
+    describe('factory', () => {
+        it('should require an HTMLElement', () => {
             const invalid = [{}, 'string', 2, true, [], R.identity];
 
             invalid.forEach(el => {
-                expect(() => factory(el, {})).to.throw(AssertionError);
+                expect(() => component({})(el, {})).to.throw(AssertionError);
             });
         });
 
-        it('should require an observable', function() {
+        it('should require an observable', () => {
             const invalid = [{}, 'string', 2, true, []];
 
             invalid.forEach(state => {
-                expect(() => factory(fixture, state)).to.throw(AssertionError);
+                expect(() => component({})(document.createElement('div'), state)).to.throw(AssertionError);
             });
         });
 
-        it('should return an observable', function() {
-            expect(instance).to.be.an.instanceof(Kefir.Observable);
-        });
-    });
-
-    describe('config', function() {
-        describe('events', function() {
-            let events;
-
-            beforeEach(function() {
-                events = sinon.spy(() => Kefir.never());
-                setup({ events });
-                document.body.appendChild(fixture);
-            });
-
-            it('should throw without a function', function () {
-                const invalid = ['string', 2, true, {}];
-
-                invalid.forEach(vnts => {
-                    expect(() => component({ events: vnts }), `${typeof vnts} did not throw`).to.throw(AssertionError);
-                });
-            });
-
-            it.skip('should get called on mount with el');
-            it.skip('should get called on render end with el');
-
-            afterEach(function() {
-                document.body.removeChild(fixture);
-            });
-        });
-
-        describe('render', () => {
-            let render;
-
-            beforeEach(() => {
-                render = sinon.spy(() => Kefir.never());
-                setup({ render: R.curryN(2, render) });
-            });
-
-            it('should throw if not a function', () => {
-                const invalid = ['string', 2, true, {}];
-
-                invalid.forEach(rndr => {
-                    expect(() => component({ render: rndr }), `${typeof rndr} did not throw`).to.throw(AssertionError);
-                });
-            });
-
-            it('should get called with el & modified props$', () => {
-                const value = sinon.spy();
-                sub = instance.observe({ value });
-
-                const [el/*, props*/] = render.args[0];
-
-                expect(render).to.have.callCount(1);
-                expect(el).to.equal(fixture);
-                // expect(props).to.equal(props$); @todo validate stream
-            });
-        });
-
-        describe('onMount', function () {
-            let onMount, return$;
-
-            beforeEach(function() {
-                return$ = Kefir.pool();
-                onMount = sinon.spy(() => return$);
-
-                setup({ onMount });
-            });
-
-            it('should throw without function', function() {
-                const invalid = [{}, 'string', 2, true, []];
-
-                invalid.forEach(onMnt => {
-                    expect(() => component({ onMount: onMnt })).to.throw(AssertionError);
-                });
-            });
-
-            it('should call onMount once with el and props$', function() {
-                sub = instance.observe({ value: R.identity });
-
-                expect(onMount).to.have.callCount(1);
-                expect(onMount).to.have.been.calledWithExactly(fixture, props$);
-            });
-
-            it('should propagate stream events', function() {
-                const value = sinon.spy();
-                const state = {
-                    type: 'EVENT_NAME',
-                    payload: {
-                        value: 'some value'
-                    }
-                };
-
-                sub = instance.observe({ value });
-                return$.plug(Kefir.constant(state));
-
-                expect(value).to.have.been.calledWithExactly(state);
-            });
+        it('should return an observable', () => {
+            expect(component({})(document.createElement('div'), prop())).to.be.observable();
         });
     });
 
-    afterEach(function() {
-        if (sub) {
+    describe('render', () => {
+        it('should throw without function', () => {
+            const invalid = [{}, 'string', 2, true, []];
+
+            invalid.forEach(template => {
+                expect(() => {
+                    component({
+                        render: render(template)
+                    });
+                }).to.throw(AssertionError);
+            });
+        });
+
+        it('should update element with new state', done => {
+            const initial = {
+                type: 'text',
+                text: 'Hello world!'
+            };
+            const next = {
+                type: 'image',
+                text: 'A picture'
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(simpleUpdate, initial);
+            const factory = component({
+                render: render(simpleUpdate)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(simpleUpdate(next).trim());
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should update child element', done => {
+            const initial = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 Text', id: '1' }]
+            };
+            const next = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 New Text', id: '1' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(updateChild, initial);
+            const factory = component({
+                render: render(updateChild)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(updateChild(next).trim());
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should add missing child container element', done => {
+            const initial = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 Text', id: '1' }]
+            };
+            const next = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(updateChild, initial);
+            const factory = component({
+                render: render(updateChild)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(updateChild(next).trim());
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should remove extra child container element', done => {
+            const initial = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
+            };
+            const next = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 Text', id: '1' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(updateChild, initial);
+            const factory = component({
+                render: render(updateChild)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(updateChild(next).trim());
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should remove and modify children with matching keys', done => {
+            const initial = {
+                headline: 'Children',
+                children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
+            };
+            const next = {
+                headline: 'Children',
+                children: [{ text: 'Child 2 New Text', id: '2' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(updateChild, initial);
+            const [child1, child2] = el.querySelectorAll('[data-brk-container="child"]');
+            const factory = component({
+                render: render(updateChild)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(updateChild(next).trim());
+                    // Check that the proper element was removed
+                    expect(el.contains(child1)).to.equal(false);
+                    expect(el.contains(child2)).to.equal(true);
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should not update blackboxed element', done => {
+            const initial = {
+                headline: 'Blackboxed',
+                blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+            };
+            const next = {
+                headline: 'Blackboxed Headline',
+                blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(hideBlackboxed, initial);
+            const factory = component({
+                render: render(hideBlackboxed)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(hideBlackboxed({
+                        // New headline
+                        headline: 'Blackboxed Headline',
+                        // Previous children
+                        blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+                    }).trim());
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should not update blackboxed element if modified between renders', done => {
+            const initial = {
+                headline: 'Blackboxed',
+                blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+            };
+            const next = {
+                headline: 'Blackboxed Next',
+                blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }]
+            };
+            const final = {
+                headline: 'Blackboxed Final',
+                blackboxed: [{ text: 'Blackboxed 1 Final Text', id: '1' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const modifiedTextContent = 'Blackboxed 1 Modified Text';
+            const el = createElementFromTemplate(hideBlackboxed, initial);
+            const factory = component({
+                render: render(hideBlackboxed)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(hideBlackboxed({
+                        headline: 'Blackboxed Final',
+                        blackboxed: [{ text: 'Blackboxed 1 Modified Text', id: '1' }]
+                    }).trim());
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                const blackboxed = el.querySelector('[data-brk-blackbox="1"]');
+
+                blackboxed.textContent = modifiedTextContent;
+
+                send(props$, [value(final), end()]);
+            });
+        });
+
+        it('should add missing blackboxed element', done => {
+            const initial = {
+                headline: 'Blackboxed Previous',
+                blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+            };
+            const next = {
+                headline: 'Blackboxed Next',
+                blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(hideBlackboxed, initial);
+            const factory = component({
+                render: render(hideBlackboxed)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(hideBlackboxed({
+                        headline: 'Blackboxed Next',
+                        blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
+                    }).trim());
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should remove extra blackboxed element', done => {
+            const initial = {
+                headline: 'Blackboxed',
+                blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
+            };
+            const next = {
+                headline: 'Blackboxed',
+                blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(hideBlackboxed, initial);
+            const factory = component({
+                render: render(hideBlackboxed)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    const [one, two] = el.querySelectorAll('[data-brk-blackbox]');
+
+                    expect(one.textContent).to.equal(initial.blackboxed[0].text);
+                    expect(two).to.equal(undefined);
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+
+        it('should render root blackboxed element', done => {
+            const initial = {
+                text: 'Initial text'
+            };
+            const next = {
+                text: 'Next text'
+            };
+            const props$ = send(prop(), [value(initial)]);
+            const el = createElementFromTemplate(rootBlackboxed, initial);
+            const factory = component({
+                render: render(rootBlackboxed)
+            });
+
+            factory(el, props$).observe({
+                end() {
+                    expect(el.outerHTML).to.equal(rootBlackboxed(next).trim());
+
+                    done();
+                }
+            });
+
+            send(props$, [value(next), end()]);
+        });
+    });
+
+    describe('events', () => {
+        // Source: https://stackoverflow.com/questions/2877393/detecting-support-for-a-given-javascript-event
+        const isEventSupported = (() => {
+            const TAGNAMES = {
+                'select': 'input','change': 'input',
+                'submit': 'form','reset': 'form',
+                'error': 'img','load': 'img','abort': 'img'
+            };
+            const IE_SIMULANT_FAILURES = ['paste', 'load', 'cut'];
+            function isEventSupported(eventName) {
+                if (simulant.mode === 'legacy' && IE_SIMULANT_FAILURES.includes(eventName)) {
+                    return false;
+                }
+                let el = document.createElement(TAGNAMES[eventName] || 'div');
+                eventName = 'on' + eventName;
+                let isSupported = (eventName in el);
+                if (!isSupported) {
+                    el.setAttribute(eventName, 'return;');
+                    isSupported = typeof el[eventName] === 'function';
+                }
+                el = null;
+                return isSupported;
+            }
+            return isEventSupported;
+        })();
+
+        SUPPORTED_EVENTS.forEach(event => {
+            if (!isEventSupported(event)) {
+                it.skip(`should emit ${event} event`);
+            } else {
+                it(`should emit ${event} event`, () => {
+                    const el = createElementFromTemplate(chooseEvent, { targets: [{ customEvent: event }] });
+                    const target = el.querySelector('input');
+
+                    const factory = component({
+                        events: events({
+                            onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
+                                type: 'event',
+                                e: {
+                                    containerTarget,
+                                    decoratedTarget,
+                                    defaultPrevented
+                                }
+                            }))
+                        })
+                    });
+
+                    expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
+                        containerTarget: el,
+                        decoratedTarget: target,
+                        defaultPrevented: false
+                    } })], () => {
+                        simulant.fire(target, event);
+                    });
+                });
+            }
+        });
+
+        it('should only emit events for the triggered element', () => {
+            const el = createElementFromTemplate(chooseEvent, { targets: [{ customEvent: 'input' }, { customEvent: 'input' }, { customEvent: 'input' }] });
+            const target = el.querySelector('input');
+            const factory = component({
+                events: events({
+                    onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
+                        type: 'event',
+                        e: {
+                            containerTarget,
+                            decoratedTarget,
+                            defaultPrevented
+                        }
+                    }))
+                })
+            });
+
+            expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
+                containerTarget: el,
+                decoratedTarget: target,
+                defaultPrevented: false
+            } })], () => {
+                simulant.fire(target, 'input');
+            });
+        });
+    });
+
+    const toggled = component({
+        events: events({
+            onClick: evt$ => evt$.map(() => ({
+                type: 'CLICK'
+            }))
+        })
+    });
+
+    const withToggledChild = component({
+        children: children({ toggled })
+    });
+
+    describe('children', () => {
+        it('should throw with invalid config typed', () => {
+            const invalid = ['string', 2, true];
+
+            invalid.forEach(config => {
+                expect(() => {
+                    component({
+                        children: children(config)
+                    });
+                }, `${typeof config} did not throw`).to.throw(AssertionError);
+            });
+        });
+
+        it('should throw if children config not an object or function', () => {
+            const invalid = ['string', 2, true];
+
+            invalid.forEach(config => {
+                expect(() => {
+                    component({
+                        children: children({ config })
+                    });
+                }, `${typeof config} did not throw`).to.throw(AssertionError);
+            });
+        });
+
+        it('should emit child events', () => {
+            const initial = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ toggled }),
+                render: render(toggleChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            simulant.fire(el.querySelector('button'), 'click');
+
+            expect(spy).to.have.callCount(1).and.have.been.calledWith({
+                type: 'CLICK'
+            });
+
             sub.unsubscribe();
-        }
+        });
+
+        it('should bind to new child', done => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ toggled }),
+                render: render(toggleChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                simulant.fire(el.querySelector('button'), 'click');
+
+                expect(spy).to.have.callCount(1).and.have.been.calledWith({
+                    type: 'CLICK'
+                });
+
+                sub.unsubscribe();
+                done();
+            });
+        });
+
+        it('should unbind to removed child element', done => {
+            const initial = {
+                show: true
+            };
+            const next = {
+                show: false
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            const button = el.querySelector('button');
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ toggled }),
+                render: render(toggleChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                simulant.fire(button, 'click');
+
+                expect(spy).to.have.callCount(0);
+
+                sub.unsubscribe();
+                done();
+            });
+        });
+
+        it('should bind to new subchild element', done => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleSubChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+            const spy = sinon.spy();
+
+            const factory = component({
+                children: children({ withToggledChild }),
+                render: render(toggleSubChild)
+            });
+
+            const sub = factory(el, props$).observe({
+                value: spy
+            });
+
+            send(props$, [value(next)]);
+
+            requestAnimationFrame(() => {
+                simulant.fire(el.querySelector('button'), 'click');
+
+                expect(spy).to.have.callCount(1).and.have.been.calledWith({
+                    type: 'CLICK'
+                });
+
+                sub.unsubscribe();
+                done();
+            });
+        });
+    });
+
+    afterEach(() => {
+        cleanup();
     });
 });

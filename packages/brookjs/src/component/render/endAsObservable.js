@@ -1,4 +1,5 @@
-import Kefir from '../kefir';
+import Kefir from '../../kefir';
+import { $$meta } from '../constants';
 
 /**
  * Create Transaction end stream.
@@ -6,10 +7,16 @@ import Kefir from '../kefir';
  * @param {Transaction} transaction - Ending transaction.
  * @returns {Observable<void>} Transaction end stream.
  */
-const createEnd = transaction => Kefir.stream(emitter => {
-    transaction.end();
-    emitter.end();
-});
+const createEnd = transaction => {
+    const end$ = Kefir.stream(emitter => {
+        transaction.end();
+        emitter.end();
+    });
+
+    end$[$$meta] = { type: 'END', payload: {} };
+
+    return end$;
+};
 
 /**
  * Terminate the transaction by returning an Observable instead of a Promise.
@@ -26,8 +33,6 @@ export default function endAsObservable(transaction) {
         return end$;
     }
 
-    return Kefir.concat([
-        Kefir.merge([...observables, ...promises.map(Kefir.fromPromise)]),
-        end$
-    ]);
+    return Kefir.constant([...observables, ...promises.map(Kefir.fromPromise), end$])
+        .flatten();
 }

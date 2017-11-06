@@ -1,6 +1,7 @@
 import { Internals } from 'diffhtml';
-import Kefir from '../kefir';
-import { getContainerNode } from '../children/util';
+import Kefir from '../../kefir';
+import { $$meta } from '../constants';
+import { getContainerNode } from '../helpers';
 
 const { createNode, NodeCache, memory, decodeEntities, escape } = Internals;
 const { protectVTree, unprotectVTree } = memory;
@@ -121,9 +122,18 @@ export default function patchAsObservable(patches) {
 
             // If an attribute it being added to a DOM node that's about
             // to be added to the DOM, then we need to do this now.
-            if (!domNode.parentNode) {
+            if (!getContainerNode(domNode)) {
                 effect$.observe({});
             } else {
+                effect$[$$meta] = {
+                    type: 'SET_ATTRIBUTE',
+                    payload: {
+                        container: getContainerNode(domNode),
+                        target: domNode,
+                        attr: name,
+                        value: newValue
+                    }
+                };
                 observables.push(effect$);
             }
         }
@@ -141,6 +151,14 @@ export default function patchAsObservable(patches) {
                 emitter.end();
             });
 
+            effect$[$$meta] = {
+                type: 'REMOVE_ATTRIBUTE',
+                payload: {
+                    container: getContainerNode(domNode),
+                    target: domNode,
+                    attr: name
+                }
+            };
             observables.push(effect$);
         }
     }
@@ -172,6 +190,13 @@ export default function patchAsObservable(patches) {
                     emitter.end();
                 });
 
+                attach$[$$meta] = {
+                    type: 'INSERT_NODE',
+                    payload: {
+                        container: getContainerNode(domNode),
+                        incoming: newNode
+                    }
+                };
                 observables.push(attach$);
             }
         }
@@ -187,6 +212,13 @@ export default function patchAsObservable(patches) {
                     emitter.end();
                 });
 
+                detach$[$$meta] = {
+                    type: 'REMOVE_CHILD',
+                    payload: {
+                        container: getContainerNode(domNode.parentNode),
+                        outgoing: domNode,
+                    }
+                };
                 observables.push(detach$);
             }
         }
@@ -219,10 +251,19 @@ export default function patchAsObservable(patches) {
                     container = getContainerNode(oldDomNode.parentNode);
                 }
 
-                observables.push(Kefir.merge([
+                const effect$ = Kefir.merge([
                     attach$,
                     detach$
-                ]));
+                ]);
+                effect$[$$meta] = {
+                    type: 'REPLACE_CHILD',
+                    payload: {
+                        container,
+                        incoming: newDomNode,
+                        outgoing: oldDomNode
+                    }
+                };
+                observables.push(effect$);
             }
         }
     }
@@ -249,7 +290,14 @@ export default function patchAsObservable(patches) {
 
                 emitter.end();
             });
-
+            effect$[$$meta] = {
+                type: 'NODE_VALUE',
+                payload: {
+                    container: getContainerNode(domNode),
+                    target: domNode,
+                    value: nodeValue
+                }
+            };
             observables.push(effect$);
         }
     }

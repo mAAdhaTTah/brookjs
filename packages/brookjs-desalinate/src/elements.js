@@ -9,6 +9,7 @@ const elements = new Set();
  */
 export function register(el) {
     elements.add(el);
+    document.body.appendChild(el);
 }
 
 /**
@@ -18,6 +19,7 @@ export function register(el) {
  */
 export function release(el) {
     diffRelease(el);
+    document.body.removeChild(el);
     elements.delete(el);
 }
 

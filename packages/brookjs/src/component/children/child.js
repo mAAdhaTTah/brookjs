@@ -26,14 +26,10 @@ export default function child({ container, factory, modifyChildProps = R.identit
      * @param {Kefir.Observable} props$ - Child props stream.
      * @returns {Kefir.Observable} - Child stream instance.
      */
-    return R.curry((element, props$, { useFactory = false }) => {
+    return R.curry((element, props$, effect$$) => {
         const keyAttr = element.getAttribute(KEY_ATTRIBUTE);
-        let func = factory;
+        const { createSourceStream } = factory[$$internals];
 
-        if (!useFactory && factory[$$internals]) {
-            func = factory[$$internals].createSourceStream;
-        }
-
-        return preplug(func(element, modifyChildProps(props$, keyAttr)), keyAttr);
+        return preplug(createSourceStream(element, modifyChildProps(props$, keyAttr), effect$$), keyAttr);
     });
 }

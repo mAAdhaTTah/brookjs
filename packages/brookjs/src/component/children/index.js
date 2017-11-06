@@ -1,12 +1,9 @@
 import assert from 'assert';
 import R from 'ramda';
-import Kefir from '../kefir';
-import { containerAttribute } from '../helpers';
+import Kefir from '../../kefir';
+import { CONTAINER_ATTRIBUTE, $$meta } from '../constants';
+import { containerAttribute, getContainerNode } from '../helpers';
 import child from './child';
-import { getContainerNode, containerMatches, isAddedChildNode, isRemovedChildNode } from './util';
-import mutations$ from './mutations';
-
-export { getContainerNode };
 
 /**
  * Generates a function to create new children streams.
@@ -52,13 +49,7 @@ export default function children(factories) {
      * @return {Observable<T, S>} Children stream.
      * @factory
      */
-    return R.curry((el, props$, config = {}) => {
-        const nodeAddedMutationPayload$ = mutations$.filter(isAddedChildNode(el))
-            .map(R.prop('payload'));
-        const nodeRemovedMutationPayload$ = mutations$.filter(isRemovedChildNode(el))
-            .map(R.prop('payload'));
-        const createElementRemoved = el => nodeRemovedMutationPayload$
-            .filter(({ node }) => node === el);
+    return R.curry((el, props$, effect$$) => {
         const mapToMixinPairs = R.map(([container, factory]) => {
             /**
              * Query all of the children for the configuration key.
@@ -74,13 +65,24 @@ export default function children(factories) {
              *
              * Filters out
              */
-            const addedEl$ = nodeAddedMutationPayload$
-                .filter(containerMatches(container))
-                .map(R.prop('node'));
+            const addedEl$ = effect$$.filter(effect$ => {
+                const { payload } = effect$[$$meta];
+
+                return payload.incoming && payload.incoming.getAttribute &&
+                    payload.incoming.getAttribute(CONTAINER_ATTRIBUTE);
+            })
+                .map(effect$ => effect$[$$meta].payload.incoming);
 
             const instance$ = Kefir.merge([existingEl$, addedEl$])
-                .flatMap(el => factory(el, props$, config)
-                    .takeUntilBy(createElementRemoved(el)));
+                .flatMap(el => factory(el, props$, effect$$)
+                    .takeUntilBy(
+                        effect$$.filter(effect$ =>{
+                            const { payload } = effect$[$$meta];
+
+                            return payload.outgoing === el;
+                        })
+                    )
+                );
 
             return [container, instance$];
         });

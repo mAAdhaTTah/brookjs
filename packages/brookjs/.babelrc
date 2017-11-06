@@ -7,9 +7,6 @@
   ],
   "env": {
     "test:node": {
-      "plugins": [
-        "istanbul"
-      ],
       "presets": [
         ["es2015", { "loose": false, "modules": "commonjs" }]
       ]

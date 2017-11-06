@@ -1,13 +1,4 @@
 /**
- * HTML attribute animate directive.
- *
- * For tagging a section of DOM to be animated.
- *
- * @type {string}
- */
-export const ANIMATE_ATTRIBUTE = 'data-brk-animate';
-
-/**
  * HTML attribute blackbox directive.
  *
  * For tagging a section of DOM to not update.
@@ -160,3 +151,4 @@ export const EVENT_ATTRIBUTES = {
 };
 
 export const $$internals = Symbol('@@brookjs/internals');
+export const $$meta = Symbol('@@brookjs/meta');
