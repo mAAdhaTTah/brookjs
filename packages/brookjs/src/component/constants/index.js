@@ -160,3 +160,4 @@ export const EVENT_ATTRIBUTES = {
 };
 
 export const $$internals = Symbol('@@brookjs/internals');
+export const $$meta = Symbol('@@brookjs/meta');
