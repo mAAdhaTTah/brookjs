@@ -10,8 +10,8 @@ import hbs from 'handlebars';
 import { createElementFromTemplate, cleanup } from 'brookjs-desalinate';
 import simulant from 'simulant';
 import Kefir from '../../kefir';
-import { CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
-import { animateAttribute, blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } from '../helpers';
+import { SUPPORTED_EVENTS } from '../constants';
+import { blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } from '../helpers';
 import { component, children, events, render } from '../';
 import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
@@ -19,7 +19,6 @@ const { plugin, prop, send, value, end } = chaiKefir(Kefir);
 chai.use(plugin);
 chai.use(sinonChai);
 
-hbs.registerHelper('animate', attr => new hbs.SafeString(animateAttribute(attr)));
 hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
 hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
 hbs.registerHelper('key', attr => new hbs.SafeString(keyAttribute(attr)));

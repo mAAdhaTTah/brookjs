@@ -1,7 +1,7 @@
 import { Internals } from 'diffhtml';
 import Kefir from '../../kefir';
 import { $$meta } from '../constants';
-import { getContainerNode } from '../children/util';
+import { getContainerNode } from '../helpers';
 
 const { createNode, NodeCache, memory, decodeEntities, escape } = Internals;
 const { protectVTree, unprotectVTree } = memory;

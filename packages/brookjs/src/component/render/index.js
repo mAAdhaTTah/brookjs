@@ -4,6 +4,7 @@ import { outerHTML, use } from 'diffhtml';
 import { $$internals } from '../constants';
 import { raf$ } from '../rAF';
 import middleware from './middleware';
+import createEffects$ from './createEffects$';
 
 use(middleware());
 
@@ -35,18 +36,6 @@ export default function render(template) {
         assert.equal(typeof template, 'function', '`template` should be a function');
     }
 
-    const internals = {
-        /**
-         * Render sink stream generator function.
-         *
-         * @param {HTMLElement} el - Element to render against.
-         * @param {Observable<T>} props$ - Stream of component props.
-         * @returns {Stream<void, void>} Rendering stream.
-         */
-        createRenderSink: (el, props$) => props$.map(template)
-            .flatMapLatest(renderFromHTML(el))
-    };
-
     /**
      * Create combined render/animation stream.
      *
@@ -54,9 +43,11 @@ export default function render(template) {
      * @param {Observable<T>} props$ - Stream of component props.
      * @returns {Stream<void, void>} Rendering stream.
      */
-    const renderFactory = R.curry(internals.createRenderSink);
+    const factory = R.curry((el, props$) =>
+        createEffects$(el, props$.map(template))
+    );
 
-    renderFactory[$$internals] = internals;
+    factory[$$internals] = { template };
 
-    return renderFactory;
+    return factory;
 }
