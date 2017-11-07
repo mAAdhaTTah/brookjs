@@ -2,7 +2,6 @@
 import 'core-js/shim';
 import { AssertionError } from 'assert';
 import R from 'ramda';
-import sinon from 'sinon';
 import chai, { expect } from 'chai';
 import sinonChai from 'sinon-chai';
 import chaiKefir from 'chai-kefir';
@@ -15,7 +14,7 @@ import { blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } f
 import { component, children, events, render } from '../';
 import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
-const { plugin, prop, send, value, end } = chaiKefir(Kefir);
+const { plugin, prop, send, value } = chaiKefir(Kefir);
 chai.use(plugin);
 chai.use(sinonChai);
 
@@ -63,7 +62,7 @@ describe('component', () => {
             });
         });
 
-        it('should update element with new state', done => {
+        it('should update element with new state', () => {
             const initial = {
                 type: 'text',
                 text: 'Hello world!'
@@ -78,18 +77,14 @@ describe('component', () => {
                 render: render(simpleUpdate)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(simpleUpdate(next).trim());
-
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(simpleUpdate(next).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should update child element', done => {
+        it('should update child element', () => {
             const initial = {
                 headline: 'Children',
                 children: [{ text: 'Child 1 Text', id: '1' }]
@@ -104,18 +99,14 @@ describe('component', () => {
                 render: render(updateChild)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(updateChild(next).trim());
-
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(updateChild(next).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should add missing child container element', done => {
+        it('should add missing child container element', () => {
             const initial = {
                 headline: 'Children',
                 children: [{ text: 'Child 1 Text', id: '1' }]
@@ -130,18 +121,14 @@ describe('component', () => {
                 render: render(updateChild)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(updateChild(next).trim());
-
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(updateChild(next).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should remove extra child container element', done => {
+        it('should remove extra child container element', () => {
             const initial = {
                 headline: 'Children',
                 children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
@@ -156,18 +143,14 @@ describe('component', () => {
                 render: render(updateChild)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(updateChild(next).trim());
-
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(updateChild(next).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should remove and modify children with matching keys', done => {
+        it('should remove and modify children with matching keys', () => {
             const initial = {
                 headline: 'Children',
                 children: [{ text: 'Child 1 Text', id: '1' }, { text: 'Child 2 Text', id: '2' }]
@@ -183,21 +166,17 @@ describe('component', () => {
                 render: render(updateChild)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(updateChild(next).trim());
-                    // Check that the proper element was removed
-                    expect(el.contains(child1)).to.equal(false);
-                    expect(el.contains(child2)).to.equal(true);
-
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(updateChild(next).trim());
+                // Check that the proper element was removed
+                expect(el.contains(child1)).to.equal(false);
+                expect(el.contains(child2)).to.equal(true);
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should not update blackboxed element', done => {
+        it('should not update blackboxed element', () => {
             const initial = {
                 headline: 'Blackboxed',
                 blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
@@ -212,22 +191,19 @@ describe('component', () => {
                 render: render(hideBlackboxed)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(hideBlackboxed({
-                        // New headline
-                        headline: 'Blackboxed Headline',
-                        // Previous children
-                        blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
-                    }).trim());
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(hideBlackboxed({
+                    // New headline
+                    headline: 'Blackboxed Headline',
+                    // Previous children
+                    blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
+                }).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should not update blackboxed element if modified between renders', done => {
+        it('should not update blackboxed element if modified between renders', () => {
             const initial = {
                 headline: 'Blackboxed',
                 blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
@@ -247,29 +223,25 @@ describe('component', () => {
                 render: render(hideBlackboxed)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(hideBlackboxed({
-                        headline: 'Blackboxed Final',
-                        blackboxed: [{ text: 'Blackboxed 1 Modified Text', id: '1' }]
-                    }).trim());
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
 
-                    done();
-                }
-            });
-
-            send(props$, [value(next)]);
-
-            requestAnimationFrame(() => {
                 const blackboxed = el.querySelector('[data-brk-blackbox="1"]');
-
                 blackboxed.textContent = modifiedTextContent;
 
-                send(props$, [value(final), end()]);
+                send(props$, [value(final)]);
+
+                clock.runToFrame();
+
+                expect(el.outerHTML).to.equal(hideBlackboxed({
+                    headline: 'Blackboxed Final',
+                    blackboxed: [{ text: 'Blackboxed 1 Modified Text', id: '1' }]
+                }).trim());
             });
         });
 
-        it('should add missing blackboxed element', done => {
+        it('should add missing blackboxed element', () => {
             const initial = {
                 headline: 'Blackboxed Previous',
                 blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }]
@@ -284,20 +256,17 @@ describe('component', () => {
                 render: render(hideBlackboxed)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(hideBlackboxed({
-                        headline: 'Blackboxed Next',
-                        blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
-                    }).trim());
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(hideBlackboxed({
+                    headline: 'Blackboxed Next',
+                    blackboxed: [{ text: 'Blackboxed 1 Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
+                }).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should remove extra blackboxed element', done => {
+        it('should remove extra blackboxed element', () => {
             const initial = {
                 headline: 'Blackboxed',
                 blackboxed: [{ text: 'Blackboxed 1 New Text', id: '1' }, { text: 'Blackboxed 2 Text', id: '2' }]
@@ -312,21 +281,18 @@ describe('component', () => {
                 render: render(hideBlackboxed)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    const [one, two] = el.querySelectorAll('[data-brk-blackbox]');
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
 
-                    expect(one.textContent).to.equal(initial.blackboxed[0].text);
-                    expect(two).to.equal(undefined);
+                const [one, two] = el.querySelectorAll('[data-brk-blackbox]');
 
-                    done();
-                }
+                expect(one.textContent).to.equal(initial.blackboxed[0].text);
+                expect(two).to.equal(undefined);
             });
-
-            send(props$, [value(next), end()]);
         });
 
-        it('should render root blackboxed element', done => {
+        it('should render root blackboxed element', () => {
             const initial = {
                 text: 'Initial text'
             };
@@ -339,15 +305,11 @@ describe('component', () => {
                 render: render(rootBlackboxed)
             });
 
-            factory(el, props$).observe({
-                end() {
-                    expect(el.outerHTML).to.equal(rootBlackboxed(next).trim());
-
-                    done();
-                }
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
+                expect(el.outerHTML).to.equal(rootBlackboxed(next).trim());
             });
-
-            send(props$, [value(next), end()]);
         });
     });
 
@@ -478,27 +440,18 @@ describe('component', () => {
             };
             const el = createElementFromTemplate(toggleChild, initial);
             const props$ = send(prop(), [value(initial)]);
-            const spy = sinon.spy();
 
             const factory = component({
                 children: children({ toggled }),
                 render: render(toggleChild)
             });
 
-            const sub = factory(el, props$).observe({
-                value: spy
+            expect(factory(el, props$)).to.emitInTime([[0, value({ type: 'CLICK' })]], () => {
+                simulant.fire(el.querySelector('button'), 'click');
             });
-
-            simulant.fire(el.querySelector('button'), 'click');
-
-            expect(spy).to.have.callCount(1).and.have.been.calledWith({
-                type: 'CLICK'
-            });
-
-            sub.unsubscribe();
         });
 
-        it('should bind to new child', done => {
+        it('should bind to new child', () => {
             const initial = {
                 show: false
             };
@@ -507,32 +460,20 @@ describe('component', () => {
             };
             const el = createElementFromTemplate(toggleChild, initial);
             const props$ = send(prop(), [value(initial)]);
-            const spy = sinon.spy();
 
             const factory = component({
                 children: children({ toggled }),
                 render: render(toggleChild)
             });
 
-            const sub = factory(el, props$).observe({
-                value: spy
-            });
-
-            send(props$, [value(next)]);
-
-            requestAnimationFrame(() => {
+            expect(factory(el, props$)).to.emitInTime([[16, value({ type: 'CLICK' })]], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
                 simulant.fire(el.querySelector('button'), 'click');
-
-                expect(spy).to.have.callCount(1).and.have.been.calledWith({
-                    type: 'CLICK'
-                });
-
-                sub.unsubscribe();
-                done();
             });
         });
 
-        it('should unbind to removed child element', done => {
+        it('should unbind to removed child element', () => {
             const initial = {
                 show: true
             };
@@ -542,30 +483,20 @@ describe('component', () => {
             const el = createElementFromTemplate(toggleChild, initial);
             const button = el.querySelector('button');
             const props$ = send(prop(), [value(initial)]);
-            const spy = sinon.spy();
 
             const factory = component({
                 children: children({ toggled }),
                 render: render(toggleChild)
             });
 
-            const sub = factory(el, props$).observe({
-                value: spy
-            });
-
-            send(props$, [value(next)]);
-
-            requestAnimationFrame(() => {
+            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
                 simulant.fire(button, 'click');
-
-                expect(spy).to.have.callCount(0);
-
-                sub.unsubscribe();
-                done();
             });
         });
 
-        it('should bind to new subchild element', done => {
+        it('should bind to new subchild element', () => {
             const initial = {
                 show: false
             };
@@ -574,28 +505,16 @@ describe('component', () => {
             };
             const el = createElementFromTemplate(toggleSubChild, initial);
             const props$ = send(prop(), [value(initial)]);
-            const spy = sinon.spy();
 
             const factory = component({
                 children: children({ withToggledChild }),
                 render: render(toggleSubChild)
             });
 
-            const sub = factory(el, props$).observe({
-                value: spy
-            });
-
-            send(props$, [value(next)]);
-
-            requestAnimationFrame(() => {
+            expect(factory(el, props$)).to.emitInTime([[16, value({ type: 'CLICK' })]], (tick, clock) => {
+                send(props$, [value(next)]);
+                clock.runToFrame();
                 simulant.fire(el.querySelector('button'), 'click');
-
-                expect(spy).to.have.callCount(1).and.have.been.calledWith({
-                    type: 'CLICK'
-                });
-
-                sub.unsubscribe();
-                done();
             });
         });
     });
