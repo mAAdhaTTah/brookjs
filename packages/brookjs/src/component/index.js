@@ -47,6 +47,8 @@ export function component({
         assert.equal(typeof children, 'function', '`children` should be a function');
     }
 
+    const { modifyEffect$$ = R.identity } = (render[$$internals] || {});
+
     const internals = {
 
         /**
@@ -80,12 +82,17 @@ export function component({
                 assert.ok(source$ instanceof Kefir.Observable, '`source$` is not a `Kefir.Observable`');
             }
 
-            return Kefir.merge([
-                effect$$.bufferWhile(effect$ =>
-                    effect$[$$meta].type !== 'END'
-                ).flatMap(effects$ => Kefir.merge(effects$)),
+            effect$$ = effect$$.thru(modifyEffect$$);
+
+            const instance$ = Kefir.merge([
+                effect$$.bufferWhile(effect$ => effect$[$$meta].type !== 'END')
+                    .flatMap(effects$ => Kefir.merge(effects$)),
                 source$
             ]);
+
+            instance$[$$internals] = { effect$$ };
+
+            return instance$;
         },
 
         /**

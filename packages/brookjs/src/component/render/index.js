@@ -29,11 +29,13 @@ export const renderFromHTML = R.curry((el, html) =>
  * Generates a new rendering stream that ends after the element is updated.
  *
  * @param {Function} template - String-returning template function.
+ * @param {Function} modifyEffect$$ - Function that modifies the effect$$ stream.
  * @returns {Function} Curried stream generating function.
  */
-export default function render(template) {
+export default function render(template, modifyEffect$$ = R.identity) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof template, 'function', '`template` should be a function');
+        assert.equal(typeof modifyEffect$$, 'function', '`modifyEffect$$` should be a function');
     }
 
     /**
@@ -47,7 +49,7 @@ export default function render(template) {
         createEffects$(el, props$.map(template))
     );
 
-    factory[$$internals] = { template };
+    factory[$$internals] = { template, modifyEffect$$ };
 
     return factory;
 }

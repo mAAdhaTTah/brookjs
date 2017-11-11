@@ -150,5 +150,5 @@ export const EVENT_ATTRIBUTES = {
     [TOUCHSTART]: prefix('ontouchstart')
 };
 
-export const $$internals = Symbol('@@brookjs/internals');
-export const $$meta = Symbol('@@brookjs/meta');
+export const $$internals = Symbol.for('@@brookjs/internals');
+export const $$meta = '$meta';

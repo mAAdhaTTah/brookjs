@@ -2,11 +2,11 @@
 import 'core-js/shim';
 import { AssertionError } from 'assert';
 import R from 'ramda';
-import chai, { expect } from 'chai';
+import { use, expect } from 'chai';
+import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import chaiKefir from 'chai-kefir';
 import hbs from 'handlebars';
-import { createElementFromTemplate, cleanup } from 'brookjs-desalinate';
+import { createElementFromTemplate, cleanup, brookjsChai } from 'brookjs-desalinate';
 import simulant from 'simulant';
 import Kefir from '../../kefir';
 import { SUPPORTED_EVENTS } from '../constants';
@@ -14,9 +14,10 @@ import { blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } f
 import { component, children, events, render } from '../';
 import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
-const { plugin, prop, send, value } = chaiKefir(Kefir);
-chai.use(plugin);
-chai.use(sinonChai);
+const { plugin, prop, send, value } = brookjsChai({ Kefir });
+
+use(plugin);
+use(sinonChai);
 
 hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
 hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
@@ -515,6 +516,74 @@ describe('component', () => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 simulant.fire(el.querySelector('button'), 'click');
+            });
+        });
+    });
+
+    describe('animation', () => {
+        it('should throw if modifyEffect$$ is not a function', () => {
+            const invalid = [{}, 'string', 2, true, []];
+
+            invalid.forEach(modifyEffect$$ => {
+                expect(() => {
+                    component({
+                        render: render(simpleUpdate, modifyEffect$$)
+                    });
+                }).to.throw(AssertionError);
+            });
+        });
+
+        it('should be called with effect$$ when component is mounted', () => {
+            const initial = {
+                type: 'text',
+                text: 'Hello world!'
+            };
+            const modifyEffect$$ = sinon.spy(x => x);
+            const factory = component({
+                render: render(simpleUpdate, modifyEffect$$)
+            });
+            const el = createElementFromTemplate(simpleUpdate, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            expect(factory(el, props$)).to.emitInTime([], () => {
+                expect(modifyEffect$$).to.have.callCount(1)
+                    .and.be.calledWith(sinon.match.instanceOf(Kefir.Observable));
+            });
+        });
+
+        it('should emit effects from renders', () => {
+            const initial = {
+                type: 'text',
+                text: 'Hello world!'
+            };
+            const next = {
+                type: 'image',
+                text: 'Goodbye World!'
+            };
+            const modifyEffect$$ = sinon.spy(x => x);
+            const factory = component({
+                render: render(simpleUpdate, modifyEffect$$)
+            });
+            const el = createElementFromTemplate(simpleUpdate, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            const expected = [
+                [16, value({ type: 'SET_ATTRIBUTE', payload: {
+                    container: el,
+                    target: el,
+                    attr: 'class',
+                    value: 'image'
+                } })],
+                [16, value({ type: 'NODE_VALUE', payload: {
+                    container: el,
+                    target: el.firstChild,
+                    value: 'Goodbye World!'
+                } })],
+                [16, value({ type: 'END', payload: {} })]
+            ];
+            expect(factory(el, props$)).to.emitEffectsInTime(expected, frame => {
+                send(props$, [value(next)]);
+                frame();
             });
         });
     });
