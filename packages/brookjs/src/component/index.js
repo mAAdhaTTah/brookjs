@@ -60,7 +60,7 @@ export function component({
          * @param {Observable<Observable<Eff>>} effect$$ - Stream of Observables of Effects.
          * @returns {Observable<Action>} Stream of actions from the DOM.
          */
-        createSourceStream(el, props$, effect$$) {
+        createInstance(el, props$, effect$$) {
             const onMount$ = onMount(el, props$);
             const events$ = events(el);
             const children$ = children(el, props$, effect$$);
@@ -82,35 +82,9 @@ export function component({
                 assert.ok(source$ instanceof Kefir.Observable, '`source$` is not a `Kefir.Observable`');
             }
 
-            effect$$ = effect$$.thru(modifyEffect$$);
+            source$.effect$$ = effect$$.thru(modifyEffect$$);
 
-            const instance$ = Kefir.merge([
-                effect$$.bufferWhile(effect$ => effect$[$$meta].type !== 'END')
-                    .flatMap(effects$ => Kefir.merge(effects$)),
-                source$
-            ]);
-
-            instance$[$$internals] = { effect$$ };
-
-            return instance$;
-        },
-
-        /**
-         * Creates a new sink stream from the provided element and props stream.
-         * A sink stream performs side effects on the element.
-         *
-         * @param {Element} el - Element to create a stream from.
-         * @param {Observable<Props>} props$ - Stream of props.
-         * @returns {Observable<Action>} Stream of actions from the DOM.
-         */
-        createEffectsStream(el, props$) {
-            const effect$$ = render(el, props$);
-
-            if (process.env.NODE_ENV !== 'production') {
-                assert.ok(effect$$ instanceof Kefir.Observable, '`effect$$` is not a `Kefir.Observable`');
-            }
-
-            return effect$$;
+            return source$;
         }
     };
 
@@ -127,11 +101,24 @@ export function component({
             assert.ok(props$ instanceof Kefir.Observable, '`props$` is not a `Kefir.Observable`');
         }
 
-        return internals.createSourceStream(
-            el,
-            props$,
-            internals.createEffectsStream(el, props$)
-        );
+        const rootEffect$$ = render(el, props$);
+
+        if (process.env.NODE_ENV !== 'production') {
+            assert.ok(rootEffect$$ instanceof Kefir.Observable, '`effect$$` is not a `Kefir.Observable`');
+        }
+
+        const end$ = rootEffect$$.filter(effect$ => effect$[$$meta].type === 'END');
+        const rest$ = rootEffect$$.filter(effect$ => effect$[$$meta].type !== 'END');
+        const source$ = internals.createInstance(el, props$, rest$);
+        const effect$$ = Kefir.merge([source$.effect$$, end$]);
+        const runEffect$$ = effect$$
+            .bufferWhile(effect$ => effect$[$$meta].type !== 'END')
+            .flatMap(effects$ => Kefir.merge(effects$));
+
+        const instance$ = Kefir.merge([source$, runEffect$$]);
+        instance$.effect$$ = effect$$;
+
+        return instance$;
     });
 
     factory[$$internals] = internals;

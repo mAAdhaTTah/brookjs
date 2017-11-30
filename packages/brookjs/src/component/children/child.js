@@ -6,7 +6,7 @@ import { $$internals, KEY_ATTRIBUTE } from '../constants';
  * Create a new children stream instance from the given configuration, props$ stream & element.
  *
  * @param {string} container - Container key.
- * @param {Function} createSourceStream - Function that generates a source stream.
+ * @param {Function} createInstance - Function that generates a source stream.
  * @param {Function} factory - Instance factory function.
  * @param {Function} modifyChildProps - Creates a new props$ stream for the child.
  * @param {Function} preplug - Modify the child instance stream.
@@ -28,8 +28,8 @@ export default function child({ container, factory, modifyChildProps = R.identit
      */
     return R.curry((element, props$, effect$$) => {
         const keyAttr = element.getAttribute(KEY_ATTRIBUTE);
-        const { createSourceStream } = factory[$$internals];
+        const { createInstance } = factory[$$internals];
 
-        return preplug(createSourceStream(element, modifyChildProps(props$, keyAttr), effect$$), keyAttr);
+        return preplug(createInstance(element, modifyChildProps(props$, keyAttr), effect$$), keyAttr);
     });
 }

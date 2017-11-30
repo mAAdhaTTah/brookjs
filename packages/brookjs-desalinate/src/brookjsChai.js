@@ -46,7 +46,7 @@ export default ({ Kefir }) => {
 
             chai.Assertion.addMethod('emitEffectsInTime', function emitEffectsInTime(expected, cb) {
                 let log;
-                const actual = utils.getActual(this, arguments)[Symbol.for('@@brookjs/internals')].effect$$;
+                const actual = utils.getActual(this, arguments).effect$$;
 
                 withFakeTime((frame, clock) => {
                     log = watchWithTime(actual);
