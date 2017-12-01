@@ -122,7 +122,7 @@ export default function patchAsObservable(patches) {
 
             // If an attribute it being added to a DOM node that's about
             // to be added to the DOM, then we need to do this now.
-            if (!getContainerNode(domNode)) {
+            if (!document.body.contains(domNode)) {
                 effect$.observe({});
             } else {
                 effect$[$$meta] = {
@@ -190,14 +190,20 @@ export default function patchAsObservable(patches) {
                     emitter.end();
                 });
 
-                attach$[$$meta] = {
-                    type: 'INSERT_NODE',
-                    payload: {
-                        container: getContainerNode(domNode),
-                        incoming: newNode
-                    }
-                };
-                observables.push(attach$);
+                if (referenceNode && !document.body.contains(referenceNode)) {
+                    attach$.observe({});
+                } else {
+                    attach$[$$meta] = {
+                        type: 'INSERT_NODE',
+                        payload: {
+                            container: getContainerNode(domNode),
+                            parent: domNode,
+                            reference: referenceNode,
+                            incoming: newNode
+                        }
+                    };
+                    observables.push(attach$);
+                }
             }
         }
 
@@ -259,6 +265,7 @@ export default function patchAsObservable(patches) {
                     type: 'REPLACE_CHILD',
                     payload: {
                         container,
+                        target: oldDomNode.parentNode,
                         incoming: newDomNode,
                         outgoing: oldDomNode
                     }
@@ -290,15 +297,20 @@ export default function patchAsObservable(patches) {
 
                 emitter.end();
             });
-            effect$[$$meta] = {
-                type: 'NODE_VALUE',
-                payload: {
-                    container: getContainerNode(domNode),
-                    target: domNode,
-                    value: nodeValue
-                }
-            };
-            observables.push(effect$);
+
+            if (domNode && !document.body.contains(domNode)) {
+                effect$.observe({});
+            } else {
+                effect$[$$meta] = {
+                    type: 'NODE_VALUE',
+                    payload: {
+                        container: getContainerNode(domNode),
+                        target: domNode,
+                        value: nodeValue
+                    }
+                };
+                observables.push(effect$);
+            }
         }
     }
 
