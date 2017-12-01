@@ -30,19 +30,19 @@ const effect$$WithSource = source => effect$$ => effect$$.map(effect$ => Object.
 } }));
 
 const SimpleUpdateComponent = component({
-    render: render(simpleUpdate, effect$$WithSource('SimpleUpdate'))
+    render: render(simpleUpdate, effect$$WithSource('SimpleUpdateComponent'))
 });
 
 const UpdateChildComponent = component({
-    render: render(updateChild, effect$$WithSource('RenderChild'))
+    render: render(updateChild, effect$$WithSource('UpdateChildComponent'))
 });
 
 const HideBlackBoxedComponent = component({
-    render: render(hideBlackboxed, effect$$WithSource('HideBlackBoxed'))
+    render: render(hideBlackboxed, effect$$WithSource('HideBlackBoxedComponent'))
 });
 
 const RootBlackBoxedComponent = component({
-    render: render(rootBlackboxed, effect$$WithSource('RootBlackBoxed'))
+    render: render(rootBlackboxed, effect$$WithSource('RootBlackBoxedComponent'))
 });
 
 const ChooseEventComponent = component({
@@ -56,7 +56,7 @@ const ChooseEventComponent = component({
             }
         }))
     }),
-    render: render(chooseEvent, effect$$WithSource('ChooseEvent'))
+    render: render(chooseEvent, effect$$WithSource('ChooseEventComponent'))
 });
 const ToggledComponent = component({
     events: events({
@@ -69,7 +69,7 @@ const ToggledComponent = component({
 
 const WithToggledChildComponent = component({
     children: children({ toggled: ToggledComponent }),
-    render: render(toggleChild, effect$$WithSource('WithToggledChild'))
+    render: render(toggleChild, effect$$WithSource('WithToggledChildComponent'))
 });
 
 const WithToggledSubChildComponent = component({
@@ -510,13 +510,13 @@ describe('component', () => {
             const props$ = send(prop(), [value(initial)]);
 
             const expected = [
-                [16, value({ type: 'SET_ATTRIBUTE', source: 'SimpleUpdate', payload: {
+                [16, value({ type: 'SET_ATTRIBUTE', source: 'SimpleUpdateComponent', payload: {
                     container: el,
                     target: el,
                     attr: 'class',
                     value: 'image'
                 } })],
-                [16, value({ type: 'NODE_VALUE', source: 'SimpleUpdate', payload: {
+                [16, value({ type: 'NODE_VALUE', source: 'SimpleUpdateComponent', payload: {
                     container: el,
                     target: el.firstChild,
                     value: 'Goodbye World!'
@@ -526,6 +526,34 @@ describe('component', () => {
             expect(SimpleUpdateComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
                 send(props$, [value(next)]);
                 frame();
+            });
+        });
+
+        it('should emit effects from attached child element', () => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            const expected = [
+                [16, value({ type: 'INSERT_NODE', source: 'WithToggledChildComponent', payload: {
+                    container: el,
+                    incoming: 'ADDED BELOW',
+                    parent: el,
+                    reference: null
+                } })],
+                [16, value({ type: 'END', payload: {} })]
+            ];
+            expect(WithToggledChildComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
+                send(props$, [value(next)]);
+                frame();
+
+                // @todo Need to replace with a matcher or something.... but it gets us thru.
+                expected[0][1].value.payload.incoming = el.querySelector('button');
             });
         });
     });
