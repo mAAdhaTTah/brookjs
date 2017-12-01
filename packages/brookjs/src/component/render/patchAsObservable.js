@@ -24,6 +24,18 @@ const removeAttribute = (domNode, name) => {
     }
 };
 
+const isContainedByBody = node => {
+    if (node.nodeType === 3) {
+        node = node.parentNode;
+
+        if (!node) {
+            return false;
+        }
+    }
+
+    return document.body.contains(node);
+};
+
 export default function patchAsObservable(patches) {
     const observables = [];
     const { TREE_OPS, NODE_VALUE, SET_ATTRIBUTE, REMOVE_ATTRIBUTE } = patches;
@@ -122,7 +134,7 @@ export default function patchAsObservable(patches) {
 
             // If an attribute it being added to a DOM node that's about
             // to be added to the DOM, then we need to do this now.
-            if (!document.body.contains(domNode)) {
+            if (!isContainedByBody(domNode)) {
                 effect$.observe({});
             } else {
                 effect$[$$meta] = {
@@ -190,7 +202,7 @@ export default function patchAsObservable(patches) {
                     emitter.end();
                 });
 
-                if (referenceNode && !document.body.contains(referenceNode)) {
+                if (referenceNode && !isContainedByBody(referenceNode)) {
                     attach$.observe({});
                 } else {
                     attach$[$$meta] = {
@@ -298,7 +310,7 @@ export default function patchAsObservable(patches) {
                 emitter.end();
             });
 
-            if (domNode && !document.body.contains(domNode)) {
+            if (domNode && !isContainedByBody(domNode)) {
                 effect$.observe({});
             } else {
                 effect$[$$meta] = {
