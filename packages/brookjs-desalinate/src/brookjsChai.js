@@ -65,8 +65,10 @@ export default ({ Kefir }) => {
 
                 this.assert(
                     deepEql(log, expected),
-                    `Expected to emit ${utils.objDisplay(expected)}, actually emitted ${utils.objDisplay(log)}`,
-                    `Expected to not emit ${utils.objDisplay(expected)}, actually emitted ${utils.objDisplay(log)}`
+                    `Expected to emit #{exp}, actually emitted #{act}`,
+                    `Expected to not emit #{exp}, actually emitted #{act}`,
+                    expected,
+                    log
                 );
             });
         }
