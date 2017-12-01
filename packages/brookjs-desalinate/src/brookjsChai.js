@@ -49,8 +49,17 @@ export default ({ Kefir }) => {
                 const actual = utils.getActual(this, arguments).effect$$;
 
                 withFakeTime((frame, clock) => {
+                    let ran = 0;
                     log = watchWithTime(actual);
-                    cb(frame, clock);
+                    const runFrame = () => {
+                        frame();
+                        // Make sure we run the side effects ourselves,
+                        // since they're being collected here instead of
+                        // being run by virtue of being mounted.
+                        log.slice(ran).forEach(([,item]) => item.value.observe({}));
+                        ran = log.length;
+                    };
+                    cb(runFrame, clock);
                     log = log.map(([time, item]) => [time, { ...item, value: item.value.$meta }]);
                 });
 
