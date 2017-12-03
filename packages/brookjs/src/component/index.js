@@ -1,11 +1,13 @@
 import assert from 'assert';
 import R from 'ramda';
 import Kefir from '../kefir';
-import { $$internals, $$meta } from './constants';
+import { $$internals, $$meta, CONTAINER_ATTRIBUTE } from './constants';
+import childrenFactory from './children';
+import eventsFactory from './events';
+import renderFactory, { renderFromHTML } from './render';
 
-export { default as children } from './children';
-export { default as events } from './events';
-export { default as render, renderFromHTML } from './render';
+export { childrenFactory as children, eventsFactory as events, renderFactory as render,
+    renderFromHTML };
 export { containerAttribute, blackboxAttribute,
     keyAttribute, eventAttribute, mapActionTo } from './helpers';
 export { raf$ } from './rAF';
@@ -22,11 +24,11 @@ export { raf$ } from './rAF';
  * @factory
  */
 export function component({
-    children = R.always(Kefir.never()),
+    children = childrenFactory({}),
     combinator = Kefir.merge,
-    events = R.always(Kefir.never()),
+    events = eventsFactory({}),
     onMount = R.always(Kefir.never()),
-    render = R.curryN(2, R.always(Kefir.never()))
+    render = renderFactory(() => '')
 }) {
     if (process.env.NODE_ENV !== 'production') {
         // Validate combinator
@@ -40,7 +42,6 @@ export function component({
 
         // Validate render function.
         assert.equal(typeof render, 'function', '`render` should be a function');
-        assert.equal(typeof render({}), 'function', '`render` should be curried');
         assert.equal(render.length, 2, '`render` should take 2 arguments');
 
         // Validate children$ stream generator.
