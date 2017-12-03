@@ -23,7 +23,7 @@ export { raf$ } from './rAF';
  */
 export function component({
     children = R.always(Kefir.never()),
-    combinator = R.pipe(R.values, Kefir.merge),
+    combinator = Kefir.merge,
     events = R.always(Kefir.never()),
     onMount = R.always(Kefir.never()),
     render = R.curryN(2, R.always(Kefir.never()))
@@ -71,12 +71,7 @@ export function component({
                 assert.ok(onMount$ instanceof Kefir.Observable, '`onMount$` is not a `Kefir.Observable`');
             }
 
-            const source$ = combinator(
-                Object.assign(
-                    Object.create(Kefir.merge([onMount$, events$, children$])),
-                    { onMount$, events$, children$ }
-                )
-            );
+            const source$ = combinator([onMount$, events$, children$]);
 
             if (process.env.NODE_ENV !== 'production') {
                 assert.ok(source$ instanceof Kefir.Observable, '`source$` is not a `Kefir.Observable`');
