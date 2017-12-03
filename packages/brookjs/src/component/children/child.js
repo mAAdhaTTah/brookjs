@@ -22,14 +22,22 @@ export default function child({ container, factory, modifyChildProps = R.identit
     /**
      * Create child stream mounted to the provided element & props$.
      *
-     * @param {Element} element - Child element.
+     * @param {Element} el - Child element.
      * @param {Kefir.Observable} props$ - Child props stream.
+     * @param {Observable} effect$$ - Stream of effect$.
      * @returns {Kefir.Observable} - Child stream instance.
      */
-    return R.curry((element, props$, effect$$) => {
-        const keyAttr = element.getAttribute(KEY_ATTRIBUTE);
-        const { createInstance } = factory[$$internals];
+    return (el, props$, effect$$) => {
+        const keyAttr = el.getAttribute(KEY_ATTRIBUTE);
+        let instance$ = factory[$$internals].createInstance(el, modifyChildProps(props$, keyAttr), effect$$);
 
-        return preplug(createInstance(element, modifyChildProps(props$, keyAttr), effect$$), keyAttr);
-    });
+        // We need to hold onto the effect$$ so
+        // preplug can modify the stream the normal way
+        // without losing access to it.
+        const eff$ = instance$.effect$$;
+        instance$ = preplug(instance$, keyAttr);
+        instance$.effect$$ = eff$;
+
+        return instance$;
+    };
 }
