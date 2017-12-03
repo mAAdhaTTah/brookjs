@@ -33,7 +33,12 @@ const SimpleUpdateComponent = component({
     render: render(simpleUpdate, effect$$WithSource('SimpleUpdateComponent'))
 });
 
+const ChildComponent = component({
+    render: render(() => '', effect$$WithSource('ChildComponent'))
+});
+
 const UpdateChildComponent = component({
+    children: children({ child: ChildComponent }),
     render: render(updateChild, effect$$WithSource('UpdateChildComponent'))
 });
 
