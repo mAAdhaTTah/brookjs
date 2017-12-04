@@ -1,9 +1,8 @@
 import assert from 'assert';
-import R from 'ramda';
 import { outerHTML } from 'diffhtml';
 import { raf$ } from '../rAF';
 
-export default R.curry((el, vdom$) =>
+export default (el, vdom$) =>
     vdom$.flatMapLatest(vdom => raf$.take(1).flatMap(() => {
         if (process.env.NODE_ENV !== 'production') {
             assert(
@@ -13,5 +12,4 @@ export default R.curry((el, vdom$) =>
         }
 
         return outerHTML(el, vdom);
-    })).setName(vdom$, 'effects$')
-);
+    })).setName(vdom$, 'effects$');

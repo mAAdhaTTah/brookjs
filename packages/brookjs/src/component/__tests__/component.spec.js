@@ -561,6 +561,34 @@ describe('component', () => {
                 expected[0][1].value.payload.incoming = el.querySelector('button');
             });
         });
+
+        it('should emit effects from attached subchild element', () => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleSubChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            const expected = [
+                [16, value({ type: 'INSERT_NODE', source: 'WithToggledChildComponent', payload: {
+                    container: el.querySelector('.with-subchild'),
+                    incoming: 'ADDED BELOW',
+                    parent: el.querySelector('.with-subchild'),
+                    reference: null
+                } })],
+                [16, value({ type: 'END', payload: {} })]
+            ];
+            expect(WithToggledSubChildComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
+                send(props$, [value(next)]);
+                frame();
+
+                // @todo Need to replace with a matcher or something.... but it gets us thru.
+                expected[0][1].value.payload.incoming = el.querySelector('button');
+            });
+        });
     });
 
     afterEach(() => {

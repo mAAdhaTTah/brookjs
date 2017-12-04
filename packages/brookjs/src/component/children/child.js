@@ -29,15 +29,11 @@ export default function child({ container, factory, modifyChildProps = R.identit
      */
     return (el, props$, effect$$) => {
         const keyAttr = el.getAttribute(KEY_ATTRIBUTE);
-        let instance$ = factory[$$internals].createInstance(el, modifyChildProps(props$, keyAttr), effect$$);
+        const instance = factory[$$internals].createInstance(el, modifyChildProps(props$, keyAttr), effect$$);
 
-        // We need to hold onto the effect$$ so
-        // preplug can modify the stream the normal way
-        // without losing access to it.
-        const eff$ = instance$.effect$$;
-        instance$ = preplug(instance$, keyAttr);
-        instance$.effect$$ = eff$;
-
-        return instance$;
+        return {
+            ...instance,
+            source$: preplug(instance.source$, keyAttr)
+        };
     };
 }

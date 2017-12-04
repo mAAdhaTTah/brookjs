@@ -11,7 +11,7 @@ import child from './child';
  * @param {Object} factories - Children configuration.
  * @returns {Function} Curried children stream generator.
  */
-export default function children(factories) {
+export default function children (factories) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof factories, 'object', '`factories` should be an object');
 
@@ -21,7 +21,8 @@ export default function children(factories) {
             }
 
             assert.ok(
-                typeof factories[container] === 'function' || typeof factories[container] === 'object',
+                typeof factories[container] === 'function' ||
+                    typeof factories[container] === 'object',
                 `${container} should be a function or object`
             );
         }
@@ -78,25 +79,19 @@ export default function children(factories) {
                 .map(effect$ => effect$[$$meta].payload.incoming);
 
             return Kefir.merge([existingEl$, addedEl$]).map(el => {
-                // @todo this feels horribly wrong and we're doing it in a couple places
-                // we can either honestly encapsulate this into a class / data structure
-                // that handles this for us or we need to figure out a way to store and
-                // retrieve these data against like WeakMaps or something....
-                const instance$ = factory(el, props$, effect$$);
-                const eff$$ = instance$.effect$$;
-                const remove$ = effect$$.filter(effect$ => effect$[$$meta].payload.outgoing === el);
+                const remove$ = effect$$.filter(effect$ =>
+                    effect$[$$meta].payload.outgoing === el);
 
-                return { instance$: instance$.takeUntilBy(remove$), effect$$: eff$$.takeUntilBy(remove$) };
+                const { source$, eff$$, children$ } = factory(el, props$, effect$$);
+
+                return {
+                    source$: source$.takeUntilBy(remove$),
+                    eff$$: eff$$.takeUntilBy(remove$),
+                    children$: children$.takeUntilBy(remove$)
+                };
             });
         });
 
-        const instance$$ = R.pipe(R.toPairs, mapPairsToInstance$$, Kefir.merge)(factories);
-
-        const instance$ = instance$$.flatMap(R.prop('instance$'))
-            .setName(instance$$, `${el.getAttribute(CONTAINER_ATTRIBUTE)}#children$`);
-        instance$.effect$$ = instance$$.flatMap(R.prop('effect$$'))
-            .setName(instance$$, `${el.getAttribute(CONTAINER_ATTRIBUTE)}#children$#effect$$`);
-
-        return instance$;
+        return R.pipe(R.toPairs, mapPairsToInstance$$, Kefir.merge)(factories);
     };
 }

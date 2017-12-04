@@ -25,15 +25,11 @@ export { raf$ } from './rAF';
  */
 export function component({
     children = childrenFactory({}),
-    combinator = Kefir.merge,
     events = eventsFactory({}),
     onMount = R.always(Kefir.never()),
     render = renderFactory(() => '')
 }) {
     if (process.env.NODE_ENV !== 'production') {
-        // Validate combinator
-        assert.equal(typeof combinator, 'function', '`combinator` should be a function');
-
         // Validate events function.
         assert.equal(typeof events, 'function', '`events` should be a function');
 
@@ -72,15 +68,18 @@ export function component({
                 assert.ok(onMount$ instanceof Kefir.Observable, '`onMount$` is not a `Kefir.Observable`');
             }
 
-            const source$ = combinator([onMount$, events$, children$]);
+            const source$ = Kefir.merge([onMount$, events$]);
 
             if (process.env.NODE_ENV !== 'production') {
                 assert.ok(source$ instanceof Kefir.Observable, '`source$` is not a `Kefir.Observable`');
             }
 
-            source$.effect$$ = effect$$.thru(modifyEffect$$);
+            const eff$$ = effect$$
+                .filter(effect$ => effect$[$$meta].payload.container === el)
+                .thru(modifyEffect$$)
+                .setName(effect$$, `${el.getAttribute(CONTAINER_ATTRIBUTE)}#eff$$`);
 
-            return source$;
+            return { source$, eff$$, children$ };
         }
     };
 
@@ -91,7 +90,7 @@ export function component({
      * @param {Observable} props$ - Observable of component props.
      * @returns {Observable} Component instance.
      */
-    const factory = R.curry((el, props$) => {
+    const factory = (el, props$) => {
         if (process.env.NODE_ENV !== 'production') {
             assert.ok(el instanceof HTMLElement, 'el is not an HTMLElement');
             assert.ok(props$ instanceof Kefir.Observable, '`props$` is not a `Kefir.Observable`');
@@ -103,19 +102,46 @@ export function component({
             assert.ok(rootEffect$$ instanceof Kefir.Observable, '`effect$$` is not a `Kefir.Observable`');
         }
 
-        const end$ = rootEffect$$.filter(effect$ => effect$[$$meta].type === 'END');
-        const rest$ = rootEffect$$.filter(effect$ => effect$[$$meta].type !== 'END');
-        const source$ = internals.createInstance(el, props$, rest$);
-        const effect$$ = Kefir.merge([source$.effect$$, end$]);
+        const root = {
+            children: [],
+            source$: Kefir.pool(),
+            eff$$: Kefir.pool(),
+            plug({ source$, eff$$, children$ }) {
+                root.source$.plug(source$);
+                root.eff$$.plug(eff$$);
+                children$.onValue(root.plug);
+                root.children.push(children$);
+            }
+        };
+
+        const rest$ = rootEffect$$.filter(effect$ => effect$[$$meta].type !== 'END')
+            .setName(rootEffect$$, 'rest$');
+        const end$ = rootEffect$$.filter(effect$ => effect$[$$meta].type === 'END')
+            .setName(rootEffect$$, 'end$');
+        const bootstrap$ = Kefir.stream(() => {
+            root.plug(internals.createInstance(el, props$, rest$));
+            return () => {
+                root.children.forEach(children$ => children$.offValue(root.plug));
+            };
+        });
+        const effect$$ = Kefir.merge([bootstrap$, root.eff$$, end$]);
         const runEffect$$ = effect$$
             .bufferWhile(effect$ => effect$[$$meta].type !== 'END')
             .flatMap(effects$ => Kefir.merge(effects$));
 
-        const instance$ = Kefir.merge([source$, runEffect$$]);
+        const instance$ = Kefir.stream(emitter => {
+            const sub = runEffect$$.observe({});
+            root.source$.onAny(emitter.event);
+
+            return () => {
+                root.source$.offAny(emitter.event);
+                sub.unsubscribe();
+            };
+        });
         instance$.effect$$ = effect$$;
 
         return instance$;
-    });
+    };
 
     factory[$$internals] = internals;
 
