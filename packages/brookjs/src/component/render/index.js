@@ -1,7 +1,8 @@
 import assert from 'assert';
 import R from 'ramda';
 import { outerHTML, use } from 'diffhtml';
-import { $$internals } from '../constants';
+import Kefir from '../../kefir';
+import { $$internals, $$meta } from '../constants';
 import { raf$ } from '../rAF';
 import middleware from './middleware';
 import createEffects$ from './createEffects$';
@@ -23,6 +24,8 @@ export const renderFromHTML = R.curry((el, html) =>
 
         return outerHTML(el, html);
     })
+        .bufferWhile(effect$ => effect$[$$meta].type !== 'END')
+        .flatMap(effects$ => Kefir.merge(effects$))
 );
 
 /**
