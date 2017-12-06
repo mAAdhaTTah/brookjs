@@ -56,29 +56,33 @@ export default function children (factories) {
      */
     return (el, props$, effect$$) => {
         const mapPairsToInstance$$ = R.map(([container, factory]) => {
-            /**
-             * Query all of the children for the configuration key.
-             *
-             * Filters out children that are under other containers.
-             */
-            const existingEl$ = Kefir.constant(R.filter(
-                R.pipe(R.prop('parentNode'), getContainerNode, R.equals(el)),
+            const existingEl$ = Kefir.constant(
                 el.querySelectorAll(`[${containerAttribute(container)}]`)
-            ))
-                .flatten();
+            );
 
             /**
              * Stream of added nodes from the rendering pipeline.
              */
-            const addedEl$ = effect$$.filter(effect$ => {
+            const addedEl$ = effect$$.map(effect$ => {
                 const { payload } = effect$[$$meta];
 
-                return payload.incoming && payload.incoming.getAttribute &&
-                    payload.incoming.getAttribute(CONTAINER_ATTRIBUTE) === container;
-            })
-                .map(effect$ => effect$[$$meta].payload.incoming);
+                if (!payload.incoming || !payload.incoming.querySelectorAll) {
+                    return [];
+                }
 
-            return Kefir.merge([existingEl$, addedEl$]).map(el => {
+                if (payload.incoming.getAttribute &&
+                    payload.incoming.getAttribute(CONTAINER_ATTRIBUTE) === container) {
+                    return [payload.incoming];
+                }
+
+                return payload.incoming.querySelectorAll(`[${containerAttribute(container)}]`);
+            });
+
+            return Kefir.merge([existingEl$, addedEl$]).flatten().filter(R.pipe(
+                R.prop('parentNode'),
+                getContainerNode,
+                R.converge(R.or, [R.equals(null), R.equals(el)])
+            )).map(el => {
                 const remove$ = effect$$.filter(effect$ =>
                     effect$[$$meta].payload.outgoing === el);
 

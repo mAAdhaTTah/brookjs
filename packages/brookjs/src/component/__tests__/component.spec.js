@@ -558,7 +558,7 @@ describe('component', () => {
                 frame();
 
                 // @todo Need to replace with a matcher or something.... but it gets us thru.
-                expected[0][1].value.payload.incoming = el.querySelector('button');
+                expected[0][1].value.payload.incoming = el.querySelector('button').parentNode;
             });
         });
 
