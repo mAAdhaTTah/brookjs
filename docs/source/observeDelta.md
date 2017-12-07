@@ -20,7 +20,7 @@ export default function exampleSourceStream(actions$, state$) {
     const save$ = actions$.filter(action => action.type === 'SAVE_THING');
 
     return save$.flatMap(action => {
-        const request = fetch('some/url', {
+        const request = fetch('/api/url', {
             type: 'POST',
             body: JSON.stringify(action.payload)
         });
@@ -50,10 +50,10 @@ store.dispatch({ type: 'SAVE_THING', payload: { id: 1, name: 'The Thing to save'
 If you need to get the state on every action, use `sampledBy`:
 
 ```js
-import { Kefir } from 'brookjs';
+import { ofType, Kefir } from 'brookjs';
 
 export default function exampleSourceStream(actions$, state$) {
-    const save$ = actions$.filter(action => action.type === 'SAVE_USER_BUTTON_CLICK');
+    const save$ = actions$.thru(ofType(SAVE_USER_BUTTON_CLICK));
 
     return state$.sampledBy(save$).flatMap(state => {
         const request = fetch('/api/user', {

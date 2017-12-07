@@ -11,7 +11,7 @@ import child from './child';
  * @param {Object} factories - Children configuration.
  * @returns {Function} Curried children stream generator.
  */
-export default function children(factories) {
+export default function children (factories) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof factories, 'object', '`factories` should be an object');
 
@@ -20,7 +20,11 @@ export default function children(factories) {
                 continue;
             }
 
-            assert.ok(typeof factories[container] === 'function' || typeof factories[container] === 'object', `${container} should be a function or object`);
+            assert.ok(
+                typeof factories[container] === 'function' ||
+                    typeof factories[container] === 'object',
+                `${container} should be a function or object`
+            );
         }
     }
 
@@ -46,56 +50,52 @@ export default function children(factories) {
      *
      * @param {HTMLElement} el - Element to query against.
      * @param {Observable} props$ - Stream of props.
-     * @return {Observable<T, S>} Children stream.
+     * @param {Observable} effect$$ - Stream of effect$.
+     * @returns {Observable<T, S>} Children stream.
      * @factory
      */
-    return R.curry((el, props$, effect$$) => {
-        const mapToMixinPairs = R.map(([container, factory]) => {
-            /**
-             * Query all of the children for the configuration key.
-             *
-             * Filters out children that are under other containers.
-             */
-            const existingEl$ = Kefir.constant(el.querySelectorAll(`[${containerAttribute(container)}]`))
-                .flatten()
-                .filter(R.pipe(R.prop('parentNode'), getContainerNode, R.equals(el)));
+    return (el, props$, effect$$) => {
+        const mapPairsToInstance$$ = R.map(([container, factory]) => {
+            const existingEl$ = Kefir.constant(
+                el.querySelectorAll(`[${containerAttribute(container)}]`)
+            );
 
             /**
-             * Stream of added nodes from the MutationObserver.
-             *
-             * Filters out
+             * Stream of added nodes from the rendering pipeline.
              */
-            const addedEl$ = effect$$.filter(effect$ => {
+            const addedEl$ = effect$$.map(effect$ => {
                 const { payload } = effect$[$$meta];
 
-                return payload.incoming && payload.incoming.getAttribute &&
-                    payload.incoming.getAttribute(CONTAINER_ATTRIBUTE);
-            })
-                .map(effect$ => effect$[$$meta].payload.incoming);
+                if (!payload.incoming || !payload.incoming.querySelectorAll) {
+                    return [];
+                }
 
-            const instance$ = Kefir.merge([existingEl$, addedEl$])
-                .flatMap(el => factory(el, props$, effect$$)
-                    .takeUntilBy(
-                        effect$$.filter(effect$ =>{
-                            const { payload } = effect$[$$meta];
+                if (payload.incoming.getAttribute &&
+                    payload.incoming.getAttribute(CONTAINER_ATTRIBUTE) === container) {
+                    return [payload.incoming];
+                }
 
-                            return payload.outgoing === el;
-                        })
-                    )
-                );
+                return payload.incoming.querySelectorAll(`[${containerAttribute(container)}]`);
+            });
 
-            return [container, instance$];
+            return Kefir.merge([existingEl$, addedEl$]).flatten().filter(R.pipe(
+                R.prop('parentNode'),
+                getContainerNode,
+                R.converge(R.or, [R.equals(null), R.equals(el)])
+            )).map(el => {
+                const remove$ = effect$$.filter(effect$ =>
+                    effect$[$$meta].payload.outgoing === el);
+
+                const { source$, eff$$, children$ } = factory(el, props$, effect$$);
+
+                return {
+                    source$: source$.takeUntilBy(remove$),
+                    eff$$: eff$$.takeUntilBy(remove$),
+                    children$: children$.takeUntilBy(remove$)
+                };
+            });
         });
-        const mapFactoriesToMixin = R.pipe(R.toPairs, mapToMixinPairs, R.fromPairs);
 
-        /**
-         * Mixin object holds the pool stream for each key.
-         *
-         * Allows us to plug/unplug from each stream as
-         * nodes are added and removed from the DOM.
-         */
-        const mixin = mapFactoriesToMixin(factories);
-
-        return Object.assign(Object.create(Kefir.merge(R.values(mixin))), mixin);
-    });
+        return R.pipe(R.toPairs, mapPairsToInstance$$, Kefir.merge)(factories);
+    };
 }

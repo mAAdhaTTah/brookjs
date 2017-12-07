@@ -27,6 +27,5 @@ export function release(el) {
  * Release all created elements by Desalinate.
  */
 export function cleanup() {
-    elements.forEach(diffRelease);
-    elements.clear();
+    elements.forEach(release);
 }

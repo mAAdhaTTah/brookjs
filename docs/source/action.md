@@ -7,15 +7,15 @@ The `action` module provides the action constants and creators that `brookjs` us
 
 # Api
 
-## `RAF` & `rafAction`
+## `RAF` & `raf$`
 
-Emitted by the `raf$` stream on a `requestAnimationFrame` tick.
+The `raf$` stream emits a `RafAction` on a `requestAnimationFrame` tick. This will schedule renders in sync with the framework rendering flow.
 
 ```flow
 type RafAction = {
-    type : RAF;
-    payload : {
-        time : DOMHighResTimeStamp;
+    type: typeof RAF;
+    payload: {
+        time: DOMHighResTimeStamp;
     };
 }
 ```

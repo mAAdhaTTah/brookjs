@@ -24,6 +24,18 @@ const removeAttribute = (domNode, name) => {
     }
 };
 
+const isContainedByBody = node => {
+    if (node.nodeType === 3) {
+        node = node.parentNode;
+
+        if (!node) {
+            return false;
+        }
+    }
+
+    return document.body.contains(node);
+};
+
 export default function patchAsObservable(patches) {
     const observables = [];
     const { TREE_OPS, NODE_VALUE, SET_ATTRIBUTE, REMOVE_ATTRIBUTE } = patches;
@@ -122,7 +134,7 @@ export default function patchAsObservable(patches) {
 
             // If an attribute it being added to a DOM node that's about
             // to be added to the DOM, then we need to do this now.
-            if (!getContainerNode(domNode)) {
+            if (!isContainedByBody(domNode)) {
                 effect$.observe({});
             } else {
                 effect$[$$meta] = {
@@ -190,14 +202,20 @@ export default function patchAsObservable(patches) {
                     emitter.end();
                 });
 
-                attach$[$$meta] = {
-                    type: 'INSERT_NODE',
-                    payload: {
-                        container: getContainerNode(domNode),
-                        incoming: newNode
-                    }
-                };
-                observables.push(attach$);
+                if (referenceNode && !isContainedByBody(referenceNode)) {
+                    attach$.observe({});
+                } else {
+                    attach$[$$meta] = {
+                        type: 'INSERT_NODE',
+                        payload: {
+                            container: getContainerNode(domNode),
+                            parent: domNode,
+                            reference: referenceNode,
+                            incoming: newNode
+                        }
+                    };
+                    observables.push(attach$);
+                }
             }
         }
 
@@ -259,6 +277,7 @@ export default function patchAsObservable(patches) {
                     type: 'REPLACE_CHILD',
                     payload: {
                         container,
+                        target: oldDomNode.parentNode,
                         incoming: newDomNode,
                         outgoing: oldDomNode
                     }
@@ -290,15 +309,20 @@ export default function patchAsObservable(patches) {
 
                 emitter.end();
             });
-            effect$[$$meta] = {
-                type: 'NODE_VALUE',
-                payload: {
-                    container: getContainerNode(domNode),
-                    target: domNode,
-                    value: nodeValue
-                }
-            };
-            observables.push(effect$);
+
+            if (domNode && !isContainedByBody(domNode)) {
+                effect$.observe({});
+            } else {
+                effect$[$$meta] = {
+                    type: 'NODE_VALUE',
+                    payload: {
+                        container: getContainerNode(domNode),
+                        target: domNode,
+                        value: nodeValue
+                    }
+                };
+                observables.push(effect$);
+            }
         }
     }
 

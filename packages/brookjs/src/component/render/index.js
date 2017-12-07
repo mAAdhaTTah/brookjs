@@ -1,7 +1,8 @@
 import assert from 'assert';
 import R from 'ramda';
 import { outerHTML, use } from 'diffhtml';
-import { $$internals } from '../constants';
+import Kefir from '../../kefir';
+import { $$internals, $$meta } from '../constants';
 import { raf$ } from '../rAF';
 import middleware from './middleware';
 import createEffects$ from './createEffects$';
@@ -23,17 +24,21 @@ export const renderFromHTML = R.curry((el, html) =>
 
         return outerHTML(el, html);
     })
+        .bufferWhile(effect$ => effect$[$$meta].type !== 'END')
+        .flatMap(effects$ => Kefir.merge(effects$))
 );
 
 /**
  * Generates a new rendering stream that ends after the element is updated.
  *
  * @param {Function} template - String-returning template function.
+ * @param {Function} modifyEffect$$ - Function that modifies the effect$$ stream.
  * @returns {Function} Curried stream generating function.
  */
-export default function render(template) {
+export default function render(template, modifyEffect$$ = R.identity) {
     if (process.env.NODE_ENV !== 'production') {
         assert.equal(typeof template, 'function', '`template` should be a function');
+        assert.equal(typeof modifyEffect$$, 'function', '`modifyEffect$$` should be a function');
     }
 
     /**
@@ -47,7 +52,7 @@ export default function render(template) {
         createEffects$(el, props$.map(template))
     );
 
-    factory[$$internals] = { template };
+    factory[$$internals] = { template, modifyEffect$$ };
 
     return factory;
 }

@@ -2,11 +2,9 @@
 import 'core-js/shim';
 import { AssertionError } from 'assert';
 import R from 'ramda';
-import chai, { expect } from 'chai';
-import sinonChai from 'sinon-chai';
-import chaiKefir from 'chai-kefir';
+import { use, expect } from 'chai';
 import hbs from 'handlebars';
-import { createElementFromTemplate, cleanup } from 'brookjs-desalinate';
+import { createElementFromTemplate, cleanup, brookjsChai } from 'brookjs-desalinate';
 import simulant from 'simulant';
 import Kefir from '../../kefir';
 import { SUPPORTED_EVENTS } from '../constants';
@@ -14,9 +12,9 @@ import { blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } f
 import { component, children, events, render } from '../';
 import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
-const { plugin, prop, send, value } = chaiKefir(Kefir);
-chai.use(plugin);
-chai.use(sinonChai);
+const { plugin, prop, send, value } = brookjsChai({ Kefir });
+
+use(plugin);
 
 hbs.registerHelper('blackbox', attr => new hbs.SafeString(blackboxAttribute(attr)));
 hbs.registerHelper('container', attr => new hbs.SafeString(containerAttribute(attr)));
@@ -25,6 +23,65 @@ hbs.registerHelper('event', (...args) => new hbs.SafeString(eventAttribute(...ar
 
 hbs.registerPartial('child/toggled', toggled);
 hbs.registerPartial('child/withToggledChild', withToggledChild);
+
+const effect$$WithSource = source => effect$$ => effect$$.map(effect$ => Object.assign(effect$, { $meta: {
+    ...effect$.$meta,
+    source
+} }));
+
+const SimpleUpdateComponent = component({
+    render: render(simpleUpdate, effect$$WithSource('SimpleUpdateComponent'))
+});
+
+const ChildComponent = component({
+    render: render(() => '', effect$$WithSource('ChildComponent'))
+});
+
+const UpdateChildComponent = component({
+    children: children({ child: ChildComponent }),
+    render: render(updateChild, effect$$WithSource('UpdateChildComponent'))
+});
+
+const HideBlackBoxedComponent = component({
+    render: render(hideBlackboxed, effect$$WithSource('HideBlackBoxedComponent'))
+});
+
+const RootBlackBoxedComponent = component({
+    render: render(rootBlackboxed, effect$$WithSource('RootBlackBoxedComponent'))
+});
+
+const ChooseEventComponent = component({
+    events: events({
+        onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
+            type: 'event',
+            e: {
+                containerTarget,
+                decoratedTarget,
+                defaultPrevented
+            }
+        }))
+    }),
+    render: render(chooseEvent, effect$$WithSource('ChooseEventComponent'))
+});
+const ToggledComponent = component({
+    events: events({
+        onClick: evt$ => evt$.map(() => ({
+            type: 'CLICK'
+        }))
+    }),
+    render: render(toggled, effect$$WithSource('ToggledComponent'))
+});
+
+const WithToggledChildComponent = component({
+    children: children({ toggled: ToggledComponent }),
+    render: render(toggleChild, effect$$WithSource('WithToggledChildComponent'))
+});
+
+const WithToggledSubChildComponent = component({
+    children: children({ withToggledChild: WithToggledChildComponent }),
+    render: render(toggleSubChild, effect$$WithSource('WithToggledSubChildComponent'))
+});
+
 
 describe('component', () => {
     describe('factory', () => {
@@ -73,11 +130,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(simpleUpdate, initial);
-            const factory = component({
-                render: render(simpleUpdate)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(SimpleUpdateComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(simpleUpdate(next).trim());
@@ -95,11 +149,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(updateChild, initial);
-            const factory = component({
-                render: render(updateChild)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(UpdateChildComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(updateChild(next).trim());
@@ -117,11 +168,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(updateChild, initial);
-            const factory = component({
-                render: render(updateChild)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(UpdateChildComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(updateChild(next).trim());
@@ -139,11 +187,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(updateChild, initial);
-            const factory = component({
-                render: render(updateChild)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(UpdateChildComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(updateChild(next).trim());
@@ -162,11 +207,8 @@ describe('component', () => {
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(updateChild, initial);
             const [child1, child2] = el.querySelectorAll('[data-brk-container="child"]');
-            const factory = component({
-                render: render(updateChild)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(UpdateChildComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(updateChild(next).trim());
@@ -187,11 +229,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(hideBlackboxed, initial);
-            const factory = component({
-                render: render(hideBlackboxed)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(HideBlackBoxedComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(hideBlackboxed({
@@ -219,11 +258,8 @@ describe('component', () => {
             const props$ = send(prop(), [value(initial)]);
             const modifiedTextContent = 'Blackboxed 1 Modified Text';
             const el = createElementFromTemplate(hideBlackboxed, initial);
-            const factory = component({
-                render: render(hideBlackboxed)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(HideBlackBoxedComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
 
@@ -252,11 +288,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(hideBlackboxed, initial);
-            const factory = component({
-                render: render(hideBlackboxed)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(HideBlackBoxedComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(hideBlackboxed({
@@ -277,11 +310,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(hideBlackboxed, initial);
-            const factory = component({
-                render: render(hideBlackboxed)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(HideBlackBoxedComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
 
@@ -301,11 +331,8 @@ describe('component', () => {
             };
             const props$ = send(prop(), [value(initial)]);
             const el = createElementFromTemplate(rootBlackboxed, initial);
-            const factory = component({
-                render: render(rootBlackboxed)
-            });
 
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(RootBlackBoxedComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 expect(el.outerHTML).to.equal(rootBlackboxed(next).trim());
@@ -347,20 +374,7 @@ describe('component', () => {
                     const el = createElementFromTemplate(chooseEvent, { targets: [{ customEvent: event }] });
                     const target = el.querySelector('input');
 
-                    const factory = component({
-                        events: events({
-                            onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
-                                type: 'event',
-                                e: {
-                                    containerTarget,
-                                    decoratedTarget,
-                                    defaultPrevented
-                                }
-                            }))
-                        })
-                    });
-
-                    expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
+                    expect(ChooseEventComponent(el, prop())).to.emit([value({ type: 'event', e: {
                         containerTarget: el,
                         decoratedTarget: target,
                         defaultPrevented: false
@@ -374,20 +388,8 @@ describe('component', () => {
         it('should only emit events for the triggered element', () => {
             const el = createElementFromTemplate(chooseEvent, { targets: [{ customEvent: 'input' }, { customEvent: 'input' }, { customEvent: 'input' }] });
             const target = el.querySelector('input');
-            const factory = component({
-                events: events({
-                    onevent: e$ => e$.map(({ containerTarget, decoratedTarget, defaultPrevented }) => ({
-                        type: 'event',
-                        e: {
-                            containerTarget,
-                            decoratedTarget,
-                            defaultPrevented
-                        }
-                    }))
-                })
-            });
 
-            expect(factory(el, prop())).to.emit([value({ type: 'event', e: {
+            expect(ChooseEventComponent(el, prop())).to.emit([value({ type: 'event', e: {
                 containerTarget: el,
                 decoratedTarget: target,
                 defaultPrevented: false
@@ -395,18 +397,6 @@ describe('component', () => {
                 simulant.fire(target, 'input');
             });
         });
-    });
-
-    const toggled = component({
-        events: events({
-            onClick: evt$ => evt$.map(() => ({
-                type: 'CLICK'
-            }))
-        })
-    });
-
-    const withToggledChild = component({
-        children: children({ toggled })
     });
 
     describe('children', () => {
@@ -441,12 +431,7 @@ describe('component', () => {
             const el = createElementFromTemplate(toggleChild, initial);
             const props$ = send(prop(), [value(initial)]);
 
-            const factory = component({
-                children: children({ toggled }),
-                render: render(toggleChild)
-            });
-
-            expect(factory(el, props$)).to.emitInTime([[0, value({ type: 'CLICK' })]], () => {
+            expect(WithToggledChildComponent(el, props$)).to.emitInTime([[0, value({ type: 'CLICK' })]], () => {
                 simulant.fire(el.querySelector('button'), 'click');
             });
         });
@@ -461,12 +446,7 @@ describe('component', () => {
             const el = createElementFromTemplate(toggleChild, initial);
             const props$ = send(prop(), [value(initial)]);
 
-            const factory = component({
-                children: children({ toggled }),
-                render: render(toggleChild)
-            });
-
-            expect(factory(el, props$)).to.emitInTime([[16, value({ type: 'CLICK' })]], (tick, clock) => {
+            expect(WithToggledChildComponent(el, props$)).to.emitInTime([[16, value({ type: 'CLICK' })]], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 simulant.fire(el.querySelector('button'), 'click');
@@ -484,12 +464,7 @@ describe('component', () => {
             const button = el.querySelector('button');
             const props$ = send(prop(), [value(initial)]);
 
-            const factory = component({
-                children: children({ toggled }),
-                render: render(toggleChild)
-            });
-
-            expect(factory(el, props$)).to.emitInTime([], (tick, clock) => {
+            expect(WithToggledChildComponent(el, props$)).to.emitInTime([], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 simulant.fire(button, 'click');
@@ -506,15 +481,112 @@ describe('component', () => {
             const el = createElementFromTemplate(toggleSubChild, initial);
             const props$ = send(prop(), [value(initial)]);
 
-            const factory = component({
-                children: children({ withToggledChild }),
-                render: render(toggleSubChild)
-            });
-
-            expect(factory(el, props$)).to.emitInTime([[16, value({ type: 'CLICK' })]], (tick, clock) => {
+            expect(WithToggledSubChildComponent(el, props$)).to.emitInTime([[16, value({ type: 'CLICK' })]], (tick, clock) => {
                 send(props$, [value(next)]);
                 clock.runToFrame();
                 simulant.fire(el.querySelector('button'), 'click');
+            });
+        });
+    });
+
+    describe('animation', () => {
+        it('should throw if modifyEffect$$ is not a function', () => {
+            const invalid = [{}, 'string', 2, true, []];
+
+            invalid.forEach(modifyEffect$$ => {
+                expect(() => {
+                    component({
+                        render: render(simpleUpdate, modifyEffect$$)
+                    });
+                }).to.throw(AssertionError);
+            });
+        });
+
+        it('should emit effects from simple render', () => {
+            const initial = {
+                type: 'text',
+                text: 'Hello world!'
+            };
+            const next = {
+                type: 'image',
+                text: 'Goodbye World!'
+            };
+            const el = createElementFromTemplate(simpleUpdate, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            const expected = [
+                [16, value({ type: 'SET_ATTRIBUTE', source: 'SimpleUpdateComponent', payload: {
+                    container: el,
+                    target: el,
+                    attr: 'class',
+                    value: 'image'
+                } })],
+                [16, value({ type: 'NODE_VALUE', source: 'SimpleUpdateComponent', payload: {
+                    container: el,
+                    target: el.firstChild,
+                    value: 'Goodbye World!'
+                } })],
+                [16, value({ type: 'END', payload: {} })]
+            ];
+            expect(SimpleUpdateComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
+                send(props$, [value(next)]);
+                frame();
+            });
+        });
+
+        it('should emit effects from attached child element', () => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            const expected = [
+                [16, value({ type: 'INSERT_NODE', source: 'WithToggledChildComponent', payload: {
+                    container: el,
+                    incoming: 'ADDED BELOW',
+                    parent: el,
+                    reference: null
+                } })],
+                [16, value({ type: 'END', payload: {} })]
+            ];
+            expect(WithToggledChildComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
+                send(props$, [value(next)]);
+                frame();
+
+                // @todo Need to replace with a matcher or something.... but it gets us thru.
+                expected[0][1].value.payload.incoming = el.querySelector('button').parentNode;
+            });
+        });
+
+        it('should emit effects from attached subchild element', () => {
+            const initial = {
+                show: false
+            };
+            const next = {
+                show: true
+            };
+            const el = createElementFromTemplate(toggleSubChild, initial);
+            const props$ = send(prop(), [value(initial)]);
+
+            const expected = [
+                [16, value({ type: 'INSERT_NODE', source: 'WithToggledChildComponent', payload: {
+                    container: el.querySelector('.with-subchild'),
+                    incoming: 'ADDED BELOW',
+                    parent: el.querySelector('.with-subchild'),
+                    reference: null
+                } })],
+                [16, value({ type: 'END', payload: {} })]
+            ];
+            expect(WithToggledSubChildComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
+                send(props$, [value(next)]);
+                frame();
+
+                // @todo Need to replace with a matcher or something.... but it gets us thru.
+                expected[0][1].value.payload.incoming = el.querySelector('button');
             });
         });
     });

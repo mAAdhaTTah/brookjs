@@ -30,7 +30,7 @@ store.dispatch(init());
 
 With this configuration, any delta that needs to handle something immediately should use the `INIT` action, ensuring the delta doesn't accidentally emit values before the Redux middleware has fully mounted. Doing so may run into this odd [Redux behavior][issue1240], and other deltas will not get the actions dispatched correctly.
 
-The `init` action also treats the bootstrapping process as two distinct steps: creating the store, and initializing the application. From that perspective, the "side effect" that starts everything off is the first dispatch, which has its own sort of elegance.
+The `init` action also treats the bootstrapping process as two distinct steps: creating the store, and initializing the application. From that perspective, the "side effect" that starts everything off is the first dispatch.
 
 There's no need to test this bootstrapping process. The application should be integration tested at this level.
 

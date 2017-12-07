@@ -19,7 +19,7 @@ const child = {
 
 const parent = mapActionTo('CHILD', 'PARENT', child);
 
-assert(parent === {
+assert.deepEqual(parent, {
     type: 'PARENT',
     payload: { value: true },
     meta: { sources: ['CHILD'] }
