@@ -14,7 +14,7 @@ import { component } from 'brookjs';
 export default component({});
 ```
 
-When called, the returned `Observable<Action>` will neither emit an action nor update its `Element`. The first lifecycle hook we'll take a look at is `onMount`. It provides a direct line into Component factory function:
+When called, the returned `Observable<Action>` will neither emit an action nor update its `Element`. We can begin to provide custom functionality using `onMount`. It provides a direct line into Component factory function:
 
 ```js
 // app.js

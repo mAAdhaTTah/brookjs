@@ -10,7 +10,7 @@ export { childrenFactory as children, eventsFactory as events, renderFactory as 
     renderFromHTML };
 export { containerAttribute, blackboxAttribute,
     keyAttribute, eventAttribute, mapActionTo } from './helpers';
-export { raf$ } from './rAF';
+export { raf$, RAF } from './rAF';
 
 /**
  * Create a new Component with the provided configuration.
