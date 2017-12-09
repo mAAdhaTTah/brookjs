@@ -13,7 +13,7 @@ const createEnd = transaction => {
         emitter.end();
     });
 
-    end$[$$meta] = { type: 'END', payload: {} };
+    end$[$$meta] = { type: 'END' };
 
     return end$;
 };

@@ -64,18 +64,18 @@ export default function children (factories) {
              * Stream of added nodes from the rendering pipeline.
              */
             const addedEl$ = effect$$.map(effect$ => {
-                const { payload } = effect$[$$meta];
+                const { incoming } = effect$[$$meta];
 
-                if (!payload.incoming || !payload.incoming.querySelectorAll) {
+                if (!incoming || !incoming.querySelectorAll) {
                     return [];
                 }
 
-                if (payload.incoming.getAttribute &&
-                    payload.incoming.getAttribute(CONTAINER_ATTRIBUTE) === container) {
-                    return [payload.incoming];
+                if (incoming.getAttribute &&
+                    incoming.getAttribute(CONTAINER_ATTRIBUTE) === container) {
+                    return [incoming];
                 }
 
-                return payload.incoming.querySelectorAll(`[${containerAttribute(container)}]`);
+                return incoming.querySelectorAll(`[${containerAttribute(container)}]`);
             });
 
             return Kefir.merge([existingEl$, addedEl$]).flatten().filter(R.pipe(
@@ -84,7 +84,7 @@ export default function children (factories) {
                 R.converge(R.or, [R.equals(null), R.equals(el)])
             )).map(el => {
                 const remove$ = effect$$.filter(effect$ =>
-                    effect$[$$meta].payload.outgoing === el);
+                    effect$[$$meta].outgoing === el);
 
                 const { source$, eff$$, children$ } = factory(el, props$, effect$$);
 

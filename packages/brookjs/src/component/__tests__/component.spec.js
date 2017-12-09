@@ -515,18 +515,21 @@ describe('component', () => {
             const props$ = send(prop(), [value(initial)]);
 
             const expected = [
-                [16, value({ type: 'SET_ATTRIBUTE', source: 'SimpleUpdateComponent', payload: {
+                [16, value({
+                    type: 'SET_ATTRIBUTE',
+                    source: 'SimpleUpdateComponent',
                     container: el,
                     target: el,
                     attr: 'class',
                     value: 'image'
-                } })],
-                [16, value({ type: 'NODE_VALUE', source: 'SimpleUpdateComponent', payload: {
+                })],
+                [16, value({ type: 'NODE_VALUE',
+                    source: 'SimpleUpdateComponent',
                     container: el,
                     target: el.firstChild,
                     value: 'Goodbye World!'
-                } })],
-                [16, value({ type: 'END', payload: {} })]
+                })],
+                [16, value({ type: 'END' })]
             ];
             expect(SimpleUpdateComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
                 send(props$, [value(next)]);
@@ -545,20 +548,22 @@ describe('component', () => {
             const props$ = send(prop(), [value(initial)]);
 
             const expected = [
-                [16, value({ type: 'INSERT_NODE', source: 'WithToggledChildComponent', payload: {
+                [16, value({
+                    type: 'INSERT_NODE',
+                    source: 'WithToggledChildComponent',
                     container: el,
                     incoming: 'ADDED BELOW',
                     parent: el,
                     reference: null
-                } })],
-                [16, value({ type: 'END', payload: {} })]
+                })],
+                [16, value({ type: 'END' })]
             ];
             expect(WithToggledChildComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
                 send(props$, [value(next)]);
                 frame();
 
                 // @todo Need to replace with a matcher or something.... but it gets us thru.
-                expected[0][1].value.payload.incoming = el.querySelector('button').parentNode;
+                expected[0][1].value.incoming = el.querySelector('button').parentNode;
             });
         });
 
@@ -573,20 +578,22 @@ describe('component', () => {
             const props$ = send(prop(), [value(initial)]);
 
             const expected = [
-                [16, value({ type: 'INSERT_NODE', source: 'WithToggledChildComponent', payload: {
+                [16, value({
+                    type: 'INSERT_NODE',
+                    source: 'WithToggledChildComponent',
                     container: el.querySelector('.with-subchild'),
                     incoming: 'ADDED BELOW',
                     parent: el.querySelector('.with-subchild'),
                     reference: null
-                } })],
-                [16, value({ type: 'END', payload: {} })]
+                })],
+                [16, value({ type: 'END' })]
             ];
             expect(WithToggledSubChildComponent(el, props$)).to.emitEffectsInTime(expected, frame => {
                 send(props$, [value(next)]);
                 frame();
 
                 // @todo Need to replace with a matcher or something.... but it gets us thru.
-                expected[0][1].value.payload.incoming = el.querySelector('button');
+                expected[0][1].value.incoming = el.querySelector('button');
             });
         });
     });

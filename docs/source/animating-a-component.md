@@ -14,7 +14,7 @@ import { hideElement, fadeInElement } from './effects';
 export default component({
     render: render(template, effect$$ => effect$$.map(effect$ => {
         if (effect$.$meta.type === 'INSERT_NODE') {
-            const { incoming } =  effect.$meta.payload;
+            const { incoming } =  effect.$meta;
 
             return Kefir.concat([
                 hideElement(incoming),
@@ -22,7 +22,7 @@ export default component({
                 fadeInElement(incoming)
             ])
                 .takeUntilBy(
-                    effect$$.filter(effect$ => effect$.$meta.payload.outgoing === incoming)
+                    effect$$.filter(effect$ => effect$.$meta.outgoing === incoming)
                 )
         }
     }))

@@ -75,7 +75,7 @@ export function component({
             }
 
             const eff$$ = effect$$
-                .filter(effect$ => effect$[$$meta].payload.container === el)
+                .filter(effect$ => effect$[$$meta].container === el)
                 .thru(modifyEffect$$)
                 .setName(effect$$, `${el.getAttribute(CONTAINER_ATTRIBUTE)}#eff$$`);
 

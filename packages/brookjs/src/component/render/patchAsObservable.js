@@ -139,12 +139,10 @@ export default function patchAsObservable(patches) {
             } else {
                 effect$[$$meta] = {
                     type: 'SET_ATTRIBUTE',
-                    payload: {
-                        container: getContainerNode(domNode),
-                        target: domNode,
-                        attr: name,
-                        value: newValue
-                    }
+                    container: getContainerNode(domNode),
+                    target: domNode,
+                    attr: name,
+                    value: newValue
                 };
                 observables.push(effect$);
             }
@@ -165,11 +163,9 @@ export default function patchAsObservable(patches) {
 
             effect$[$$meta] = {
                 type: 'REMOVE_ATTRIBUTE',
-                payload: {
-                    container: getContainerNode(domNode),
-                    target: domNode,
-                    attr: name
-                }
+                container: getContainerNode(domNode),
+                target: domNode,
+                attr: name
             };
             observables.push(effect$);
         }
@@ -207,12 +203,10 @@ export default function patchAsObservable(patches) {
                 } else {
                     attach$[$$meta] = {
                         type: 'INSERT_NODE',
-                        payload: {
-                            container: getContainerNode(domNode),
-                            parent: domNode,
-                            reference: referenceNode,
-                            incoming: newNode
-                        }
+                        container: getContainerNode(domNode),
+                        parent: domNode,
+                        reference: referenceNode,
+                        incoming: newNode
                     };
                     observables.push(attach$);
                 }
@@ -232,10 +226,8 @@ export default function patchAsObservable(patches) {
 
                 detach$[$$meta] = {
                     type: 'REMOVE_CHILD',
-                    payload: {
-                        container: getContainerNode(domNode.parentNode),
-                        outgoing: domNode,
-                    }
+                    container: getContainerNode(domNode.parentNode),
+                    outgoing: domNode,
                 };
                 observables.push(detach$);
             }
@@ -275,12 +267,10 @@ export default function patchAsObservable(patches) {
                 ]);
                 effect$[$$meta] = {
                     type: 'REPLACE_CHILD',
-                    payload: {
-                        container,
-                        target: oldDomNode.parentNode,
-                        incoming: newDomNode,
-                        outgoing: oldDomNode
-                    }
+                    container,
+                    target: oldDomNode.parentNode,
+                    incoming: newDomNode,
+                    outgoing: oldDomNode
                 };
                 observables.push(effect$);
             }
@@ -315,11 +305,9 @@ export default function patchAsObservable(patches) {
             } else {
                 effect$[$$meta] = {
                     type: 'NODE_VALUE',
-                    payload: {
-                        container: getContainerNode(domNode),
-                        target: domNode,
-                        value: nodeValue
-                    }
+                    container: getContainerNode(domNode),
+                    target: domNode,
+                    value: nodeValue
                 };
                 observables.push(effect$);
             }
