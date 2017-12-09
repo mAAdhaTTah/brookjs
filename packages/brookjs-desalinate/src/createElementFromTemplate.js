@@ -1,7 +1,7 @@
 // @flow
 import * as Elements from './elements';
 
-let range; // Create a range object for efficently rendering strings to elements.
+let range; // Create a range object for efficiently rendering strings to elements.
 
 export default function createElementFromTemplate<P>(template: P => string, props: P): Node {
     const str = template(props);

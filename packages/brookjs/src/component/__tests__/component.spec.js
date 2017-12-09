@@ -4,7 +4,7 @@ import { AssertionError } from 'assert';
 import R from 'ramda';
 import { use, expect } from 'chai';
 import hbs from 'handlebars';
-import { createElementFromTemplate, cleanup, brookjsChai } from 'brookjs-desalinate';
+import { createElementFromTemplate, cleanup, chaiPlugin } from 'brookjs-desalinate';
 import simulant from 'simulant';
 import Kefir from '../../kefir';
 import { SUPPORTED_EVENTS } from '../constants';
@@ -12,7 +12,7 @@ import { blackboxAttribute, containerAttribute, keyAttribute, eventAttribute } f
 import { component, children, events, render } from '../';
 import { simpleUpdate, updateChild, hideBlackboxed, rootBlackboxed, chooseEvent, toggleChild, toggleSubChild, toggled, withToggledChild } from './fixtures';
 
-const { plugin, prop, send, value } = brookjsChai({ Kefir });
+const { plugin, prop, send, value } = chaiPlugin({ Kefir });
 
 use(plugin);
 
