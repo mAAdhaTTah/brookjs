@@ -3,7 +3,7 @@ id: children
 title: <code>children</code>
 ---
 
-`children` exports a function for plugging child components into a single, combined stream. It keeps the stream updated when components are added or removed using a `MutationObserver`, so if support for old environments is required, use a polyfill.
+`children` exports a function for plugging child components into the root component. It keeps the stream updated when components are added or removed using a `diffhtml` middleware.
 
 # How to Use
 
@@ -39,35 +39,39 @@ The compiled templates will now provide the required container attribute through
 The `children` stream accepts a configuration object. The object's keys should match the container attribute for the given component. The value can be either a component factory function:
 
 ```js
-import { children } from 'brookjs';
+import { component, children } from 'brookjs';
 import kid from './kid';
 
-export default children({ kid });
+export default component({
+    children: children({ kid })
+});
 ```
 
 or a configuration object for that component, which defines the behavior of the child in relation to the parent:
 
 ```js
-import { children, mapActionTo } from 'brookjs';
+import { component, children, mapActionTo } from 'brookjs';
 import kid from './kid';
 
-export default children({
-    kid: {
-        // only required value.
-        // factory function for child taking el & props$
-        factory: kid,
-        // passed parents' `props$` stream & child key.
-        // return value is passed to child onMount.
-        // see below for key documentation.
-        modifyChildProps: (props$, key) => props$.map(props => props.children[key]),
-        // passed each child instance to modify child stream
-        // return value is plugged into combined string (hence `preplug`)
-        preplug: (kid$, key) => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION))
-            .map(action => ({
-              ...action,
-              meta: { key }
-            }))
-    }
+export default component({
+    children: children({
+        kid: {
+            // only required value.
+            // factory function for child taking el & props$
+            factory: kid,
+            // passed parents' `props$` stream & child key.
+            // return value is passed to child onMount.
+            // see below for key documentation.
+            modifyChildProps: (props$, key) => props$.map(props => props.children[key]),
+            // passed each child instance to modify child stream
+            // return value is plugged into combined string (hence `preplug`)
+            preplug: (kid$, key) => kid$.map(mapActionTo(CHILD_ACTION, PARENT_ACTION))
+                .map(action => ({
+                  ...action,
+                  meta: { key }
+                }))
+        }
+    })
 });
 ```
 

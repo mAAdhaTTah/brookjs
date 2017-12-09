@@ -1,0 +1,4 @@
+--reporter spec
+--ui bdd
+--require babel-register
+src/**/__tests__/*.spec.js

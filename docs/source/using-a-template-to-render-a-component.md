@@ -29,13 +29,13 @@ For now, that's it! Now the Component's element will rerender on the next value 
 
 Note that `render` is responsible for the entire element it's provided, meaning [children components][children] do not explicitly use the templates passed to them but instead should be rendered as partials in the parent component. Use the templating language's rendering context to ensure each subcomponent has access to the props it needs to render properly. Using Handlebars, simple logic can be encoded into helpers, but avoid encoding too much logic into the template itself.
 
-If a section of the DOM needs to be hidden from `diffhtml`, add `data-brk-blackbox="uniqueName"` as a data-attribute to the element. When `morphdom` goes to update the DOM, any elements with that attribute will not be updated. A unique name is required in order to ensure the element isn't removed from the DOM. Make sure the element with the matching blackbox attribute is included in the rendered template or the element will get removed. We'll see later how to use this to implement custom component logic.
+If a section of the DOM needs to be hidden from `diffhtml`, add `data-brk-blackbox="uniqueName"` as a data-attribute to the element. When `diffhtml` goes to update the DOM, any elements with that attribute will not be updated. A unique name is required in order to ensure the element isn't removed from the DOM. Make sure the element with the matching blackbox attribute is included in the rendered template or the element will get removed. We'll see later how to use this to implement custom component logic.
 
 ## Note about Handlebars
 
 While currently, any string-returning template function can be used here, Handlebars is recommended as the preferred templating language. Helpers for non-JavaScript implemetations for `brookjs` is on the roadmap, aiding in server-side rendering in non-JavaScript back-ends. Both [Java][hbs.java] & [PHP][lightncandy] have fast and feature-complete implementations of Handlebars. Additionally, string-based template rendering is not long-term sustainable for performance reasons, so the Handlebars compilation step will eventually be replaced.
 
-Feel free to use alternative templating languages, should you prefer them, but be aware that migration from said templating language to Handlebars may be required. A migration path will be provided, as both string-based templating & an alternative method will be supported at the same time.
+Feel free to use alternative templating languages, should you prefer them, but be aware that migration from said templating language to Handlebars may be required in the future. A migration path will be provided, as both string-based templating & an alternative method will be supported at the same time.
 
   [webpack]: https://webpack.js.org/
   [diffhtml]: https://github.com/tbranyen/diffhtml

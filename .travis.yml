@@ -8,18 +8,16 @@ addons:
   chrome: stable
   sauce_connect: true
 
-cache:
-  directories:
-    - node_modules
-
 before_install:
   - npm i -g greenkeeper-lockfile@1
 
 before_script:
+  - npx lerna bootstrap
+  - npx lerna run build
   - greenkeeper-lockfile-update
 
 script:
-  - npm test
+  - npx lerna run test --concurrency 1
 
 after_script:
   - greenkeeper-lockfile-upload
