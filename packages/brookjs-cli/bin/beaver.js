@@ -19,7 +19,7 @@ program
 
 program
     .command('dev', 'Develop the brookjs application.')
-    .action(main('test'))
+    .action(main('dev'))
     .argument('<type>', 'Development style.', ['app', 'tdd']);
 
 program
