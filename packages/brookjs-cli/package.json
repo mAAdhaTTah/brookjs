@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "A command line interface for building brookjs applications.",
   "main": "src/index.js",
+  "private": true,
   "bin": {
     "beaver": "./bin/beaver.js"
   },
