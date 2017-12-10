@@ -1,6 +1,6 @@
 {
   "name": "brookjs-desalinate",
-  "version": "0.0.0",
+  "version": "0.10.0",
   "description": "Testing tools for brookjs components.",
   "main": "cjs/index.js",
   "module": "es/index.js",
