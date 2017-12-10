@@ -31,7 +31,10 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
+    "chai-kefir": "^2.0.4",
+    "deep-eql": "^3.0.1",
     "diffhtml": "^1.0.0-beta.8",
+    "lolex": "^2.3.1",
     "ramda": "^0.24.1",
     "symbol-observable": "^1.0.4"
   },
@@ -47,7 +50,6 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.1.2",
-    "chai-kefir": "^2.0.2",
     "core-js": "^2.5.1",
     "cross-env": "^5.0.5",
     "deep-eql": "^3.0.1",
