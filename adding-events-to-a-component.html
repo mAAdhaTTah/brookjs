@@ -119,7 +119,8 @@
     Click Me
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
 </code></pre>
-<p>Using Handlebars:</p>
+<p>All events are supported as <code>data-brk-on{event}</code>, e.g. <code>data-brk-onhover</code>, <code>data-brk-onmouseout</code>, etc.</p>
+<p>Using the Handlebars help will produce these attributes:</p>
 <pre class=" language-html"><code class="language-html">&lt;button {{container "button"}}
         {{#if id}}{{key id}}{{/if}}
         {{event "click" "onButtonClick"}}>
@@ -149,8 +150,8 @@ Handlebars<span class="token punctuation">.</span><span class="token function">r
     <span class="token punctuation">}</span><span class="token punctuation">)</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p><code>event$</code> is an <code>Observable&lt;ProxyEvent&gt;</code>, emitting a normalized wrapper around the browser’s <code>Event</code>. In addition to the <code>Event</code> properties, the emitted <code>ProxyEvent</code> has two <code>brookjs</code>-specific properties: <code>decoratedTarget</code> (the element with the event attribute) and <code>containerTarget</code> (the container element for the event). This provides access to the DOM as required to pull additional information out for the event object.</p>
-<p>The stream gets merged with the main Component stream, so the returned stream needs to be an <code>Observable&lt;Action&gt;</code>.</p>
+<p><code>event$</code> is an <code>Observable&lt;ProxyEvent&gt;</code>, emitting a normalized wrapper around the browser’s <code>Event</code>. In addition to the <code>Event</code> properties, the emitted <code>ProxyEvent</code> has two <code>brookjs</code>-specific properties: <code>decoratedTarget</code> (the element with the event attribute) and <code>containerTarget</code> (the container element for the event). This provides access to the DOM elements related to the event.</p>
+<p>The <code>event$</code> stream gets merged with the main Component stream, so the returned stream needs to be an <code>Observable&lt;Action&gt;</code>.</p>
 <p>The events are bound with event delegation, requiring a single listener at the top of the DOM, and using the <code>data-brk-container</code> attribute to scope the event to its proper Component instance.</p>
 <p>This also allows for control over the rate at which events are emitted, using <code>debounce</code> or <code>throttle</code>:</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// app.js</span>

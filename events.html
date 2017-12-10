@@ -140,9 +140,10 @@ events$<span class="token punctuation">.</span><span class="token function">obse
 events$<span class="token punctuation">.</span>emitClick<span class="token punctuation">.</span><span class="token function">observe</span><span class="token punctuation">(</span><span class="token punctuation">{</span> value<span class="token punctuation">:</span> action <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// { type: CLICK }</span>
 </code></pre>
-<figcaption>also has a property for each of the substreams that make up the merged stream, allowing the calling code to create new streams from the pieces that make up the merged stream.</p></figcaption><pre class=" language-events$</code>"><h2 id="Configuration-Object"><a href="#Configuration-Object" class="headerlink" title="Configuration Object"><code class="language-events$</code>"><h2 id="Configuration-Object"><a href="#Configuration-Object" class="headerlink" title="Configuration Object"></a>Configuration Object</h2><p>The configuration object defines which <code>data-attribute</code>s map to which functions, with the value of the attribute matching the key on the object.</p>
+<p><code>events$</code> also has a property for each of the substreams that make up the merged stream, allowing the calling code to create new streams from the pieces that make up the merged stream.</p>
+<h2 id="Configuration-Object"><a href="#Configuration-Object" class="headerlink" title="Configuration Object"></a>Configuration Object</h2><p>The configuration object defines which <code>data-attribute</code>s map to which functions, with the value of the attribute matching the key on the object.</p>
 <ul>
-<li><p><code>{string}</code> key - Event name key. Should be found in the element with the following <code>data-attr</code>: <code>data-brk-on{event}="{key}"</code></pre>
+<li><p><code>{string}</code> key - Event name key. Should be found in the element with the following <code>data-attr</code>: <code>data-brk-on{event}=&quot;{key}&quot;</code></p>
 </li>
 <li><p><code>{Function}</code> value - Event adapter function. Will be passed the <code>event$</code> stream which emits <code>Event</code> values and should return a stream.</p>
 </li>

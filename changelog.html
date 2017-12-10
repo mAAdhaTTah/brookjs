@@ -112,7 +112,39 @@
         <h1>Changelog</h1>
         <main class="page-content">
             
-                <h2>v0.8.4</h2><ul>
+                <h2>v0.10.0</h2><h1 id="Introduction-of-Animation-API"><a href="#Introduction-of-Animation-API" class="headerlink" title="Introduction of Animation API"></a>Introduction of Animation API</h1><p>It’s currently not very well documented, but the animation API was implemented. See #76 for more information until documentation is updated.</p>
+
+<h2>v0.9.0</h2><h1 id="Breaking-Changes"><a href="#Breaking-Changes" class="headerlink" title="Breaking Changes"></a>Breaking Changes</h1><ul>
+<li>Yank the current animations API<ul>
+<li>This is undergoing a redesign to more effective coordinate animations with each other</li>
+</ul>
+</li>
+<li>Remove <code>ActionObservable</code> extension to Kefir in favor of <code>#thru</code> &amp; <code>ofType</code> helper function<ul>
+<li>This eliminates the problem of not always having <code>ofType</code> available on the prototype chain of the returned <code>actions$</code>.</li>
+</ul>
+</li>
+<li>Remove default export from <code>brookjs</code><ul>
+<li>There’s no reason to use this. I borrowed the idea from Kefir, but didn’t really think critically about why it should or should not be available here. I don’t expect this to impact anyone, as it doesn’t affect normal <code>import { ... } from &#39;brookjs&#39;</code> nor <code>const { ... } = require(&#39;brookjs&#39;)</code> usages.</li>
+</ul>
+</li>
+</ul>
+
+<h2>v0.8.9</h2><p>Bugfix: Still trying to nail down that mutations dedupe logic. This will not be necessary once we bind children to diffhtml middleware.</p>
+
+<h2>v0.8.8</h2><ul>
+<li>Update patchAsObservable to blacklist unsettable properties</li>
+</ul>
+
+<h2>v0.8.7</h2><ul>
+<li>Bump version of diffhtml</li>
+</ul>
+
+<h2>v0.8.6</h2>
+<h2>v0.8.5</h2><ul>
+<li>Fix bug when updating root blackboxed element</li>
+</ul>
+
+<h2>v0.8.4</h2><ul>
 <li>Update dependencies</li>
 <li>Switch to <code>useBuiltins</code> for all transforms.</li>
 </ul>

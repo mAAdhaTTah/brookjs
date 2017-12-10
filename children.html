@@ -111,7 +111,7 @@
     <div class="page">
         <h1><code>children</code></h1>
         <main class="page-content">
-            <p><code>children</code> exports a function for plugging child components into a single, combined stream. It keeps the stream updated when components are added or removed using a <code>MutationObserver</code>, so if support for old environments is required, use a polyfill.</p>
+            <p><code>children</code> exports a function for plugging child components into the root component. It keeps the stream updated when components are added or removed using a <code>diffhtml</code> middleware.</p>
 <h1 id="How-to-Use"><a href="#How-to-Use" class="headerlink" title="How to Use"></a>How to Use</h1><h2 id="Preparing-the-DOM"><a href="#Preparing-the-DOM" class="headerlink" title="Preparing the DOM"></a>Preparing the DOM</h2><p>When setting up the HTML for a component, the top-level element should have a <code>data-brk-container</code> with a unique name.</p>
 <pre class=" language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">data-brk-container</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>kid<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>{{text}}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 </code></pre>
@@ -128,32 +128,36 @@ Handlebars<span class="token punctuation">.</span><span class="token function">r
 </code></pre>
 <p>The compiled templates will now provide the required container attribute through the helper.</p>
 <h2 id="Configuring-the-Stream"><a href="#Configuring-the-Stream" class="headerlink" title="Configuring the Stream"></a>Configuring the Stream</h2><p>The <code>children</code> stream accepts a configuration object. The object’s keys should match the container attribute for the given component. The value can be either a component factory function:</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> children <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> children <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> kid <span class="token keyword">from</span> <span class="token string">'./kid'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">children</span><span class="token punctuation">(</span><span class="token punctuation">{</span> kid <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    children<span class="token punctuation">:</span> <span class="token function">children</span><span class="token punctuation">(</span><span class="token punctuation">{</span> kid <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <p>or a configuration object for that component, which defines the behavior of the child in relation to the parent:</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> children<span class="token punctuation">,</span> mapActionTo <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> component<span class="token punctuation">,</span> children<span class="token punctuation">,</span> mapActionTo <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'brookjs'</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> kid <span class="token keyword">from</span> <span class="token string">'./kid'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">children</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
-    kid<span class="token punctuation">:</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// only required value.</span>
-        <span class="token comment" spellcheck="true">// factory function for child taking el &amp; props$</span>
-        factory<span class="token punctuation">:</span> kid<span class="token punctuation">,</span>
-        <span class="token comment" spellcheck="true">// passed parents' `props$` stream &amp; child key.</span>
-        <span class="token comment" spellcheck="true">// return value is passed to child onMount.</span>
-        <span class="token comment" spellcheck="true">// see below for key documentation.</span>
-        modifyChildProps<span class="token punctuation">:</span> <span class="token punctuation">(</span>props$<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> props$<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>props <span class="token operator">=</span><span class="token operator">></span> props<span class="token punctuation">.</span>children<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-        <span class="token comment" spellcheck="true">// passed each child instance to modify child stream</span>
-        <span class="token comment" spellcheck="true">// return value is plugged into combined string (hence `preplug`)</span>
-        preplug<span class="token punctuation">:</span> <span class="token punctuation">(</span>kid$<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> kid$<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">mapActionTo</span><span class="token punctuation">(</span>CHILD_ACTION<span class="token punctuation">,</span> PARENT_ACTION<span class="token punctuation">)</span><span class="token punctuation">)</span>
-            <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>action <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
-              <span class="token operator">...</span>action<span class="token punctuation">,</span>
-              meta<span class="token punctuation">:</span> <span class="token punctuation">{</span> key <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-    <span class="token punctuation">}</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    children<span class="token punctuation">:</span> <span class="token function">children</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        kid<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// only required value.</span>
+            <span class="token comment" spellcheck="true">// factory function for child taking el &amp; props$</span>
+            factory<span class="token punctuation">:</span> kid<span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// passed parents' `props$` stream &amp; child key.</span>
+            <span class="token comment" spellcheck="true">// return value is passed to child onMount.</span>
+            <span class="token comment" spellcheck="true">// see below for key documentation.</span>
+            modifyChildProps<span class="token punctuation">:</span> <span class="token punctuation">(</span>props$<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> props$<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>props <span class="token operator">=</span><span class="token operator">></span> props<span class="token punctuation">.</span>children<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token comment" spellcheck="true">// passed each child instance to modify child stream</span>
+            <span class="token comment" spellcheck="true">// return value is plugged into combined string (hence `preplug`)</span>
+            preplug<span class="token punctuation">:</span> <span class="token punctuation">(</span>kid$<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> kid$<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token function">mapActionTo</span><span class="token punctuation">(</span>CHILD_ACTION<span class="token punctuation">,</span> PARENT_ACTION<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>action <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+                  <span class="token operator">...</span>action<span class="token punctuation">,</span>
+                  meta<span class="token punctuation">:</span> <span class="token punctuation">{</span> key <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <h2 id="Handling-Multiple-Child-Instances"><a href="#Handling-Multiple-Child-Instances" class="headerlink" title="Handling Multiple Child Instances"></a>Handling Multiple Child Instances</h2><p>If a single component will have multiple instances of a child component as a direct child, those instances must be differentiated. The <code>data-brk-key</code> attribute is used to distinguish them in the DOM, and the value of that attribute is passed to <code>modifyChildProps</code> along with the <code>props$</code> stream. Here’s how it’s intended to be used.</p>
