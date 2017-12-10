@@ -1,7 +1,7 @@
 const path = require('path');
-const fs = require('fs');
 const os = require('os');
 const { spawn } = require('child_process');
+const fs = require('fs-extra');
 const rimraf = require('rimraf');
 const { setWorldConstructor } = require('cucumber');
 
@@ -17,6 +17,32 @@ class CliWorld {
             closed: false,
             code: null
         };
+        this.defaultRc = {
+            path: '.beaverrc.js',
+            contents: `export const dir = 'src';`
+        };
+    }
+
+    async createProjectWith(files) {
+        const create = [this.defaultRc, ...files];
+
+        await Promise.all(create.map(file => this.outputFile(file)));
+    }
+
+    outputFile (file) {
+        return fs.outputFile(path.join(this.cwd, file.path), file.contents);
+    }
+
+    appendFile (file) {
+        return fs.appendFile(path.join(this.cwd, file.path), file.contents);
+    }
+
+    getBarrel(barrel) {
+        return fs.readFile(path.join(this.cwd, 'src', barrel, 'index.js'), 'utf-8');
+    }
+
+    getFile(file, barrel) {
+        return fs.readFile(path.join(this.cwd, 'src', barrel, file), 'utf-8');
     }
 
     run(command) {
@@ -70,7 +96,7 @@ class CliWorld {
         return new Promise(resolve => {
             const loop = () => {
                 if (this.output.closed === true) {
-                    resolve();
+                    resolve(this.output.code);
                 } else {
                     setTimeout(loop, 200);
                 }

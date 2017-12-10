@@ -15,7 +15,8 @@ program
     .command('make', 'Create a new file of a given type for brookjs application.')
     .action(main('make'))
     .argument('<type>', 'Type to make.', ['action', 'component', 'delta', 'reducer', 'selector', 'service'])
-    .argument('<name>', 'Name of the file/type created.');
+    .argument('<name>', 'Name of the file/type created.')
+    .option('--file <file>', 'File to append or create action in.');
 
 program
     .command('dev', 'Develop the brookjs application.')

@@ -11,3 +11,4 @@ export const lKeywords = R.lensProp('keywords');
 export const lLicense = R.lensProp('license');
 export const lCwd = R.lensProp('cwd');
 export const lType = R.lensProp('type');
+export const lFile = R.lensProp('file');

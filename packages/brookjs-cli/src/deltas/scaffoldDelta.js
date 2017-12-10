@@ -1,8 +1,10 @@
 import R from 'ramda';
 import { Kefir, ofType } from 'brookjs';
 import { RUN, CONFIRM_CONFIG, READ_ENV, READ_RC_FILE } from '../actions';
-import { selectPkgContext, selectRcContext, selectAppJsContext,
-    selectMakePath, selectMakeTemplate, selectMakeContext, isMakeCommand } from '../selectors';
+import { selectPkgContext, selectRcContext, selectAppJsContext, selectFilePath,
+    selectBarrelPath, selectExportTemplate, selectMakeContext, isMakeCommand,
+    selectInstanceTemplate } from '../selectors';
+import { lCommandFileOpts } from '../lenses';
 
 export default R.curry(({ scaffold }, actions$, state$) => {
     const new$ = state$.sampledBy(actions$.thru(ofType(CONFIRM_CONFIG))).take(1).delay(0)
@@ -85,13 +87,27 @@ export default R.curry(({ scaffold }, actions$, state$) => {
         ]));
 
     const make$ = state$.sampledBy(actions$.thru(ofType(READ_RC_FILE, READ_ENV, RUN)).bufferWithCount(3))
-        .take(1).filter(isMakeCommand).flatMap(scaffold([{
-            action: scaffold.CREATE,
-            target: scaffold.APP,
-            path: selectMakePath,
-            template: selectMakeTemplate,
-            context: selectMakeContext
-        }]));
+        .take(1).filter(isMakeCommand).flatMap(state => {
+            const specs = [{
+                action: scaffold.APPEND,
+                target: scaffold.APP,
+                path: selectBarrelPath,
+                template: R.view(lCommandFileOpts, state) ? selectExportTemplate : selectInstanceTemplate,
+                context: selectMakeContext
+            }];
+
+            if (R.view(lCommandFileOpts, state)) {
+                specs.push({
+                    action: scaffold.APPEND,
+                    target: scaffold.APP,
+                    path: selectFilePath,
+                    template: selectInstanceTemplate,
+                    context: selectMakeContext
+                });
+            }
+
+            return scaffold(specs, state);
+        });
 
     return Kefir.merge([
         make$,
