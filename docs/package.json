@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "hexo": {
-    "version": "3.3.8"
+    "version": "3.4.3"
   },
   "dependencies": {
     "hexo": "^3.2.0",
@@ -21,7 +21,7 @@
     "sync-request": "^4.0.1"
   },
   "scripts": {
-    "build": "hexo clean && hexo generate && cp -R ../dist public/dist && hexo deploy",
+    "build": "hexo clean && hexo generate && cp -R ../packages/brookjs/dist public/dist && hexo deploy",
     "start": "hexo serve"
   }
 }
