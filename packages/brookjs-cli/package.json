@@ -8,9 +8,10 @@
     "beaver": "./bin/beaver.js"
   },
   "scripts": {
-    "test": "npm run test:lint && npm run test:unit",
+    "test": "npm run test:lint && npm run test:unit && npm run test:feature",
     "test:lint": "eslint ./src --cache true --fix",
-    "test:unit": "./bin/beaver.js test unit --coverage true"
+    "test:unit": "./bin/beaver.js test unit --coverage true",
+    "test:feature": "cucumberjs"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
@@ -35,14 +36,18 @@
   "devDependencies": {
     "babel-eslint": "^8.0.0",
     "chai": "^4.1.2",
+    "chai-fs": "^2.0.0",
     "chai-kefir": "^1.1.0",
+    "chai-string": "^1.4.0",
     "chain": "^0.1.3",
+    "cucumber": "^3.2.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^4.7.0",
     "eslint-config-valtech": "^1.1.0",
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-plugin-flowtype": "^2.35.1",
-    "eslint-plugin-import": "^2.7.0"
+    "eslint-plugin-import": "^2.7.0",
+    "rimraf": "^2.6.2"
   },
   "@std/esm": {
     "esm": "js",
