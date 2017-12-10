@@ -27,14 +27,14 @@ describe('selector#make', () => {
     });
 
     it('selectMakePath should get target path', () => {
-        expect('deltas/testDelta.js').to.equal(selectMakePath(state));
+        expect(selectMakePath(state)).to.equal('deltas/testDelta.js');
     });
 
     it('selectMakeTemplate should get template file', () => {
-        expect('deltas/template.hbs.js').to.equal(selectMakeTemplate(state));
+        expect(selectMakeTemplate(state)).to.equal('deltas/template.hbs.js');
     });
 
     it('selectMakeContext should get template context', () => {
-        expect({ name: 'testDelta' }).to.deep.equal(selectMakeContext(state));
+        expect(selectMakeContext(state)).to.deep.equal({ name: 'testDelta' });
     });
 });
