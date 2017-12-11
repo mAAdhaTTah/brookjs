@@ -8,6 +8,7 @@ import * as hd from './hd';
 import template from './template';
 
 const APP = Symbol('beaver.scaffold.app');
+const APPEND = Symbol('beaver.scaffold.append');
 const CREATE = Symbol('beaver.scaffold.create');
 const ROOT = Symbol('beaver.scaffold.root');
 
@@ -38,29 +39,35 @@ const selectContext = (state, { context }) => {
 };
 
 const mapSpecToStreams = R.curry((state, spec) => {
+    if (typeof spec.template === 'function') {
+        spec = R.merge(spec, { template: spec.template(state) });
+    }
+
+    if (typeof spec.path === 'function') {
+        spec = R.merge(spec, { path: spec.path(state) });
+    }
+
+    const exec = callback => {
+        if (typeof spec.content === 'string') {
+            return callback(selectPath(state, spec), spec.content)
+                .map(() => fileCreated(spec.path));
+        }
+
+        if (typeof spec.template === 'string') {
+            return template(spec.template)
+                .map(tmpl => tmpl(selectContext(state, spec)))
+                .flatMap(content => callback(selectPath(state, spec), content))
+                .map(() => fileCreated(spec.path));
+        }
+
+        return Kefir.constantError(new TypeError(`Invalid spec: ${spec.path}. No content or template.`));
+    };
+
     switch (spec.action) {
+        case APPEND:
+            return exec(hd.append);
         case CREATE:
-            if (typeof spec.content === 'string') {
-                return hd.write(selectPath(state, spec), spec.content)
-                    .map(() => fileCreated(spec.path));
-            }
-
-            if (typeof spec.template === 'function') {
-                spec = R.merge(spec, { template: spec.template(state) });
-            }
-
-            if (typeof spec.path === 'function') {
-                spec = R.merge(spec, { path: spec.path(state) });
-            }
-
-            if (typeof spec.template === 'string') {
-                return template(spec.template)
-                    .map(tmpl => tmpl(selectContext(state, spec)))
-                    .flatMap(content => hd.write(selectPath(state, spec), content))
-                    .map(() => fileCreated(spec.path));
-            }
-
-            return Kefir.constantError(new TypeError(`Invalid spec: ${spec.path}. No content or template.`));
+            return exec(hd.write);
         default:
             return Kefir.constantError(new TypeError(`Invalid action: ${spec.action}`));
     }
@@ -71,6 +78,7 @@ const scaffold = R.curry((specs, state) =>
         .flatMapErrors(err => Kefir.constant(scaffoldError(err))));
 
 scaffold.APP = APP;
+scaffold.APPEND = APPEND;
 scaffold.CREATE = CREATE;
 scaffold.ROOT = ROOT;
 

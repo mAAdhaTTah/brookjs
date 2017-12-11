@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { lName, lOpts, lArgs, lType } from './properties';
+import { lName, lOpts, lArgs, lType, lFile } from './properties';
 
 /**
  * Namespace lens.
@@ -14,3 +14,4 @@ export const lCommandOpts = R.compose(nslCommand, lOpts);
 export const lCommandArgs = R.compose(nslCommand, lArgs);
 export const lCommandTypeArg = R.compose(lCommandArgs, lType);
 export const lCommandNameArg = R.compose(lCommandArgs, lName);
+export const lCommandFileOpts = R.compose(lCommandOpts, lFile);

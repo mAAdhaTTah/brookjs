@@ -3,7 +3,7 @@ import { expect, use } from 'chai';
 import dirty from 'dirty-chai';
 import R from 'ramda';
 import { lCommandName } from '../../lenses';
-import { isMakeCommand, selectMakePath, selectMakeTemplate, selectMakeContext } from '../make';
+import { isMakeCommand, selectBarrelPath, selectExportTemplate, selectMakeContext } from '../make';
 
 const state = {
     command: {
@@ -11,6 +11,9 @@ const state = {
         args: {
             type: 'delta',
             name: 'testDelta'
+        },
+        opts: {
+            file: 'test'
         }
     }
 };
@@ -26,15 +29,15 @@ describe('selector#make', () => {
         expect(isMakeCommand(R.set(lCommandName, 'new', state))).to.be.false();
     });
 
-    it('selectMakePath should get target path', () => {
-        expect('deltas/testDelta.js').to.equal(selectMakePath(state));
+    it('selectBarrelPath should get target path', () => {
+        expect(selectBarrelPath(state)).to.equal('deltas/index.js');
     });
 
-    it('selectMakeTemplate should get template file', () => {
-        expect('deltas/template.hbs.js').to.equal(selectMakeTemplate(state));
+    it('selectExportTemplate should get template file', () => {
+        expect(selectExportTemplate(state)).to.equal('deltas/export.hbs.js');
     });
 
     it('selectMakeContext should get template context', () => {
-        expect({ name: 'testDelta' }).to.deep.equal(selectMakeContext(state));
+        expect(selectMakeContext(state)).to.deep.equal({ name: 'testDelta', file: 'test' });
     });
 });

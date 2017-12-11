@@ -24,7 +24,7 @@ export default ({ ui }, actions$, state$) => {
         {
             type: 'input',
             name: 'dir',
-            message: 'Where will the application src live?',
+            message: 'Where will the application source live?',
             default: 'src'
         },
         {

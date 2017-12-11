@@ -11,9 +11,9 @@ const defaults = {
 const cond = [
     [READ_RC_FILE, (state, { payload }) => ({
         ...state,
-        reporter: R.defaultTo(defaults.reporter, payload.mocha.reporter),
-        ui: R.defaultTo(defaults.ui, payload.mocha.ui),
-        requires: R.defaultTo(defaults.requires, payload.mocha.requires)
+        reporter: R.defaultTo(defaults.reporter, R.path(['mocha', 'reporter'], payload)),
+        ui: R.defaultTo(defaults.ui, R.path(['mocha', 'ui'], payload)),
+        requires: R.defaultTo(defaults.requires, R.path(['mocha', 'requires'], payload))
     })]
 ];
 

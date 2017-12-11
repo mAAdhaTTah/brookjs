@@ -9,6 +9,10 @@ export const write = (path, contents) => Kefir.fromNodeCallback(callback =>
     fs.outputFile(path, contents, { mode: '644' }, callback)
 );
 
+export const append = (path, contents) => Kefir.fromNodeCallback(callback =>
+    fs.appendFile(path, contents, { mode: '644' }, callback)
+);
+
 export const stat = path => Kefir.fromNodeCallback(callback =>
     fs.stat(path, callback)
 );

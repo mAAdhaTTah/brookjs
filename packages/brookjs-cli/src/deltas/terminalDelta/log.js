@@ -2,6 +2,11 @@ import { Kefir } from 'brookjs';
 import {  SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
     NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH } from '../../actions';
 
+const setExitCode = code => Kefir.stream(emitter => {
+    process.exitCode = code;
+    emitter.end();
+});
+
 export default ({ ui }, actions$/*, state$ */) => {
     const success$ = actions$.flatMap(({ type, payload }) => {
         switch (type) {
@@ -17,9 +22,15 @@ export default ({ ui }, actions$/*, state$ */) => {
     const error$ = actions$.flatMap(({ type, payload }) => {
         switch (type) {
             case SCAFFOLD_ERROR:
-                return ui.error(`error scaffolding file: ${payload.error.message}`);
+                return Kefir.concat([
+                    ui.error(`error scaffolding file: ${payload.error.message}`),
+                    setExitCode(1)
+                ]);
             case READ_RC_FILE_ERROR:
-                return ui.error(`error reading .beaverrc.js: ${payload.error.message}`);
+                return Kefir.concat([
+                    ui.error(`error reading .beaverrc.js: ${payload.error.message}`),
+                    setExitCode(1)
+                ]);
             default:
                 return Kefir.never();
         }

@@ -1,10 +1,12 @@
 /* eslint-env mocha */
 import { expect, use } from 'chai';
-import chaiKefir, { prop, stream, send } from 'chai-kefir';
+import { Kefir } from 'brookjs';
+import { chaiPlugin } from 'brookjs-desalinate';
 import { run, readEnv, readRcFile, readRcFileError } from '../../actions';
 import envDelta from '../envDelta';
 
-use(chaiKefir);
+const { plugin, send, prop, stream, value, end } = chaiPlugin({ Kefir });
+use(plugin);
 
 const beaverrc = {
     dir: '/path/to/dir'
@@ -33,7 +35,7 @@ describe('delta#envDelta', () => {
         actions$ = stream();
         state$ = prop();
 
-        send(state$, [state]);
+        send(state$, [value(state)]);
     });
 
     it('should do nothing on random action', () => {
@@ -44,7 +46,7 @@ describe('delta#envDelta', () => {
         );
 
         expect(delta$).to.emit([], () =>
-            send(actions$, [{ type: 'RANDOM' }]));
+            send(actions$, [value({ type: 'RANDOM' })]));
     });
 
     it('reads cwd but not .beaverrc on new command', () => {
@@ -54,8 +56,8 @@ describe('delta#envDelta', () => {
             state$
         );
 
-        expect(delta$).to.emit([readEnv('/path/to/cwd'), '<end>'], () =>
-            send(actions$, [run('new', {}, {})]));
+        expect(delta$).to.emit([value(readEnv('/path/to/cwd')), end()], () =>
+            send(actions$, [value(run('new', {}, {}))]));
     });
 
     it('reads cwd and .beaverrc on non-new command', () => {
@@ -65,9 +67,9 @@ describe('delta#envDelta', () => {
             state$
         );
 
-        expect(delta$).to.emit([readEnv(cwd), readRcFile(beaverrc), '<end>'], () => {
-            send(actions$, [run('test', {}, {})]);
-            send(actions$, [readEnv(cwd)]);
+        expect(delta$).to.emit([value(readEnv(cwd)), value(readRcFile(beaverrc)), end()], () => {
+            send(actions$, [value(run('test', {}, {}))]);
+            send(actions$, [value(readEnv(cwd))]);
         });
     });
 
@@ -86,9 +88,9 @@ describe('delta#envDelta', () => {
             state$
         );
 
-        expect(delta$).to.emit([readEnv(cwd), readRcFileError(error), '<end>'], () => {
-            send(actions$, [run('test', {}, {})]);
-            send(actions$, [readEnv(cwd)]);
+        expect(delta$).to.emit([value(readEnv(cwd)), value(readRcFileError(error)), end()], () => {
+            send(actions$, [value(run('test', {}, {}))]);
+            send(actions$, [value(readEnv(cwd))]);
         });
     });
 });

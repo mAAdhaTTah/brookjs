@@ -7,4 +7,4 @@ const cond = [
 
 ];
 
-export default {{name}}(cond, defaults);
+export default combineActionReducers(cond, defaults);

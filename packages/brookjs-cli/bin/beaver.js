@@ -15,7 +15,8 @@ program
     .command('make', 'Create a new file of a given type for brookjs application.')
     .action(main('make'))
     .argument('<type>', 'Type to make.', ['action', 'component', 'delta', 'reducer', 'selector', 'service'])
-    .argument('<name>', 'Name of the file/type created.');
+    .argument('<name>', 'Name of the file/type created.')
+    .option('--file <file>', 'File to append or create action in.');
 
 program
     .command('dev', 'Develop the brookjs application.')
@@ -25,7 +26,7 @@ program
 program
     .command('test', 'Run the brookjs application tests.')
     .action(main('test'))
-    .argument('<type>', 'Tests to run.', ['unit', 'e2e'])
+    .argument('<type>', 'Tests to run.', ['unit'])
     .option('--coverage <enable>', 'Whether to generate test coverage (true/false).', program.BOOLEAN)
     .option('--env <node-env>', 'Value to set for the NODE_ENV for the test run.');
 
