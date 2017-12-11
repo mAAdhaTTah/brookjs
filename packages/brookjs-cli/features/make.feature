@@ -3,20 +3,32 @@ Feature: make command
   As a developer
   I want to add new features easily
 
-  Scenario:
-    Given I have project with "actions"
-    When I run beaver with "make action myAction"
-    Then I see an "myAction" added to barrel for "actions"
+  Scenario Outline:
+    Given I have project with "<type>"
+    When I run beaver with "<command>"
+    Then I see an "<instance>" added to barrel for "<type>"
 
-  Scenario:
-    Given I have project with "actions"
-    When I run beaver with "make action myAction --file test"
-    Then I see "test" exported from barrel for "actions"
-    And I see "test.js" with "myAction" in "actions"
+    Examples:
+      | type    | command              | instance |
+      | actions | make action myAction | myAction |
 
-  Scenario:
-    Given I have project with "actions"
-    And I have a file called "test.js" exported from "actions"
-    When I run beaver with "make action myAction --file test"
-    Then I see "test" exported from barrel for "actions"
-    And I see "test.js" with "myAction" in "actions"
+  Scenario Outline:
+    Given I have project with "<type>"
+    When I run beaver with "<command>"
+    Then I see "<opt>" exported from barrel for "<type>"
+    And I see "<file>" with "<instance>" in "<type>"
+
+    Examples:
+      | type    | command                          | instance | opt  | file    |
+      | actions | make action myAction --file test | myAction | test | test.js |
+
+  Scenario Outline:
+    Given I have project with "<type>"
+    And I have a file called "<file>" exported from "<type>"
+    When I run beaver with "<command>"
+    Then I see "<opt>" exported from barrel for "<type>"
+    And I see "<file>" with "<instance>" in "<type>"
+
+    Examples:
+      | type    | command                          | instance | opt  | file    |
+      | actions | make action myAction --file test | myAction | test | test.js |
