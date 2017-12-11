@@ -11,22 +11,12 @@ const DOWN = '\x1B\x5B\x42';
 const ENTER = '\x0D';
 
 Given('I have project with {string}', async function (type) {
-    let files = [];
-
-    switch (type) {
-        case 'actions':
-            files = [
-                {
-                    path: 'src/actions/index.js',
-                    contents: ''
-                }
-            ];
-            break;
-        default:
-            return 'pending';
-    }
-
-    await this.createProjectWith(files);
+    await this.createProjectWith([
+        {
+            path: `src/${type}/index.js`,
+            contents: ''
+        }
+    ]);
 });
 
 Given('I have a file called {string} exported from {string}', async function (file, barrel) {
@@ -112,23 +102,15 @@ Then('I have a new project', { timeout: 20000 }, async function() {
 
 Then('I see an {string} added to barrel for {string}', async function (name, barrel) {
     expect(await this.ended()).to.equal(0, `Errored with msg: ${this.output.stdout || this.output.stderr}`);
-    expect(await this.getBarrel(barrel)).to.have.string(`export const ${constant(name)} = '${constant(name)}';
-
-export const ${name} = () => ({
-    type: ${constant(name)}
-});`);
+    expect(await this.getBarrel(barrel)).to.have.string(this.getInstanceForType(name, barrel));
 });
 
 Then('I see {string} exported from barrel for {string}', async function (name, barrel) {
     expect(await this.ended()).to.equal(0, `Errored with msg: ${this.output.stdout || this.output.stderr}`);
-    expect(await this.getBarrel(barrel)).to.have.string(`export * from './${name}';`);
+    expect(await this.getBarrel(barrel)).to.have.string(this.getExportForType(name, barrel));
 });
 
 Then('I see {string} with {string} in {string}', async function (file, name, barrel) {
     expect(await this.ended()).to.equal(0, `Errored with msg: ${this.output.stdout || this.output.stderr}`);
-    expect(await this.getFile(file, barrel)).to.have.string(`export const ${constant(name)} = '${constant(name)}';
-
-export const ${name} = () => ({
-    type: ${constant(name)}
-});`);
+    expect(await this.getFile(file, barrel)).to.have.string(this.getInstanceForType(name, barrel));
 });
