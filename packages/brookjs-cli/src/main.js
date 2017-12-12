@@ -3,9 +3,10 @@ import loader from '@std/esm';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { observeDelta } from 'brookjs';
 import { run } from './actions';
-import { envDelta, npmDelta, scaffoldDelta, terminalDelta, testRunnerDelta } from './deltas';
+import { envDelta, npmDelta, scaffoldDelta, terminalDelta,
+    testRunnerDelta, webpackDelta } from './deltas';
 import { app, command, env, mocha } from './reducers';
-import { glob, npm, scaffold, ui } from './services';
+import { glob, npm, scaffold, ui, webpack } from './services';
 
 export default R.curry(function main (name, args, options) {
     const store = createStore(
@@ -15,7 +16,8 @@ export default R.curry(function main (name, args, options) {
             npmDelta({ npm }),
             scaffoldDelta({ scaffold }),
             terminalDelta({ ui }),
-            testRunnerDelta({ glob })
+            testRunnerDelta({ glob }),
+            webpackDelta({ webpack })
         ))
     );
 
