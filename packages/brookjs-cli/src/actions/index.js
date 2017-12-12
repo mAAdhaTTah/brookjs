@@ -1,4 +1,5 @@
 export * from './npm';
+export * from './webpack';
 
 export const RUN = 'RUN';
 
