@@ -12,3 +12,5 @@ export const lLicense = R.lensProp('license');
 export const lCwd = R.lensProp('cwd');
 export const lType = R.lensProp('type');
 export const lFile = R.lensProp('file');
+export const lEntry = R.lensProp('entry');
+export const lEnv = R.lensProp('env');

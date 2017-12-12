@@ -3,6 +3,7 @@ import R from 'ramda';
 import { nslApp, lAppAuthor, lAppDescription, lAppDir,
     lAppLicense, lAppName, lAppVersion, lEnvCwd } from '../lenses';
 
+export * from './build';
 export * from './make';
 export * from './test';
 
