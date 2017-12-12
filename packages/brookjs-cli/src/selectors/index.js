@@ -1,7 +1,9 @@
 import path from 'path';
 import R from 'ramda';
-import { nslApp, lAppAuthor, lAppDescription, lAppDir,
-    lAppLicense, lAppName, lAppVersion, lEnvCwd } from '../lenses';
+import { ofType } from 'brookjs';
+import { lAppAuthor, lAppDescription, lAppDir,
+    lAppLicense, lAppName, lAppVersion, lEnvCwd, nslApp } from '../lenses';
+import { READ_ENV, READ_RC_FILE, RUN } from '../actions';
 
 export * from './build';
 export * from './make';
@@ -36,3 +38,9 @@ export const selectRcContext = R.applySpec({
 export const selectAppJsContext = R.applySpec({
     name: R.view(lAppName)
 });
+
+export const takeStateOnBootstrap = (state$, actions$) =>
+    state$.sampledBy(
+        actions$.thru(ofType(READ_RC_FILE, READ_ENV, RUN))
+            .bufferWithCount(3)
+    ).take(1);
