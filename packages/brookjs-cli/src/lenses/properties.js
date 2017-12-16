@@ -14,3 +14,7 @@ export const lType = R.lensProp('type');
 export const lFile = R.lensProp('file');
 export const lEntry = R.lensProp('entry');
 export const lEnv = R.lensProp('env');
+export const lOutput = R.lensProp('output');
+export const lPath = R.lensProp('path');
+export const lFilename = R.lensProp('filename');
+export const lModifier = R.lensProp('modifier');

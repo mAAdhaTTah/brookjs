@@ -3,7 +3,7 @@ import R from 'ramda';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import { lAppDir, lAppEntry, lCommandName, lEnvCwd,
-    lCommandEnvArg } from '../lenses';
+    lCommandEnvArg, lWebpackOutputPath, lWebpackOutputFilename } from '../lenses';
 
 export const isBuildCommand = R.pipe(
     R.view(lCommandName),
@@ -24,9 +24,8 @@ const selectEnvPlugins = state => {
         case 'production':
             return [
                 new UglifyJsPlugin({
-                    paralle: true,
+                    parallel: true,
                     cache: true,
-                    sourceMap: true
                 })
             ];
         default:
@@ -39,19 +38,25 @@ const selectAppPath = state => path.join(
     R.view(lAppDir, state)
 );
 
-const selectWebpackEntry = state => ({
-    app: path.join(
-        selectAppPath(state),
-        R.view(lAppEntry, state)
-    )
+const selectWebpackEntry = state => {
+    const entry = R.view(lAppEntry, state);
+
+    if (typeof entry === 'string') {
+        return path.join(selectAppPath(state), entry);
+    }
+
+    // Handles values on objects & arrays.
+    return R.map(e => path.join(selectAppPath(state), e), entry);
+};
+
+const selectOutput = state => ({
+    path: path.join(R.view(lEnvCwd, state), R.view(lWebpackOutputPath, state)),
+    filename: R.view(lWebpackOutputFilename, state)
 });
-export const selectWebpackConfig = state => ({
+
+export const selectWebpackConfig = state => state.webpack.modifier({
     entry: selectWebpackEntry(state),
-    output: {
-        path: path.join(selectAppPath(state), 'public', 'assets'),
-        publicPath: '/assets',
-        filename: '[name].js'
-    },
+    output: selectOutput(state),
     module: {
         loaders: [
             {
