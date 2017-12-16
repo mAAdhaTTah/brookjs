@@ -1,6 +1,7 @@
 import { Kefir } from 'brookjs';
-import {  SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
-    NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH } from '../../actions';
+import { SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
+    NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH,
+    WEBPACK_COMPILED } from '../../actions';
 
 const setExitCode = code => Kefir.stream(emitter => {
     process.exitCode = code;
@@ -14,6 +15,11 @@ export default ({ ui }, actions$/*, state$ */) => {
                 return ui.success(`created file ${payload.path}`);
             case NPM_COMMAND_FINISH:
                 return ui.success(`npm finished with code ${payload.code}`);
+            case WEBPACK_COMPILED:
+                return Kefir.concat([
+                    ui.success(`webpack compiled:\n`),
+                    ui.log(payload.stats.toString({ colors: true }))
+                ]);
             default:
                 return Kefir.never();
         }

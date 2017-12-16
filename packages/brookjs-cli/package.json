@@ -17,21 +17,26 @@
   "license": "MIT",
   "dependencies": {
     "@std/esm": "^0.12.2",
+    "babel-loader": "^7.1.2",
     "brookjs": "^0.10.1",
     "brookjs-desalinate": "^0.10.1",
     "caporal": "^0.7.0",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
     "cross-env": "^5.1.1",
+    "eslint-loader": "^1.9.0",
     "fs-extra": "^4.0.2",
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
+    "handlebars-loader": "^1.6.0",
     "inquirer": "^3.2.3",
     "mocha": "^4.0.1",
     "nyc": "^11.2.1",
     "ramda": "^0.24.1",
     "redux": "^3.7.2",
-    "shelljs": "^0.7.8"
+    "shelljs": "^0.7.8",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^3.10.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
