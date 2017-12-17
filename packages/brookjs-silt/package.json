@@ -38,7 +38,7 @@
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-plugin-flowtype": "^2.35.1",
     "eslint-plugin-import": "^2.7.0",
-    "flow-bin": "^0.54.1",
+    "flow-bin": "^0.61.0",
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
     "handlebars-spec": "^3.0.3-alpha.1",
@@ -49,6 +49,6 @@
   "dependencies": {
     "diffhtml": "^1.0.0-beta.8",
     "htmlparser2": "^3.9.2",
-    "ramda": "^0.24.1"
+    "ramda": "^0.25.0"
   }
 }
