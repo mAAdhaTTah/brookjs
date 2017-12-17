@@ -3,7 +3,7 @@ import R from 'ramda';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import {
-    lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvArg,
+    lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvOpt,
     lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
 } from '../lenses';
 
@@ -21,13 +21,13 @@ export const isBuildCommand = R.pipe(
 
 const selectDefaultPlugins = state => [
     new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(R.view(lCommandEnvArg, state))
+        'process.env.NODE_ENV': JSON.stringify(R.view(lCommandEnvOpt, state))
     }),
     new webpack.optimize.ModuleConcatenationPlugin()
 ];
 
 const selectEnvPlugins = state => {
-    switch (R.view(lCommandEnvArg, state)) {
+    switch (R.view(lCommandEnvOpt, state)) {
         case 'development':
             return [];
         case 'production':

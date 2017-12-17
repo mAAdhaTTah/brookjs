@@ -34,6 +34,6 @@ program
 program
     .command('build', 'Build the brookjs application files.')
     .action(main('build'))
-    .argument('<env>', 'Build environment target.', ['development', 'production']);
+    .option('--env <env>', 'Build environment target.', ['development', 'production']);
 
 program.parse(process.argv);
