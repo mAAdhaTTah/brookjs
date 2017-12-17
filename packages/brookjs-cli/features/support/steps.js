@@ -69,7 +69,7 @@ When('I respond to the {string} prompts', { timeout: 20000 }, async function (co
     await this.respondTo(questions);
 });
 
-Then('I have a new project', { timeout: 20000 }, async function() {
+Then('I have a new project', { timeout: 100000 }, async function() {
     const appPath = path.join(this.cwd, 'test-app');
 
     await this.ended();
