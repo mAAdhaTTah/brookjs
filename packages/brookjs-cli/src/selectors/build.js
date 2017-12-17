@@ -7,8 +7,10 @@ import {
     lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
 } from '../lenses';
 
+export const isDevCommand = R.pipe(R.view(lCommandName), R.equals('dev'));
+
 export const isDevAppCommand = R.converge(R.and, [
-    R.pipe(R.view(lCommandName), R.equals('dev')),
+    isDevCommand,
     R.pipe(R.view(lCommandTypeArg), R.equals('app'))
 ]);
 
