@@ -5,19 +5,19 @@ import { observeDelta } from 'brookjs';
 import { run } from './actions';
 import { envDelta, npmDelta, scaffoldDelta, terminalDelta,
     testRunnerDelta, webpackDelta } from './deltas';
-import { app, command, env, mocha } from './reducers';
-import { glob, npm, scaffold, ui, webpack } from './services';
+import { app, command, env, mocha, webpack } from './reducers';
+import { glob, npm, scaffold, ui, WebpackService } from './services';
 
 export default R.curry(function main (name, args, options) {
     const store = createStore(
-        combineReducers({ app, command, env, mocha }),
+        combineReducers({ app, command, env, mocha, webpack }),
         applyMiddleware(observeDelta(
             envDelta({ process, require: loader(module, { esm: 'js' }) }),
             npmDelta({ npm }),
             scaffoldDelta({ scaffold }),
             terminalDelta({ ui }),
             testRunnerDelta({ glob }),
-            webpackDelta({ webpack })
+            webpackDelta({ webpack: WebpackService })
         ))
     );
 

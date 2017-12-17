@@ -1,6 +1,7 @@
 import { Kefir } from 'brookjs';
-import { webpackCompiled } from '../actions';
-import { isBuildCommand, selectWebpackConfig, takeStateOnBootstrap } from '../selectors';
+import { webpackCompiled, webpackDashboardEvents } from '../actions';
+import { isBuildCommand, isDevAppCommand, selectWebpackConfig,
+    takeStateOnBootstrap } from '../selectors';
 
 export default ({ webpack }) => (actions$, state$) => {
     const bootstrap$ = takeStateOnBootstrap(state$, actions$);
@@ -12,7 +13,15 @@ export default ({ webpack }) => (actions$, state$) => {
                 .map(webpackCompiled)
         );
 
+    const dev$ = bootstrap$.filter(isDevAppCommand)
+        .flatMap(state =>
+            webpack.create(selectWebpackConfig(state))
+                .flatMap(compiler => compiler.watch())
+                .map(webpackDashboardEvents)
+        );
+
     return Kefir.merge([
-        build$
+        build$,
+        dev$
     ]);
 };

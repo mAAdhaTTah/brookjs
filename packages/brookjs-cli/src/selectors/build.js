@@ -2,8 +2,15 @@ import path from 'path';
 import R from 'ramda';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
-import { lAppDir, lAppEntry, lCommandName, lEnvCwd,
-    lCommandEnvArg, lWebpackOutputPath, lWebpackOutputFilename } from '../lenses';
+import {
+    lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvArg,
+    lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
+} from '../lenses';
+
+export const isDevAppCommand = R.converge(R.and, [
+    R.pipe(R.view(lCommandName), R.equals('dev')),
+    R.pipe(R.view(lCommandTypeArg), R.equals('app'))
+]);
 
 export const isBuildCommand = R.pipe(
     R.view(lCommandName),
@@ -39,7 +46,7 @@ const selectAppPath = state => path.join(
 );
 
 const selectWebpackEntry = state => {
-    const entry = R.view(lAppEntry, state);
+    const entry = R.view(lWebpackEntry, state);
 
     if (typeof entry === 'string') {
         return path.join(selectAppPath(state), entry);

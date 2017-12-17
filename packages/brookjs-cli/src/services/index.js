@@ -5,5 +5,5 @@ import * as ui from './ui';
 
 export { default as scaffold } from './scaffold';
 export { default as glob } from './glob';
-export { default as webpack } from './webpack';
+export { default as WebpackService } from './webpack';
 export { hd, npm, template, ui };
