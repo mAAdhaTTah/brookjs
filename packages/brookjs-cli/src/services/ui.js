@@ -2,17 +2,33 @@ import { Kefir } from 'brookjs';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 
-export const log = msg => Kefir.stream(emitter => {
-    process.stdout.write(msg);
-    process.stdout.write('\n');
-    emitter.end();
-});
+class UiService {
+    constructor(logger) {
+        this.logger = logger;
+    }
 
-export const prompt = questions =>
-    Kefir.fromPromise(inquirer.prompt(questions));
+    log(lvl, msg) {
+        return Kefir.stream(emitter => {
+            this.logger[lvl](msg);
+            emitter.end();
+        });
+    }
 
-export const error = msg => log(chalk.red(msg));
+    prompt(questions) {
+        return Kefir.fromPromise(inquirer.prompt(questions));
+    }
 
-export const success = msg => log(chalk.green(msg));
+    info(msg) {
+        return this.log('info', msg);
+    }
 
-export const info = msg => log(chalk.yellow(msg));
+    error(msg) {
+        return this.log('error', msg);
+    }
+
+    success(msg) {
+        return this.log('info', chalk.green(msg));
+    }
+}
+
+export default logger => new UiService(logger);

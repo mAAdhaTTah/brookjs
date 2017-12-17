@@ -8,14 +8,14 @@ import { envDelta, npmDelta, scaffoldDelta, terminalDelta,
 import { app, command, env, mocha, webpack } from './reducers';
 import { glob, npm, scaffold, ui, WebpackService } from './services';
 
-export default R.curry(function main (name, args, options) {
+export default R.curry(function main (name, args, options, logger) {
     const store = createStore(
         combineReducers({ app, command, env, mocha, webpack }),
         applyMiddleware(observeDelta(
             envDelta({ process, require: loader(module, { esm: 'js' }) }),
             npmDelta({ npm }),
             scaffoldDelta({ scaffold }),
-            terminalDelta({ ui }),
+            terminalDelta({ ui: ui(logger) }),
             testRunnerDelta({ glob }),
             webpackDelta({ webpack: WebpackService })
         ))
