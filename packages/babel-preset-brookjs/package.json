@@ -1,0 +1,24 @@
+{
+  "name": "babel-preset-brookjs",
+  "version": "0.0.0",
+  "description": "Recommended plugins for developing brookjs applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "keywords": [
+    "babel",
+    "babel-preset",
+    "brookjs",
+    "kefir",
+    "ramda"
+  ],
+  "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
+  "license": "MIT",
+  "dependencies": {
+    "babel-plugin-ramda": "^1.4.3",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}
