@@ -77,6 +77,7 @@ Then('I have a new project', { timeout: 20000 }, async function() {
 
     expect(this.output.stdout.trim()).to.endWith('npm finished with code 0');
     expect(appPath).to.be.a.directory().with.deep.contents([
+        '.babelrc',
         '.beaverrc.js',
         'client',
         'client/actions',

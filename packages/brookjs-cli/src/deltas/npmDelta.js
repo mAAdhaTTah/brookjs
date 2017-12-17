@@ -29,10 +29,13 @@ export default R.curry(({ npm }, actions$, state$) => {
                 dev: false
             },
             {
-                pkg: 'valtech-nyc/brookjs-cli',
+                pkg: 'brookjs-cli',
+                dev: true
+            },
+            {
+                pkg: 'babel-preset-brookjs',
                 dev: true
             }
-
         ]));
 
     return Kefir.merge([

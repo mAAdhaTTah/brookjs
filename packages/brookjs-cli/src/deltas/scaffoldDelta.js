@@ -25,6 +25,12 @@ export default R.curry(({ scaffold }, actions$, state$) => {
             },
             {
                 action: scaffold.CREATE,
+                target: scaffold.ROOT,
+                path: '.babelrc',
+                template: '.babelrc'
+            },
+            {
+                action: scaffold.CREATE,
                 target: scaffold.APP,
                 path: 'app.js',
                 template: 'app.hbs.js',
