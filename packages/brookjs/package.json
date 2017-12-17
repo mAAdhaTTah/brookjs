@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "description": "A framework for building streaming applications.",
   "main": "cjs/index.js",
   "browser": "dist/brook.js",
@@ -41,7 +41,7 @@
     "babel-loader": "^7.0.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-preset-brookjs": "0.0.0",
+    "babel-preset-brookjs": "^0.11.0",
     "babel-register": "^6.9.0",
     "brookjs-desalinate": "^0.10.1",
     "chai": "^4.1.2",
