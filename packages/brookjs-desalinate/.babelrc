@@ -1,32 +1,27 @@
 {
   "plugins": [
-    "ramda",
-    ["transform-object-rest-spread", { "useBuiltIns": true}],
     "syntax-flow",
     "transform-flow-strip-types"
   ],
   "env": {
     "test:node": {
-      "plugins": [
-        "istanbul"
-      ],
       "presets": [
-        ["es2015", { "loose": false, "modules": "commonjs" }]
+        ["brookjs", { "loose": false, "modules": "commonjs" }]
       ]
     },
     "test:browser": {
       "presets": [
-        ["es2015", { "loose": false, "modules": false }]
+        ["brookjs", { "loose": false, "modules": false }]
       ]
     },
     "commonjs": {
       "presets": [
-        ["es2015", { "loose": false, "modules": "commonjs" }]
+        ["brookjs", { "loose": false, "modules": "commonjs" }]
       ]
     },
     "es": {
       "presets": [
-        ["es2015", { "loose": false, "modules": false }]
+        ["brookjs", { "loose": false, "modules": false }]
       ]
     }
   }
