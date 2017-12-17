@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit && npm run test:feature",
     "test:lint": "eslint ./src --cache true --fix",
-    "test:unit": "./bin/beaver.js test unit --coverage true",
+    "test:unit": "beaver test unit --coverage true",
     "test:feature": "cucumberjs"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
