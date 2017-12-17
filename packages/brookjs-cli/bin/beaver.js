@@ -21,18 +21,19 @@ program
 program
     .command('dev', 'Develop the brookjs application.')
     .action(main('dev'))
-    .argument('<type>', 'Development style.', ['app', 'tdd']);
+    .argument('<type>', 'Development style.', ['app', 'tdd'])
+    .option('--env <env>', 'Value to set for the NODE_ENV for development run.');
 
 program
     .command('test', 'Run the brookjs application tests.')
     .action(main('test'))
     .argument('<type>', 'Tests to run.', ['unit'])
     .option('--coverage <enable>', 'Whether to generate test coverage (true/false).', program.BOOLEAN)
-    .option('--env <node-env>', 'Value to set for the NODE_ENV for the test run.');
+    .option('--env <env>', 'Value to set for the NODE_ENV for the test run.');
 
 program
     .command('build', 'Build the brookjs application files.')
     .action(main('build'))
-    .argument('<env>', 'Build environment target.', ['development', 'production']);
+    .option('--env <env>', 'Build environment target.', ['development', 'production']);
 
 program.parse(process.argv);

@@ -2,8 +2,17 @@ import path from 'path';
 import R from 'ramda';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
-import { lAppDir, lAppEntry, lCommandName, lEnvCwd,
-    lCommandEnvArg, lWebpackOutputPath, lWebpackOutputFilename } from '../lenses';
+import {
+    lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvOpt,
+    lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
+} from '../lenses';
+
+export const isDevCommand = R.pipe(R.view(lCommandName), R.equals('dev'));
+
+export const isDevAppCommand = R.converge(R.and, [
+    isDevCommand,
+    R.pipe(R.view(lCommandTypeArg), R.equals('app'))
+]);
 
 export const isBuildCommand = R.pipe(
     R.view(lCommandName),
@@ -12,13 +21,13 @@ export const isBuildCommand = R.pipe(
 
 const selectDefaultPlugins = state => [
     new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(R.view(lCommandEnvArg, state))
+        'process.env.NODE_ENV': JSON.stringify(R.view(lCommandEnvOpt, state))
     }),
     new webpack.optimize.ModuleConcatenationPlugin()
 ];
 
 const selectEnvPlugins = state => {
-    switch (R.view(lCommandEnvArg, state)) {
+    switch (R.view(lCommandEnvOpt, state)) {
         case 'development':
             return [];
         case 'production':
@@ -39,7 +48,7 @@ const selectAppPath = state => path.join(
 );
 
 const selectWebpackEntry = state => {
-    const entry = R.view(lAppEntry, state);
+    const entry = R.view(lWebpackEntry, state);
 
     if (typeof entry === 'string') {
         return path.join(selectAppPath(state), entry);

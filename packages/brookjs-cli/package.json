@@ -36,7 +36,8 @@
     "redux": "^3.7.2",
     "shelljs": "^0.7.8",
     "uglifyjs-webpack-plugin": "^1.1.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dashboard": "^1.0.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
