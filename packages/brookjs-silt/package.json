@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "0.10.0",
+  "version": "0.11.1",
   "description": "Handlebars-based rendering engine, built on diffhtml.",
   "main": "cjs/index.js",
   "private": true,
@@ -28,8 +28,8 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-preset-brookjs": "^0.11.0",
-    "brookjs-cli": "^0.11.0",
+    "babel-preset-brookjs": "^0.11.1",
+    "brookjs-cli": "^0.11.1",
     "chai": "^4.1.2",
     "cross-env": "^5.0.5",
     "diffhtml-render-to-string": "^1.0.0-beta.8",
