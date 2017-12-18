@@ -1,5 +1,0 @@
---reporter spec
---ui bdd
---require babel-register
---require jsdom-global/register
-src/**/__tests__/*.spec.js
