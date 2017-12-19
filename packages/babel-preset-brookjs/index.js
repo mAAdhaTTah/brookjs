@@ -1,7 +1,7 @@
-module.exports = function(api, { useBuiltIns = true, modules = false, targets } = {}) {
+module.exports = function(api, { loose = false, useBuiltIns = true, modules = false, targets } = {}) {
     return {
         presets: [
-            ['babel-preset-env', { useBuiltIns, modules, targets }]
+            ['babel-preset-env', { loose, useBuiltIns, modules, targets }]
         ],
         plugins: [
             'babel-plugin-ramda',
