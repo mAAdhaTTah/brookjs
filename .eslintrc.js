@@ -8,7 +8,8 @@ module.exports = {
         sourceType: 'module',
         ecmaFeatures: {
             experimentalObjectRestSpread: true,
-            impliedStrict: true
+            impliedStrict: true,
+            jsx: true
         }
     },
     env: {
@@ -18,15 +19,19 @@ module.exports = {
     },
     plugins: [
         'import',
-        'flowtype'
+        'flowtype',
+        'react'
     ],
     extends: 'valtech',
     rules: {
         eqeqeq: [2, 'smart'],
         'wrap-iife': [2, 'inside'],
+
+        // Flowtype
         'flowtype/define-flow-type': 1,
         'flowtype/use-flow-type': 1,
 
+        // Import
         'import/no-unresolved': 2,
         'import/named': 2,
         'import/namespace': 2,
@@ -47,6 +52,10 @@ module.exports = {
             groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
             'newlines-between': 'never'
         }],
+
+        // JSX
+        'react/jsx-uses-vars': 2,
+        'react/jsx-uses-react': 2
     },
     settings: {
         'import/resolver': {
@@ -56,6 +65,9 @@ module.exports = {
                     path.join(__dirname, 'packages')
                 ]
             }
+        },
+        'react': {
+            pragma: 'h'
         }
     }
 };

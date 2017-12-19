@@ -1,12 +1,34 @@
-import R from 'ramda';
 import { Kefir, ofType } from 'brookjs';
+import { h, Component, render } from 'ink';
 import { RUN } from '../../actions';
 import log from './log';
-import commandNotFound from './commandNotFound';
+import CommandNotFound from './CommandNotFound';
 import devCommand from './devCommand';
 import newCommandPrompt from './newCommandPrompt';
 
-export default R.curry((services, actions$, state$) =>
+class Root extends Component {
+    componentDidMount() {
+        const { props$ } = this.props;
+
+        this.sub = props$.observe(val => {
+            this.setState(val);
+        });
+    }
+
+    componentWillUnmount() {
+        this.sub && this.sub.unsubscribe();
+    }
+
+    render({ emitter, View }) {
+        return <View emitter={emitter} {...this.state} />;
+    }
+}
+
+const mountTerminal = (View, props$) => Kefir.stream(emitter =>
+    render(<Root props$={props$} View={View} emitter={emitter}/>)
+);
+
+export default (services) => (actions$, state$) =>
     Kefir.merge([
         log(services, actions$, state$),
         state$.sampledBy(actions$.thru(ofType(RUN))).take(1).flatMap(state => {
@@ -20,7 +42,7 @@ export default R.curry((services, actions$, state$) =>
                 case 'build':
                     return Kefir.never();
                 default:
-                    return commandNotFound(services, actions$, state$);
+                    return mountTerminal(CommandNotFound, state$);
             }
         })
-    ]));
+    ]);
