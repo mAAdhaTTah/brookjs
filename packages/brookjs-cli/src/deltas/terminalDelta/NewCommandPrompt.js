@@ -41,8 +41,8 @@ export default class NewCommandPrompt extends Component {
         super(...args);
 
         this.state = {
-            completed: false,
-            confirmed: false
+            completed: null,
+            confirmed: null
         };
     }
 
@@ -56,7 +56,7 @@ export default class NewCommandPrompt extends Component {
         this.props.emitter.value(confirmConfig(response));
     }
 
-    render ({ ...props }, { completed, confirmed }) {
+    render ({ messages, ...props }, { completed, confirmed }) {
         return (
             <span>
                 <Inquirer
@@ -70,12 +70,13 @@ export default class NewCommandPrompt extends Component {
                             message: selectConfirmMessage(props)
                         }]}
                         onSubmit={response => this.onConfirm(response)} />}
+                {messages}
                 {completed && confirmed &&
-                    <span>
+                    <div>
                         <Spinner green />
                         {' '}
                         <Text bold>Creating new project</Text>
-                    </span>}
+                    </div>}
             </span>
         );
     }
