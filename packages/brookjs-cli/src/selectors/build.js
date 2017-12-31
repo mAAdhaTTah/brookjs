@@ -38,6 +38,9 @@ const selectEnvPlugins = state => {
                 new UglifyJsPlugin({
                     parallel: true,
                     cache: true,
+                    uglifyOptions: {
+                        ie8: false,
+                    },
                 })
             ];
         default:
