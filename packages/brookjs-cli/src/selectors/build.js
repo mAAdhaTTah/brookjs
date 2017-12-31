@@ -2,6 +2,7 @@ import path from 'path';
 import R from 'ramda';
 import webpack from 'webpack';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import NpmInstallPlugin from 'npm-install-webpack-plugin';
 import {
     lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvOpt,
     lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
@@ -29,7 +30,9 @@ const selectDefaultPlugins = state => [
 const selectEnvPlugins = state => {
     switch (R.view(lCommandEnvOpt, state)) {
         case 'development':
-            return [];
+            return [
+                new NpmInstallPlugin()
+            ];
         case 'production':
             return [
                 new UglifyJsPlugin({
