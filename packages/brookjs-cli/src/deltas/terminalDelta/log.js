@@ -1,7 +1,9 @@
 import { Kefir } from 'brookjs';
-import { SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
+import {
+    SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
     NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH,
-    WEBPACK_COMPILED } from '../../actions';
+    WEBPACK_COMPILED, EXPRESS_APP_CREATED, EXPRESS_APP_LISTENING, STORYBOOK_STARTUP_ERROR
+} from '../../actions';
 
 const setExitCode = code => Kefir.stream(emitter => {
     process.exitCode = code;
@@ -11,6 +13,10 @@ const setExitCode = code => Kefir.stream(emitter => {
 export default ({ ui }, actions$/*, state$ */) => {
     const success$ = actions$.flatMap(({ type, payload }) => {
         switch (type) {
+            case EXPRESS_APP_CREATED:
+                return ui.success(`storybook express app created`);
+            case EXPRESS_APP_LISTENING:
+                return ui.success(`storybook express app listening at address ${payload.address}`);
             case FILE_CREATED:
                 return ui.success(`created file ${payload.path}`);
             case NPM_COMMAND_FINISH:
@@ -37,6 +43,8 @@ export default ({ ui }, actions$/*, state$ */) => {
                     ui.error(`error reading .beaverrc.js: ${payload.error.message}`),
                     setExitCode(1)
                 ]);
+            case STORYBOOK_STARTUP_ERROR:
+                return ui.error(`error starting storybook: ${payload.error.message}`);
             default:
                 return Kefir.never();
         }

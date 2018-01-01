@@ -18,3 +18,4 @@ export const lOutput = R.lensProp('output');
 export const lPath = R.lensProp('path');
 export const lFilename = R.lensProp('filename');
 export const lModifier = R.lensProp('modifier');
+export const lOptsEnv = R.compose(lOpts, lEnv);

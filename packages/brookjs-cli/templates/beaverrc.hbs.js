@@ -22,3 +22,19 @@ export const webpack = {
     },
     modifier: (config, state) => config
 };
+
+/**
+ * Storybook development environment configuration.
+ *
+ * This will use the webpack configuration defined above.
+ */
+export const storybook = {
+    port: 9001,
+    host: null,
+    staticDirs: [],
+    https: {
+        enabled: false
+    },
+    devServer: {},
+    middleware: (router, state) => router
+};
