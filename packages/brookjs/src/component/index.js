@@ -144,6 +144,7 @@ export function component({
     };
 
     factory[$$internals] = internals;
+    factory.template = render[$$internals].template;
 
     return factory;
 }
