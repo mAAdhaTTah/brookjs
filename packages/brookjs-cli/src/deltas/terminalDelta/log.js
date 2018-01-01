@@ -18,7 +18,7 @@ export default ({ ui }, actions$/*, state$ */) => {
             case WEBPACK_COMPILED:
                 return Kefir.concat([
                     ui.success(`webpack compiled:\n`),
-                    ui.log(payload.stats.toString({ colors: true }))
+                    ui.log('info', payload.stats.toString({ colors: true }))
                 ]);
             default:
                 return Kefir.never();
