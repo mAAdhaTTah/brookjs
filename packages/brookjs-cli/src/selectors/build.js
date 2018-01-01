@@ -38,10 +38,20 @@ const selectDefaultPlugins = state => [
 ];
 
 const selectEnvPlugins = state => {
+    const base = [];
+
+    if (isDevStorybookCommand(state)) {
+        base.push(new webpack.HotModuleReplacementPlugin());
+        base.push(new webpack.DefinePlugin({
+            '__APP_PATH__': JSON.stringify(selectAppPath(state))
+        }));
+    }
+
     switch (R.view(lCommandEnvOpt, state)) {
         case 'development':
             return [
-                new NpmInstallPlugin()
+                new NpmInstallPlugin(),
+                ...base
             ];
         case 'production':
             return [
@@ -51,7 +61,8 @@ const selectEnvPlugins = state => {
                     uglifyOptions: {
                         ie8: false,
                     },
-                })
+                }),
+                ...base
             ];
         default:
             return [];
@@ -59,6 +70,21 @@ const selectEnvPlugins = state => {
 };
 
 const selectWebpackEntry = state => {
+    if (isDevStorybookCommand(state)) {
+        return {
+            manager: [
+                require.resolve('../../storybook/polyfills'),
+                require.resolve('../../storybook/manager'),
+            ],
+            preview: [
+                require.resolve('../../storybook/polyfills'),
+                require.resolve('../../storybook/globals'),
+                `${require.resolve('webpack-hot-middleware/client')}?reload=true`,
+                require.resolve('../../storybook/preview/entry'),
+            ],
+        };
+    }
+
     const entry = R.view(lWebpackEntry, state);
 
     if (typeof entry === 'string') {
@@ -71,8 +97,20 @@ const selectWebpackEntry = state => {
 
 const selectOutput = state => ({
     path: path.join(R.view(lEnvCwd, state), R.view(lWebpackOutputPath, state)),
-    filename: R.view(lWebpackOutputFilename, state)
+    filename: R.pipe(
+        R.view(lWebpackOutputFilename),
+        R.when(R.always(state.command.opts.env === 'production'),  filename => filename.replace('.js', '.min.js'))
+    )(state),
+    publicPath: isDevStorybookCommand(state) ? '/' : undefined
 });
+
+function selectEnvRules (state) {
+    if (isDevStorybookCommand(state)) {
+        return [];
+    }
+
+    return [];
+}
 
 export const selectWebpackConfig = state => state.webpack.modifier({
     entry: selectWebpackEntry(state),
@@ -88,7 +126,10 @@ export const selectWebpackConfig = state => state.webpack.modifier({
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                include: selectAppPath(state),
+                include: [
+                    selectAppPath(state),
+                    path.resolve(__dirname + '/../../storybook')
+                ]
             },
             {
                 test: /\.hbs/,
@@ -99,7 +140,8 @@ export const selectWebpackConfig = state => state.webpack.modifier({
                     preventIndent: true,
                     compat: true
                 }
-            }
+            },
+            ...selectEnvRules(state)
         ]
     },
     resolve: {
