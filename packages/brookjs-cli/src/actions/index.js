@@ -1,3 +1,4 @@
+export * from './express';
 export * from './npm';
 export * from './webpack';
 
