@@ -12,7 +12,7 @@ export default R.curry(function main (name, args, options, logger) {
     const store = createStore(
         combineReducers({ app, command, env, mocha, webpack }),
         applyMiddleware(observeDelta(
-            envDelta({ process, require: loader(module, { esm: 'js' }) }),
+            envDelta({ process, require: loader(module, { esm: 'js', cjs: true }) }),
             npmDelta({ npm }),
             scaffoldDelta({ scaffold }),
             terminalDelta({ ui: ui(logger) }),
