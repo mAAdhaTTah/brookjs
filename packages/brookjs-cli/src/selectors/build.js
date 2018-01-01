@@ -73,7 +73,7 @@ export const selectWebpackConfig = state => state.webpack.modifier({
     entry: selectWebpackEntry(state),
     output: selectOutput(state),
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 loader: 'eslint-loader',
@@ -108,4 +108,4 @@ export const selectWebpackConfig = state => state.webpack.modifier({
         ...selectDefaultPlugins(state),
         ...selectEnvPlugins(state)
     ]
-});
+}, state);

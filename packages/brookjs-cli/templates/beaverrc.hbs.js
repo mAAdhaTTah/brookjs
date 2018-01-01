@@ -20,5 +20,5 @@ export const webpack = {
         path: 'dist/',
         filename: '[name].js'
     },
-    modifier: x => x
+    modifier: (config, state) => config
 };
