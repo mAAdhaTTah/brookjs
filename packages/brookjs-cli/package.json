@@ -24,6 +24,7 @@
     "change-case": "^3.0.1",
     "cross-env": "^5.1.1",
     "eslint-loader": "^1.9.0",
+    "express": "^4.16.2",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
@@ -34,10 +35,13 @@
     "nyc": "^11.2.1",
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
+    "serve-favicon": "^2.4.5",
     "shelljs": "^0.7.8",
     "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^3.10.0",
-    "webpack-dashboard": "^1.0.2"
+    "webpack-dashboard": "^1.0.2",
+    "webpack-dev-middleware": "^2.0.3",
+    "webpack-hot-middleware": "^2.21.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
