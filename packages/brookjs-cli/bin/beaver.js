@@ -21,7 +21,7 @@ program
 program
     .command('dev', 'Develop the brookjs application.')
     .action(main('dev'))
-    .argument('<type>', 'Development style.', ['app', 'tdd'])
+    .argument('<type>', 'Development style.', ['app', 'tdd', 'storybook'])
     .option('--env <env>', 'Value to set for the NODE_ENV for development run.');
 
 program

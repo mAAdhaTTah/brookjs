@@ -15,9 +15,19 @@ export const isDevAppCommand = R.converge(R.and, [
     R.pipe(R.view(lCommandTypeArg), R.equals('app'))
 ]);
 
+export const isDevStorybookCommand = R.converge(R.and, [
+    isDevCommand,
+    R.pipe(R.view(lCommandTypeArg), R.equals('storybook'))
+]);
+
 export const isBuildCommand = R.pipe(
     R.view(lCommandName),
     R.equals('build')
+);
+
+const selectAppPath = state => path.join(
+    R.view(lEnvCwd, state),
+    R.view(lAppDir, state)
 );
 
 const selectDefaultPlugins = state => [
@@ -47,11 +57,6 @@ const selectEnvPlugins = state => {
             return [];
     }
 };
-
-const selectAppPath = state => path.join(
-    R.view(lEnvCwd, state),
-    R.view(lAppDir, state)
-);
 
 const selectWebpackEntry = state => {
     const entry = R.view(lWebpackEntry, state);
