@@ -1,7 +1,7 @@
 import 'babel-polyfill'
 import { domDelta, observeDelta } from 'brookjs';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { init } from './actions';
 import {} from './deltas';
 import { el, view } from './dom';
