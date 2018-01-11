@@ -5,7 +5,7 @@
   "main": "cjs/index.js",
   "private": true,
   "scripts": {
-    "test": "npm run test:lint && npm run test:type && npm run test:unit && npm run test:int",
+    "test": "npm run test:lint && npm run test:type && npm run test:unit",
     "test:lint": "eslint src --cache true --fix",
     "test:type": "flow check",
     "test:unit": "beaver test unit --coverage true --env test",
@@ -32,23 +32,17 @@
     "brookjs-cli": "^0.11.2",
     "chai": "^4.1.2",
     "cross-env": "^5.0.5",
-    "diffhtml-render-to-string": "^1.0.0-beta.8",
     "eslint": "^4.7.0",
     "eslint-config-valtech": "^1.1.0",
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-plugin-flowtype": "^2.35.1",
     "eslint-plugin-import": "^2.7.0",
     "flow-bin": "^0.61.0",
-    "glob": "^7.1.2",
-    "handlebars": "^4.0.10",
-    "handlebars-spec": "^3.0.3-alpha.1",
     "rimraf": "^2.6.2",
     "webpack": "^3.6.0",
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "diffhtml": "^1.0.0-beta.8",
-    "htmlparser2": "^3.9.2",
     "ramda": "^0.25.0"
   }
 }
