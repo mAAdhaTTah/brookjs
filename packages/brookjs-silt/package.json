@@ -32,8 +32,11 @@
     "babel-preset-brookjs": "^0.11.1",
     "babel-register": "^6.26.0",
     "brookjs-cli": "^0.11.2",
+    "brookjs-desalinate": "^0.11.2",
     "chai": "^4.1.2",
     "cross-env": "^5.0.5",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.7.0",
     "eslint-config-valtech": "^1.1.0",
     "eslint-import-resolver-node": "^0.3.1",
@@ -41,6 +44,9 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-react": "^7.5.1",
     "flow-bin": "^0.61.0",
+    "jsdom": "^11.5.1",
+    "jsdom-global": "^3.0.2",
+    "raf": "^3.4.0",
     "react-dom": "^16.2.0",
     "rimraf": "^2.6.2",
     "webpack": "^3.6.0",
@@ -48,6 +54,7 @@
   },
   "dependencies": {
     "brookjs": "^0.11.2",
+    "prop-types": "^15.6.0",
     "ramda": "^0.25.0",
     "react": "^16.2.0"
   }
