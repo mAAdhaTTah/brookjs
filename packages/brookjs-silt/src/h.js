@@ -4,12 +4,14 @@ import { Kefir } from 'brookjs';
 const emptyObj = {};
 const emptyArr = [];
 
-const TYPE = '$$type';
 const VALUE = 'value';
 const ERROR = 'error';
 
 // These are handled custom.
+const TYPE = '$$type';
+const DD_REF = '$$ref';
 const CHILDREN = 'children';
+const REF = 'ref';
 const STYLE = 'style';
 const PROP = 'silt-embeddable';
 
@@ -184,6 +186,9 @@ const render = (self, values) => {
             newChildren = renderChildren(val, self, values);
         } else if (TYPE === key) {
             type = props[key];
+        } else if (DD_REF === key) {
+            newProps = newProps || {};
+            newProps.ref = isObs(val) ? values[self.at++] : val;
         } else if (isObs(val)) {
             newProps = newProps || {};
             newProps[key] = values[self.at++];
@@ -343,8 +348,9 @@ const h = (type, props, ...children) => {
             props = filterProps(type, props);
             type = FromClass;
         } else if (props[PROP]) {
-            const { [PROP]: _, ...rest } = props; // eslint-disable-line no-unused-vars
-            props = rest;
+            // Throw away PROP, migrate ref.
+            const { [PROP]: _, [REF]: ref, ...rest } = props; // eslint-disable-line no-unused-vars
+            props = { ...rest, [DD_REF]: ref };
         }
     }
     return createElement(type, props, ...children);

@@ -1,15 +1,18 @@
 /* eslint-env mocha */
-import { configure, render } from 'enzyme';
+import { configure, render, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect, use } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
 import { Kefir } from 'brookjs';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import h from '../h';
 
 const { plugin } = chaiPlugin({ Kefir });
 
 configure({ adapter: new Adapter() });
 use(plugin);
+use(sinonChai);
 
 describe('h', () => {
     describe('interop', () => {
@@ -164,6 +167,21 @@ describe('h', () => {
             );
 
             expect(actual.toString()).to.equal('<div>embeddable-anyway {}</div>');
+        });
+    });
+
+    describe('ref', () => {
+        const WithRef = ({ refCallback }) => (
+            <p ref={refCallback}>Hello world</p>
+        );
+
+        it('should call callback with reference', () => {
+            const ref = sinon.spy();
+
+            mount(<WithRef refCallback={ref}>Hello world!</WithRef>);
+
+            expect(ref).to.have.callCount(1);
+            expect(ref.getCall(0).args[0].outerHTML).to.equal('<p>Hello world</p>');
         });
     });
 });
