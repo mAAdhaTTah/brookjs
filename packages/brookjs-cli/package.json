@@ -15,7 +15,7 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "@std/esm": "^0.18.0",
+    "@std/esm": "^0.19.3",
     "babel-loader": "^7.1.2",
     "brookjs": "^0.11.2",
     "brookjs-desalinate": "^0.11.2",
@@ -34,7 +34,7 @@
     "nyc": "^11.2.1",
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.0",
     "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^3.10.0",
     "webpack-dashboard": "^1.0.2"
