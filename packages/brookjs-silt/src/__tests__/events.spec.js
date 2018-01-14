@@ -85,5 +85,20 @@ describe('events aggregation', () => {
                 wrapper.simulate('click');
             });
         });
+
+        it('should unplug if unmounted', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <CollectedButton text={'Click me'} enabled={true} />,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            wrapper.unmount();
+
+            expect(aggregated$._curSources).to.have.lengthOf(0);
+        });
     });
 });

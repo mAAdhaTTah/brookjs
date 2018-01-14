@@ -91,9 +91,13 @@ export default class Collector extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.context.aggregated$.unplug(this.stream$);
+        this.componentWillUnmount();
         this.children = walkChildren(props.children, this.stream$ = Kefir.pool());
         this.context.aggregated$.plug(this.stream$);
+    }
+
+    componentWillUnmount() {
+        this.context.aggregated$.unplug(this.stream$);
     }
 
     render () {
