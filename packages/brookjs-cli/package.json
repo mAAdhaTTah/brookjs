@@ -6,11 +6,20 @@
   "bin": {
     "beaver": "./bin/beaver.js"
   },
+  "files": [
+    "dist",
+    "src",
+    "bin",
+    "templates"
+  ],
   "scripts": {
+    "build": "cross-env NODE_ENV=es babel src --ignore __tests__ --out-dir dist",
+    "clean": "rimraf dist",
     "test": "npm run test:lint && npm run test:unit && npm run test:feature",
     "test:lint": "eslint ./src --cache true --fix",
     "test:unit": "beaver test unit --coverage true",
-    "test:feature": "cucumberjs"
+    "test:feature": "cucumberjs",
+    "prepublishOnly": "npm run clean && npm run build && npm test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
@@ -28,6 +37,10 @@
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
     "handlebars-loader": "^1.6.0",
+    "ink": "^0.3.1",
+    "ink-select-input": "^1.0.0",
+    "ink-spinner": "^1.0.0",
+    "ink-text-input": "^1.1.1",
     "inquirer": "^4.0.1",
     "mocha": "^4.0.1",
     "npm-install-webpack-plugin": "^4.0.5",
@@ -41,6 +54,11 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-brookjs": "^0.11.1",
+    "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chai-fs": "^2.0.0",
     "chai-string": "^1.4.0",
@@ -52,6 +70,7 @@
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-plugin-flowtype": "^2.35.1",
     "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-react": "^7.5.1",
     "rimraf": "^2.6.2"
   },
   "@std/esm": {

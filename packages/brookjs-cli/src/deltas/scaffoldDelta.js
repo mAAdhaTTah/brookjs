@@ -1,6 +1,6 @@
 import R from 'ramda';
 import { Kefir, ofType } from 'brookjs';
-import { RUN, CONFIRM_CONFIG, READ_ENV, READ_RC_FILE } from '../actions';
+import { RUN, CONFIRM_CONFIG, READ_ENV, READ_RC_FILE, scaffoldFinish } from '../actions';
 import { selectPkgContext, selectRcContext, selectAppJsContext, selectFilePath,
     selectBarrelPath, selectExportTemplate, selectMakeContext, isMakeCommand,
     selectInstanceTemplate } from '../selectors';
@@ -118,5 +118,6 @@ export default R.curry(({ scaffold }, actions$, state$) => {
     return Kefir.merge([
         make$,
         new$
-    ]);
+    ])
+        .concat(Kefir.constant(scaffoldFinish()));
 });

@@ -89,3 +89,9 @@ export function fileCreated(path) {
         payload: { path }
     };
 }
+
+export const SCAFFOLD_FINISH = 'SCAFFOLD_FINISH';
+
+export const scaffoldFinish = () => ({
+    type: SCAFFOLD_FINISH
+});

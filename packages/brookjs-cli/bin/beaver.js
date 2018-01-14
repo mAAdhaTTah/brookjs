@@ -1,7 +1,16 @@
 #!/usr/bin/env node
 const program = require('caporal');
 const pkg = require('../package.json');
-const { main } = require('../src');
+
+let main;
+
+try {
+    main = require('../dist').main;
+} catch (e) {
+    console.log('running in development mode. compiling at runtime....'); // eslint-disable-line no-console
+    require('babel-register');
+    main = require('../src').main;
+}
 
 program
     .version(pkg.version)

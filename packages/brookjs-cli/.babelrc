@@ -1,0 +1,20 @@
+{
+  "plugins": [
+    "syntax-flow",
+    "transform-flow-strip-types",
+    ["transform-react-jsx", {
+      "pragma": "h",
+      "useBuiltIns": true
+    }]
+  ],
+  "presets": [
+    ["brookjs", {
+      "loose": false,
+      "useBuiltIns": true,
+      "modules": "commonjs",
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ]
+}

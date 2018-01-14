@@ -7,6 +7,6 @@ export const mocha = {
     reporter: 'spec',
     ui: 'bdd',
     requires: [
-        '@std/esm'
+        'babel-register'
     ]
 };
