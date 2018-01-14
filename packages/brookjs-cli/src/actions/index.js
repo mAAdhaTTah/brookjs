@@ -60,7 +60,7 @@ export const READ_RC_FILE = 'READ_RC_FILE';
 
 export const readRcFile = ({ dir, mocha, storybook, webpack }) => ({
     type: READ_RC_FILE,
-    payload: { dir, mocha, storybook, webpack}
+    payload: { dir, mocha, storybook, webpack }
 });
 
 export const READ_RC_FILE_ERROR = 'READ_RC_FILE_ERROR';

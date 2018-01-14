@@ -7,7 +7,9 @@ export const mocha = {
     reporter: 'spec',
     ui: 'bdd',
     requires: [
-        'babel-register'
+        'babel-register',
+        'raf/polyfill',
+        'jsdom-global/register',
     ]
 };
 
