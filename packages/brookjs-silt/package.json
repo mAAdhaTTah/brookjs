@@ -3,7 +3,6 @@
   "version": "0.11.2",
   "description": "Handlebars-based rendering engine, built on diffhtml.",
   "main": "cjs/index.js",
-  "private": true,
   "scripts": {
     "test": "npm run test:lint && npm run test:type && npm run test:unit",
     "test:lint": "eslint src --cache true --fix",
