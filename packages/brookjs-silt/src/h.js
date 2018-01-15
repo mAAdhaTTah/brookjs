@@ -87,15 +87,9 @@ const forEachInProps = (props, arg, fn) => {
 };
 
 const filterProps = (type, props) => {
-    const newProps = { [TYPE]: type };
-    for (const key in props) {
-        const prop = props[key];
-
-        if (PROP !== key) {
-            newProps[key] = prop;
-        }
-    }
-    return newProps;
+    // Throw away PROP, migrate ref.
+    const { [PROP]: _, [REF]: ref, ...rest } = props; // eslint-disable-line no-unused-vars
+    return { ...rest, [DD_REF]: ref, [TYPE]: type };
 };
 
 const incValues = self => {
@@ -348,9 +342,7 @@ const h = (type, props, ...children) => {
             props = filterProps(type, props);
             type = FromClass;
         } else if (props[PROP]) {
-            // Throw away PROP, migrate ref.
-            const { [PROP]: _, [REF]: ref, ...rest } = props; // eslint-disable-line no-unused-vars
-            props = { ...rest, [DD_REF]: ref };
+            props = filterProps(type, props);
         }
     }
     return createElement(type, props, ...children);

@@ -171,14 +171,23 @@ describe('h', () => {
     });
 
     describe('ref', () => {
-        const WithRef = ({ refCallback }) => (
-            <p ref={refCallback}>Hello world</p>
+        const WithRef = ({ refCallback, text$ }) => (
+            <p ref={refCallback}>{text$}</p>
         );
 
         it('should call callback with reference', () => {
             const ref = sinon.spy();
 
-            mount(<WithRef refCallback={ref}>Hello world!</WithRef>);
+            mount(<WithRef refCallback={ref} text$={'Hello world'}/>);
+
+            expect(ref).to.have.callCount(1);
+            expect(ref.getCall(0).args[0].outerHTML).to.equal('<p>Hello world</p>');
+        });
+
+        it('should call callback with reference with embedded observable', () => {
+            const ref = sinon.spy();
+
+            mount(<WithRef refCallback={ref} text$={Kefir.constant('Hello world')}/>);
 
             expect(ref).to.have.callCount(1);
             expect(ref.getCall(0).args[0].outerHTML).to.equal('<p>Hello world</p>');
