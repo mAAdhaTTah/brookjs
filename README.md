@@ -43,4 +43,4 @@ The changelog can be found [here][changelog].
   [babel]: https://babeljs.io/
   [semver]: http://semver.org/
   [docs]: https://valtech-nyc.github.io/brookjs/
-  [changelog]: valtech-nyc.github.io/brookjs/changelog.html
+  [changelog]: https://valtech-nyc.github.io/brookjs/changelog.html
