@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "Handlebars-based rendering engine, built on diffhtml.",
   "main": "cjs/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "build:es": "cross-env NODE_ENV=es babel src --ignore __tests__ --out-dir es",
     "build:umd": "cross-env NODE_ENV=es webpack src/index.js dist/brook.js",
     "build:umd:min": "cross-env NODE_ENV=es webpack src/index.js dist/brook.min.js",
-    "prepublishOnly": "npm run clean && npm test && npm run build"
+    "prepublishOnly": "npm run clean && npm run build && npm test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
