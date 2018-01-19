@@ -1,6 +1,7 @@
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
 import { Children, Component } from 'react';
+import FromClass from './FromClass';
 import h from './h';
 import { isString, isObs } from './helpers';
 
@@ -63,6 +64,10 @@ const walkChildren = (children, stream$) => {
         let { props, type } = child;
         let { children, ...rest } = props || {};
         props = rest;
+
+        if (type === FromClass && isObs(children)) {
+            children = children.map(element => walkChildren(element, stream$));
+        }
 
         if (isString(type)) {
             if (children) {
