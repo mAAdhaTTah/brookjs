@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "0.11.4",
+  "version": "0.11.5",
   "description": "Handlebars-based rendering engine, built on diffhtml.",
   "main": "cjs/index.js",
   "scripts": {
