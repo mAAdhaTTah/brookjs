@@ -104,6 +104,21 @@ describe('events aggregation', () => {
 
             expect(aggregated$._curSources).to.have.lengthOf(0);
         });
+
+        it('should work with embedded observables', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <Collector silt-embeddable>
+                    <div>{Kefir.constant(<p>Hello world!</p>)}</div>
+                </Collector>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(wrapper.html()).to.equal('<div><p>Hello world!</p></div>');
+        });
     });
 
     describe('Aggregator', () => {

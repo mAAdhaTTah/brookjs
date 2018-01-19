@@ -1,8 +1,8 @@
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
-import { Children, Component, createElement } from 'react';
-
-const isString = is => typeof is === 'string'; // @todo dedupe from h
+import { Children, Component } from 'react';
+import h from './h';
+import { isString, isObs } from './helpers';
 
 const createRendered = ({ type, props, children, events, stream$ }, streams) => {
     for (const event of events) {
@@ -15,7 +15,7 @@ const createRendered = ({ type, props, children, events, stream$ }, streams) => 
         stream$.plug(callbacked$);
     }
 
-    return createElement(type, props, ...children);
+    return h(type, props, ...children);
 };
 
 class WithObservableEvents extends Component {
@@ -46,6 +46,10 @@ class WithObservableEvents extends Component {
 }
 
 const walkChildren = (children, stream$) => {
+    if (isObs(children)) {
+        return children.map(element => walkChildren(element, stream$));
+    }
+
     return Children.map(children, (child) => {
         if (!child || typeof child !== 'object') {
             return child;
@@ -67,13 +71,13 @@ const walkChildren = (children, stream$) => {
         }
 
         if (events.length && isString(type)) {
-            return createElement(
+            return h(
                 WithObservableEvents,
                 { type, props, children, events, stream$ }
             );
         }
 
-        return createElement(type, props, children);
+        return h(type, props, children);
     });
 };
 
