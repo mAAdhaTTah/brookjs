@@ -1,5 +1,5 @@
 import { createElement, Component } from 'react';
-import { Kefir } from 'brookjs';
+import { isObs, isString } from './helpers';
 
 const emptyObj = {};
 const emptyArr = [];
@@ -14,10 +14,6 @@ const CHILDREN = 'children';
 const REF = 'ref';
 const STYLE = 'style';
 const PROP = 'silt-embeddable';
-
-const isObs = x => x instanceof Kefir.Observable;
-
-const isString = is => typeof is === 'string';
 
 const doSubscribe = (self, props) => {
     self.at = 0;
