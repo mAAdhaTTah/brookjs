@@ -86,6 +86,16 @@ describe('h', () => {
             expect(actual.toString()).to.equal('<div>Hello world!</div>');
         });
 
+        it('should render nested children of custom components', () => {
+            const actual = render(
+                <Spread>
+                    <span>{Kefir.constant('Hello world!')}</span>
+                </Spread>
+            );
+
+            expect(actual.toString()).to.equal('<div><span>Hello world!</span></div>');
+        });
+
         const ChildrenWithSibling = ({ children }) => <div>Test: {children}</div>;
 
         it('should render children with siblings correctly', () => {
