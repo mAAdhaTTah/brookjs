@@ -50,9 +50,13 @@ const walkChildren = (children, stream$) => {
         return children.map(element => walkChildren(element, stream$));
     }
 
-    return Children.map(children, (child) => {
+    return Children.map(children, child => {
         if (!child || typeof child !== 'object') {
             return child;
+        }
+
+        if (isObs(child)) {
+            return child.map(element => walkChildren(element, stream$));
         }
 
         const events = [];
@@ -60,21 +64,23 @@ const walkChildren = (children, stream$) => {
         let { children, ...rest } = props || {};
         props = rest;
 
-        if (children) {
-            children = walkChildren(children, stream$);
-        }
-
-        for (const prop in props) {
-            if (prop.startsWith('on') && typeof props[prop] === 'function') {
-                events.push(prop);
+        if (isString(type)) {
+            if (children) {
+                children = walkChildren(children, stream$);
             }
-        }
 
-        if (events.length && isString(type)) {
-            return h(
-                WithObservableEvents,
-                { type, props, children, events, stream$ }
-            );
+            for (const prop in props) {
+                if (prop.startsWith('on') && typeof props[prop] === 'function') {
+                    events.push(prop);
+                }
+            }
+
+            if (events.length && isString(type)) {
+                return h(
+                    WithObservableEvents,
+                    { type, props, children, events, stream$ }
+                );
+            }
         }
 
         return h(type, props, children);

@@ -119,6 +119,24 @@ describe('events aggregation', () => {
 
             expect(wrapper.html()).to.equal('<div><p>Hello world!</p></div>');
         });
+
+        it('should work with embedded sibling observables', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <Collector>
+                    <div>
+                        {Kefir.constant(<p>Hello world!</p>)}
+                        <p>{'Goodbye world!'}</p>
+                    </div>
+                </Collector>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(wrapper.html()).to.equal('<div><p>Hello world!</p><p>Goodbye world!</p></div>');
+        });
     });
 
     describe('Aggregator', () => {
