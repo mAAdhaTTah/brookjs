@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import FromClass from './FromClass';
-import { isObs, isString, CHILDREN, STYLE, PROP, REF, DD_REF, TYPE } from './helpers';
+import { isObs, isString, CHILDREN, STYLE, EMIT_PROP,
+    EMBED_PROP, REF, DD_REF, TYPE } from './helpers';
 
 const emptyObj = {};
 
@@ -35,8 +36,8 @@ const hasObsInProps = props => {
 };
 
 const filterProps = (type, props) => {
-    // Throw away PROP, migrate ref.
-    const { [PROP]: _, [REF]: ref, ...rest } = props; // eslint-disable-line no-unused-vars
+    // Throw away EMBED_PROP, migrate ref.
+    const { [EMBED_PROP]: _, [REF]: ref, ...rest } = props; // eslint-disable-line no-unused-vars
     return { ...rest, [DD_REF]: ref, [TYPE]: type };
 };
 
@@ -44,11 +45,11 @@ const h = (type, props, ...children) => {
     // can be null with no props
     props = props || emptyObj;
 
-    if (isString(type) || props[PROP]) {
+    if (isString(type) || props[EMBED_PROP]) {
         if (hasObsInChildrenArray(children) || hasObsInProps(props)) {
-            props = filterProps(type, props);
+            props = { ...filterProps(type, props), [EMIT_PROP]: true };
             type = FromClass;
-        } else if (props[PROP]) {
+        } else if (props[EMBED_PROP]) {
             props = filterProps(type, props);
         }
     }

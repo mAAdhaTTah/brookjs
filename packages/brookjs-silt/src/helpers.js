@@ -8,7 +8,8 @@ export const DD_REF = '$$ref';
 export const CHILDREN = 'children';
 export const REF = 'ref';
 export const STYLE = 'style';
-export const PROP = 'silt-embeddable';
+export const EMBED_PROP = 'silt-embeddable';
+export const EMIT_PROP = 'silt-emittable';
 
 export const isObs = x => x instanceof Kefir.Observable;
 
@@ -104,7 +105,7 @@ export const render = (self, values) => {
         } else if (STYLE === key) {
             newProps = newProps || {};
             newProps.style = renderStyle(val, self, values);
-        } else {
+        } else if (EMIT_PROP !== key) {
             newProps = newProps || {};
             newProps[key] = val;
         }
