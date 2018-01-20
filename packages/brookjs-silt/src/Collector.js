@@ -2,16 +2,26 @@ import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
 import { Children, Component } from 'react';
 import h from './h';
-import { isString, isObs } from './helpers';
+import { isString, isObs, EMIT_PROP } from './helpers';
+
+const $$original = Symbol('@@brookjs-silt/original');
 
 const createRendered = ({ type, props, children, events, stream$ }, streams) => {
     for (const event of events) {
-        const event$ = new Kefir.Stream();
         const callback = props[event];
+
+        // @todo this can probably be done better
+        // caching functions across renders
+        if (callback[$$original]) {
+            break;
+        }
+
+        const event$ = new Kefir.Stream();
         const callbacked$ = callback(event$);
 
         streams.push(callbacked$);
-        props[event] = e => event$._emitValue(e);
+        const push = props[event] = e => event$._emitValue(e);
+        push[$$original] = callback;
         stream$.plug(callbacked$);
     }
 
@@ -50,9 +60,13 @@ const walkChildren = (children, stream$) => {
         return children.map(element => walkChildren(element, stream$));
     }
 
-    return Children.map(children, (child) => {
+    return Children.map(children, child => {
         if (!child || typeof child !== 'object') {
             return child;
+        }
+
+        if (isObs(child)) {
+            return child.map(element => walkChildren(element, stream$));
         }
 
         const events = [];
@@ -60,21 +74,31 @@ const walkChildren = (children, stream$) => {
         let { children, ...rest } = props || {};
         props = rest;
 
-        if (children) {
-            children = walkChildren(children, stream$);
-        }
+        if (isString(type) || props[EMIT_PROP]) {
+            if (isString(type) && children) {
+                children = walkChildren(children, stream$);
+            } else if (props[EMIT_PROP]) {
+                type = class FromClass extends type {
+                    render() {
+                        const element = super.render();
 
-        for (const prop in props) {
-            if (prop.startsWith('on') && typeof props[prop] === 'function') {
-                events.push(prop);
+                        return walkChildren(element, stream$); // eslint-disable-line no-use-before-define
+                    }
+                };
             }
-        }
 
-        if (events.length && isString(type)) {
-            return h(
-                WithObservableEvents,
-                { type, props, children, events, stream$ }
-            );
+            for (const prop in props) {
+                if (prop.startsWith('on') && typeof props[prop] === 'function') {
+                    events.push(prop);
+                }
+            }
+
+            if (events.length) {
+                return h(
+                    WithObservableEvents,
+                    { type, props, children, events, stream$ }
+                );
+            }
         }
 
         return h(type, props, children);

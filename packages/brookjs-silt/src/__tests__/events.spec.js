@@ -119,6 +119,68 @@ describe('events aggregation', () => {
 
             expect(wrapper.html()).to.equal('<div><p>Hello world!</p></div>');
         });
+
+        it('should work with embedded sibling observables', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <Collector>
+                    <div>
+                        {Kefir.constant(<p>Hello world!</p>)}
+                        <p>{'Goodbye world!'}</p>
+                    </div>
+                </Collector>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(wrapper.html()).to.equal('<div><p>Hello world!</p><p>Goodbye world!</p></div>');
+        });
+
+        it('should work with embeddable prop', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <Collector silt-embeddable>
+                    {Kefir.constant(
+                        <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                            Click me!
+                        </button>
+                    )}
+                </Collector>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
+                wrapper.find('button').simulate('click');
+            });
+        });
+
+        it('should work with emedded observables', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <Collector>
+                    <div>
+                        {Kefir.constant(
+                            <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                                Click me!
+                            </button>
+                        )}
+                    </div>
+                </Collector>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
+                wrapper.find('button').simulate('click');
+            });
+        });
     });
 
     describe('Aggregator', () => {
