@@ -25,7 +25,7 @@ const createRendered = ({ type, props, children, events, stream$ }, streams) => 
         stream$.plug(callbacked$);
     }
 
-    return h(type, props, ...children);
+    return h(type, props, ...(children || []));
 };
 
 class WithObservableEvents extends Component {
