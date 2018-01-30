@@ -55,6 +55,34 @@ class WithObservableEvents extends Component {
     }
 }
 
+const isStateless = Component => !Component.prototype.render;
+
+const types = new Map();
+
+// @todo this feels like making a bad problem worse...
+const getTypeForComponent = (Component, stream$) => {
+    if (types.has(Component)) {
+        return types.get(Component);
+    }
+
+    let type;
+
+    if (isStateless(Component)) {
+        type = props => walkChildren(h(Component, props), stream$); // eslint-disable-line no-use-before-define
+    } else {
+        type = class FromClass extends Component {
+
+            render() {
+                return walkChildren(super.render(), stream$); // eslint-disable-line no-use-before-define
+            }
+        };
+    }
+
+    types.set(Component, type);
+
+    return type;
+}
+
 const walkChildren = (children, stream$) => {
     if (isObs(children)) {
         return children.map(element => walkChildren(element, stream$));
@@ -78,13 +106,7 @@ const walkChildren = (children, stream$) => {
             if (isString(type) && children) {
                 children = walkChildren(children, stream$);
             } else if (props[EMIT_PROP]) {
-                type = class FromClass extends type {
-                    render() {
-                        const element = super.render();
-
-                        return walkChildren(element, stream$); // eslint-disable-line no-use-before-define
-                    }
-                };
+                type = getTypeForComponent(type, stream$);
             }
 
             for (const prop in props) {
