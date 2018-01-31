@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "brookjs": "^0.11.3",
+    "kefir": "^3.8.1",
     "prop-types": "^15.6.0",
     "ramda": "^0.25.0",
     "react": "^16.2.0"

@@ -4408,7 +4408,7 @@ karma@^1.4.0, karma@^1.7.1:
     tmp "0.0.31"
     useragent "^2.1.12"
 
-kefir@^3.8.0:
+kefir@^3.8.0, kefir@^3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/kefir/-/kefir-3.8.1.tgz#6b202bc78c01ed4aa1c329e885b43631bf62ec0c"
   dependencies:
