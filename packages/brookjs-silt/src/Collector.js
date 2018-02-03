@@ -36,10 +36,6 @@ class WithObservableEvents extends Component {
         this.streams = [];
     }
 
-    componentWillMount() {
-        this.rendered = createRendered(this.props, this.streams);
-    }
-
     componentWillReceiveProps(props) {
         this.componentWillUnmount();
         this.rendered = createRendered(props, this.streams);
@@ -51,6 +47,10 @@ class WithObservableEvents extends Component {
     }
 
     render() {
+        if (!this.rendered) {
+            this.rendered = createRendered(this.props, this.streams);
+        }
+
         return this.rendered;
     }
 }
