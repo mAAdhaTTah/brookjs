@@ -120,7 +120,7 @@ describe('events aggregation', () => {
             expect(wrapper.html()).to.equal('<div><p>Hello world!</p></div>');
         });
 
-        it('should work with embedded sibling observables', () => {
+        it('should render embedded sibling observables', () => {
             const aggregated$ = Kefir.pool();
             const wrapper = mount(
                 <Collector>
@@ -138,15 +138,17 @@ describe('events aggregation', () => {
             expect(wrapper.html()).to.equal('<div><p>Hello world!</p><p>Goodbye world!</p></div>');
         });
 
-        it('should work with embeddable prop', () => {
+        it('should emit from emedded observables without embeddable prop', () => {
             const aggregated$ = Kefir.pool();
             const wrapper = mount(
-                <Collector silt-embeddable>
-                    {Kefir.constant(
-                        <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
-                            Click me!
-                        </button>
-                    )}
+                <Collector>
+                    <div>
+                        {Kefir.constant(
+                            <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                                Click me!
+                            </button>
+                        )}
+                    </div>
                 </Collector>,
                 {
                     context: { aggregated$ },
@@ -159,17 +161,39 @@ describe('events aggregation', () => {
             });
         });
 
-        it('should work with emedded observables', () => {
+        it('should emit from emedded sibling observables without embeddable prop', () => {
             const aggregated$ = Kefir.pool();
             const wrapper = mount(
                 <Collector>
                     <div>
+                        <p>Hello world!</p>
                         {Kefir.constant(
                             <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
                                 Click me!
                             </button>
                         )}
                     </div>
+                </Collector>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
+                wrapper.find('button').simulate('click');
+            });
+        });
+
+        it('should work with embeddable prop', () => {
+            const aggregated$ = Kefir.pool();
+            const wrapper = mount(
+                <Collector silt-embeddable>
+                    {Kefir.constant(
+                        <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                            Click me!
+                        </button>
+                    )}
                 </Collector>,
                 {
                     context: { aggregated$ },
