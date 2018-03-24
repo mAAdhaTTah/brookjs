@@ -2,8 +2,10 @@
 import type { Observable } from 'kefir';
 import R from 'ramda';
 
+const $$initialized = Symbol('init');
+
 export default <V, V2>(callback: V => V2) => (stream$: Observable<V>): Observable<V2> => {
-    let previous;
+    let previous = $$initialized;
 
     return stream$.withHandler((emitter, event) => {
         switch (event.type) {
@@ -16,9 +18,9 @@ export default <V, V2>(callback: V => V2) => (stream$: Observable<V>): Observabl
             case 'value':
                 const next = callback(event.value);
 
-                if (!R.equals(next, previous)) {
-                    emitter.value(next);
+                if (previous === $$initialized || !R.equals(next, previous)) {
                     previous = next;
+                    emitter.value(next);
                 }
                 break;
         }

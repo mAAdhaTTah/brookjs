@@ -45,4 +45,12 @@ describe('view', () => {
             send(a, [error(true), end()]);
         });
     });
+
+    it('should emit undefined on the first element', () => {
+        const a = stream();
+
+        expect(a.thru(view(x => x))).to.emit([value(undefined), end()], () => {
+            send(a, [value(undefined), end()]);
+        });
+    });
 });
