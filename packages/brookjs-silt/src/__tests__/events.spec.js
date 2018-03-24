@@ -7,9 +7,10 @@ import { chaiPlugin } from 'brookjs-desalinate';
 import PropTypes from 'prop-types';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import Collector from '../Collector';
 import h from '../h';
 import Aggregator from '../Aggregator';
+import Collector from '../Collector';
+import Reffable from '../Reffable';
 
 const { plugin, value } = chaiPlugin({ Kefir });
 
@@ -203,6 +204,95 @@ describe('events aggregation', () => {
 
             expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
                 wrapper.find('button').simulate('click');
+            });
+        });
+    });
+
+    describe('Reffable', () => {
+        it('should emit value from ref$', () => {
+            const aggregated$ = Kefir.pool();
+            const callback = sinon.spy(() => Kefir.constant({ type: 'REF$' }));
+            const wrapper = mount(
+                <Reffable callback={callback}>
+                    <button>
+                        Click me!
+                    </button>
+                </Reffable>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(aggregated$).to.emit([value({ type: 'REF$' }, { current: true })]);
+        });
+
+        it('should call ref$ with element & api', () => {
+            const aggregated$ = Kefir.pool();
+            const callback = sinon.spy(() => Kefir.constant({ type: 'REF$' }));
+            const wrapper = mount(
+                <Reffable callback={callback}>
+                    <button>
+                        Click me!
+                    </button>
+                </Reffable>,
+                {
+                    context: { aggregated$ },
+                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                }
+            );
+
+            expect(callback).to.have.been.calledWithMatch(
+                wrapper.find('button').getDOMNode(),
+                sinon.match({
+                    didMount$: sinon.match.instanceOf(Kefir.Observable),
+                    didUpdate$: sinon.match.instanceOf(Kefir.Observable)
+                })
+            );
+        });
+
+        it('should emit from didMount$', () => {
+            const aggregated$ = Kefir.pool();
+
+            expect(aggregated$).to.emitInTime([[0, value(1000)]], () => {
+                mount(
+                    <Reffable callback={(el, { didMount$ }) => didMount$}>
+                        <button>
+                            Click me!
+                        </button>
+                    </Reffable>,
+                    {
+                        context: { aggregated$ },
+                        childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                    }
+                );
+            });
+        });
+
+        it('should emit from didUpdate$', () => {
+            const Instance = ({ text }) => (
+                <Reffable callback={(el, { didUpdate$ }) => didUpdate$}>
+                    <button>
+                        {text}
+                    </button>
+                </Reffable>
+            );
+            const aggregated$ = Kefir.pool();
+
+            expect(aggregated$).to.emitInTime([[60, value(1060)]], tick => {
+                const wrapper = mount(
+                    <Instance text={'Click me!'} />,
+                    {
+                        context: { aggregated$ },
+                        childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
+                    }
+                );
+
+                tick(60);
+
+                wrapper.setProps({ text: 'Do not click me' });
+
+                expect(wrapper.html()).to.equal('<button>Do not click me</button>');
             });
         });
     });
