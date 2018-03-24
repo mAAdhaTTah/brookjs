@@ -1,3 +1,3 @@
-require = require('@std/esm')(module);
+require = require('esm')(module);
 
 exports.main = require('./main').default;
