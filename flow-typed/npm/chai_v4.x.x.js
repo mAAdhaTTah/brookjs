@@ -137,7 +137,7 @@ declare module "chai" {
     value: (val: string) => ExpectChain<T>,
 
     // chai-kefir
-    emit: (event: Array<Event>, callback: Function) => ExpectChain<T>,
+    emit: (event: Array<Event>, callback?: Function) => ExpectChain<T>,
     emitInTime: (events: Array<TimedEvent>, callback: Function) => ExpectChain<T>,
     emitEffectsInTime: (events: Array<TimedEvent>, callback: Function) => ExpectChain<T>
   };

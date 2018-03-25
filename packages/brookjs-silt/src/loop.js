@@ -5,9 +5,9 @@ import * as React from 'react';
 
 opaque type Key = string | number;
 
-type Iteration<P> = { order: Array<Key>, dict: { [key: Key]: P } };
+type Loopable<P> = { order: Array<Key>, dict: { [key: Key]: P } };
 type Callback<P> = (Observable<P>, Key) => React.Node | Observable<React.Node>;
-type Source<P> = Observable<Iteration<P>>;
+type Source<P> = Observable<Loopable<P>>;
 
 const child$s: Map<Observable<*>, { [key: Key]: Observable<*>}> = new Map();
 
@@ -28,8 +28,19 @@ const getChildStream = <P>(stream$: Source<P>, id: Key): Observable<P> => {
     return childs[id] = stream$.map(props => props.dict[id]);
 };
 
-const orderMatches = <P>(prev: Iteration<P>, next: Iteration<P>) => R.equals(prev.order, next.order);
+const orderMatches = <P>(prev: Loopable<P>, next: Loopable<P>) => R.equals(prev.order, next.order);
 
-export default <P> (callback: Callback<P>) => (stream$: Source<P>) =>
-    stream$.skipDuplicates(orderMatches)
-        .map(props => props.order.map(id => callback(getChildStream(stream$, id), id)));
+declare function loop<P>(mapper: Callback<P>): ((stream$: Source<P>) => Observable<P>)
+declare function loop<P>(mapper: (x: any) => Loopable<P>, callback: Callback<P>): ((stream$: Source<P>) => Observable<P>)
+export default function loop<P>(mapper, callback) {
+    if (callback == null) {
+        callback = mapper;
+        mapper = (x: any): Loopable<P> => x;
+    }
+
+    return (stream$: Source<P>) =>
+        // $FlowFixMe
+        stream$.map(mapper).skipDuplicates(orderMatches)
+            // $FlowFixMe
+            .map(props => props.order.map(id => callback(getChildStream(stream$, id), id)));
+}
