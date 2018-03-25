@@ -17,7 +17,7 @@ export default class Collector extends Component {
     }
 
     walkChildren(child) {
-        if (Array.isArray(child) || isObs(child)) {
+        if (Array.isArray(child)) {
             return child.map(child => this.walkChildren(child));
         }
 
@@ -29,7 +29,7 @@ export default class Collector extends Component {
             return child.map(child => this.walkChildren(child));
         }
 
-        let { props, type } = child;
+        let { props, type, ...other } = child;
         let { children, ...rest } = props || {};
         props = rest;
 
@@ -54,7 +54,7 @@ export default class Collector extends Component {
             }
         }
 
-        return { ...child, props: { ...props, children } };
+        return { ...child, ...other, props: { ...props, children } };
     }
 
 
