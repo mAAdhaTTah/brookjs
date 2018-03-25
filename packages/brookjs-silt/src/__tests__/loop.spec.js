@@ -218,4 +218,20 @@ describe('loop', () => {
             })]);
         });
     });
+
+    it('should take map function', () => {
+        const a = send(prop(), [value({
+            loopable: {
+                order: ['a', 'b'],
+                dict: {
+                    a: { text: 'first box' },
+                    b: { text: 'second box' }
+                }
+            }
+        })]);
+
+        const dom$ = a.thru(loop(props => props.loopable, (child$, id) => (id: any)));
+
+        expect(dom$).to.emit([value(['a', 'b'], { current: true })]);
+    });
 });
