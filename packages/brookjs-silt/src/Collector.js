@@ -1,11 +1,13 @@
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { Consumer } from './context';
+import h from './h';
 import { isString, isObs, EMIT_PROP } from './helpers';
 
 export default class Collector extends Component {
-    constructor (props, context) {
-        super(props, context);
+    constructor (props) {
+        super(props);
 
         this.children = null;
         this.streams = [];
@@ -65,7 +67,7 @@ export default class Collector extends Component {
 
     componentWillUnmount() {
         this.clearStreams();
-        this.context.aggregated$.unplug(this.collected$);
+        this.aggregated$.unplug(this.collected$);
     }
 
     clearStreams () {
@@ -76,17 +78,20 @@ export default class Collector extends Component {
     render () {
         if (!this.children) {
             this.renderChildren(this.props);
-            this.context.aggregated$.plug(this.collected$);
         }
 
-        return this.children;
+        return (
+            <Consumer>
+                {aggregated$ => {
+                    this.aggregated$ = aggregated$.plug(this.collected$);
+
+                    return this.children;
+                }}
+            </Consumer>
+        );
     }
 }
 
 Collector.propTypes = {
     children: PropTypes.element.isRequired
-};
-
-Collector.contextTypes = {
-    aggregated$: PropTypes.instanceOf(Kefir.Observable).isRequired
 };

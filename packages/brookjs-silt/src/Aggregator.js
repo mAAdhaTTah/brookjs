@@ -1,22 +1,18 @@
 import { Component } from 'react';
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
+import { Provider } from './context';
+import h from './h';
 
 export default class Aggregator extends Component {
-    constructor (props, context) {
-        super(props, context);
+    constructor (props) {
+        super(props);
 
-        this.actions$ = Kefir.pool();
-    }
-
-    getChildContext() {
-        return {
-            aggregated$: this.actions$
-        };
+        this.action$ = Kefir.pool();
     }
 
     componentDidMount() {
-        this.sub = this.props.action$(this.actions$);
+        this.sub = this.props.action$(this.action$);
     }
 
     componentWillUnmount() {
@@ -24,13 +20,13 @@ export default class Aggregator extends Component {
     }
 
     render() {
-        return this.props.children;
+        return (
+            <Provider value={this.action$}>
+                {this.props.children}
+            </Provider>
+        );
     }
 }
-
-Aggregator.childContextTypes = {
-    aggregated$: PropTypes.instanceOf(Kefir.Observable)
-};
 
 Aggregator.propTypes = {
     children: PropTypes.element.isRequired,
