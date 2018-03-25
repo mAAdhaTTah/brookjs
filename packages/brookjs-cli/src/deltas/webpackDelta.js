@@ -1,5 +1,5 @@
 import { Kefir } from 'brookjs';
-import { webpackCompiled, webpackDashboardEvents } from '../actions';
+import { webpackCompiled } from '../actions';
 import { isBuildCommand, isDevAppCommand, selectWebpackConfig,
     takeStateOnBootstrap } from '../selectors';
 
@@ -17,7 +17,7 @@ export default ({ webpack }) => (actions$, state$) => {
         .flatMap(state =>
             webpack.create(selectWebpackConfig(state))
                 .flatMap(compiler => compiler.watch())
-                .map(webpackDashboardEvents)
+                .map(webpackCompiled)
         );
 
     return Kefir.merge([

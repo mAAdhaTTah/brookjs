@@ -1,6 +1,5 @@
 import { Kefir } from 'brookjs';
 import webpack from 'webpack';
-import DashboardPlugin from 'webpack-dashboard/plugin';
 
 export default class WebpackService {
     static get watch()  {
@@ -31,11 +30,11 @@ export default class WebpackService {
 
     watch() {
         return this.compiler().flatMap(compiler => Kefir.stream(emitter => {
-            compiler.apply(new DashboardPlugin(emitter.value));
-
-            compiler.watch(WebpackService.watch, (err) => {
+            compiler.watch(WebpackService.watch, (err, stats) => {
                 if (err) {
                     emitter.error(err);
+                } else {
+                    emitter.value(stats);
                 }
             });
         }));
