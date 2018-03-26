@@ -14,7 +14,6 @@ configure({ adapter: new Adapter() });
 use(plugin);
 
 describe('Collector', () => {
-
     const CollectedButton = ({ text, enabled, aggregated$ }) => (
         <Provider value={aggregated$}>
             <Collector>
@@ -26,6 +25,8 @@ describe('Collector', () => {
             </Collector>
         </Provider>
     );
+
+    const clickButton = wrapper => wrapper.find('button').simulate('click');
 
     it('should render children normally', () => {
         const aggregated$ = Kefir.pool();
@@ -54,7 +55,7 @@ describe('Collector', () => {
         );
 
         expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
-            wrapper.simulate('click');
+            clickButton(wrapper);
         });
     });
 
@@ -128,7 +129,7 @@ describe('Collector', () => {
         );
 
         expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
-            wrapper.find('button').simulate('click');
+            clickButton(wrapper);
         });
     });
 
@@ -150,7 +151,7 @@ describe('Collector', () => {
         );
 
         expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
-            wrapper.find('button').simulate('click');
+            clickButton(wrapper);
         });
     });
 
@@ -169,7 +170,7 @@ describe('Collector', () => {
         );
 
         expect(aggregated$).to.emit([value({ type: 'CLICK' })], () => {
-            wrapper.find('button').simulate('click');
+            clickButton(wrapper);
         });
     });
 
@@ -193,7 +194,7 @@ describe('Collector', () => {
         );
 
         expect(aggregated$).to.emit([value({ type: 'BUTTON_CLICK' })], () => {
-            wrapper.find('button').simulate('click');
+            clickButton(wrapper);
         });
     });
 });
