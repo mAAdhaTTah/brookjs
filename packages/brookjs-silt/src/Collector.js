@@ -1,15 +1,18 @@
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { Consumer, Provider } from './context';
+import h from './h';
 import { isString, isObs, EMIT_PROP } from './helpers';
 
 export default class Collector extends Component {
-    constructor (props, context) {
-        super(props, context);
+    constructor (props) {
+        super(props);
 
         this.children = null;
         this.streams = [];
         this.collected$ = Kefir.pool();
+        this.provided$ = Kefir.pool();
     }
 
     renderChildren (props) {
@@ -65,7 +68,7 @@ export default class Collector extends Component {
 
     componentWillUnmount() {
         this.clearStreams();
-        this.context.aggregated$.unplug(this.collected$);
+        this.aggregated$.unplug(this.collected$).unplug(this.preplugged$);
     }
 
     clearStreams () {
@@ -76,17 +79,35 @@ export default class Collector extends Component {
     render () {
         if (!this.children) {
             this.renderChildren(this.props);
-            this.context.aggregated$.plug(this.collected$);
         }
 
-        return this.children;
+        if (!this.preplugged$) {
+            this.preplugged$ = this.props.preplug(this.provided$);
+        }
+
+        return (
+            <Consumer>
+                {aggregated$ => {
+                    this.aggregated$ = aggregated$
+                        .plug(this.collected$)
+                        .plug(this.preplugged$);
+
+                    return (
+                        <Provider value={this.provided$}>
+                            {this.children}
+                        </Provider>
+                    );
+                }}
+            </Consumer>
+        );
     }
 }
 
 Collector.propTypes = {
-    children: PropTypes.element.isRequired
+    children: PropTypes.element.isRequired,
+    preplug: PropTypes.func
 };
 
-Collector.contextTypes = {
-    aggregated$: PropTypes.instanceOf(Kefir.Observable).isRequired
+Collector.defaultProps = {
+    preplug: x => x
 };
