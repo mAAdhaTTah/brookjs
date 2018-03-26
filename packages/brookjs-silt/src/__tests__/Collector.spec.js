@@ -14,11 +14,13 @@ configure({ adapter: new Adapter() });
 use(plugin);
 
 describe('Collector', () => {
+    const onButtonClick = e$ => e$.map(() => ({ type: 'CLICK' }));
+
     const CollectedButton = ({ text, enabled, aggregated$ }) => (
         <Provider value={aggregated$}>
             <Collector>
                 {enabled ?
-                    <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                    <button onClick={onButtonClick}>
                         {text}
                     </button> :
                     <span>nothing to click</span>}
@@ -119,7 +121,7 @@ describe('Collector', () => {
                 <Collector>
                     <div>
                         {Kefir.constant(
-                            <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                            <button onClick={onButtonClick}>
                                 Click me!
                             </button>
                         )}
@@ -141,7 +143,7 @@ describe('Collector', () => {
                     <div>
                         <p>Hello world!</p>
                         {Kefir.constant(
-                            <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                            <button onClick={onButtonClick}>
                                 Click me!
                             </button>
                         )}
@@ -161,7 +163,7 @@ describe('Collector', () => {
             <Provider value={aggregated$}>
                 <Collector silt-embeddable>
                     {Kefir.constant(
-                        <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                        <button onClick={onButtonClick}>
                             Click me!
                         </button>
                     )}
@@ -179,7 +181,7 @@ describe('Collector', () => {
         const Button = ({ enabled, text }) => (
             <Collector>
                 {enabled ?
-                    <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                    <button onClick={onButtonClick}>
                         {text}
                     </button> :
                     <span>nothing to click</span>}
