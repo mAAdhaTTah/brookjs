@@ -107,6 +107,13 @@ describe('h', () => {
 
             expect(actual.toString()).to.equal('<div>Test: Hello world!</div>');
         });
+
+        it('should warn when passing stream', () => {
+            const warn = sinon.stub(console, 'warn');
+            render(<p>{new Kefir.Stream().setName('child$')}</p>);
+
+            expect(warn).to.have.been.calledWith(`Observable [child$] is not a property. You may experience incomplete renders without an initial value.`);
+        });
     });
 
     describe('attributes', () => {

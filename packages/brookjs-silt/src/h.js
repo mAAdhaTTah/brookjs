@@ -9,6 +9,11 @@ const hasObsInChildrenArray = children => {
     for (let i = 0; i < children.length; ++i) {
         const child = children[i];
         if (isObs(child) || Array.isArray(child) && hasObsInChildrenArray(child)) {
+            if (process.env.NODE_ENV !== 'production') {
+                if (isObs(child) && child.getType() !== 'property') {
+                    console.warn(`Observable ${child.toString()} is not a property. You may experience incomplete renders without an initial value.`);
+                }
+            }
             return true;
         }
     }
@@ -19,6 +24,12 @@ const hasObsInProps = props => {
     for (const key in props) {
         const val = props[key];
         if (isObs(val)) {
+            if (process.env.NODE_ENV !== 'production') {
+                if (val.getType() !== 'property') {
+                    console.warn(`Observable ${val.toString()} is not a property. You may experience incomplete renders without an initial value.`);
+                }
+            }
+
             return true;
         } else if (CHILDREN === key) {
             if (Array.isArray(val) && hasObsInChildrenArray(val)) {
@@ -26,7 +37,14 @@ const hasObsInProps = props => {
             }
         } else if (STYLE === key) {
             for (const k in val) {
-                if (isObs(val[k])) {
+                const obs = val[k];
+                if (isObs(obs)) {
+                    if (process.env.NODE_ENV !== 'production') {
+                        if (obs.getType() !== 'property') {
+                            console.warn(`Observable ${obs.toString()} is not a property. You may experience incomplete renders without an initial value.`);
+                        }
+                    }
+
                     return true;
                 }
             }
