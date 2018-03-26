@@ -1,7 +1,7 @@
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
-import { Consumer } from './context';
+import { Consumer, Provider } from './context';
 import h from './h';
 import { isString, isObs, EMIT_PROP } from './helpers';
 
@@ -12,6 +12,7 @@ export default class Collector extends Component {
         this.children = null;
         this.streams = [];
         this.collected$ = Kefir.pool();
+        this.provided$ = Kefir.pool();
     }
 
     renderChildren (props) {
@@ -67,7 +68,7 @@ export default class Collector extends Component {
 
     componentWillUnmount() {
         this.clearStreams();
-        this.aggregated$.unplug(this.collected$);
+        this.aggregated$.unplug(this.collected$).unplug(this.preplugged$);
     }
 
     clearStreams () {
@@ -80,12 +81,22 @@ export default class Collector extends Component {
             this.renderChildren(this.props);
         }
 
+        if (!this.preplugged$) {
+            this.preplugged$ = this.props.preplug(this.provided$);
+        }
+
         return (
             <Consumer>
                 {aggregated$ => {
-                    this.aggregated$ = aggregated$.plug(this.collected$);
+                    this.aggregated$ = aggregated$
+                        .plug(this.collected$)
+                        .plug(this.preplugged$);
 
-                    return this.children;
+                    return (
+                        <Provider value={this.provided$}>
+                            {this.children}
+                        </Provider>
+                    );
                 }}
             </Consumer>
         );
@@ -93,5 +104,10 @@ export default class Collector extends Component {
 }
 
 Collector.propTypes = {
-    children: PropTypes.element.isRequired
+    children: PropTypes.element.isRequired,
+    preplug: PropTypes.func
+};
+
+Collector.defaultProps = {
+    preplug: x => x
 };

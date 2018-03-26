@@ -172,4 +172,28 @@ describe('Collector', () => {
             wrapper.find('button').simulate('click');
         });
     });
+
+    it('should modify wrapped children', () => {
+        const aggregated$ = Kefir.pool();
+        const Button = ({ enabled, text }) => (
+            <Collector>
+                {enabled ?
+                    <button onClick={e$ => e$.map(() => ({ type: 'CLICK' }))}>
+                        {text}
+                    </button> :
+                    <span>nothing to click</span>}
+            </Collector>
+        );
+        const wrapper = mount(
+            <Provider value={aggregated$}>
+                <Collector preplug={children$ => children$.map(() => ({ type: 'BUTTON_CLICK' }))}>
+                    <Button enabled={true} text={'Click me'} />
+                </Collector>
+            </Provider>
+        );
+
+        expect(aggregated$).to.emit([value({ type: 'BUTTON_CLICK' })], () => {
+            wrapper.find('button').simulate('click');
+        });
+    });
 });
