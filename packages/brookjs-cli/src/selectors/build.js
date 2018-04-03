@@ -64,9 +64,19 @@ const selectWebpackEntry = state => {
     return R.map(e => path.join(selectAppPath(state), e), entry);
 };
 
+const selectFilename = state => {
+    let filename = R.view(lWebpackOutputFilename, state);
+
+    if (typeof filename === 'function') {
+        filename = filename(state);
+    }
+
+    return filename;
+};
+
 const selectOutput = state => ({
     path: path.join(R.view(lEnvCwd, state), R.view(lWebpackOutputPath, state)),
-    filename: R.view(lWebpackOutputFilename, state)
+    filename: selectFilename(state)
 });
 
 export const selectWebpackConfig = state => state.webpack.modifier({
