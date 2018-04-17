@@ -49,7 +49,7 @@
     "rimraf": "^2.6.2",
     "sinon": "^4.1.5",
     "sinon-chai": "^2.14.0",
-    "webpack": "^3.6.0",
+    "webpack": "^4.6.0",
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
