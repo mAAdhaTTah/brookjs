@@ -1,3 +1,13 @@
 {
-
+  "groups": {
+    "default": {
+      "packages": [
+        "packages/babel-preset-brookjs/package.json",
+        "packages/brookjs/package.json",
+        "packages/brookjs-cli/package.json",
+        "packages/brookjs-desalinate/package.json",
+        "packages/brookjs-silt/package.json"
+      ]
+    }
+  }
 }
