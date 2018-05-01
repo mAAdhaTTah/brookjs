@@ -57,7 +57,7 @@
     "flow-bin": "^0.70.0",
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
-    "karma": "^2.0.0",
+    "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-sauce-launcher": "^1.2.0",
     "karma-spec-reporter": "^0.0.32",
