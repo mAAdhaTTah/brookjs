@@ -23,13 +23,13 @@
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
     "cross-env": "^5.1.1",
-    "eslint-loader": "^1.9.0",
+    "eslint-loader": "^2.0.0",
     "esm": "^3.0.8",
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
     "handlebars-loader": "^1.6.0",
-    "inquirer": "^4.0.1",
+    "inquirer": "^5.2.0",
     "lerna": "^2.8.0",
     "mocha": "^5.0.5",
     "npm-install-webpack-plugin": "^4.0.5",
@@ -38,7 +38,7 @@
     "redux": "^3.7.2",
     "shelljs": "^0.8.0",
     "uglifyjs-webpack-plugin": "^1.1.2",
-    "webpack": "^3.10.0"
+    "webpack": "^4.5.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
@@ -46,7 +46,7 @@
     "chai-fs": "^2.0.0",
     "chai-string": "^1.4.0",
     "chain": "^0.1.3",
-    "cucumber": "^3.2.0",
+    "cucumber": "^4.2.1",
     "dirty-chai": "^2.0.1",
     "eslint": "^4.7.0",
     "eslint-config-valtech": "^1.1.0",
