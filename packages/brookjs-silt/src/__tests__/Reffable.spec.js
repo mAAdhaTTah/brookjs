@@ -5,10 +5,10 @@ import { expect, use } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import { Kefir } from 'brookjs';
-import PropTypes from 'prop-types';
 import { chaiPlugin } from 'brookjs-desalinate';
 import h from '../h';
 import Reffable from '../Reffable';
+import { Provider } from '../context';
 
 const { plugin, value } = chaiPlugin({ Kefir });
 
@@ -16,12 +16,14 @@ configure({ adapter: new Adapter() });
 use(plugin);
 use(sinonChai);
 
-const Instance = ({ text, callback }) => (
-    <Reffable callback={callback}>
-        <button>
-            {text}
-        </button>
-    </Reffable>
+const Instance = ({ text, callback, aggregated$ }) => (
+    <Provider value={aggregated$}>
+        <Reffable callback={callback}>
+            <button>
+                {text}
+            </button>
+        </Reffable>
+    </Provider>
 );
 
 describe('Reffable', () => {
@@ -29,11 +31,10 @@ describe('Reffable', () => {
         const aggregated$ = Kefir.pool();
         const callback = sinon.spy(() => Kefir.constant({ type: 'REF$' }));
         mount(
-            <Instance text={'Click me!'} callback={callback} />,
-            {
-                context: { aggregated$ },
-                childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
-            }
+            <Instance
+                text={'Click me!'}
+                callback={callback}
+                aggregated$={aggregated$} />
         );
 
         expect(aggregated$).to.emit([value({ type: 'REF$' }, { current: true })]);
@@ -43,11 +44,10 @@ describe('Reffable', () => {
         const aggregated$ = Kefir.pool();
         const callback = sinon.spy(() => Kefir.constant({ type: 'REF$' }));
         const wrapper = mount(
-            <Instance text={'Click me!'} callback={callback} />,
-            {
-                context: { aggregated$ },
-                childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
-            }
+            <Instance
+                text={'Click me!'}
+                callback={callback}
+                aggregated$={aggregated$} />
         );
 
         expect(callback).to.have.been.calledWithMatch(
@@ -66,11 +66,8 @@ describe('Reffable', () => {
             mount(
                 <Instance
                     text={'Click me!'}
-                    callback={(el, { didMount$ }) => didMount$} />,
-                {
-                    context: { aggregated$ },
-                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
-                }
+                    callback={(el, { didMount$ }) => didMount$}
+                    aggregated$={aggregated$} />
             );
         });
     });
@@ -80,11 +77,10 @@ describe('Reffable', () => {
 
         expect(aggregated$).to.emitInTime([[60, value(1060)]], tick => {
             const wrapper = mount(
-                <Instance text={'Click me!'} callback={(el, { didUpdate$ }) => didUpdate$} />,
-                {
-                    context: { aggregated$ },
-                    childContextTypes: { aggregated$: PropTypes.instanceOf(Kefir.Observable) }
-                }
+                <Instance
+                    text={'Click me!'}
+                    callback={(el, { didUpdate$ }) => didUpdate$}
+                    aggregated$={aggregated$} />
             );
 
             tick(60);
