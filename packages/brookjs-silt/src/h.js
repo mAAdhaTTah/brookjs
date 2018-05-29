@@ -5,14 +5,20 @@ import { isObs, isString, CHILDREN, STYLE, EMIT_PROP,
 
 const emptyObj = {};
 
+const warnIfNotProp = obs => {
+    if (obs.getType() !== 'property') {
+        // eslint-disable-next-line no-console
+        console.warn(`Observable ${obs.toString()} is not a property. You may experience incomplete renders without an initial value.`);
+    }
+}
+
 const hasObsInChildrenArray = children => {
     for (let i = 0; i < children.length; ++i) {
         const child = children[i];
         if (isObs(child) || Array.isArray(child) && hasObsInChildrenArray(child)) {
             if (process.env.NODE_ENV !== 'production') {
-                if (isObs(child) && child.getType() !== 'property') {
-                    // eslint-disable-next-line no-console
-                    console.warn(`Observable ${child.toString()} is not a property. You may experience incomplete renders without an initial value.`);
+                if (isObs(child)) {
+                    warnIfNotProp(child);
                 }
             }
             return true;
@@ -26,10 +32,7 @@ const hasObsInProps = props => {
         const val = props[key];
         if (isObs(val)) {
             if (process.env.NODE_ENV !== 'production') {
-                if (val.getType() !== 'property') {
-                    // eslint-disable-next-line no-console
-                    console.warn(`Observable ${val.toString()} is not a property. You may experience incomplete renders without an initial value.`);
-                }
+                warnIfNotProp(val);
             }
 
             return true;
@@ -42,10 +45,7 @@ const hasObsInProps = props => {
                 const obs = val[k];
                 if (isObs(obs)) {
                     if (process.env.NODE_ENV !== 'production') {
-                        if (obs.getType() !== 'property') {
-                            // eslint-disable-next-line no-console
-                            console.warn(`Observable ${obs.toString()} is not a property. You may experience incomplete renders without an initial value.`);
-                        }
+                        warnIfNotProp(obs);
                     }
 
                     return true;
