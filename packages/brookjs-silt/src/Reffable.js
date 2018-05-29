@@ -1,6 +1,8 @@
 import { Kefir } from 'brookjs';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import h from './h';
+import { Consumer } from './context';
 
 export default class Reffable extends Component {
     constructor (props, context) {
@@ -27,12 +29,20 @@ export default class Reffable extends Component {
     }
 
     render() {
-        if (!this.children) {
-            this.renderChildren(this.props);
-            this.context.aggregated$.plug(this.reffed$);
-        }
+        return (
+            <Consumer>
+                {aggregated$ => {
+                    this.aggregated$ = aggregated$;
 
-        return this.children;
+                    if (!this.children) {
+                        this.renderChildren(this.props);
+                        aggregated$.plug(this.reffed$);
+                    }
+
+                    return this.children;
+                }}
+            </Consumer>
+        );
     }
 
     componentWillReceiveProps(props) {
