@@ -11,6 +11,7 @@ const hasObsInChildrenArray = children => {
         if (isObs(child) || Array.isArray(child) && hasObsInChildrenArray(child)) {
             if (process.env.NODE_ENV !== 'production') {
                 if (isObs(child) && child.getType() !== 'property') {
+                    // eslint-disable-next-line no-console
                     console.warn(`Observable ${child.toString()} is not a property. You may experience incomplete renders without an initial value.`);
                 }
             }
@@ -26,6 +27,7 @@ const hasObsInProps = props => {
         if (isObs(val)) {
             if (process.env.NODE_ENV !== 'production') {
                 if (val.getType() !== 'property') {
+                    // eslint-disable-next-line no-console
                     console.warn(`Observable ${val.toString()} is not a property. You may experience incomplete renders without an initial value.`);
                 }
             }
@@ -41,6 +43,7 @@ const hasObsInProps = props => {
                 if (isObs(obs)) {
                     if (process.env.NODE_ENV !== 'production') {
                         if (obs.getType() !== 'property') {
+                            // eslint-disable-next-line no-console
                             console.warn(`Observable ${obs.toString()} is not a property. You may experience incomplete renders without an initial value.`);
                         }
                     }
@@ -55,7 +58,8 @@ const hasObsInProps = props => {
 
 const filterProps = (type, props) => {
     // Throw away EMBED_PROP, migrate ref.
-    const { [EMBED_PROP]: _, [REF]: ref, ...rest } = props; // eslint-disable-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
+    const { [EMBED_PROP]: _, [REF]: ref, ...rest } = props;
     return { ...rest, [DD_REF]: ref, [TYPE]: type };
 };
 
