@@ -10,7 +10,7 @@ const warnIfNotProp = obs => {
         // eslint-disable-next-line no-console
         console.warn(`Observable ${obs.toString()} is not a property. You may experience incomplete renders without an initial value.`);
     }
-}
+};
 
 const hasObsInChildrenArray = children => {
     for (let i = 0; i < children.length; ++i) {
