@@ -11,7 +11,7 @@ const common = {
                 include: [
                     path.join(__dirname, 'src'),
                     path.join(__dirname, 'node_modules', 'diffhtml'),
-                    path.join(__dirname, 'node_modules', 'diffhtml-shared-modules'),
+                    path.join(__dirname, 'node_modules', 'diffhtml-shared-modules')
                 ]
             }
         ]
@@ -19,6 +19,7 @@ const common = {
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
+            'sinon': 'sinon/pkg/sinon.js',
             'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime'
         }
     }
