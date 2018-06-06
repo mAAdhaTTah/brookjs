@@ -37,6 +37,7 @@ const common = {
     resolve: {
         mainFields: ['module', 'jsnext:main', 'browser', 'main'],
         alias: {
+            'sinon': 'sinon/pkg/sinon.js',
             'handlebars/runtime': 'handlebars/dist/cjs/handlebars.runtime',
             'handlebars': 'handlebars/dist/cjs/handlebars.runtime',
             [require.resolve('handlebars/dist/cjs/handlebars.runtime')]: 'handlebars/dist/cjs/handlebars.runtime'
