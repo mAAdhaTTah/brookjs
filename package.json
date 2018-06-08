@@ -5,7 +5,8 @@
     "lerna": "^2.8.0"
   },
   "scripts": {
-    "test": "lerna run test --concurrency 1"
+    "test": "lerna run test --concurrency 1",
+    "pub": "lerna publish --concurrency 1 --npm-client=npm"
   },
   "workspaces": [
     "packages/*"
