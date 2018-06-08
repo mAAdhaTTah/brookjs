@@ -1,8 +1,8 @@
 import assert from 'assert';
 import R from 'ramda';
 import Kefir from '../../kefir';
-import * as Event from './event';
 import { CAPTURE, CONTAINER_ATTRIBUTE, EVENT_ATTRIBUTES, SUPPORTED_EVENTS } from '../constants';
+import * as Event from './event';
 
 /**
  * Associates a DOM element with its dispatch function.

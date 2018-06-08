@@ -1,11 +1,11 @@
 /* eslint-env mocha */
 
-import Kefir from '../../kefir';
 import { applyMiddleware, createStore } from 'redux';
-import { observeDelta } from '../index';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import { observeDelta } from '../index';
+import Kefir from '../../kefir';
 
 chai.use(sinonChai);
 

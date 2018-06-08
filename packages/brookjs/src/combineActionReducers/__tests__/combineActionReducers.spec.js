@@ -1,10 +1,8 @@
 /* eslint-env mocha */
 import R from 'ramda';
-
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-
 import combineActionReducers from '../';
 
 chai.use(sinonChai);

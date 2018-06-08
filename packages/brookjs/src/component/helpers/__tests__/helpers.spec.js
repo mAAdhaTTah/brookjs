@@ -1,6 +1,6 @@
 /*eslint-env mocha */
-import { eventAttribute, containerAttribute, keyAttribute, mapActionTo } from '../';
 import { expect } from 'chai';
+import { eventAttribute, containerAttribute, keyAttribute, mapActionTo } from '../';
 
 describe('helpers', function() {
     describe('event', function() {
