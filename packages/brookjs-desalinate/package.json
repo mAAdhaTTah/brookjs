@@ -1,6 +1,6 @@
 {
   "name": "brookjs-desalinate",
-  "version": "0.11.10",
+  "version": "0.11.11",
   "description": "Testing tools for brookjs components.",
   "main": "cjs/index.js",
   "module": "es/index.js",
@@ -44,7 +44,7 @@
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-brookjs": "^0.11.3",
-    "brookjs-cli": "^0.11.10",
+    "brookjs-cli": "^0.11.11",
     "chai": "^4.1.2",
     "core-js": "^2.5.1",
     "cross-env": "^5.0.5",
