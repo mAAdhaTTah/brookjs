@@ -230,8 +230,14 @@ describe('loop', () => {
             }
         })]);
 
-        const dom$ = a.thru(loop(props => props.loopable, (child$, id) => (id: any)));
+        const dom = mount(
+            <div>
+                {a.thru(loop(props => props.loopable, (child$, id) => (
+                    <p key={id}>{id} {child$.map(props => props.text)}</p>
+                )))}
+            </div>
+        );
 
-        expect(dom$).to.emit([value(['a', 'b'], { current: true })]);
+        expect(dom.html()).to.equal(`<div><p>a first box</p><p>b second box</p></div>`);
     });
 });

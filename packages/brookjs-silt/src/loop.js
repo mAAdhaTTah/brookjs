@@ -9,7 +9,7 @@ type Loopable<P> = { order: Array<Key>, dict: { [key: Key]: P } };
 type Callback<P> = (Observable<P>, Key) => React.Node | Observable<React.Node>;
 type Source<P> = Observable<Loopable<P>>;
 
-const child$s: Map<Observable<*>, { [key: Key]: Observable<*>}> = new Map();
+const child$s: WeakMap<Observable<*>, { [key: Key]: Observable<*> }> = new WeakMap();
 
 const getChildStream = <P>(stream$: Source<P>, id: Key): Observable<P> => {
     let childs = child$s.get(stream$);
@@ -38,9 +38,12 @@ export default function loop<P>(mapper, callback) {
         mapper = (x: any): Loopable<P> => x;
     }
 
-    return (stream$: Source<P>) =>
+    return (stream$: Source<P>) => {
         // $FlowFixMe
-        stream$.map(mapper).skipDuplicates(orderMatches)
+        const src$ = stream$.map(mapper);
+
+        return src$.skipDuplicates(orderMatches)
             // $FlowFixMe
-            .map(props => props.order.map(id => callback(getChildStream(stream$, id), id)));
+            .map(props => props.order.map(id => callback(getChildStream(src$, id), id)));
+    };
 }
