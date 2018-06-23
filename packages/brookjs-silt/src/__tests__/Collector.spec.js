@@ -13,7 +13,7 @@ const { plugin, value } = chaiPlugin({ Kefir });
 configure({ adapter: new Adapter() });
 use(plugin);
 
-describe.skip('Collector', () => {
+describe('Collector', () => {
     const onButtonClick = e$ => e$.map(() => ({ type: 'CLICK' }));
 
     const CollectedButton = ({ text, enabled, aggregated$ }) => (
