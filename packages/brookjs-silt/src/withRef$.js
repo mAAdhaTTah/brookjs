@@ -17,6 +17,10 @@ export default function withRef$(c, callback) {
             this.el = null;
         }
 
+        componentWillUnmount() {
+            this.aggregated$.unplug(this.plugged$);
+        }
+
         componentDidMount() {
             const el = getRef(this.ref);
 
@@ -30,7 +34,18 @@ export default function withRef$(c, callback) {
             return (
                 <Consumer>
                     {aggregated$ => {
-                        aggregated$.plug(callback(this.ref$, this.props));
+                        if (this.plugged$) {
+                            this.aggregated$.unplug(this.plugged$);
+                        }
+
+                        this.aggregated$ = aggregated$;
+
+                        if (!this.plugged$) {
+                            aggregated$.plug(
+                                this.plugged$ = callback(this.ref$, this.props)
+                            );
+                        }
+
                         return <Component {...this.props} ref={this.ref} />;
                     }}
                 </Consumer>
