@@ -5,7 +5,7 @@
   "main": "cjs/index.js",
   "scripts": {
     "test": "npm run test:lint && npm run test:type && npm run test:unit",
-    "test:lint": "eslint src --cache true --fix",
+    "test:lint": "eslint src --fix",
     "test:type": "flow check",
     "test:unit": "beaver test unit --coverage true --env test",
     "test:int": "cross-env NODE_ENV=test mocha --require babel-register int/run.js",
