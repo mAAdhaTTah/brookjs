@@ -14,6 +14,7 @@
     "chai-string": "^1.4.0",
     "cucumber": "^4.0.0",
     "dirty-chai": "^2.0.1",
+    "docz": "^0.5.4",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^5.0.0",
@@ -36,7 +37,9 @@
     "sinon-chai": "^3.1.0"
   },
   "scripts": {
-    "build": "lerna run build  --concurrency 1",
+    "build": "lerna run build --concurrency 1",
+    "docs:dev": "docz dev",
+    "docs:build": "docz build",
     "test": "lerna run test --concurrency 1",
     "pub": "lerna publish --concurrency 1 --npm-client=npm"
   },
@@ -45,6 +48,7 @@
   ],
   "resolutions": {
     "react": "16.2.0",
+    "@mdx-js/tag": "0.13.1-1",
     "babel-plugin-ramda": "1.4.3"
   }
 }
