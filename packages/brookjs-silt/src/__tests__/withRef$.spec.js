@@ -28,7 +28,7 @@ const Instance = ({ text, aggregated$ }) => (
     </Provider>
 );
 
-describe.skip('withRef$', () => {
+describe('withRef$', () => {
     it('should emit value from ref$', () => {
         const aggregated$ = Kefir.pool();
         const wrapper = mount(
@@ -37,6 +37,6 @@ describe.skip('withRef$', () => {
                 aggregated$={aggregated$} />
         );
 
-        expect(aggregated$).to.emit([value([wrapper.find('button'), { text: 'Click me!' }], { current: true })]);
+        expect(aggregated$).to.emit([value([wrapper.find('button').instance(), { text: 'Click me!' }], { current: true })]);
     });
 });

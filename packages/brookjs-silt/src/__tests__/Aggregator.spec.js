@@ -15,7 +15,7 @@ configure({ adapter: new Adapter() });
 use(plugin);
 use(sinonChai);
 
-describe.skip('Aggregator', () => {
+describe('Aggregator', () => {
     it('should provide aggregated$ as context', () => {
         const spy = sinon.spy(() => {});
         mount(
