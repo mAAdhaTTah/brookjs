@@ -39,4 +39,17 @@ describe('withRef$', () => {
 
         expect(aggregated$).to.emit([value([wrapper.find('button').instance(), { text: 'Click me!' }], { current: true })]);
     });
+
+    it('should remove ref$ when unmounted', () => {
+        const aggregated$ = Kefir.pool();
+        const wrapper = mount(
+            <Instance
+                text={'Click me!'}
+                aggregated$={aggregated$} />
+        );
+
+        wrapper.unmount();
+
+        expect(aggregated$._curSources).to.have.lengthOf(0);
+    });
 });
