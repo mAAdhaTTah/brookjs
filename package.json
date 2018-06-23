@@ -10,5 +10,8 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "resolutions": {
+    "react": "16.2.0"
+  }
 }

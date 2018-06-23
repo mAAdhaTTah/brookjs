@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import { createRef, forwardRef, getRef } from 'create-react-ref';
 import Kefir from 'kefir';
 import h from './h';
@@ -7,7 +8,7 @@ const getDisplayName = Component =>
     Component.displayName || Component.name || 'Component';
 
 export default function withRef$(c, callback) {
-    const Component = forwardRef(c);
+    const Reffed = forwardRef(c);
 
     class WithRef extends Component {
         constructor(props, context) {
@@ -46,14 +47,14 @@ export default function withRef$(c, callback) {
                             );
                         }
 
-                        return <Component {...this.props} ref={this.ref} />;
+                        return <Reffed {...this.props} ref={this.ref} />;
                     }}
                 </Consumer>
             );
         }
     }
 
-    WithRef.displayName = `WithRef(${getDisplayName(Component)})`;
+    WithRef.displayName = `WithRef(${getDisplayName(Reffed)})`;
 
     return WithRef;
 };
