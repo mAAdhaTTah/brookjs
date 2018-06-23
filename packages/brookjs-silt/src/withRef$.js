@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { createRef, forwardRef, getRef } from 'create-react-ref';
 import Kefir from 'kefir';
 import h from './h';
 import { Consumer } from './context';
@@ -8,19 +8,50 @@ const getDisplayName = Component =>
 
 export default function withRef$(c, callback) {
     const Component = forwardRef(c);
-    const WithRef = props => {
-        const ref$ = new Kefir.Property();
 
-        return (
-            <Consumer>
-                {aggregated$ => {
-                    aggregated$.plug(callback(ref$, props));
+    class WithRef extends Component {
+        constructor(props, context) {
+            super(props, context);
+            this.ref$ = new Kefir.Property();
+            this.ref = createRef();
+            this.el = null;
+        }
 
-                    return <Component {...props} ref={el => el && ref$._emitValue(el)} />;
-                }}
-            </Consumer>
-        );
-    };
+        componentWillUnmount() {
+            this.aggregated$.unplug(this.plugged$);
+        }
+
+        componentDidMount() {
+            const el = getRef(this.ref);
+
+            if (el && this.el !== el) {
+                this.ref$._emitValue(el);
+                this.el = el;
+            }
+        }
+
+        render() {
+            return (
+                <Consumer>
+                    {aggregated$ => {
+                        if (this.plugged$) {
+                            this.aggregated$.unplug(this.plugged$);
+                        }
+
+                        this.aggregated$ = aggregated$;
+
+                        if (!this.plugged$) {
+                            aggregated$.plug(
+                                this.plugged$ = callback(this.ref$, this.props)
+                            );
+                        }
+
+                        return <Component {...this.props} ref={this.ref} />;
+                    }}
+                </Consumer>
+            );
+        }
+    }
 
     WithRef.displayName = `WithRef(${getDisplayName(Component)})`;
 
