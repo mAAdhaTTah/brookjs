@@ -37,6 +37,8 @@ export const renderFromHTML = R.curry((el, html) =>
  */
 export default function render(template, modifyEffect$$ = R.identity) {
     if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.warn('brookjs#render has been deprecated. Please migrate to brookjs-silt (React-based components).');
         assert.equal(typeof template, 'function', '`template` should be a function');
         assert.equal(typeof modifyEffect$$, 'function', '`modifyEffect$$` should be a function');
     }

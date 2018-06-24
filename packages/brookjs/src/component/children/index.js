@@ -13,6 +13,8 @@ import child from './child';
  */
 export default function children (factories) {
     if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.warn('brookjs#children has been deprecated. Please migrate to brookjs-silt (React-based components).');
         assert.equal(typeof factories, 'object', '`factories` should be an object');
 
         for (const container in factories) {

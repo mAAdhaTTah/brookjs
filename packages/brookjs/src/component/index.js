@@ -30,6 +30,9 @@ export function component({
     render = renderFactory(() => '')
 }) {
     if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.warn('brookjs#component has been deprecated. Please migrate to brookjs-silt (React-based components).');
+
         // Validate events function.
         assert.equal(typeof events, 'function', '`events` should be a function');
 

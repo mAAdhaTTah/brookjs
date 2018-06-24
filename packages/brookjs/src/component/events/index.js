@@ -95,9 +95,14 @@ const eventMatches = R.curry(function eventMatches(key, el, event) {
  * @returns {Function} Events stream generator function.
  */
 export default function events(config) {
-    for (const key in config) {
-        if (config.hasOwnProperty(key)) {
-            assert.equal(typeof config[key], 'function', `events[${key}] is not a function`);
+    if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.warn('brookjs#component has been deprecated. Please migrate to brookjs-silt (React-based components).');
+
+        for (const key in config) {
+            if (config.hasOwnProperty(key)) {
+                assert.equal(typeof config[key], 'function', `events[${key}] is not a function`);
+            }
         }
     }
 
