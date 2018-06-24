@@ -1,6 +1,6 @@
 {
   "name": "brookjs-cli",
-  "version": "0.11.14",
+  "version": "0.11.16",
   "description": "A command line interface for building brookjs applications.",
   "main": "src/index.js",
   "bin": {
@@ -17,8 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "babel-loader": "^7.1.2",
-    "brookjs": "^0.11.14",
-    "brookjs-desalinate": "^0.11.14",
+    "brookjs": "^0.11.16",
+    "brookjs-desalinate": "^0.11.16",
     "caporal": "^0.10.0",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
