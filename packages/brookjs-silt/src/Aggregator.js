@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import PropTypes from 'prop-types';
 import { Provider } from './context';
 import h from './h';

@@ -4,7 +4,7 @@
 import { configure, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect, use } from 'chai';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import loop from '../loop';
 import h from '../h';
@@ -19,7 +19,7 @@ describe('loop', () => {
     });
 
     it('should take a callback and return a function', () => {
-        expect(loop(() => Kefir.never(<div>Child</div>))).to.be.a('function');
+        expect(loop(() => Kefir.never())).to.be.a('function');
     });
 
     it('should render a single child', () => {

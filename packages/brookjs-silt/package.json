@@ -44,6 +44,7 @@
     "flow-bin": "^0.75.0",
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
+    "kefir": "^3.8.0",
     "raf": "^3.4.0",
     "react-dom": "^16.2.0",
     "rimraf": "^2.6.2",
@@ -52,11 +53,12 @@
     "webpack": "^3.6.0",
     "webpack-merge": "^4.1.0"
   },
+  "peerDependencies": {
+    "kefir": "^3.8.0"
+  },
   "dependencies": {
-    "brookjs": "^0.11.16",
     "create-react-context": "^0.2.1",
     "create-react-ref": "^0.1.0",
-    "kefir": "^3.8.1",
     "prop-types": "^15.6.0",
     "ramda": "^0.25.0",
     "react": "^16.0.0"

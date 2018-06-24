@@ -4959,7 +4959,7 @@ karma@^2.0.2:
     tmp "0.0.33"
     useragent "2.2.1"
 
-kefir@^3.8.0, kefir@^3.8.1:
+kefir@^3.8.0:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/kefir/-/kefir-3.8.3.tgz#8e0ab10084ed8a01cbb5d4f7f18a0b859f7b9bd9"
   dependencies:

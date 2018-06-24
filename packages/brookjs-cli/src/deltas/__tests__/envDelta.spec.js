@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import { expect, use } from 'chai';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import { run, readEnv, readRcFile, readRcFileError } from '../../actions';
 import envDelta from '../envDelta';

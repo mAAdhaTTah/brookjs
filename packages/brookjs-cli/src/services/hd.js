@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import fs from 'fs-extra';
 
 export const read = path => Kefir.fromNodeCallback(callback =>

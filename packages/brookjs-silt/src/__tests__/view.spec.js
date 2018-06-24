@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 // @flow
 import { expect, use } from 'chai';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import view from '../view';
 

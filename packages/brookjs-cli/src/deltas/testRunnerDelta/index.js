@@ -1,5 +1,6 @@
 import R from 'ramda';
-import { Kefir, ofType } from 'brookjs';
+import Kefir from 'kefir';
+import { ofType } from 'brookjs';
 import { READ_RC_FILE } from '../../actions';
 import { isTestCommand, getCommandType, isDevCommand } from '../../selectors';
 import unitTestRunner from './unitTestRunner';

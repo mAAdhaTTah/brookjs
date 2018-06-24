@@ -1,5 +1,6 @@
 import R from 'ramda';
-import { Kefir, ofType } from 'brookjs';
+import Kefir from 'kefir';
+import { ofType } from 'brookjs';
 import { RUN } from '../../actions';
 import log from './log';
 import commandNotFound from './commandNotFound';

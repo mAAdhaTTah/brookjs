@@ -1,5 +1,6 @@
 import R from 'ramda';
-import { ofType, Kefir } from 'brookjs';
+import Kefir from 'kefir';
+import { ofType } from 'brookjs';
 import { lCommandTypeArg } from '../../lenses';
 import { WEBPACK_COMPILED } from '../../actions';
 
@@ -17,4 +18,3 @@ export default ({ ui }, actions$, state$) => {
         }
     });
 };
-

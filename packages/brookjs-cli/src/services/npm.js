@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import R from 'ramda';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { npmCommandSpawned, npmCommandFinish, npmCommandOutput } from '../actions';
 import { selectRoot } from '../selectors';
 

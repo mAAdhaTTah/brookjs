@@ -4,8 +4,8 @@ import { applyMiddleware, createStore } from 'redux';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import Kefir from 'kefir';
 import { observeDelta } from '../index';
-import Kefir from '../../kefir';
 
 chai.use(sinonChai);
 

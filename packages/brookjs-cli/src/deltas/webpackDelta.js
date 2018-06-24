@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { webpackCompiled } from '../actions';
 import { isBuildCommand, isDevAppCommand, selectWebpackConfig,
     takeStateOnBootstrap } from '../selectors';
