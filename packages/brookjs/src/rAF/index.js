@@ -1,4 +1,4 @@
-import Kefir from '../../kefir';
+import Kefir from '../kefir';
 
 /**
  * Emitted on requestAnimationFrame callbacks.
@@ -10,15 +10,15 @@ export const RAF = 'RAF';
 /**
  * Create a new raf action.
  *
+ * Not exported because only raf$ produces them.
+ *
  * @param {number} time - rAF time.
  * @returns {Action} raf Action.
  */
-export function rafAction(time) {
-    return {
-        type: RAF,
-        payload: { time }
-    };
-}
+const rafAction = time => ({
+    type: RAF,
+    payload: { time }
+});
 
 /**
  * Stream of requestAnimationFrame events.
