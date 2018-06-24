@@ -1,5 +1,4 @@
 /* eslint-env mocha */
-import 'core-js/shim';
 import chai, { expect } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
 import $$observable from 'symbol-observable';

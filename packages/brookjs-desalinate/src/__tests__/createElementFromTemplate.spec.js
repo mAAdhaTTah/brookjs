@@ -1,8 +1,4 @@
 /* eslint-env mocha */
-import 'core-js/fn/object/assign';
-import 'core-js/fn/object/values';
-import 'core-js/fn/set';
-import 'core-js/fn/symbol';
 import { expect } from 'chai';
 import createElementFromTemplate from '../createElementFromTemplate';
 

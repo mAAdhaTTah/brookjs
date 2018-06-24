@@ -4,14 +4,9 @@
     "transform-flow-strip-types"
   ],
   "env": {
-    "test:node": {
+    "test": {
       "presets": [
         ["brookjs", { "loose": false, "modules": "commonjs" }]
-      ]
-    },
-    "test:browser": {
-      "presets": [
-        ["brookjs", { "loose": false, "modules": false }]
       ]
     },
     "commonjs": {

@@ -8,7 +8,6 @@
     "test:lint": "eslint src --fix",
     "test:type": "flow check",
     "test:unit": "beaver test unit --coverage true --env test",
-    "test:int": "cross-env NODE_ENV=test mocha --require babel-register int/run.js",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf cjs dist es coverage",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
