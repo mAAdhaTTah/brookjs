@@ -1,6 +1,4 @@
 /* eslint-env mocha */
-// @flow
-// @jsx h
 import { configure, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect, use } from 'chai';
@@ -198,7 +196,7 @@ describe('loop', () => {
                 b: { text: 'second box' }
             }
         })]);
-        const dom$ = a.thru(loop((child$, id) => (id: any)));
+        const dom$ = a.thru(loop((child$, id) => id));
 
         send(a, [value({
             order: ['a', 'b'],

@@ -1,8 +1,4 @@
 {
-  "plugins": [
-    "syntax-flow",
-    "transform-flow-strip-types"
-  ],
   "env": {
     "test": {
       "presets": [

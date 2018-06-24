@@ -13,9 +13,8 @@
     "observables"
   ],
   "scripts": {
-    "test": "npm run test:lint && npm run test:type && npm run test:unit",
+    "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
-    "test:type": "flow check",
     "test:unit": "beaver test unit --coverage true --env test",
     "dev": "cross-env NODE_ENV=test karma start karma.conf.js",
     "clean": "rimraf cjs dist es coverage",
@@ -31,10 +30,10 @@
   "dependencies": {
     "chai-kefir": "^2.0.4",
     "deep-eql": "^3.0.1",
-    "diffhtml": "^1.0.0-beta.8",
     "lolex": "^2.3.1"
   },
   "peerDependencies": {
+    "chai": "^4.0.0",
     "kefir": "^3.8.0"
   },
   "devDependencies": {
@@ -42,19 +41,14 @@
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
     "babel-loader": "^7.1.2",
-    "babel-plugin-syntax-flow": "^6.18.0",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-preset-brookjs": "^0.11.3",
     "brookjs-cli": "^0.11.16",
     "chai": "^4.1.2",
     "cross-env": "^5.0.5",
-    "deep-eql": "^3.0.1",
     "eslint": "^5.0.0",
     "eslint-config-valtech": "^1.1.0",
     "eslint-import-resolver-node": "^0.3.1",
-    "eslint-plugin-flowtype": "^2.49.3",
     "eslint-plugin-import": "^2.7.0",
-    "flow-bin": "^0.75.0",
     "jsdom": "^11.5.1",
     "jsdom-global": "^3.0.2",
     "kefir": "^3.8.0",
