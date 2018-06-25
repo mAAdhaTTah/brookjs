@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { Consumer, Provider } from './context';

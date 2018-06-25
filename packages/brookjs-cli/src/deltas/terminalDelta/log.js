@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
     NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH,
     WEBPACK_COMPILED } from '../../actions';

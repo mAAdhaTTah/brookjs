@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 

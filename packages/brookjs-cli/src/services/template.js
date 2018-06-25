@@ -1,7 +1,7 @@
 import path from 'path';
 import changeCase from 'change-case';
 import hbs from 'handlebars';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import * as hd from './hd';
 
 const TEMPLATE_DIR = path.join(__dirname, '..', '..', 'templates');

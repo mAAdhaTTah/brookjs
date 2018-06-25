@@ -4,7 +4,7 @@ import { configure, mount } from 'enzyme';
 import { expect, use } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import h from '../h';
 import Aggregator from '../Aggregator';

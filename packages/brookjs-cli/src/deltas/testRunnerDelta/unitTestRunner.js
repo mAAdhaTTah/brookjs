@@ -1,6 +1,6 @@
 import R from 'ramda';
 import shelljs from 'shelljs';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { getMochaCommand } from '../../selectors';
 
 export default R.curry(({  }, actions$, state$) =>

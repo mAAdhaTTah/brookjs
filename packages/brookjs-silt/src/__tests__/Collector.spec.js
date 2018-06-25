@@ -2,7 +2,7 @@
 import Adapter from 'enzyme-adapter-react-16';
 import { configure, mount } from 'enzyme';
 import { expect, use } from 'chai';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import h from '../h';
 import Collector from '../Collector';

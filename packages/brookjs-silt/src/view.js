@@ -1,10 +1,8 @@
-// @flow
-import type { Observable } from 'kefir';
 import R from 'ramda';
 
 const $$initialized = Symbol('init');
 
-export default <V, V2>(callback: V => V2) => (stream$: Observable<V>): Observable<V2> => {
+export default (callback) => stream$ => {
     let previous = $$initialized;
 
     return stream$.withHandler((emitter, event) => {

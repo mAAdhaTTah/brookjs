@@ -1,6 +1,6 @@
 import path from 'path';
 import R from 'ramda';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { fileCreated, scaffoldError } from '../actions';
 import { lAppDir } from '../lenses';
 import { selectRoot } from '../selectors';

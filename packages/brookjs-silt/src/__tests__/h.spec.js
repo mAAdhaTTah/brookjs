@@ -3,7 +3,7 @@ import { configure, render, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import { expect, use } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import h from '../h';

@@ -1,7 +1,6 @@
-// @flow
-import createReactContext, { type Context } from 'create-react-context';
-import Kefir, { type Observable } from 'kefir';
+import createReactContext from 'create-react-context';
+import Kefir from 'kefir';
 
-const { Provider, Consumer }: Context<Observable<*>> = createReactContext(Kefir.never());
+const { Provider, Consumer } = createReactContext(Kefir.pool());
 
 export { Provider, Consumer };

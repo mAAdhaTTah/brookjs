@@ -1,4 +1,4 @@
-import Kefir from '../kefir';
+import Kefir from 'kefir';
 
 /**
  * Accepts a varying number of types, and returns a function that

@@ -4,10 +4,6 @@ language: node_js
 node_js:
   - stable
 
-addons:
-  chrome: stable
-  sauce_connect: true
-
 before_install:
   - yarn global add greenkeeper-lockfile@2
 
@@ -17,7 +13,7 @@ before_script:
   - greenkeeper-lockfile-update
 
 script:
-  - travis_retry yarn test
+  - yarn test
 
 after_script:
   - greenkeeper-lockfile-upload

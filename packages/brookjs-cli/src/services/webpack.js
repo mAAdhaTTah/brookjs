@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import webpack from 'webpack';
 
 export default class WebpackService {

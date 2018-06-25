@@ -2,7 +2,7 @@
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import Kefir from '../../kefir';
+import Kefir from 'kefir';
 import domDelta from '../';
 
 chai.use(sinonChai);

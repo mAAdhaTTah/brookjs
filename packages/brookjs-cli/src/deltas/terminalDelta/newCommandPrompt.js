@@ -1,4 +1,5 @@
-import { Kefir, ofType } from 'brookjs';
+import Kefir from 'kefir';
+import { ofType } from 'brookjs';
 import { INIT_CONFIG_RESPONSE, initConfigResponse, confirmConfig } from '../../actions';
 import { selectConfirmMessage } from '../../selectors';
 

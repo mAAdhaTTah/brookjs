@@ -18,7 +18,6 @@
   "dependencies": {
     "babel-loader": "^7.1.2",
     "brookjs": "^0.11.16",
-    "brookjs-desalinate": "^0.11.16",
     "caporal": "^0.10.0",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
@@ -30,6 +29,7 @@
     "handlebars": "^4.0.10",
     "handlebars-loader": "^1.6.0",
     "inquirer": "^6.0.0",
+    "kefir": "^3.8.0",
     "lerna": "^2.8.0",
     "mocha": "^5.0.5",
     "npm-install-webpack-plugin": "^4.0.5",
@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.0.0",
+    "brookjs-desalinate": "^0.11.16",
     "chai": "^4.1.2",
     "chai-fs": "^2.0.0",
     "chai-string": "^1.4.0",

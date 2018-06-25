@@ -1,5 +1,5 @@
 import R from 'ramda';
-import Kefir from '../kefir';
+import Kefir from 'kefir';
 
 /**
  * Creates a new stream that emits whether the document is loaded.

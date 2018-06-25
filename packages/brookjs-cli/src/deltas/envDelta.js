@@ -1,5 +1,6 @@
 import R from 'ramda';
-import { Kefir, ofType } from 'brookjs';
+import Kefir from 'kefir';
+import { ofType } from 'brookjs';
 import { readEnv, readRcFile, readRcFileError, RUN, READ_ENV } from '../actions';
 import { selectRcPath } from '../selectors';
 

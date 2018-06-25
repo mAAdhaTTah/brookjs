@@ -1,4 +1,4 @@
-import { Kefir } from 'brookjs';
+import Kefir from 'kefir';
 import { createElement } from 'react';
 
 export const VALUE = 'value';
