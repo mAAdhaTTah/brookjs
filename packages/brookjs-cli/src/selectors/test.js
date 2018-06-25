@@ -26,4 +26,5 @@ const getCoverage = state =>
     R.view(lCommandOpts, state).coverage === true ? 'nyc --reporter=text --reporter=lcov' : '';
 
 export const getMochaCommand = state =>
-    `${getEnv(state)} ${getCoverage(state)} mocha ${getWatchCommand(state)} ${getTestReporter(state)} ${getTestUi(state)} ${getTestRequires(state)} --colors ${getTestFilesGlob(state)}`;
+    `${getEnv(state)} ${getCoverage(state)} mocha ${getWatchCommand(state)} ${getTestReporter(state)} ${getTestUi(state)} ${getTestRequires(state)} --colors ${getTestFilesGlob(state)}`
+        .replace(/\s\s/g, ' ');
