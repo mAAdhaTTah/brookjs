@@ -1,7 +1,7 @@
 import Kefir from 'kefir';
 import { SCAFFOLD_ERROR, FILE_CREATED, READ_RC_FILE_ERROR,
     NPM_COMMAND_SPAWNED, NPM_COMMAND_OUTPUT, NPM_COMMAND_FINISH,
-    WEBPACK_COMPILED } from '../../actions';
+    WEBPACK_COMPILED, SHELL_COMMAND } from '../../actions';
 
 const setExitCode = code => Kefir.stream(emitter => {
     process.exitCode = code;
@@ -44,6 +44,8 @@ export default ({ ui }, actions$/*, state$ */) => {
 
     const info$ = actions$.flatMap(({ type, payload }) => {
         switch (type) {
+            case SHELL_COMMAND:
+                return ui.info(`running ${payload.command}`);
             case NPM_COMMAND_SPAWNED:
                 return ui.info(`running ${payload.command}`);
             case NPM_COMMAND_OUTPUT:

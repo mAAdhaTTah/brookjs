@@ -23,7 +23,8 @@ const getTestFilesGlob = state =>
     path.join(R.view(lEnvCwd, state), R.view(lAppDir, state), '**/__tests__/*.spec.js');
 
 const getCoverage = state =>
-    R.view(lCommandOpts, state).coverage === true ? 'nyc --reporter=html --reporter=text' : '';
+    R.view(lCommandOpts, state).coverage === true ? `nyc --reporter=text --reporter=lcov ${getTestRequires(state)}` : '';
 
 export const getMochaCommand = state =>
-    `${getEnv(state)} ${getCoverage(state)} mocha ${getWatchCommand(state)} ${getTestReporter(state)} ${getTestUi(state)} ${getTestRequires(state)} --colors ${getTestFilesGlob(state)}`;
+    `${getEnv(state)} ${getCoverage(state)} mocha ${getWatchCommand(state)} ${getTestReporter(state)} ${getTestUi(state)} ${R.view(lCommandOpts, state).coverage !== true ? getTestRequires(state) : ''} --colors ${getTestFilesGlob(state)}`
+        .replace(/\s\s/g, ' ').trim();

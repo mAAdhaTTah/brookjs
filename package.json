@@ -2,7 +2,7 @@
   "private": true,
   "name": "brookjs",
   "devDependencies": {
-    "lerna": "^2.8.0"
+    "lerna": "^2.11.0"
   },
   "scripts": {
     "test": "lerna run test --concurrency 1",

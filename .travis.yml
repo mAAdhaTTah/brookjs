@@ -1,4 +1,3 @@
-sudo: required
 language: node_js
 
 node_js:
@@ -6,6 +5,9 @@ node_js:
 
 before_install:
   - yarn global add greenkeeper-lockfile@2
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 before_script:
   - npx lerna bootstrap
@@ -16,4 +18,9 @@ script:
   - yarn test
 
 after_script:
+  - ./cc-test-reporter format-coverage $PWD/packages/brookjs/coverage/lcov.info --input-type lcov --output $PWD/coverage/codeclimate.brookjs.json
+  - ./cc-test-reporter format-coverage $PWD/packages/brookjs-cli/coverage/lcov.info --input-type lcov --output $PWD/coverage/codeclimate.brookjs-cli.json
+  - ./cc-test-reporter format-coverage $PWD/packages/brookjs-desalinate/coverage/lcov.info --input-type lcov --output $PWD/coverage/codeclimate.brookjs-desalinate.json
+  - ./cc-test-reporter format-coverage $PWD/packages/brookjs-silt/coverage/lcov.info --input-type lcov --output $PWD/coverage/codeclimate.brookjs-silt.json
+  - ./cc-test-reporter sum-coverage --output - --parts 4 $PWD/coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
   - greenkeeper-lockfile-upload

@@ -89,3 +89,10 @@ export function fileCreated(path) {
         payload: { path }
     };
 }
+
+export const SHELL_COMMAND = 'SHELL_COMMAND';
+
+export const shellCommand = command => ({
+    type: SHELL_COMMAND,
+    payload: { command }
+});
