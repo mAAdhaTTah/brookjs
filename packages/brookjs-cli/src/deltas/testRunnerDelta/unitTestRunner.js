@@ -10,9 +10,7 @@ export default R.curry(({  }, actions$, state$) =>
 
         emitter.value(shellCommand(command));
 
-        shelljs.exec(command, {
-            shell: '/usr/local/bin/bash'
-        }, code => {
+        shelljs.exec(command, code => {
             process.exitCode = code;
             emitter.end();
         });
