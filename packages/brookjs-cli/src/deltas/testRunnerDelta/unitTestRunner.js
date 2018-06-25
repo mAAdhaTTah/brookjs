@@ -2,10 +2,15 @@ import R from 'ramda';
 import shelljs from 'shelljs';
 import Kefir from 'kefir';
 import { getMochaCommand } from '../../selectors';
+import { shellCommand } from '../../actions';
 
 export default R.curry(({  }, actions$, state$) =>
     state$.take(1).flatMap(state => Kefir.stream(emitter => {
-        shelljs.exec(getMochaCommand(state), {
+        const command = getMochaCommand(state);
+
+        emitter.value(shellCommand(command));
+
+        shelljs.exec(command, {
             shell: '/usr/local/bin/bash'
         }, code => {
             process.exitCode = code;
