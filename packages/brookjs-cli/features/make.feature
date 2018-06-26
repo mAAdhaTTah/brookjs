@@ -1,3 +1,4 @@
+@make
 Feature: make command
   In order to build a project
   As a developer
@@ -6,7 +7,8 @@ Feature: make command
   Scenario Outline:
     Given I have project with "<type>"
     When I run beaver with "<command>"
-    Then I see an "<instance>" added to barrel for "<type>"
+    Then I wait for the command to finish with code 0
+    And I see an "<instance>" added to barrel for "<type>"
 
     Examples:
       | type       | command                   | instance    |
@@ -20,7 +22,8 @@ Feature: make command
   Scenario Outline:
     Given I have project with "<type>"
     When I run beaver with "<command>"
-    Then I see "<opt>" exported from barrel for "<type>"
+    Then I wait for the command to finish with code 0
+    And I see "<opt>" exported from barrel for "<type>"
     And I see "<file>" with "<instance>" in "<type>"
 
     Examples:
@@ -36,7 +39,8 @@ Feature: make command
     Given I have project with "<type>"
     And I have a file called "<file>" exported from "<type>"
     When I run beaver with "<command>"
-    Then I see "<opt>" exported from barrel for "<type>"
+    Then I wait for the command to finish with code 0
+    And I see "<opt>" exported from barrel for "<type>"
     And I see "<file>" with "<instance>" in "<type>"
 
     Examples:

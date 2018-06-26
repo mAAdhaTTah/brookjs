@@ -2,9 +2,14 @@ const path = require('path');
 const os = require('os');
 const { spawn } = require('child_process');
 const fs = require('fs-extra');
-const rimraf = require('rimraf');
 const { setWorldConstructor } = require('cucumber');
 const { constant } = require('change-case');
+
+const keypresses = {
+    ENTER: '\x0D',
+    DOWN: '\x1B\x5B\x42',
+    UP: '\x1B\x5B\x41'
+};
 
 class CliWorld {
     constructor ({ attach, parameters }) {
@@ -67,16 +72,14 @@ class CliWorld {
     }
 
     async respondTo(questions) {
-        for (const question of questions) {
-            await this.outputMatches(question.text);
-            this.spawned.stdin.write(question.response);
+        for (const { text, response } of questions) {
+            await this.outputMatches(text);
+            this.spawned.stdin.write(
+                response
+                    .replace(/KEY:(.*)/, val => keypresses[val.split(':')[1]])
+                    + keypresses.ENTER
+            );
         }
-    }
-
-    removeNodeModules(app) {
-        return new Promise(resolve => {
-            rimraf(path.join(app, 'node_modules'), resolve);
-        });
     }
 
     outputMatches(matches) {
@@ -105,6 +108,22 @@ class CliWorld {
 
             loop();
         });
+    }
+
+    async *filesToFixtures(files) {
+        for (const { filename, fixture } of files) {
+            let content = '';
+            const target = path.join(__dirname, '..', '.fixtures', fixture);
+
+            try {
+                content = (await fs.readFile(target)).toString();
+            } catch (e) {
+                // create new empty fixture
+                await fs.writeFile(target, content);
+            }
+
+            yield { filename, content };
+        }
     }
 
     getInstanceForType(name, barrel) {
