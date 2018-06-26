@@ -25,7 +25,7 @@ When('I run beaver with {string}', function(command) {
     this.run(command);
 });
 
-When('I respond to the prompts with:', async function (questions) {
+When('I respond to the prompts with:', { timeout: -1 }, async function (questions) {
     await this.respondTo(questions.hashes());
 });
 
