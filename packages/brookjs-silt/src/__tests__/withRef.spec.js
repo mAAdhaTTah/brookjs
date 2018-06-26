@@ -7,7 +7,7 @@ import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import h from '../h';
-import withRef$ from '../withRef$';
+import withRef$ from '../withRef';
 import { Provider } from '../context';
 
 const { plugin, value } = chaiPlugin({ Kefir });
