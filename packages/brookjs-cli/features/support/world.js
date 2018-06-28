@@ -35,6 +35,13 @@ class CliWorld {
         await Promise.all(create.map(file => this.outputFile(file)));
     }
 
+    async createProject() {
+        this.run('new test-app --yes');
+        this.cwd += '/test-app';
+
+        await this.ended();
+    }
+
     outputFile (file) {
         return fs.outputFile(path.join(this.cwd, file.path), file.contents);
     }
@@ -52,6 +59,13 @@ class CliWorld {
     }
 
     run(command) {
+        this.output = {
+            stdout: '',
+            stderr: '',
+            closed: false,
+            code: null
+        };
+
         this.spawned = spawn(this.bin, command.split(' '), { cwd: this.cwd });
         this.spawned.stdin.setEncoding('utf-8');
 

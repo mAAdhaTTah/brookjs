@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs-extra');
 const { Given, When, Then } = require('cucumber');
 const { expect, use } = require('chai');
 
@@ -24,6 +25,10 @@ Given('I have a file called {string} exported from {string}', async function (fi
     ]);
 });
 
+Given('I have a project', { timeout: -1 }, async function () {
+    await this.createProject();
+});
+
 /**
  * When I Do
  */
@@ -38,7 +43,8 @@ When('I respond to the prompts with:', { timeout: -1 }, async function (question
 When('I wait for the command to finish with code {int}', { timeout: -1 }, async function(code) {
     await this.ended();
 
-    expect(this.output.code).to.equal(code);
+    expect(this.output.code).to.equal(code, `Error: exited with code ${this.output.code}
+Message: ${this.output.stderr || this.output.stdout}`);
 });
 
 /**
@@ -64,4 +70,11 @@ Then('I see {string} exported from barrel for {string}', async function (name, b
 
 Then('I see {string} with {string} in {string}', async function (file, name, barrel) {
     expect(await this.getFile(file, barrel)).to.have.string(this.getInstanceForType(name, barrel));
+});
+
+Then('I see {string} with a file size of {int} bytes', function (bundle, size) {
+    const file = path.join(this.cwd, bundle);
+    expect(file).to.be.a.file(this.output.stdout);
+
+    expect(fs.statSync(file).size).to.equal(size);
 });
