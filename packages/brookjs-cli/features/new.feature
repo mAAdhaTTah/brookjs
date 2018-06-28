@@ -15,7 +15,7 @@ Feature: new command
       | Choose a license. (Use arrow keys)            | KEY:DOWN           |
       | Confirm your app configuration:               | y                  |
     And I wait for the command to finish with code 0
-    Then I have a project dir called "test-app" with:
+    Then I see a project dir called "test-app" with:
       | filename                   | fixture              |
       | package.json               | package.json         |
       | .babelrc                   | .babelrc             |

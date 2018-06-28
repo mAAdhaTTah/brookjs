@@ -5,6 +5,9 @@ const { expect, use } = require('chai');
 use(require('chai-string'));
 use(require('chai-fs'));
 
+/**
+ * Given I Have
+ */
 Given('I have project with {string}', async function (type) {
     await this.createProjectWith([
         {
@@ -21,6 +24,9 @@ Given('I have a file called {string} exported from {string}', async function (fi
     ]);
 });
 
+/**
+ * When I Do
+ */
 When('I run beaver with {string}', function(command) {
     this.run(command);
 });
@@ -35,7 +41,10 @@ When('I wait for the command to finish with code {int}', { timeout: -1 }, async 
     expect(this.output.code).to.equal(code);
 });
 
-Then('I have a project dir called {string} with:', async function(project, files) {
+/**
+ * Then I see
+ */
+Then('I see a project dir called {string} with:', async function(project, files) {
     expect(path.join(this.cwd, project)).to.be.a.directory();
 
     for await (const { filename, content } of this.filesToFixtures(files.hashes())) {
