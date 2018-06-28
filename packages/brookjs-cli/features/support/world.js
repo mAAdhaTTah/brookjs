@@ -52,9 +52,7 @@ class CliWorld {
     }
 
     run(command) {
-        const args = [this.bin, ...command.split(' ')];
-
-        this.spawned = spawn(args[0], args.slice(1), { cwd: this.cwd });
+        this.spawned = spawn(this.bin, command.split(' '), { cwd: this.cwd });
         this.spawned.stdin.setEncoding('utf-8');
 
         this.spawned.stdout.on('data', data => {
