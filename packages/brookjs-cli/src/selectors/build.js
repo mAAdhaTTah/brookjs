@@ -86,18 +86,18 @@ export const selectWebpackConfig = state => state.webpack.modifier({
         rules: [
             {
                 test: /\.js$/,
-                loader: 'eslint-loader',
+                loader: require.resolve('eslint-loader'),
                 include: selectAppPath(state),
                 enforce: 'pre'
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
+                loader: require.resolve('babel-loader'),
                 include: selectAppPath(state),
             },
             {
                 test: /\.hbs/,
-                loader: 'handlebars-loader',
+                loader: require.resolve('handlebars-loader'),
                 query: {
                     helperDirs: [`${selectAppPath(state)}/helpers`],
                     partialDirs: [selectAppPath(state)],
@@ -108,10 +108,6 @@ export const selectWebpackConfig = state => state.webpack.modifier({
         ]
     },
     resolve: {
-        alias: {
-            redux: 'redux/es',
-            brookjs: 'brookjs/es'
-        },
         mainFields: ['module', 'browser', 'main']
     },
     plugins: [

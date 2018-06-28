@@ -4,6 +4,9 @@
   "description": "Testing tools for brookjs components.",
   "main": "cjs/index.js",
   "module": "es/index.js",
+  "browser": "dist/brookjs-desaliante.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
   "keywords": [
     "kefir",
     "browser",
@@ -21,8 +24,8 @@
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "build:commonjs": "cross-env NODE_ENV=commonjs babel src --ignore __tests__ --out-dir cjs",
     "build:es": "cross-env NODE_ENV=es babel src --ignore __tests__ --out-dir es",
-    "build:umd": "cross-env NODE_ENV=es webpack src/index.js dist/brook.js",
-    "build:umd:min": "cross-env NODE_ENV=es webpack src/index.js dist/brook.min.js",
+    "build:umd": "cross-env NODE_ENV=es webpack src/index.js dist/brookjs-desalinate.js",
+    "build:umd:min": "cross-env NODE_ENV=es webpack src/index.js dist/brookjs-desalinate.min.js",
     "prepublishOnly": "npm run clean && npm run build && npm test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
