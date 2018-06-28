@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit && npm run test:feature",
     "test:lint": "eslint ./src --fix",
-    "test:unit": "beaver test unit --coverage true",
+    "test:unit": "beaver test unit --coverage",
     "test:feature": "cucumber-js",
     "prepublishOnly": "npm test"
   },

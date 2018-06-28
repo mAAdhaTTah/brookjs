@@ -15,7 +15,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
-    "test:unit": "beaver test unit --coverage true --env test",
+    "test:unit": "beaver test unit --coverage --env test",
     "dev": "cross-env NODE_ENV=test karma start karma.conf.js",
     "clean": "rimraf cjs dist es coverage",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
