@@ -53,7 +53,7 @@
     "jsdom-global": "^3.0.2",
     "kefir": "^3.8.0",
     "rimraf": "^2.6.2",
-    "webpack": "^3.6.0",
+    "webpack": "^4.13.0",
     "webpack-merge": "^4.1.0"
   }
 }
