@@ -19,6 +19,7 @@ Feature: new command
       | package.json               | package.json         |
       | .babelrc                   | .babelrc             |
       | .beaverrc.js               | .beaverrc.js         |
+      | .eslintrc.js               | .eslintrc.js         |
       | client/app.js              | app.js               |
       | client/dom.js              | dom.js               |
       | client/view.hbs            | view.hbs             |
@@ -38,6 +39,7 @@ Feature: new command
       | package.json            | package__default.json |
       | .babelrc                | .babelrc              |
       | .beaverrc.js            | .beaverrc__default.js |
+      | .eslintrc.js            | .eslintrc.js          |
       | src/app.js              | app.js                |
       | src/dom.js              | dom.js                |
       | src/view.hbs            | view.hbs              |

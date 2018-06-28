@@ -36,6 +36,10 @@ export default R.curry(({ npm }, actions$, state$) => {
             {
                 pkg: 'babel-preset-brookjs',
                 dev: true
+            },
+            {
+                pkg: 'eslint-config-valtech',
+                dev: true
             }
         ]));
 

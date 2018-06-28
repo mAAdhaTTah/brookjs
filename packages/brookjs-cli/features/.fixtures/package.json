@@ -11,7 +11,8 @@
     "license": "ISC",
     "devDependencies": {
         "babel-preset-brookjs": "^0.11.3",
-        "brookjs-cli": "^0.11.16"
+        "brookjs-cli": "^0.11.16",
+        "eslint-config-valtech": "^1.2.0"
     },
     "dependencies": {
         "babel-polyfill": "^6.26.0",
