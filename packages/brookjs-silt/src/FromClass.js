@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React from 'react';
 import { isObs, forEachInChildrenArray, render, CHILDREN, STYLE, VALUE, ERROR } from './helpers';
 
 const emptyArr = [];
@@ -86,7 +86,7 @@ const onAny1 = (handlers, obs) => {
     obs.onAny(handlers);
 };
 
-class LiftedComponent extends Component {
+class LiftedComponent extends React.Component {
     constructor (props, context) {
         super(props, context);
 

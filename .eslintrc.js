@@ -34,11 +34,13 @@ module.exports = {
         'import/default': 2,
         'import/export': 2,
         'import/no-absolute-path': 2,
-        'import/no-internal-modules': 1,
-        'import/no-extraneous-dependencies': 2,
+        /* 'import/no-extraneous-dependencies': [2, {
+            packageDir: [__dirname, path.join(__dirname, 'packages', 'brookjs')]
+        }], */
         'import/first': 2,
         'import/newline-after-import': 2,
 
+        'import/no-internal-modules': 1,
         'import/prefer-default-export': 1,
         'import/no-named-as-default': 1,
         'import/no-named-as-default-member': 1,

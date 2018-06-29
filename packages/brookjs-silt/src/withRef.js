@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React from 'react';
 import { createRef, forwardRef, getRef } from 'create-react-ref';
 import Kefir from 'kefir';
 import h from './h';
@@ -10,7 +10,7 @@ const getDisplayName = Component =>
 export default function withRef$(c, callback) {
     const Reffed = forwardRef(c);
 
-    class WithRef extends Component {
+    class WithRef extends React.Component {
         constructor(props, context) {
             super(props, context);
             this.ref$ = new Kefir.Property();

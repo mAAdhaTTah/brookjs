@@ -2,11 +2,9 @@
   "name": "brookjs-desalinate",
   "version": "0.11.16",
   "description": "Testing tools for brookjs components.",
-  "main": "cjs/index.js",
-  "module": "es/index.js",
-  "browser": "dist/brookjs-desaliante.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "main": "dist/brookjs-desalinate.cjs.js",
+  "browser": "dist/brookjs-desalinate.umd.js",
+  "module": "dist/brookjs-desalinate.esm.js",
   "keywords": [
     "kefir",
     "browser",
@@ -19,13 +17,9 @@
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
     "test:unit": "beaver test unit --coverage --env test",
-    "dev": "cross-env NODE_ENV=test karma start karma.conf.js",
-    "clean": "rimraf cjs dist es coverage",
-    "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "build:commonjs": "cross-env NODE_ENV=commonjs babel src --ignore __tests__ --out-dir cjs",
-    "build:es": "cross-env NODE_ENV=es babel src --ignore __tests__ --out-dir es",
-    "build:umd": "cross-env NODE_ENV=es webpack src/index.js dist/brookjs-desalinate.js",
-    "build:umd:min": "cross-env NODE_ENV=es webpack src/index.js dist/brookjs-desalinate.min.js",
+    "dev": "beaver dev tdd --env test",
+    "clean": "rimraf dist coverage",
+    "build": "rollup -c ../../rollup.config.js",
     "prepublishOnly": "npm run clean && npm run build && npm test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
@@ -38,25 +32,5 @@
   "peerDependencies": {
     "chai": "^4.0.0",
     "kefir": "^3.8.0"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-brookjs": "^0.11.3",
-    "brookjs-cli": "^0.11.16",
-    "chai": "^4.1.2",
-    "cross-env": "^5.0.5",
-    "eslint": "^5.0.0",
-    "eslint-config-valtech": "^1.1.0",
-    "eslint-import-resolver-node": "^0.3.1",
-    "eslint-plugin-import": "^2.7.0",
-    "jsdom": "^11.5.1",
-    "jsdom-global": "^3.0.2",
-    "kefir": "^3.8.0",
-    "rimraf": "^2.6.2",
-    "webpack": "^3.6.0",
-    "webpack-merge": "^4.1.0"
   }
 }

@@ -11,7 +11,7 @@ before_install:
 
 before_script:
   - npx lerna bootstrap
-  - npx lerna run build
+  - yarn build
   - greenkeeper-lockfile-update
 
 script:

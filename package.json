@@ -1,10 +1,43 @@
 {
   "private": true,
-  "name": "brookjs",
   "devDependencies": {
-    "lerna": "^2.11.0"
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^8.0.0",
+    "babel-helpers": "^6.24.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-register": "^6.9.0",
+    "chai": "^4.1.2",
+    "chai-dom": "^1.4.0",
+    "chai-fs": "^2.0.0",
+    "chai-kefir": "^2.0.2",
+    "chai-string": "^1.4.0",
+    "cucumber": "^4.0.0",
+    "dirty-chai": "^2.0.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "eslint": "^5.0.0",
+    "eslint-config-valtech": "^1.0.0",
+    "eslint-import-resolver-node": "^0.3.1",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-react": "^7.10.0",
+    "jsdom": "^11.3.0",
+    "jsdom-global": "^3.0.2",
+    "kefir": "^3.8.0",
+    "lerna": "^2.11.0",
+    "raf": "^3.4.0",
+    "react-dom": "^16.2.0",
+    "rimraf": "^2.5.4",
+    "rollup": "^0.62.0",
+    "rollup-plugin-babel": "^3.0.5",
+    "rollup-plugin-commonjs": "^9.1.3",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "sinon": "^6.0.0",
+    "sinon-chai": "^3.1.0"
   },
   "scripts": {
+    "build": "lerna run build  --concurrency 1",
     "test": "lerna run test --concurrency 1",
     "pub": "lerna publish --concurrency 1 --npm-client=npm"
   },
@@ -12,6 +45,7 @@
     "packages/*"
   ],
   "resolutions": {
-    "react": "16.2.0"
+    "react": "16.2.0",
+    "babel-plugin-ramda": "1.4.3"
   }
 }

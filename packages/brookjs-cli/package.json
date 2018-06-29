@@ -11,6 +11,7 @@
     "test:lint": "eslint ./src --fix",
     "test:unit": "beaver test unit --coverage",
     "test:feature": "cucumber-js",
+    "dev": "beaver dev tdd --env test",
     "prepublishOnly": "npm test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
@@ -39,22 +40,6 @@
     "shelljs": "^0.8.0",
     "uglifyjs-webpack-plugin": "^1.1.2",
     "webpack": "^3.10.0"
-  },
-  "devDependencies": {
-    "babel-eslint": "^8.0.0",
-    "brookjs-desalinate": "^0.11.16",
-    "chai": "^4.1.2",
-    "chai-fs": "^2.0.0",
-    "chai-string": "^1.4.0",
-    "chain": "^0.1.3",
-    "cucumber": "^4.0.0",
-    "dirty-chai": "^2.0.1",
-    "eslint": "^5.0.0",
-    "eslint-config-valtech": "^1.1.0",
-    "eslint-import-resolver-node": "^0.3.1",
-    "eslint-plugin-flowtype": "^2.49.3",
-    "eslint-plugin-import": "^2.7.0",
-    "rimraf": "^2.6.2"
   },
   "esm": {
     "mode": "auto",

@@ -1,4 +1,4 @@
-import { createElement } from 'react';
+import React from 'react';
 import FromClass from './FromClass';
 import { isObs, isString, CHILDREN, STYLE, EMIT_PROP,
     EMBED_PROP, REF, DD_REF, TYPE } from './helpers';
@@ -75,7 +75,7 @@ const h = (type, props, ...children) => {
             props = filterProps(type, props);
         }
     }
-    return createElement(type, props, ...children);
+    return React.createElement(type, props, ...children);
 };
 
 export default h;
