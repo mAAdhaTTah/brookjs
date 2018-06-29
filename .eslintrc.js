@@ -18,15 +18,12 @@ module.exports = {
     },
     plugins: [
         'import',
-        'flowtype',
         'react',
     ],
     extends: 'valtech',
     rules: {
         eqeqeq: [2, 'smart'],
         'wrap-iife': [2, 'inside'],
-        'flowtype/define-flow-type': 1,
-        'flowtype/use-flow-type': 1,
 
         'import/no-unresolved': 2,
         'import/named': 2,
@@ -63,7 +60,7 @@ module.exports = {
                 ]
             }
         },
-        "react": {
+        'react': {
             pragma: 'h',
         }
     }
