@@ -20,10 +20,12 @@
     "babel-loader": "^7.1.2",
     "brookjs": "^0.11.16",
     "caporal": "^0.10.0",
+    "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
     "cross-env": "^5.1.1",
-    "eslint-loader": "^1.9.0",
+    "eslint": "^5.0.1",
+    "eslint-loader": "^2.0.0",
     "esm": "^3.0.8",
     "fs-extra": "^6.0.0",
     "glob": "^7.1.2",
@@ -38,8 +40,7 @@
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
     "shelljs": "^0.8.0",
-    "uglifyjs-webpack-plugin": "^1.1.2",
-    "webpack": "^3.10.0"
+    "webpack": "^4.0.0"
   },
   "esm": {
     "mode": "auto",

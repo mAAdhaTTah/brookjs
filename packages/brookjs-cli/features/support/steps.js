@@ -72,9 +72,9 @@ Then('I see {string} with {string} in {string}', async function (file, name, bar
     expect(await this.getFile(file, barrel)).to.have.string(this.getInstanceForType(name, barrel));
 });
 
-Then('I see {string} with a file size of {int} bytes', function (bundle, size) {
+Then('I see {string} with a file size between {int} and {int} bytes', function (bundle, lower, upper) {
     const file = path.join(this.cwd, bundle);
     expect(file).to.be.a.file(this.output.stdout);
 
-    expect(fs.statSync(file).size).to.equal(size);
+    expect(fs.statSync(file).size).to.be.above(lower).and.below(upper);
 });
