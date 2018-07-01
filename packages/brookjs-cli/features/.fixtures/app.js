@@ -1,4 +1,4 @@
-import 'babel-polyfill'
+import 'babel-polyfill';
 import { domDelta, observeDelta } from 'brookjs';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';

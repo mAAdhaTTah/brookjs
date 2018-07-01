@@ -1,18 +1,11 @@
 {
+  "presets": [
+    ["brookjs", { "pragma": "h" }]
+  ],
   "env": {
     "test": {
-      "presets": [
-        ["brookjs", { "loose": false, "modules": "commonjs" }]
-      ]
-    },
-    "commonjs": {
-      "presets": [
-        ["brookjs", { "loose": false, "modules": "commonjs" }]
-      ]
-    },
-    "es": {
-      "presets": [
-        ["brookjs", { "loose": false, "modules": false }]
+      "plugins": [
+        "transform-es2015-modules-commonjs"
       ]
     }
   }

@@ -9,7 +9,9 @@ program
 
 program
     .command('new', 'Create a new brookjs application.')
-    .action(main('new'));
+    .action(main('new'))
+    .argument('<name>', 'Development style.')
+    .option('-y, --yes', 'Answer "yes" to all the question, using the defaults.', program.BOOLEAN);
 
 program
     .command('make', 'Create a new file of a given type for brookjs application.')
@@ -28,7 +30,7 @@ program
     .command('test', 'Run the brookjs application tests.')
     .action(main('test'))
     .argument('<type>', 'Tests to run.', ['unit'])
-    .option('--coverage <enable>', 'Whether to generate test coverage (true/false).', program.BOOLEAN)
+    .option('--coverage', 'Enable test coverage.', program.BOOLEAN)
     .option('--env <env>', 'Value to set for the NODE_ENV for the test run.');
 
 program

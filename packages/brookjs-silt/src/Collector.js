@@ -1,11 +1,11 @@
 import Kefir from 'kefir';
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import React from 'react';
 import { Consumer, Provider } from './context';
 import h from './h';
 import { isString, isObs, EMIT_PROP } from './helpers';
 
-export default class Collector extends Component {
+export default class Collector extends React.Component {
     constructor (props) {
         super(props);
 

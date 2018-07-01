@@ -1,5 +1,5 @@
 import Kefir from 'kefir';
-import { createElement } from 'react';
+import React from 'react';
 
 export const VALUE = 'value';
 export const ERROR = 'error';
@@ -112,8 +112,8 @@ export const render = (self, values) => {
     }
 
     return newChildren instanceof Array
-        ? createElement.apply(null, [type, newProps, ...newChildren])
+        ? React.createElement.apply(null, [type, newProps, ...newChildren])
         : null !== newChildren
-            ? createElement(type, newProps, newChildren)
-            : createElement(type, newProps);
+            ? React.createElement(type, newProps, newChildren)
+            : React.createElement(type, newProps);
 };

@@ -1,8 +1,8 @@
+// @todo: readd NpmInstallPlugin
+// @todo: clean up this file (extra functions, commented out code, etc.)
 import path from 'path';
 import R from 'ramda';
-import webpack from 'webpack';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
-import NpmInstallPlugin from 'npm-install-webpack-plugin';
+import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import {
     lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvOpt,
     lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
@@ -21,27 +21,18 @@ export const isBuildCommand = R.pipe(
 );
 
 const selectDefaultPlugins = state => [
-    new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(R.view(lCommandEnvOpt, state))
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    new CaseSensitivePathsPlugin({ debug: R.view(lCommandEnvOpt, state) === 'development' })
 ];
 
 const selectEnvPlugins = state => {
     switch (R.view(lCommandEnvOpt, state)) {
         case 'development':
             return [
-                new NpmInstallPlugin()
+                // new NpmInstallPlugin()
             ];
         case 'production':
             return [
-                new UglifyJsPlugin({
-                    parallel: true,
-                    cache: true,
-                    uglifyOptions: {
-                        ie8: false,
-                    },
-                })
+
             ];
         default:
             return [];
@@ -82,22 +73,26 @@ const selectOutput = state => ({
 export const selectWebpackConfig = state => state.webpack.modifier({
     entry: selectWebpackEntry(state),
     output: selectOutput(state),
+    mode: R.view(lCommandEnvOpt, state),
     module: {
         rules: [
             {
                 test: /\.js$/,
-                loader: 'eslint-loader',
+                loader: require.resolve('eslint-loader'),
                 include: selectAppPath(state),
-                enforce: 'pre'
+                enforce: 'pre',
+                options: {
+                    eslintPath: require.resolve('eslint'),
+                }
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
+                loader: require.resolve('babel-loader'),
                 include: selectAppPath(state),
             },
             {
                 test: /\.hbs/,
-                loader: 'handlebars-loader',
+                loader: require.resolve('handlebars-loader'),
                 query: {
                     helperDirs: [`${selectAppPath(state)}/helpers`],
                     partialDirs: [selectAppPath(state)],
@@ -108,11 +103,7 @@ export const selectWebpackConfig = state => state.webpack.modifier({
         ]
     },
     resolve: {
-        alias: {
-            redux: 'redux/es',
-            brookjs: 'brookjs/es'
-        },
-        mainFields: ['module', 'browser', 'main']
+        mainFields: ['module', 'main']
     },
     plugins: [
         ...selectDefaultPlugins(state),

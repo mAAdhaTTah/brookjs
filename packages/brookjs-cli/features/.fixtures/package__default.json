@@ -1,14 +1,14 @@
 {
     "name": "test-app",
-    "version": "1.0.0",
-    "description": "A test application",
-    "main": "client/app.js",
+    "version": "0.0.0",
+    "description": "",
+    "main": "src/app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
     "author": "",
-    "license": "ISC",
+    "license": "MIT",
     "devDependencies": {
         "babel-preset-brookjs": "^0.11.3",
         "brookjs-cli": "^0.11.16",
