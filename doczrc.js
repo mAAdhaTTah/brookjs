@@ -1,4 +1,4 @@
-import pkg from './package.json';
+import pkg from './packages/brookjs/package.json';
 
 export default {
     title: pkg.name,
