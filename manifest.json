@@ -1,8 +1,8 @@
 {
   "vendors.js": "/brookjs/static/js/vendors.39cf46cb.js",
-  "app.js": "/brookjs/static/js/app.d6679fed.js",
+  "app.js": "/brookjs/static/js/app.5430c37f.js",
   "01-index.js": "/brookjs/static/js/01-index.f9b082c6.js",
-  "02-changelog.js": "/brookjs/static/js/02-changelog.4a9cfff3.js",
+  "02-changelog.js": "/brookjs/static/js/02-changelog.42ca1c2f.js",
   "03-quickstart.js": "/brookjs/static/js/03-quickstart.f011e83c.js",
   "advanced-concepts-01-reactive-refs-with-withref.js": "/brookjs/static/js/advanced-concepts-01-reactive-refs-with-withref.f9969cb7.js",
   "advanced-concepts-02-using-third-party-components.js": "/brookjs/static/js/advanced-concepts-02-using-third-party-components.985394af.js",
@@ -27,6 +27,6 @@
   "walkthrough-08-using-the-cli.js": "/brookjs/static/js/walkthrough-08-using-the-cli.d9e59542.js",
   "walkthrough-09-testing-unit-and-integration.js": "/brookjs/static/js/walkthrough-09-testing-unit-and-integration.936e1c37.js",
   "walkthrough-10-static-typing-with-flow.js": "/brookjs/static/js/walkthrough-10-static-typing-with-flow.c416bc81.js",
-  "runtime~app.js": "/brookjs/static/js/runtime~app.a33c3423826c7495b30b.js",
+  "runtime~app.js": "/brookjs/static/js/runtime~app.20282876c597d335c10d.js",
   "index.html": "/brookjs/index.html"
 }
