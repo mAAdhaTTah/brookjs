@@ -27,7 +27,7 @@
     "eslint": "^5.0.1",
     "eslint-loader": "^2.0.0",
     "esm": "^3.0.8",
-    "fs-extra": "^6.0.0",
+    "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
     "handlebars-loader": "^1.6.0",
