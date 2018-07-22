@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{"./docs/advanced-concepts/02-using-third-party-components.mdx":function(n,e,o){"use strict";o.r(e);var s=o("./node_modules/react/index.js"),t=o.n(s),d=o("./node_modules/@mdx-js/tag/dist/index.js");e.default=function(n){var e=n.components;return t.a.createElement(d.MDXTag,{name:"wrapper",components:e})}}}]);

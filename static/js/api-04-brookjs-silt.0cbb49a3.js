@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[12],{"./docs/api/04-brookjs-silt.mdx":function(e,n,o){"use strict";o.r(n);var s=o("./node_modules/react/index.js"),t=o.n(s),a=o("./node_modules/@mdx-js/tag/dist/index.js");n.default=function(e){var n=e.components;return t.a.createElement(a.MDXTag,{name:"wrapper",components:n})}}}]);

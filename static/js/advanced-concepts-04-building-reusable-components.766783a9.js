@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{"./docs/advanced-concepts/04-building-reusable-components.mdx":function(e,n,o){"use strict";o.r(n);var s=o("./node_modules/react/index.js"),d=o.n(s),a=o("./node_modules/@mdx-js/tag/dist/index.js");n.default=function(e){var n=e.components;return d.a.createElement(a.MDXTag,{name:"wrapper",components:n})}}}]);
