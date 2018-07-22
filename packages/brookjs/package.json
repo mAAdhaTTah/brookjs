@@ -1,7 +1,7 @@
 {
   "name": "brookjs",
   "version": "0.11.16",
-  "description": "A framework for building streaming applications.",
+  "description": "reactive programming tools for well-structured, testable applications.",
   "main": "dist/brookjs.cjs.js",
   "browser": "dist/brookjs.umd.js",
   "module": "dist/brookjs.esm.js",
