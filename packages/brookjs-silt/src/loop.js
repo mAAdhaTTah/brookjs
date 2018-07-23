@@ -10,9 +10,6 @@ const getChildStream = (stream$, id) => {
     }
 
     if (childs[id]) {
-        // The Source's value maps to the value in
-        // the generated Observable, through the Map,
-        // which Flow can't trace through.
         return childs[id];
     }
 
@@ -28,7 +25,7 @@ export default function loop(mapper, callback) {
         mapper = id;
     }
 
-    return (stream$) => {
+    return stream$ => {
         const src$ = stream$.map(mapper);
 
         return src$.skipDuplicates(orderMatches)
