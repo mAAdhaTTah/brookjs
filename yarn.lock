@@ -965,15 +965,15 @@
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/@emotion/utils/-/utils-0.7.3.tgz#4240c5eee8af86843452af7497ac2808be04a77d"
 
-"@mdx-js/loader@^0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@mdx-js/loader/-/loader-0.14.0.tgz#09dd1dd10b95f5b31081164194783b5e0a7e387f"
+"@mdx-js/loader@^0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@mdx-js/loader/-/loader-0.14.1.tgz#975e69cabda1f8f389db28fc7cf533592b364d89"
   dependencies:
     "@mdx-js/tag" "^0.14.0"
 
-"@mdx-js/mdx@^0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@mdx-js/mdx/-/mdx-0.14.0.tgz#899805ce4becb2bab653bc759e18d25bc144430f"
+"@mdx-js/mdx@^0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@mdx-js/mdx/-/mdx-0.14.1.tgz#11d627d4317a2385e3838a9ed4db2f180031017a"
   dependencies:
     "@mdx-js/mdxast" "^0.10.0"
     mdast-util-to-hast "^3.0.0"
@@ -988,7 +988,7 @@
   dependencies:
     unist-util-visit "^1.3.0"
 
-"@mdx-js/tag@0.13.1-1", "@mdx-js/tag@^0.14.0":
+"@mdx-js/tag@0.13.1-1", "@mdx-js/tag@^0.14.0", "@mdx-js/tag@^0.14.1":
   version "0.13.1-1"
   resolved "https://registry.yarnpkg.com/@mdx-js/tag/-/tag-0.13.1-1.tgz#4c2fd9c880aed174d4e7d59bbc85e5f1ed22022d"
   dependencies:
@@ -1599,6 +1599,14 @@ array-map@~0.0.0:
 array-reduce@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/array-reduce/-/array-reduce-0.0.0.tgz#173899d3ffd1c7d9383e4479525dbe278cab5f2b"
+
+array-sort@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/array-sort/-/array-sort-1.0.0.tgz#e4c05356453f56f53512a7d1d6123f2c54c0a88a"
+  dependencies:
+    default-compare "^1.0.0"
+    get-value "^2.0.6"
+    kind-of "^5.0.2"
 
 array-union@^1.0.1:
   version "1.0.2"
@@ -2686,6 +2694,10 @@ caniuse-lite@^1.0.30000844:
   version "1.0.30000856"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000856.tgz#ecc16978135a6f219b138991eb62009d25ee8daa"
 
+capitalize@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/capitalize/-/capitalize-1.0.0.tgz#dc802c580aee101929020d2ca14b4ca8a0ae44be"
+
 caporal@^0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/caporal/-/caporal-0.10.0.tgz#2ddfbe5ede26d2bd356f042f564ff57803cdabc9"
@@ -3040,6 +3052,12 @@ combined-stream@1.0.6, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
+comma-separated-tokens@^1.0.0:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/comma-separated-tokens/-/comma-separated-tokens-1.0.5.tgz#b13793131d9ea2d2431cf5b507ddec258f0ce0db"
+  dependencies:
+    trim "0.0.1"
+
 command-join@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/command-join/-/command-join-2.0.0.tgz#52e8b984f4872d952ff1bdc8b98397d27c7144cf"
@@ -3330,6 +3348,10 @@ copy-concurrently@^1.0.0:
 copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
+
+copy-text-to-clipboard@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/copy-text-to-clipboard/-/copy-text-to-clipboard-1.0.4.tgz#2286ff6c53495962c5318d34746d256939069c49"
 
 core-js@^1.0.0:
   version "1.2.7"
@@ -3703,6 +3725,12 @@ deepmerge@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.1.1.tgz#e862b4e45ea0555072bf51e7fd0d9845170ae768"
 
+default-compare@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/default-compare/-/default-compare-1.0.0.tgz#cb61131844ad84d84788fb68fd01681ca7781a2f"
+  dependencies:
+    kind-of "^5.0.2"
+
 default-require-extensions@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/default-require-extensions/-/default-require-extensions-1.0.0.tgz#f37ea15d3e13ffd9b437d33e1a75b5fb97874cb8"
@@ -3822,6 +3850,10 @@ detect-port@^1.2.3:
     address "^1.0.1"
     debug "^2.6.0"
 
+diacritic@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/diacritic/-/diacritic-0.0.2.tgz#fc2a887b5a5bc0a0a854fb614c7c2f209061ee04"
+
 diff@3.5.0, diff@^3.0.0, diff@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.5.0.tgz#800c0dd1e0a8bfbc95835c202ad220fe317e5a12"
@@ -3862,15 +3894,15 @@ doctrine@^2.0.0, doctrine@^2.1.0:
   dependencies:
     esutils "^2.0.2"
 
-docz-core@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/docz-core/-/docz-core-0.6.2.tgz#907f40de0191188a655123b0e641842fd036c758"
+docz-core@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/docz-core/-/docz-core-0.7.0.tgz#406f393d5f62e0f895527d247b3ca502d52ff280"
   dependencies:
     "@babel/core" "7.0.0-beta.54"
     "@babel/preset-typescript" "^7.0.0-beta.54"
     "@babel/runtime" "^7.0.0-beta.54"
-    "@mdx-js/loader" "^0.14.0"
-    "@mdx-js/mdx" "^0.14.0"
+    "@mdx-js/loader" "^0.14.1"
+    "@mdx-js/mdx" "^0.14.1"
     "@mdx-js/mdxast" "^0.10.0"
     "@sindresorhus/slugify" "^0.3.0"
     art-template "^4.12.2"
@@ -3878,7 +3910,6 @@ docz-core@^0.6.2:
     babel-plugin-react-docgen "^2.0.0-rc.1"
     babel-polyfill "^7.0.0-beta.3"
     babel-preset-react-app "^4.0.0-next.b2fd8db8"
-    babel-traverse "^6.26.0"
     babylon "^6.18.0"
     chalk "^2.4.1"
     chokidar "^2.0.4"
@@ -3891,9 +3922,8 @@ docz-core@^0.6.2:
     fast-glob "^2.2.2"
     file-loader "^1.1.11"
     friendly-errors-webpack-plugin "^1.7.0"
-    fs-extra "^6.0.1"
+    fs-extra "^7.0.0"
     happypack "^5.0.0"
-    hast-util-to-string "^1.0.1"
     html-webpack-plugin "^3.2.0"
     humanize-string "^1.0.2"
     koa "^2.5.2"
@@ -3901,21 +3931,22 @@ docz-core@^0.6.2:
     koa-mount "^3.0.0"
     koa-range "^0.3.0"
     koa-static "^5.0.0"
-    load-cfg "^0.6.0"
+    load-cfg "^0.7.0"
     lodash.get "^4.4.2"
     prettier "^1.13.7"
     react-dev-utils "^5.0.1"
     react-docgen-typescript-loader "^2.1.1"
     react-hot-loader "4.3.3"
-    rehype-autolink-headings "^2.0.2"
+    rehype-autolink-headings "^2.0.3"
+    rehype-docz "^0.7.0"
     rehype-slug "^2.0.1"
+    remark-docz "^0.7.0"
     remark-frontmatter "^1.2.0"
     remark-parse "^5.0.0"
     remark-parse-yaml "^0.0.1"
     remark-slug "^5.0.0"
     resolve "^1.8.1"
     signale "^1.2.1"
-    strip-indent "^2.0.0"
     titleize "^1.0.1"
     to-vfile "^5.0.0"
     uglifyjs-webpack-plugin "^1.2.7"
@@ -3923,7 +3954,6 @@ docz-core@^0.6.2:
     unified "^7.0.0"
     unist-util-find "^1.0.1"
     unist-util-is "^2.1.2"
-    unist-util-remove "^1.0.1"
     unist-util-visit "^1.3.1"
     url-loader "^1.0.1"
     webpack "^4.16.1"
@@ -3931,48 +3961,53 @@ docz-core@^0.6.2:
     webpack-hot-client "^4.1.1"
     webpack-manifest-plugin "^2.0.3"
     webpack-serve "^2.0.2"
-    webpack-serve-waitpage "^1.0.0"
+    webpack-serve-waitpage "^1.0.1"
     webpackbar "^2.6.1"
-    ws "^5.2.2"
+    ws "^6.0.0"
     yargs "^12.0.1"
 
-docz-theme-default@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/docz-theme-default/-/docz-theme-default-0.6.2.tgz#81b9bbf60f1d40ec9f38334c15b26cd364973af9"
+docz-theme-default@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/docz-theme-default/-/docz-theme-default-0.7.1.tgz#a940020e225a812a02013a507b1026e925600e2a"
   dependencies:
-    docz "^0.6.2"
+    copy-text-to-clipboard "^1.0.4"
+    docz "^0.7.1"
     emotion "^9.2.6"
     emotion-theming "^9.2.6"
     facepaint "^1.2.1"
-    fast-deep-equal "^2.0.1"
-    fuse.js "^3.2.1"
-    prismjs "^1.15.0"
+    hotkeys-js "^3.3.5"
+    match-sorter "^2.2.3"
+    polished "^1.9.3"
     prop-types "15.6.2"
+    re-resizable "^4.7.1"
     react "^16.2.0"
     react-adopt "^0.6.0"
     react-breakpoints "^3.0.0"
-    react-content-loader "^3.1.2"
     react-dom "^16.2.0"
     react-emotion "^9.2.6"
     react-feather "^1.1.1"
     react-lightweight-tooltip "^1.0.0"
     react-powerplug "^1.0.0-rc.1"
+    react-syntax-highlighter "^8.0.1"
     webfontloader "^1.6.28"
 
-docz@^0.6.0, docz@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/docz/-/docz-0.6.2.tgz#c5b02869b25988ac0303eab3724f5d8b6336979a"
+docz@^0.7.0, docz@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/docz/-/docz-0.7.1.tgz#b9588eafa633d9b520a98eaa74d68f3c9e410ac9"
   dependencies:
-    "@mdx-js/tag" "^0.14.0"
+    "@mdx-js/tag" "^0.14.1"
     "@sindresorhus/slugify" "^0.3.0"
+    array-sort "^1.0.0"
+    capitalize "^1.0.0"
     create-react-context "^0.2.2"
     deepmerge "^2.1.1"
-    docz-core "^0.6.2"
-    docz-theme-default "^0.6.2"
+    docz-core "^0.7.0"
+    docz-theme-default "^0.7.1"
     env-dot-prop "^1.0.2"
     invariant "^2.2.4"
     loadable-components "^2.2.2"
     pascalcase "^0.1.1"
+    prop-types "^15.6.2"
     react "^16.2.0"
     react-dom "^16.2.0"
     react-router-dom "^4.3.1"
@@ -4485,7 +4520,7 @@ eslint@^5.0.1:
     table "^4.0.3"
     text-table "^0.2.0"
 
-esm@^3.0.71:
+esm@^3.0.72:
   version "3.0.72"
   resolved "https://registry.yarnpkg.com/esm/-/esm-3.0.72.tgz#8f71b3f54b978bbbcbb9788f7f3569a36578c136"
 
@@ -4779,7 +4814,7 @@ fastparse@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
 
-fault@^1.0.1:
+fault@^1.0.1, fault@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/fault/-/fault-1.0.2.tgz#c3d0fec202f172a3a4d414042ad2bb5e2a3ffbaa"
   dependencies:
@@ -5035,14 +5070,6 @@ fs-extra@^5.0.0:
     jsonfile "^4.0.0"
     universalify "^0.1.0"
 
-fs-extra@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-6.0.1.tgz#8abc128f7946e310135ddc93b98bddb410e7a34b"
-  dependencies:
-    graceful-fs "^4.1.2"
-    jsonfile "^4.0.0"
-    universalify "^0.1.0"
-
 fs-extra@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-7.0.0.tgz#8cc3f47ce07ef7b3593a11b9fb245f7e34c041d6"
@@ -5092,10 +5119,6 @@ function.prototype.name@^1.0.3:
 functional-red-black-tree@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
-
-fuse.js@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.2.1.tgz#6320cb94ce56ec9755c89ade775bcdbb0358d425"
 
 gauge@~1.2.5:
   version "1.2.7"
@@ -5479,9 +5502,22 @@ hast-util-is-element@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hast-util-is-element/-/hast-util-is-element-1.0.1.tgz#c76e8aafbdb6e5c83265bf50324e2f2e024eb12a"
 
+hast-util-parse-selector@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/hast-util-parse-selector/-/hast-util-parse-selector-2.2.0.tgz#2175f18cdd697308fc3431d5c29a9e48dfa4817a"
+
 hast-util-to-string@^1.0.0, hast-util-to-string@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hast-util-to-string/-/hast-util-to-string-1.0.1.tgz#b28055cdca012d3c8fd048757c8483d0de0d002c"
+
+hastscript@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/hastscript/-/hastscript-4.0.0.tgz#653f7f4f7aedb9e6c629af8c13707553f5671c77"
+  dependencies:
+    comma-separated-tokens "^1.0.0"
+    hast-util-parse-selector "^2.2.0"
+    property-information "^4.0.0"
+    space-separated-tokens "^1.0.0"
 
 he@1.1.1, he@1.1.x:
   version "1.1.1"
@@ -5493,6 +5529,10 @@ header-case@^1.0.0:
   dependencies:
     no-case "^2.2.0"
     upper-case "^1.1.3"
+
+highlight.js@~9.12.0:
+  version "9.12.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.12.0.tgz#e6d9dbe57cbefe60751f02af336195870c90c01e"
 
 history@^4.7.2:
   version "4.7.2"
@@ -5536,6 +5576,10 @@ homedir-polyfill@^1.0.1:
 hosted-git-info@^2.1.4, hosted-git-info@^2.5.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.6.0.tgz#23235b29ab230c576aab0d4f13fc046b0b038222"
+
+hotkeys-js@^3.3.5:
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.3.5.tgz#6c40e81f3720ead83d808db49d010380bd72c6f1"
 
 html-encoding-sniffer@^1.0.2:
   version "1.0.2"
@@ -6416,7 +6460,7 @@ kind-of@^4.0.0:
   dependencies:
     is-buffer "^1.1.5"
 
-kind-of@^5.0.0:
+kind-of@^5.0.0, kind-of@^5.0.2:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-5.1.0.tgz#729c91e2d857b7a419a1f9aa65685c4c33f5845d"
 
@@ -6606,12 +6650,12 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-load-cfg@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/load-cfg/-/load-cfg-0.6.0.tgz#7a5bae5e2dcfedd54fc547ce001ef527856d7698"
+load-cfg@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/load-cfg/-/load-cfg-0.7.0.tgz#28653c24fd2b4917c3fe9bd6ff599ae83f6a051e"
   dependencies:
     deepmerge "^2.1.1"
-    esm "^3.0.71"
+    esm "^3.0.72"
     find-up "^3.0.0"
 
 load-json-file@^1.0.0:
@@ -6858,6 +6902,13 @@ lowercase-keys@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.1.tgz#6f9e30b47084d971a7c820ff15a6c5167b74c26f"
 
+lowlight@~1.9.1:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/lowlight/-/lowlight-1.9.2.tgz#0b9127e3cec2c3021b7795dd81005c709a42fdd1"
+  dependencies:
+    fault "^1.0.2"
+    highlight.js "~9.12.0"
+
 lru-cache@^4.0.1, lru-cache@^4.1.1:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.3.tgz#a1175cf3496dfc8436c156c334b4955992bce69c"
@@ -6906,6 +6957,12 @@ markdown-escapes@^1.0.0:
 markdown-table@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-0.4.0.tgz#890c2c1b3bfe83fb00e4129b8e4cfe645270f9d1"
+
+match-sorter@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/match-sorter/-/match-sorter-2.2.3.tgz#5fc142821fed543f352fb7edce2603970919d225"
+  dependencies:
+    diacritic "0.0.2"
 
 math-random@^1.0.1:
   version "1.0.1"
@@ -7856,7 +7913,7 @@ parse-asn1@^5.0.0:
     evp_bytestokey "^1.0.0"
     pbkdf2 "^3.0.3"
 
-parse-entities@^1.0.2, parse-entities@^1.1.0:
+parse-entities@^1.0.2, parse-entities@^1.1.0, parse-entities@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/parse-entities/-/parse-entities-1.1.2.tgz#9eaf719b29dc3bd62246b4332009072e01527777"
   dependencies:
@@ -8061,6 +8118,10 @@ pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
 
+polished@^1.9.3:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/polished/-/polished-1.9.3.tgz#d61b8a0c4624efe31e2583ff24a358932b6b75e1"
+
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
@@ -8099,7 +8160,7 @@ prettyjson@^1.2.1:
     colors "^1.1.2"
     minimist "^1.2.0"
 
-prismjs@^1.15.0:
+prismjs@^1.8.4, prismjs@~1.15.0:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.15.0.tgz#8801d332e472091ba8def94976c8877ad60398d9"
   optionalDependencies:
@@ -8149,6 +8210,12 @@ prop-types@^15.6.0:
     fbjs "^0.8.16"
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
+
+property-information@^4.0.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/property-information/-/property-information-4.1.0.tgz#16f817d8c087f3018b91877c193d730570487bb2"
+  dependencies:
+    xtend "^4.0.1"
 
 proxy-addr@~2.0.3:
   version "2.0.3"
@@ -8301,6 +8368,10 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+re-resizable@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/re-resizable/-/re-resizable-4.7.1.tgz#3eca5bb94a6059d14311786cfd2d430bc9f7fba0"
+
 react-adopt@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/react-adopt/-/react-adopt-0.6.0.tgz#e5ff903a655d3082217f82bc9d5033a4b64fafad"
@@ -8316,10 +8387,6 @@ react-breakpoints@^3.0.0:
     create-react-context "0.2.1"
     hoist-non-react-statics "2.5.0"
     lodash.debounce "4.0.8"
-
-react-content-loader@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/react-content-loader/-/react-content-loader-3.1.2.tgz#98230b4604b4b744eaa2d3fc88917dd988df6766"
 
 react-dev-utils@^5.0.1:
   version "5.0.1"
@@ -8461,6 +8528,16 @@ react-router@^4.3.1:
     path-to-regexp "^1.7.0"
     prop-types "^15.6.1"
     warning "^4.0.1"
+
+react-syntax-highlighter@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-syntax-highlighter/-/react-syntax-highlighter-8.0.1.tgz#88f7833e3a2d3c718799f2e7776266486c82c566"
+  dependencies:
+    babel-runtime "^6.18.0"
+    highlight.js "~9.12.0"
+    lowlight "~1.9.1"
+    prismjs "^1.8.4"
+    refractor "^2.4.1"
 
 react-test-renderer@^16.0.0-0:
   version "16.3.2"
@@ -8611,6 +8688,14 @@ redux@^4.0.0:
     loose-envify "^1.1.0"
     symbol-observable "^1.2.0"
 
+refractor@^2.4.1:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/refractor/-/refractor-2.5.0.tgz#cd38fee596c0c494addf726543ea6f4b89d3147b"
+  dependencies:
+    hastscript "^4.0.0"
+    parse-entities "^1.1.2"
+    prismjs "~1.15.0"
+
 regenerate-unicode-properties@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-7.0.0.tgz#107405afcc4a190ec5ed450ecaa00ed0cafa7a4c"
@@ -8726,7 +8811,7 @@ regjsparser@^0.3.0:
   dependencies:
     jsesc "~0.5.0"
 
-rehype-autolink-headings@^2.0.2:
+rehype-autolink-headings@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/rehype-autolink-headings/-/rehype-autolink-headings-2.0.3.tgz#b23d02937019b8e33566362fc1541df42e99b0e5"
   dependencies:
@@ -8734,6 +8819,18 @@ rehype-autolink-headings@^2.0.2:
     hast-util-has-property "^1.0.0"
     hast-util-is-element "^1.0.0"
     unist-util-visit "^1.1.0"
+
+rehype-docz@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/rehype-docz/-/rehype-docz-0.7.0.tgz#8e5832d7e59a436c638a586dec12381918b4abaa"
+  dependencies:
+    babel-traverse "^6.26.0"
+    babylon "^6.18.0"
+    hast-util-to-string "^1.0.1"
+    prettier "^1.13.7"
+    signale "^1.2.1"
+    strip-indent "^2.0.0"
+    unist-util-is "^2.1.2"
 
 rehype-slug@^2.0.1:
   version "2.0.1"
@@ -8748,6 +8845,13 @@ rehype-slug@^2.0.1:
 relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
+
+remark-docz@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/remark-docz/-/remark-docz-0.7.0.tgz#8944b37af473bb7757d775406a56bd6265c2b9c8"
+  dependencies:
+    unist-util-remove "^1.0.1"
+    unist-util-visit "^1.3.1"
 
 remark-frontmatter@^1.2.0:
   version "1.2.0"
@@ -9419,6 +9523,12 @@ source-map@^0.6.1, source-map@~0.6.1:
 source-map@^0.7.2:
   version "0.7.3"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.3.tgz#5302f8169031735226544092e64981f751750383"
+
+space-separated-tokens@^1.0.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/space-separated-tokens/-/space-separated-tokens-1.1.2.tgz#e95ab9d19ae841e200808cd96bc7bd0adbbb3412"
+  dependencies:
+    trim "0.0.1"
 
 spawn-sync@^1.0.15:
   version "1.0.15"
@@ -10561,7 +10671,7 @@ webpack-manifest-plugin@^2.0.3:
     lodash ">=3.5 <5"
     tapable "^1.0.0"
 
-webpack-serve-waitpage@^1.0.0:
+webpack-serve-waitpage@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/webpack-serve-waitpage/-/webpack-serve-waitpage-1.0.1.tgz#8aee5bf8aafcf997c72a74fc48ae1c495001fde9"
   dependencies:
@@ -10842,9 +10952,9 @@ ws@^4.0.0:
     async-limiter "~1.0.0"
     safe-buffer "~5.1.0"
 
-ws@^5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
+ws@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-6.0.0.tgz#eaa494aded00ac4289d455bac8d84c7c651cef35"
   dependencies:
     async-limiter "~1.0.0"
 

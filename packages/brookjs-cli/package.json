@@ -17,6 +17,7 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
+    "babel-core": "^6.26.3",
     "babel-loader": "^7.1.2",
     "brookjs": "^0.11.16",
     "caporal": "^0.10.0",
