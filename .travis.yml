@@ -4,6 +4,7 @@ node_js:
   - stable
 
 before_install:
+  - export GK_LOCK_YARN_OPTS="--ignore-workspace-root-check"
   - yarn global add greenkeeper-lockfile@2
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
