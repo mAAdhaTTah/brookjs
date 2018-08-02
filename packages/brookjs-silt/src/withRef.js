@@ -1,11 +1,9 @@
 import React from 'react';
 import { createRef, forwardRef, getRef } from 'create-react-ref';
+import wrapDisplayName from 'recompose/wrapDisplayName';
 import Kefir from 'kefir';
 import h from './h';
 import { Consumer } from './context';
-
-const getDisplayName = Component =>
-    Component.displayName || Component.name || 'Component';
 
 export default function withRef$(c, callback) {
     const Reffed = forwardRef(c);
@@ -54,7 +52,7 @@ export default function withRef$(c, callback) {
         }
     }
 
-    WithRef.displayName = `WithRef(${getDisplayName(Reffed)})`;
+    WithRef.displayName = wrapDisplayName(Reffed, 'WithRef');
 
     return WithRef;
 };

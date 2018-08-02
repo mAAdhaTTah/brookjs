@@ -4,16 +4,15 @@ import PropTypes from 'prop-types';
 import { Provider } from './context';
 import h from './h';
 
-export default class Aggregator extends React.Component {
+export default class RootJunction extends React.Component {
     constructor (props) {
         super(props);
-        console.warn('Aggregator is deprecated. Please use RootJunction.');
 
-        this.action$ = Kefir.pool();
+        this.root$ = Kefir.pool();
     }
 
     componentDidMount() {
-        this.sub = this.props.action$(this.action$);
+        this.sub = this.props.root$(this.root$);
     }
 
     componentWillUnmount() {
@@ -22,14 +21,14 @@ export default class Aggregator extends React.Component {
 
     render() {
         return (
-            <Provider value={this.action$}>
+            <Provider value={this.root$}>
                 {this.props.children}
             </Provider>
         );
     }
 }
 
-Aggregator.propTypes = {
+RootJunction.propTypes = {
     children: PropTypes.element.isRequired,
-    action$: PropTypes.func.isRequired
+    root$: PropTypes.func.isRequired
 };

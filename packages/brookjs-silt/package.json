@@ -24,6 +24,7 @@
     "create-react-context": "^0.2.1",
     "create-react-ref": "^0.1.0",
     "prop-types": "^15.6.0",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "recompose": "^0.28.0"
   }
 }

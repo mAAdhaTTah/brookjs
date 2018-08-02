@@ -113,6 +113,7 @@ describe('h', () => {
             render(<p>{new Kefir.Stream().setName('child$')}</p>);
 
             expect(warn).to.have.been.calledWith(`Observable [child$] is not a property. You may experience incomplete renders without an initial value.`);
+            warn.restore();
         });
     });
 

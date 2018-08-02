@@ -8,6 +8,7 @@ import { isString, isObs, EMIT_PROP } from './helpers';
 export default class Collector extends React.Component {
     constructor (props) {
         super(props);
+        console.warn('Aggregator is deprecated. Please use toJunction higher-order component.');
 
         this.children = null;
         this.streams = [];
