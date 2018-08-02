@@ -7,6 +7,7 @@ import h from './h';
 export default class Aggregator extends React.Component {
     constructor (props) {
         super(props);
+        console.warn('Aggregator is deprecated. Please use RootJunction.');
 
         this.action$ = Kefir.pool();
     }
