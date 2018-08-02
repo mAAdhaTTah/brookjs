@@ -8,7 +8,7 @@ export default function toJunction(Component, { events, combine = x => x }) {
     class ToJunction extends React.Component {
         constructor(props, context) {
             super(props, context);
-            this.aggregator$ = null;
+            this.root$ = null;
             this.events = {};
 
             this.sources = {
@@ -35,7 +35,7 @@ export default function toJunction(Component, { events, combine = x => x }) {
         }
 
         unplug() {
-            this.aggregator$ && this.aggregator$.unplug(this.source$);
+            this.root$ && this.root$.unplug(this.source$);
         }
 
         componentWillUnmount() {
@@ -44,7 +44,7 @@ export default function toJunction(Component, { events, combine = x => x }) {
 
         componentDidUpdate() {
             this.unplug();
-            this.aggregator$.plug(
+            this.root$.plug(
                 this.source$ = this.createSource()
             );
         }
@@ -52,10 +52,10 @@ export default function toJunction(Component, { events, combine = x => x }) {
         render() {
             return (
                 <Consumer>
-                    {aggregator$ => {
-                        if (this.aggregator$ !== aggregator$) {
+                    {root$ => {
+                        if (this.root$ !== root$) {
                             this.unplug();
-                            this.aggregator$ = aggregator$.plug(this.source$);
+                            this.root$ = root$.plug(this.source$);
                         }
 
                         return <Component {...this.props} {...this.events} />;

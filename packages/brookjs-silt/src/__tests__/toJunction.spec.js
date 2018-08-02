@@ -23,8 +23,8 @@ describe('toJunction', () => {
         </button> : <span>nothing to click</span>
     ), { events });
 
-    const ProvidedButton = ({ aggregator$, text, enabled }) => (
-        <Provider value={aggregator$}>
+    const ProvidedButton = ({ root$, text, enabled }) => (
+        <Provider value={root$}>
             <Button text={text} enabled={enabled} />
         </Provider>
     );
@@ -32,18 +32,18 @@ describe('toJunction', () => {
     const clickButton = wrapper => wrapper.find('button').simulate('click');
 
     it('should render normally', () => {
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         const wrapper = mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
         expect(wrapper.html()).to.equal('<button>Click me</button>');
     });
 
     it('should update normally', () => {
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         const wrapper = mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
         wrapper.setProps({ text: 'Click me', enabled: false });
@@ -52,50 +52,50 @@ describe('toJunction', () => {
     });
 
     it('should emit events through aggregated stream', () => {
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         const wrapper = mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
-        expect(aggregator$).to.emit([value({ type: 'CLICK' })], () => {
+        expect(root$).to.emit([value({ type: 'CLICK' })], () => {
             clickButton(wrapper);
         });
     });
 
     it('should emit one event after updating', () => {
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         const wrapper = mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
         wrapper.setProps({ text: 'Click you', enabled: true });
 
-        expect(aggregator$).to.emit([value({ type: 'CLICK' })], () => {
+        expect(root$).to.emit([value({ type: 'CLICK' })], () => {
             clickButton(wrapper);
         });
     });
 
     it('should unplug if unmounted', () => {
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         const wrapper = mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
         wrapper.unmount();
 
-        expect(aggregator$._curSources).to.have.lengthOf(0);
+        expect(root$._curSources).to.have.lengthOf(0);
     });
 
     it('should unplug from old stream if new stream provided', () => {
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         const wrapper = mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
         const newAggregated$ = Kefir.pool();
 
-        wrapper.setProps({ aggregator$: newAggregated$ });
-        expect(aggregator$._curSources).to.have.lengthOf(0);
+        wrapper.setProps({ root$: newAggregated$ });
+        expect(root$._curSources).to.have.lengthOf(0);
         expect(newAggregated$._curSources).to.have.lengthOf(1);
     });
 
@@ -108,17 +108,17 @@ describe('toJunction', () => {
             </button> : <span>nothing to click</span>
         ), { combine, events });
 
-        const ProvidedButton = ({ aggregator$, text, enabled }) => (
-            <Provider value={aggregator$}>
+        const ProvidedButton = ({ root$, text, enabled }) => (
+            <Provider value={root$}>
                 <Button text={text} enabled={enabled} />
             </Provider>
         );
-        const aggregator$ = Kefir.pool();
+        const root$ = Kefir.pool();
         mount(
-            <ProvidedButton aggregator$={aggregator$} text={'Click me'} enabled={true} />
+            <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
         );
 
-        expect(aggregator$).to.emit([value({ type: 'EMITTED' })], () => {
+        expect(root$).to.emit([value({ type: 'EMITTED' })], () => {
             send(source$, [value({ type: 'EMITTED' })]);
         });
     });
