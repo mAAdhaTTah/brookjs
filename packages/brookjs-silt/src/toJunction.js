@@ -29,7 +29,7 @@ export default function toJunction(Component, { events, combine = x => x }) {
         createSource() {
             return combine(
                 this.sources.merged,
-                this.sources.dicts,
+                this.sources.dict,
                 this.props
             );
         }
