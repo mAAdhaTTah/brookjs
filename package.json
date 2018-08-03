@@ -43,7 +43,7 @@
     "docs:build": "docz build",
     "docs:deploy": "yarn docs:build && gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
     "test": "lerna run test --concurrency 1",
-    "pub": "lerna publish --npm-client=npm --npm-tag beta"
+    "pub": "lerna publish --npm-client npm --npm-tag beta --concurrency 1"
   },
   "workspaces": [
     "packages/*"
