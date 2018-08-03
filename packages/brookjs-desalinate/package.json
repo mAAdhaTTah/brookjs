@@ -20,7 +20,7 @@
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
     "build": "rollup -c ../../rollup.config.js",
-    "prepublishOnly": "npm run clean && npm run build && npm test"
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",

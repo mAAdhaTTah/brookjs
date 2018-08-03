@@ -11,8 +11,7 @@
     "test:lint": "eslint ./src --fix",
     "test:unit": "beaver test unit --coverage",
     "test:feature": "cucumber-js",
-    "dev": "beaver dev tdd --env test",
-    "prepublishOnly": "npm test"
+    "dev": "beaver dev tdd --env test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
