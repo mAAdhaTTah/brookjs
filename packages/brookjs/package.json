@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "0.11.16",
+  "version": "1.0.0-alpha.0",
   "description": "reactive programming tools for well-structured, testable applications.",
   "main": "dist/brookjs.cjs.js",
   "browser": "dist/brookjs.umd.js",
@@ -30,5 +30,6 @@
   },
   "dependencies": {
     "ramda": "^0.25.0"
-  }
+  },
+  "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }

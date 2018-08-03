@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-brookjs",
-  "version": "0.11.3",
+  "version": "1.0.0-alpha.0",
   "description": "Recommended plugins for developing brookjs applications.",
   "main": "index.js",
   "scripts": {
@@ -21,5 +21,6 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1"
-  }
+  },
+  "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }

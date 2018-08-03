@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "0.11.16",
+  "version": "1.0.0-alpha.0",
   "description": "Handlebars-based rendering engine, built on diffhtml.",
   "main": "dist/brookjs-silt.cjs.js",
   "browser": "dist/brookjs-silt.umd.js",
@@ -26,5 +26,6 @@
     "prop-types": "^15.6.0",
     "ramda": "^0.25.0",
     "recompose": "^0.28.0"
-  }
+  },
+  "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }

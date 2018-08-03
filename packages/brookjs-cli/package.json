@@ -1,6 +1,6 @@
 {
   "name": "brookjs-cli",
-  "version": "0.11.16",
+  "version": "1.0.0-alpha.0",
   "description": "A command line interface for building brookjs applications.",
   "main": "src/index.js",
   "bin": {
@@ -18,7 +18,7 @@
   "dependencies": {
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.2",
-    "brookjs": "^0.11.16",
+    "brookjs": "^1.0.0-alpha.0",
     "caporal": "^0.10.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.1.0",
@@ -45,5 +45,6 @@
   "esm": {
     "mode": "auto",
     "cjs": true
-  }
+  },
+  "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }
