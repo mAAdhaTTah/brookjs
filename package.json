@@ -26,7 +26,7 @@
     "jsdom": "^11.3.0",
     "jsdom-global": "^3.0.2",
     "kefir": "^3.8.0",
-    "lerna": "^2.11.0",
+    "lerna": "^3.0.0-rc.0",
     "raf": "^3.4.0",
     "react-dom": "^16.2.0",
     "rimraf": "^2.5.4",
@@ -43,7 +43,7 @@
     "docs:build": "docz build",
     "docs:deploy": "yarn docs:build && gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
     "test": "lerna run test --concurrency 1",
-    "pub": "lerna publish --concurrency 1 --npm-client=npm"
+    "pub": "lerna publish --npm-client=npm --npm-tag beta"
   },
   "workspaces": [
     "packages/*"
