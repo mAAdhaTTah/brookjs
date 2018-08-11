@@ -1,7 +1,7 @@
 {
   "name": "brookjs-silt",
   "version": "1.0.0-alpha.0",
-  "description": "Handlebars-based rendering engine, built on diffhtml.",
+  "description": "reactive programming with reactjs",
   "main": "dist/brookjs-silt.cjs.js",
   "browser": "dist/brookjs-silt.umd.js",
   "module": "dist/brookjs-silt.esm.js",
@@ -16,6 +16,10 @@
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",
+  "files": [
+    "dist",
+    "src"
+  ],
   "peerDependencies": {
     "kefir": "^3.8.0",
     "react": "^16.0.0"

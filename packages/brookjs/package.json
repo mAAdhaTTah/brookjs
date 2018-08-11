@@ -1,14 +1,12 @@
 {
   "name": "brookjs",
   "version": "1.0.0-alpha.0",
-  "description": "reactive programming tools for well-structured, testable applications.",
+  "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs.cjs.js",
   "browser": "dist/brookjs.umd.js",
   "module": "dist/brookjs.esm.js",
   "files": [
     "dist",
-    "cjs",
-    "es",
     "src"
   ],
   "scripts": {
