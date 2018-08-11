@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs.cjs.js",
   "browser": "dist/brookjs.umd.js",

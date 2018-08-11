@@ -1,6 +1,6 @@
 {
   "name": "brookjs-desalinate",
-  "version": "1.0.0-alpha.0",
+  "version": "1.0.0-alpha.1",
   "description": "testing tools for brookjs applications",
   "main": "dist/brookjs-desalinate.cjs.js",
   "browser": "dist/brookjs-desalinate.umd.js",
