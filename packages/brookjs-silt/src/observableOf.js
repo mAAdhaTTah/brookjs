@@ -1,26 +1,27 @@
 import Kefir from 'kefir';
+import PropTypes from 'prop-types';
 
-const spyOn = (s$, validator, propName, componentName, name, rest) => {
+const spyOn = (s$, validator, propName, componentName, name) => {
     if (s$._alive) {
-        const handler = ({ type, value }) => {
-            if (type === 'VALUE') {
-                const error = validator(value, `obsOf$${propName}`, componentName, ...rest);
-                if (error instanceof Error) {
-                    // eslint-disable-next-line no-console
-                    console.error(`<${componentName}#${name}(${propName})>: ${error.message}`, error);
-                }
+        const handler = (event) => {
+            if (event.type === 'value') {
+                PropTypes.checkPropTypes(validator, event.value, 'prop', componentName);
             }
         };
         if (!s$._spyHandlers) {
             s$._spyHandlers = [];
         }
-        s$._spyHandlers.push({ name: name, handler: handler });
+        s$._spyHandlers.push({ name, handler });
         s$._dispatcher.addSpy(handler);
+
+        if (s$._currentEvent) {
+            handler(s$._currentEvent);
+        }
     }
 };
 
 export default function observableOfValidator(valueValidator, name = 'observableOf') {
-    const validator = function observableOf(props, propName, componentName, ...rest) {
+    const validator = function observableOf(props, propName, componentName) {
         const propValue = props[propName];
         if (propValue == null) {
             return null;
@@ -30,19 +31,19 @@ export default function observableOfValidator(valueValidator, name = 'observable
             return new TypeError(`${componentName}: ${propName} must be an Observable, got "${typeof propValue}"`);
         }
 
-        spyOn(propValue, valueValidator, propName, componentName, name, rest);
+        spyOn(propValue, valueValidator, propName, componentName, name);
 
         return null;
     };
 
-    validator.isRequired = function andIsRequired(props, propName,componentName, ...rest) {
+    validator.isRequired = function andIsRequired(props, propName, componentName) {
         const propValue = props[propName];
 
         if (!(propValue instanceof Kefir.Observable)) {
             return new TypeError(`${componentName}: ${propName} must be an Observable, got "${typeof propValue}"`);
         }
 
-        spyOn(propValue, valueValidator, propName, componentName, name, rest);
+        spyOn(propValue, valueValidator, propName, componentName, name);
 
         return null;
     };
