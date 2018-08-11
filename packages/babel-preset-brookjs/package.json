@@ -1,7 +1,7 @@
 {
   "name": "babel-preset-brookjs",
   "version": "1.0.0-alpha.0",
-  "description": "Recommended plugins for developing brookjs applications.",
+  "description": "recommended plugins for developing brookjs applications.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"No test specified\" && exit 0"
@@ -12,6 +12,9 @@
     "brookjs",
     "kefir",
     "ramda"
+  ],
+  "files": [
+    "index.js"
   ],
   "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
   "license": "MIT",

@@ -1,7 +1,7 @@
 {
   "name": "brookjs-desalinate",
   "version": "1.0.0-alpha.0",
-  "description": "Testing tools for brookjs components.",
+  "description": "testing tools for brookjs applications",
   "main": "dist/brookjs-desalinate.cjs.js",
   "browser": "dist/brookjs-desalinate.umd.js",
   "module": "dist/brookjs-desalinate.esm.js",
@@ -12,6 +12,10 @@
     "chai-plugin",
     "brookjs",
     "observables"
+  ],
+  "files": [
+    "dist",
+    "src"
   ],
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
