@@ -2,8 +2,6 @@
 import Adapter from 'enzyme-adapter-react-16';
 import { configure, mount } from 'enzyme';
 import { expect, use } from 'chai';
-// import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
 import h from '../h';
@@ -14,7 +12,6 @@ const { plugin, value } = chaiPlugin({ Kefir });
 
 configure({ adapter: new Adapter() });
 use(plugin);
-use(sinonChai);
 
 const Button = withRef$(({ text }, ref) => (
     <button ref={ref}>
