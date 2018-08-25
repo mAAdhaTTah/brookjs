@@ -1,5 +1,5 @@
 /* eslint-env mocha */
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16.3';
 import { configure, mount } from 'enzyme';
 import { expect, use } from 'chai';
 import sinon from 'sinon';

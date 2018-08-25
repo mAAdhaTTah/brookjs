@@ -15,8 +15,8 @@
     "cucumber": "^4.0.0",
     "dirty-chai": "^2.0.1",
     "docz": "^0.10.0",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme": "^3.4.4",
+    "enzyme-adapter-react-16.3": "^1.1.0",
     "eslint": "^5.0.0",
     "eslint-config-valtech": "^1.0.0",
     "eslint-import-resolver-node": "^0.3.1",
@@ -47,10 +47,5 @@
   },
   "workspaces": [
     "packages/*"
-  ],
-  "resolutions": {
-    "react": "16.2.0",
-    "@mdx-js/tag": "0.13.1-1",
-    "babel-plugin-ramda": "1.4.3"
-  }
+  ]
 }

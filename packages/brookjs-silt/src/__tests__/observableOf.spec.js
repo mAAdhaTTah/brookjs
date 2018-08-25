@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 /* eslint-disable no-console */
 import { expect, use } from 'chai';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16.3';
 import { configure, mount } from 'enzyme';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';

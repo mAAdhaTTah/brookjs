@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import { configure, mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-react-16.3';
 import { expect, use } from 'chai';
 import Kefir from 'kefir';
 import { chaiPlugin } from 'brookjs-desalinate';
