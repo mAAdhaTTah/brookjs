@@ -29,7 +29,7 @@
     "create-react-ref": "^0.1.0",
     "prop-types": "^15.6.0",
     "ramda": "^0.25.0",
-    "recompose": "^0.28.0"
+    "recompose": "^0.29.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }
