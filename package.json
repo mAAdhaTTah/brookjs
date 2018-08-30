@@ -15,7 +15,7 @@
     "cucumber": "^4.0.0",
     "dirty-chai": "^2.0.1",
     "docz": "^0.10.0",
-    "enzyme": "^3.4.4",
+    "enzyme": "^3.5.0",
     "enzyme-adapter-react-16.3": "^1.1.0",
     "eslint": "^5.0.0",
     "eslint-config-valtech": "^1.0.0",
