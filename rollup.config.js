@@ -15,7 +15,7 @@ const cjs = {
 export default [
     {
         input: 'src/index.js',
-        output: { name: pkg.name, file: pkg.browser, format: 'umd' },
+        output: { name: pkg.name, file: pkg['rollup:dist'], format: 'umd' },
         plugins: [
             babel(),
             resolve(),

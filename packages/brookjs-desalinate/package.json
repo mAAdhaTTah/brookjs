@@ -3,8 +3,8 @@
   "version": "1.0.0-alpha.1",
   "description": "testing tools for brookjs applications",
   "main": "dist/brookjs-desalinate.cjs.js",
-  "browser": "dist/brookjs-desalinate.umd.js",
   "module": "dist/brookjs-desalinate.esm.js",
+  "rollup:dist": "dist/brookjs-desalinate.umd.js",
   "keywords": [
     "kefir",
     "browser",

@@ -3,8 +3,8 @@
   "version": "1.0.0-alpha.1",
   "description": "reactive programming with reactjs",
   "main": "dist/brookjs-silt.cjs.js",
-  "browser": "dist/brookjs-silt.umd.js",
   "module": "dist/brookjs-silt.esm.js",
+  "rollup:dist": "dist/brookjs-silt.umd.js",
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
