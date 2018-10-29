@@ -3,7 +3,7 @@ import chai, { expect } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
 import $$observable from 'symbol-observable';
 import Kefir from 'kefir';
-import fromReduxStore from '../';
+import fromReduxStore from '../fromReduxStore';
 
 const { plugin, value } = chaiPlugin({ Kefir });
 chai.use(plugin);
