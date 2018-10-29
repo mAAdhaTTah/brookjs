@@ -1,4 +1,3 @@
-import * as R from 'ramda';
 import Kefir from 'kefir';
 
 /**
@@ -54,7 +53,7 @@ export default function domDelta({ el, view, selectProps }) {
                 Kefir.later(0, true) :
                 Kefir.fromEvents(document, 'DOMContentLoaded')
         )
-        .flatMap(R.always(el))
+        .flatMap(() => el)
         .take(1).takeErrors(1)
         .flatMap(el => view(el, selectProps(state$)));
 }

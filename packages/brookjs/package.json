@@ -26,8 +26,5 @@
   "peerDependencies": {
     "kefir": "^3.8.0"
   },
-  "dependencies": {
-    "ramda": "^0.25.0"
-  },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }
