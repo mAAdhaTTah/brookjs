@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "reactive programming with reactjs",
   "main": "dist/brookjs-silt.cjs.js",
   "module": "dist/brookjs-silt.esm.js",
