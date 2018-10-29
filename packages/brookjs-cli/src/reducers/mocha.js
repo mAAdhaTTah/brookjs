@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { combineActionReducers } from 'brookjs';
+import { handleActions } from 'redux-actions';
 import { READ_RC_FILE } from '../actions';
 
 const defaults = {
@@ -8,13 +8,13 @@ const defaults = {
     requires: []
 };
 
-const cond = [
-    [READ_RC_FILE, (state, { payload }) => ({
+const cond = {
+    [READ_RC_FILE]: (state, { payload }) => ({
         ...state,
         reporter: R.defaultTo(defaults.reporter, R.path(['mocha', 'reporter'], payload)),
         ui: R.defaultTo(defaults.ui, R.path(['mocha', 'ui'], payload)),
         requires: R.defaultTo(defaults.requires, R.path(['mocha', 'requires'], payload))
-    })]
-];
+    })
+};
 
-export default combineActionReducers(cond, defaults);
+export default handleActions(cond, defaults);

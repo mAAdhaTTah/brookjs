@@ -24,7 +24,7 @@ export default [
     },
     {
         input: 'src/index.js',
-        external: [...Object.keys(pkg.peerDependencies), ...Object.keys(pkg.dependencies)],
+        external: [...Object.keys(pkg.peerDependencies || {}), ...Object.keys(pkg.dependencies || {})],
         output: [
             { file: pkg.main, format: 'cjs' },
             { file: pkg.module, format: 'es' },
