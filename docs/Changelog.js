@@ -69,7 +69,7 @@ export default class Changelog extends React.Component {
                     throw new Error((await response.json()).message);
                 }
 
-                return { ...releases, body: await response.text() };
+                return { ...release, body: await response.text() };
             }));
 
             window.localStorage.setItem(KEY, JSON.stringify(releases));
