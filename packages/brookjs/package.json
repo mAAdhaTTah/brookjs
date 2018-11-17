@@ -4,7 +4,7 @@
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs.cjs.js",
   "module": "dist/brookjs.esm.js",
-  "rollup:dist": "dist/brookjs.dist.js",
+  "unpkg": "dist/brookjs.umd.js",
   "files": [
     "dist",
     "src"
