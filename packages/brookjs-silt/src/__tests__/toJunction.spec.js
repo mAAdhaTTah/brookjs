@@ -18,11 +18,11 @@ describe('toJunction', () => {
     const events = { onButtonClick: e$ => e$.map(() => ({ type: 'CLICK' })) };
 
     describe('events', () => {
-        const Button = toJunction(({ onButtonClick, text, enabled }) => (
+        const Button = toJunction({ events })(({ onButtonClick, text, enabled }) => (
             enabled ? <button onClick={onButtonClick}>
                 {text}
             </button> : <span>nothing to click</span>
-        ), { events });
+        ));
 
         const ProvidedButton = ({ root$, text, enabled }) => (
             <Provider value={root$}>
@@ -105,11 +105,11 @@ describe('toJunction', () => {
         it('should call combine with correct arguments and use returned stream', () => {
             const source$ = stream();
             const combine = sinon.spy(() => source$);
-            const Button = toJunction(({ onButtonClick, text, enabled }) => (
+            const Button = toJunction({ combine, events })(({ onButtonClick, text, enabled }) => (
                 enabled ? <button onClick={onButtonClick}>
                     {text}
                 </button> : <span>nothing to click</span>
-            ), { combine, events });
+            ));
 
             const ProvidedButton = ({ root$, text, enabled }) => (
                 <Provider value={root$}>
@@ -134,11 +134,11 @@ describe('toJunction', () => {
 
         it('should call combine with updated props', () => {
             const combine = sinon.spy(() => Kefir.never());
-            const Button = toJunction(({ onButtonClick, text, enabled }) => (
+            const Button = toJunction({ combine, events })(({ onButtonClick, text, enabled }) => (
                 enabled ? <button onClick={onButtonClick}>
                     {text}
                 </button> : <span>nothing to click</span>
-            ), { combine, events });
+            ));
 
             const ProvidedButton = ({ root$, text, enabled }) => (
                 <Provider value={root$}>
