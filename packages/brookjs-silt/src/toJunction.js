@@ -1,10 +1,11 @@
 import React from 'react';
 import Kefir from 'kefir';
+// eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import h from './h';
 import { Consumer } from './context';
 
-export default function toJunction(Component, { events, combine = x => x }) {
+const toJunction = ({ events, combine = x => x }) => WrappedComponent => {
     class ToJunction extends React.Component {
         constructor(props, context) {
             super(props, context);
@@ -58,14 +59,16 @@ export default function toJunction(Component, { events, combine = x => x }) {
                             this.root$ = root$.plug(this.source$);
                         }
 
-                        return <Component {...this.props} {...this.events} />;
+                        return <WrappedComponent {...this.events} {...this.props} />;
                     }}
                 </Consumer>
             );
         }
     }
 
-    ToJunction.displayName = wrapDisplayName(Component, 'ToJunction');
+    ToJunction.displayName = wrapDisplayName(WrappedComponent, 'ToJunction');
 
     return ToJunction;
-}
+};
+
+export default toJunction;
