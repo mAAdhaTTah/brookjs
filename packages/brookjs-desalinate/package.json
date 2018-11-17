@@ -26,7 +26,7 @@
     "build": "rollup -c ../../rollup.config.js",
     "prepublishOnly": "npm run clean && npm run build"
   },
-  "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
+  "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
     "chai-kefir": "^2.0.4",

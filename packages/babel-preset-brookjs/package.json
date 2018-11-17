@@ -16,7 +16,7 @@
   "files": [
     "index.js"
   ],
-  "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
+  "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
     "babel-plugin-ramda": "^1.4.3",
