@@ -11,6 +11,7 @@
     "src",
     "templates"
   ],
+  "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit && npm run test:feature",
     "test:lint": "eslint ./src --fix",
