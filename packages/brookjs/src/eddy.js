@@ -1,14 +1,17 @@
 const $$loop = Symbol('@brookjs/loop');
 const NONE = Symbol('@brookjs/none');
 
+const normalizeResults = results => results[$$loop] ? results : [results, NONE];
+
 export const eddy = () => createStore => (reducer, state, enhancer) => {
     let queue = [];
 
     const upgradeReducer = reducer => (state, action) => {
-        const results = reducer(state, action);
-        const [nextState, cmd] = results[$$loop] ? results : [results, NONE];
+        const [nextState, cmd] = normalizeResults(reducer(state, action));
 
-        queue.push(cmd);
+        if (cmd !== NONE) {
+            queue.push(cmd);
+        }
 
         return nextState;
     };
@@ -21,7 +24,9 @@ export const eddy = () => createStore => (reducer, state, enhancer) => {
                 if (Array.isArray(cmd)) {
                     runCommands(cmd);
                 } else {
-                    store.dispatch(cmd);
+                    // mutually recursive
+                    // eslint-disable-next-line no-use-before-define
+                    dispatch(cmd);
                 }
             }
         }
@@ -55,3 +60,34 @@ export const loop = (state, action) => {
 };
 
 loop.NONE = NONE;
+
+export const combineReducers = reducerMap => {
+    const reducerKeys = Object.keys(reducerMap);
+
+    return (state = {}, action) => {
+        let hasChanged = false;
+        const nextState = {};
+        const cmds = [];
+
+        for (let i = 0; i < reducerKeys.length; i++) {
+            const key = reducerKeys[i];
+            const reducer = reducerMap[key];
+            const previousStateForKey = state[key];
+            const [nextStateForKey, cmd] = normalizeResults(
+                reducer(previousStateForKey, action)
+            );
+
+            if (cmd !== NONE) {
+                cmds.push(cmd);
+            }
+
+            hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+            nextState[key] = nextStateForKey;
+        }
+
+        return loop(
+            hasChanged ? nextState : state,
+            cmds
+        );
+    };
+};
