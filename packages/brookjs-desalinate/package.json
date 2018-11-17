@@ -17,6 +17,7 @@
     "dist",
     "src"
   ],
+  "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",

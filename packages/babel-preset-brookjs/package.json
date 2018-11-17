@@ -3,6 +3,7 @@
   "version": "1.0.0-alpha.1",
   "description": "recommended plugins for developing brookjs applications.",
   "main": "index.js",
+  "sideEffects": false,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0"
   },

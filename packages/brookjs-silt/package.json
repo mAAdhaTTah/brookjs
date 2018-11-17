@@ -5,6 +5,7 @@
   "main": "dist/brookjs-silt.cjs.js",
   "module": "dist/brookjs-silt.esm.js",
   "rollup:dist": "dist/brookjs-silt.umd.js",
+  "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
