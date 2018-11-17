@@ -19,10 +19,7 @@
     "build": "rollup -c ../../rollup.config.js",
     "prepublishOnly": "npm run clean && npm run build"
   },
-  "authors": [
-    "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
-    "Valtech (https://www.valtech.com/)"
-  ],
+  "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "peerDependencies": {
     "kefir": "^3.8.0"

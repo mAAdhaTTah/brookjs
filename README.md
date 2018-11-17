@@ -10,4 +10,4 @@ ___
 
 Documentation for `brookjs` can be found [here][docs].
 
-  [docs]: https://valtech-nyc.github.io/brookjs/
+  [docs]: https://mAAdhaTTah.github.io/brookjs/
