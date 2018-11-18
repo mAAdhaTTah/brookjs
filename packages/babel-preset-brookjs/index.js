@@ -1,4 +1,4 @@
-module.exports = function(api, { pragma = 'React.createElement', useBuiltIns = true, modules = false, targets } = {}) {
+module.exports = function(api, { pragma = 'h', useBuiltIns = true, modules = false, targets } = {}) {
     return {
         presets: [
             ['env', { useBuiltIns, modules, targets }]

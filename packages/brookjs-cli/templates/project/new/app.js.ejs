@@ -2,14 +2,15 @@
 to: <%= name %>/<%= dir %>/app.js
 ---
 import 'babel-polyfill';
-import { domDelta, observeDelta } from 'brookjs';
-import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { observeDelta, eddy, combineReducers, fromReduxStore } from 'brookjs';
+import { h, RootJunction } from 'brookjs-silt';
+import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import ReactDOM from 'react-dom';
 import { init } from './actions';
 import {} from './deltas';
-import { el, view } from './dom';
 import {} from './reducers';
-import { selectProps } from './selectors';
+import {} from './selectors';
 
 const { __INITIAL_STATE__ } = global;
 
@@ -17,15 +18,27 @@ const compose = composeWithDevTools({
     name: '<%= name %>'
 });
 
-const enhancer = compose(applyMiddleware(observeDelta(
-    // Register your deltas here
-    domDelta({ el, view, selectProps })
-)));
+const enhancer = compose(
+    applyMiddleware(observeDelta(
+        // Register your deltas here
+    )),
+    eddy()
+);
 
 const reducer = combineReducers({
     // Register your reducers here
 });
 
 const store = createStore(reducer, __INITIAL_STATE__, enhancer);
+const state$ = fromReduxStore(store);
+
+ReactDOM.render(
+    <RootJunction silt-embeddable root$={root$ => root$.observe(store.dispatch)}>
+        {state$.map(state => (
+            <pre><code>{JSON.stringify(state)}</code></pre>
+        ))}
+    </RootJunction>,
+    document.getElementById('app')
+);
 
 store.dispatch(init());
