@@ -1,10 +1,26 @@
 const path = require('path');
 const fs = require('fs-extra');
-const { Given, When, Then } = require('cucumber');
+const { BeforeAll, Before, Given, When, Then } = require('cucumber');
 const { expect, use } = require('chai');
+const chaiJestSnapshot = require('chai-jest-snapshot');
 
 use(require('chai-string'));
 use(require('chai-fs'));
+
+use(chaiJestSnapshot);
+
+BeforeAll(function () {
+    chaiJestSnapshot.resetSnapshotRegistry();
+});
+
+Before(function (testCase) {
+    const { name } = testCase.pickle;
+
+    this.snapshot.testname = name;
+    this.snapshot.filename =  `features/__snaps__/${
+        name.toLowerCase().replace(/\s/g, '-')
+    }.snap`;
+});
 
 /**
  * Given I Have
@@ -50,13 +66,18 @@ Message: ${this.output.stderr || this.output.stdout}`);
 /**
  * Then I see
  */
-Then('I see a project dir called {string} with:', async function(project, files) {
-    expect(path.join(this.cwd, project)).to.be.a.directory();
+Then('I see a project dir called {string} with file snapshots:', async function(project, files) {
+    const expected = files.raw().map(([_]) => _);
+    const target = path.join(this.cwd, project);
+    expect(target).to.be.a.directory()
+        .with.deep.contents.that.include.members(expected);
 
-    for await (const { filename, content } of this.filesToFixtures(files.hashes())) {
-        expect(path.join(this.cwd, project, filename))
-            .to.be.a.file(`${filename} is not a file`)
-            .with.content(content, `${filename} did not match fixture'`);
+    for (const filename of expected) {
+        const contents = fs.readFileSync(path.join(target, filename)).toString();
+        expect(contents).to.matchSnapshot(
+            this.snapshot.filename,
+            `${this.snapshot.testname}-${filename}`
+        );
     }
 });
 
