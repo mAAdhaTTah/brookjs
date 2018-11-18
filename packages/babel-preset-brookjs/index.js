@@ -1,13 +1,7 @@
-module.exports = function(api, { pragma = 'h', useBuiltIns = true, modules = false, targets } = {}) {
+module.exports = function(api, { pragma = 'h' } = {}) {
     return {
-        presets: [
-            ['env', { useBuiltIns, modules, targets }]
-        ],
         plugins: [
-            ['transform-react-jsx', { pragma }],
-            'ramda',
-            'syntax-dynamic-import',
-            ['transform-object-rest-spread', { useBuiltIns }]
+            ['@babel/transform-react-jsx', { pragma }]
         ]
     };
 };

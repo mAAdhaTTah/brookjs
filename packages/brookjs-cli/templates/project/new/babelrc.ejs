@@ -3,9 +3,9 @@ to: <%= name %>/.babelrc
 ---
 {
   "presets": [
-    ["brookjs", {
-      "modules": false,
-      "useBuiltIns": true
+    "brookjs",
+    ["@babel/env", {
+         modules: false
     }]
   ]
 }

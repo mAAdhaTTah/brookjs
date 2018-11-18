@@ -3,9 +3,9 @@
 exports[`Developer runs new and answers the prompts-.babelrc`] = `
 "{
   \\"presets\\": [
-    [\\"brookjs\\", {
-      \\"modules\\": false,
-      \\"useBuiltIns\\": true
+    \\"brookjs\\",
+    [\\"@babel/env\\", {
+         modules: false
     }]
   ]
 }
@@ -103,7 +103,7 @@ exports[`Developer runs new and answers the prompts-client/actions/index.js`] = 
 `;
 
 exports[`Developer runs new and answers the prompts-client/app.js`] = `
-"import 'babel-polyfill';
+"import '@babel/polyfill';
 import { observeDelta, eddy, combineReducers, fromReduxStore } from 'brookjs';
 import { h, RootJunction } from 'brookjs-silt';
 import { applyMiddleware, createStore } from 'redux';
@@ -196,6 +196,7 @@ exports[`Developer runs new and answers the prompts-package.json`] = `
     \\"author\\": \\"\\",
     \\"license\\": \\"ISC\\",
     \\"devDependencies\\": {
+        \\"@babel/preset-env\\": \\"^7.1.6\\",
         \\"babel-preset-brookjs\\": \\"^1.0.0-alpha.4\\",
         \\"brookjs-cli\\": \\"^1.0.0-alpha.4\\",
         \\"eslint-config-valtech\\": \\"^1.2.0\\",
@@ -203,7 +204,7 @@ exports[`Developer runs new and answers the prompts-package.json`] = `
         \\"hygen\\": \\"^1.6.2\\"
     },
     \\"dependencies\\": {
-        \\"babel-polyfill\\": \\"^6.26.0\\",
+        \\"@babel/polyfill\\": \\"^7.0.0\\",
         \\"brookjs\\": \\"^1.0.0-alpha.4\\",
         \\"brookjs-silt\\": \\"^1.0.0-alpha.4\\",
         \\"prop-types\\": \\"^15.6.2\\",

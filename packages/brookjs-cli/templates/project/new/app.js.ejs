@@ -1,7 +1,7 @@
 ---
 to: <%= name %>/<%= dir %>/app.js
 ---
-import 'babel-polyfill';
+import '@babel/polyfill';
 import { observeDelta, eddy, combineReducers, fromReduxStore } from 'brookjs';
 import { h, RootJunction } from 'brookjs-silt';
 import { applyMiddleware, createStore } from 'redux';

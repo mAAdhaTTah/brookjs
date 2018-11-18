@@ -15,7 +15,7 @@ const cjs = {
 export default [
     {
         input: 'src/index.js',
-        output: { name: pkg.name, file: pkg['unpkg'], format: 'umd' },
+        output: { name: pkg.name, file: pkg.unpkg, format: 'umd' },
         plugins: [
             babel(),
             resolve(),
@@ -31,7 +31,7 @@ export default [
         ],
         plugins: [
             babel({
-                'plugins': ['external-helpers']
+                'plugins': ['@babel/external-helpers']
             }),
             commonjs(cjs),
         ]
