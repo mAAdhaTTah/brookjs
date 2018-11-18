@@ -14,7 +14,7 @@ export default R.curry(({ npm }, actions$, state$) => {
     )
         .flatMap(npm.install([
             {
-                pkg: 'babel-polyfill',
+                pkg: '@babel/polyfill',
                 dev: false
             },
             {
@@ -51,6 +51,10 @@ export default R.curry(({ npm }, actions$, state$) => {
             },
             {
                 pkg: 'babel-preset-brookjs@beta',
+                dev: true
+            },
+            {
+                pkg: '@babel/preset-env',
                 dev: true
             },
             {

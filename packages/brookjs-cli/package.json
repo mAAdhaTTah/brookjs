@@ -13,7 +13,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "test": "npm run test:lint && npm run test:unit && npm run test:feature",
+    "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint ./src --fix",
     "test:unit": "beaver test unit --coverage",
     "test:feature": "cucumber-js",
@@ -22,8 +22,8 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.2",
+    "@babel/core": "^7.0.0",
+    "babel-loader": "^8.0.0",
     "brookjs": "^1.0.0-alpha.4",
     "caporal": "^0.10.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",

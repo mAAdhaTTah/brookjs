@@ -1,11 +1,12 @@
 {
   "presets": [
-    ["brookjs", { "pragma": "h" }]
+    ["brookjs"],
+    "@babel/env"
   ],
   "env": {
     "test": {
       "plugins": [
-        "transform-es2015-modules-commonjs"
+        "@babel/transform-modules-commonjs"
       ]
     }
   }

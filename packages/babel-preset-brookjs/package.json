@@ -11,8 +11,7 @@
     "babel",
     "babel-preset",
     "brookjs",
-    "kefir",
-    "ramda"
+    "kefir"
   ],
   "files": [
     "index.js"
@@ -20,11 +19,7 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "babel-plugin-ramda": "^1.4.3",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.6.1"
+    "@babel/plugin-transform-react-jsx": "^7.0.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }
