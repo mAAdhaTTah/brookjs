@@ -6,7 +6,6 @@ import { lAppAuthor, lAppDescription, lAppDir,
 import { READ_ENV, READ_RC_FILE, RUN } from '../actions';
 
 export * from './build';
-export * from './make';
 export * from './test';
 
 export const selectConfirmMessage  = state =>

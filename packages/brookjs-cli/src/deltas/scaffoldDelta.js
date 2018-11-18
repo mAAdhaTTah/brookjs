@@ -1,15 +1,11 @@
 import path from 'path';
-import R from 'ramda';
 import Kefir from 'kefir';
 import { ofType } from 'brookjs';
 import { runner } from 'hygen';
 import inquirer from 'inquirer';
 import execa from 'execa';
-import { RUN, CONFIRM_CONFIG, READ_ENV, READ_RC_FILE, fileCreated } from '../actions';
-import { selectNewProjectContext, selectFilePath,
-    selectBarrelPath, selectExportTemplate, selectMakeContext, isMakeCommand,
-    selectInstanceTemplate } from '../selectors';
-import { lCommandFileOpts } from '../lenses';
+import { CONFIRM_CONFIG, fileCreated } from '../actions';
+import { selectNewProjectContext } from '../selectors';
 
 /**
  * Match the Logger interface expected by Hygen.
@@ -44,7 +40,7 @@ class Logger {
     }
 }
 
-export default ({ scaffold, logger }) => (actions$, state$) => {
+export default ({ logger }) => (actions$, state$) => {
     const new$ = state$.sampledBy(actions$.thru(ofType(CONFIRM_CONFIG))).take(1).delay(0)
         .flatMap(state => {
             const argv = ['project', 'new'];
@@ -74,31 +70,7 @@ export default ({ scaffold, logger }) => (actions$, state$) => {
                 );
         });
 
-    const make$ = state$.sampledBy(actions$.thru(ofType(READ_RC_FILE, READ_ENV, RUN)).bufferWithCount(3))
-        .take(1).filter(isMakeCommand).flatMap(state => {
-            const specs = [{
-                action: scaffold.APPEND,
-                target: scaffold.APP,
-                path: selectBarrelPath,
-                template: R.view(lCommandFileOpts, state) ? selectExportTemplate : selectInstanceTemplate,
-                context: selectMakeContext
-            }];
-
-            if (R.view(lCommandFileOpts, state)) {
-                specs.push({
-                    action: scaffold.APPEND,
-                    target: scaffold.APP,
-                    path: selectFilePath,
-                    template: selectInstanceTemplate,
-                    context: selectMakeContext
-                });
-            }
-
-            return scaffold(specs, state);
-        });
-
     return Kefir.merge([
-        make$,
         new$
     ]);
 };
