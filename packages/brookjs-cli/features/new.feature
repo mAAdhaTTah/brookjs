@@ -4,7 +4,8 @@ Feature: new command
   As a developer
   I want to bootstrap a new application with configuration
 
-  Scenario:
+  @new-prompts
+  Scenario: Developer answers the prompts
     When I run beaver with "new test-app"
     And I respond to the prompts with:
       | text                                          | response           |
@@ -31,7 +32,8 @@ Feature: new command
       | client/selectors/index.js  | selectors--index.js  |
       | client/services/index.js   | services--index.js   |
 
-  Scenario:
+  @new-yes
+  Scenario: Developer accepts the defaults
     When I run beaver with "new test-app -y"
     And I wait for the command to finish with code 0
     Then I see a project dir called "test-app" with:
