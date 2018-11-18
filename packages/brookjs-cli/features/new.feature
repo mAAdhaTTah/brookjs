@@ -20,6 +20,7 @@ Feature: new command
       | .babelrc                   |
       | .beaverrc.js               |
       | .eslintrc.js               |
+      | .hygen.js                  |
       | client/app.js              |
       | client/dom.js              |
       | client/view.hbs            |
@@ -40,6 +41,7 @@ Feature: new command
       | .babelrc                |
       | .beaverrc.js            |
       | .eslintrc.js            |
+      | .hygen.js               |
       | src/app.js              |
       | src/dom.js              |
       | src/view.hbs            |

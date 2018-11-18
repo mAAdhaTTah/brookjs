@@ -63,6 +63,19 @@ exports[`Developer runs new and accepts the defaults-.eslintrc.js`] = `
 "
 `;
 
+exports[`Developer runs new and accepts the defaults-.hygen.js`] = `
+"const loader = require('esm');
+
+require = loader(module, { mode: 'auto', cjs: true });
+
+module.exports = {
+    helpers: {
+        dir: () => require('./.beaver.js').dir
+    }
+};
+"
+`;
+
 exports[`Developer runs new and accepts the defaults-package.json`] = `
 "{
     \\"name\\": \\"test-app\\",
@@ -78,7 +91,8 @@ exports[`Developer runs new and accepts the defaults-package.json`] = `
     \\"devDependencies\\": {
         \\"babel-preset-brookjs\\": \\"^0.11.3\\",
         \\"brookjs-cli\\": \\"^0.11.16\\",
-        \\"eslint-config-valtech\\": \\"^1.2.0\\"
+        \\"eslint-config-valtech\\": \\"^1.2.0\\",
+        \\"hygen\\": \\"^1.6.2\\"
     },
     \\"dependencies\\": {
         \\"babel-polyfill\\": \\"^6.26.0\\",
