@@ -42,7 +42,7 @@ export default class Changelog extends React.Component {
                 return this.setState({ releases: JSON.parse(storage) });
             }
 
-            const response = await fetch('https://api.github.com/repos/valtech-nyc/brookjs/releases', {
+            const response = await fetch('https://api.github.com/repos/mAAdhaTTah/brookjs/releases', {
                 method: 'GET'
             });
 
