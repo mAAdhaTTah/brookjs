@@ -22,21 +22,14 @@ export const selectRcPath = state =>
 export const selectRoot = state =>
     path.join(state.env.cwd, R.view(lAppName, state));
 
-export const selectPkgContext = R.applySpec({
+export const selectNewProjectContext = R.applySpec({
+    dir: R.view(lAppDir),
     name: R.view(lAppName),
     version: R.view(lAppVersion),
     description: R.view(lAppDescription),
     main: state => path.join(R.view(lAppDir, state), 'app.js'),
-    author: R.view(lAppAuthor),
+    author: R.pipe(R.view(lAppAuthor), R.defaultTo('')),
     license: R.view(lAppLicense),
-});
-
-export const selectRcContext = R.applySpec({
-    dir: R.view(lAppDir)
-});
-
-export const selectAppJsContext = R.applySpec({
-    name: R.view(lAppName)
 });
 
 export const takeStateOnBootstrap = (state$, actions$) =>

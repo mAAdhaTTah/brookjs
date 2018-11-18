@@ -37,6 +37,7 @@
     "glob": "^7.1.2",
     "handlebars": "^4.0.10",
     "handlebars-loader": "^1.6.0",
+    "hygen": "^1.6.2",
     "inquirer": "^6.0.0",
     "kefir": "^3.8.0",
     "lerna": "^3.0.6",

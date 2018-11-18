@@ -136,15 +136,9 @@ store.dispatch(init());
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/components/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and accepts the defaults-src/components/index.js`] = `""`;
 
-exports[`Developer runs new and accepts the defaults-src/deltas/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and accepts the defaults-src/deltas/index.js`] = `""`;
 
 exports[`Developer runs new and accepts the defaults-src/dom.js`] = `
 "import { children, component, Kefir, render, containerAttribute } from 'brookjs';
@@ -162,20 +156,14 @@ export const view = component({
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/reducers/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and accepts the defaults-src/reducers/index.js`] = `""`;
 
 exports[`Developer runs new and accepts the defaults-src/selectors/index.js`] = `
 "export const selectProps = props$ => props$;
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/services/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and accepts the defaults-src/services/index.js`] = `""`;
 
 exports[`Developer runs new and accepts the defaults-src/view.hbs`] = `
 "<div data-brk-container=\\"app\\">

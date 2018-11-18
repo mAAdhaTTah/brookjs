@@ -14,7 +14,7 @@ export default R.curry(function main (name, args, options, logger) {
         applyMiddleware(observeDelta(
             envDelta({ process, require: loader(module, { mode: 'auto', cjs: true }) }),
             npmDelta({ npm }),
-            scaffoldDelta({ scaffold }),
+            scaffoldDelta({ scaffold, logger }),
             terminalDelta({ ui: ui(logger) }),
             testRunnerDelta({ glob }),
             webpackDelta({ webpack: WebpackService })

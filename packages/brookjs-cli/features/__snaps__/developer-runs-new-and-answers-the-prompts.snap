@@ -109,15 +109,9 @@ store.dispatch(init());
 "
 `;
 
-exports[`Developer runs new and answers the prompts-client/components/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and answers the prompts-client/components/index.js`] = `""`;
 
-exports[`Developer runs new and answers the prompts-client/deltas/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and answers the prompts-client/deltas/index.js`] = `""`;
 
 exports[`Developer runs new and answers the prompts-client/dom.js`] = `
 "import { children, component, Kefir, render, containerAttribute } from 'brookjs';
@@ -135,20 +129,14 @@ export const view = component({
 "
 `;
 
-exports[`Developer runs new and answers the prompts-client/reducers/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and answers the prompts-client/reducers/index.js`] = `""`;
 
 exports[`Developer runs new and answers the prompts-client/selectors/index.js`] = `
 "export const selectProps = props$ => props$;
 "
 `;
 
-exports[`Developer runs new and answers the prompts-client/services/index.js`] = `
-"
-"
-`;
+exports[`Developer runs new and answers the prompts-client/services/index.js`] = `""`;
 
 exports[`Developer runs new and answers the prompts-client/view.hbs`] = `
 "<div data-brk-container=\\"app\\">
