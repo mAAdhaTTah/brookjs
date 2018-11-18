@@ -17,6 +17,7 @@ class CliWorld {
         this.parameters = parameters;
         this.bin = path.join(__dirname, '..', '..', 'bin', 'beaver.js');
         this.cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'cli-'));
+        this.snapshot = {};
         this.output = {
             stdout: '',
             stderr: '',
@@ -120,22 +121,6 @@ class CliWorld {
 
             loop();
         });
-    }
-
-    async *filesToFixtures(files) {
-        for (const { filename, fixture } of files) {
-            let content = '';
-            const target = path.join(__dirname, '..', '.fixtures', fixture);
-
-            try {
-                content = (await fs.readFile(target)).toString();
-            } catch (e) {
-                // create new empty fixture
-                await fs.writeFile(target, content);
-            }
-
-            yield { filename, content };
-        }
     }
 
     getInstanceForType(name, barrel) {

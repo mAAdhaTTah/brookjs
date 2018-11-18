@@ -1,0 +1,187 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Developer runs new and answers the prompts-.babelrc`] = `
+"{
+  \\"presets\\": [
+    [\\"brookjs\\", {
+      \\"modules\\": false,
+      \\"useBuiltIns\\": true
+    }]
+  ]
+}
+"
+`;
+
+exports[`Developer runs new and answers the prompts-.beaverrc.js`] = `
+"export const dir = 'client';
+
+/**
+ * Mocha testing configuration.
+ */
+export const mocha = {
+    reporter: 'spec',
+    ui: 'bdd',
+    requires: []
+};
+
+/**
+ * Webpack build configuration.
+ */
+export const webpack = {
+    entry: {
+        app: 'app.js'
+    },
+    output: {
+        path: 'dist/',
+        filename: '[name].js'
+    },
+    modifier: (config, state) => config
+};
+"
+`;
+
+exports[`Developer runs new and answers the prompts-.eslintrc.js`] = `
+"module.exports = {
+    root: true,
+    parserOptions: {
+        ecmaVersion: 8,
+        sourceType: 'module',
+        ecmaFeatures: {
+            impliedStrict: true,
+            jsx: true
+        },
+    },
+    env: {
+        es6: true,
+        node: true,
+        browser: true
+    },
+    extends: [
+        'valtech'
+    ]
+};
+"
+`;
+
+exports[`Developer runs new and answers the prompts-.hygen.js`] = `
+"const loader = require('esm');
+
+require = loader(module, { mode: 'auto', cjs: true });
+
+module.exports = {
+    helpers: {
+        dir: () => require('./.beaver.js').dir
+    }
+};
+"
+`;
+
+exports[`Developer runs new and answers the prompts-client/actions/app.js`] = `
+"export const INIT = 'INIT';
+
+export const init = () => ({
+    type: INIT
+});
+"
+`;
+
+exports[`Developer runs new and answers the prompts-client/actions/index.js`] = `
+"export * from './app';
+"
+`;
+
+exports[`Developer runs new and answers the prompts-client/app.js`] = `
+"import 'babel-polyfill';
+import { domDelta, observeDelta } from 'brookjs';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import { init } from './actions';
+import {} from './deltas';
+import { el, view } from './dom';
+import {} from './reducers';
+import { selectProps } from './selectors';
+
+const { __INITIAL_STATE__ } = global;
+
+const compose = composeWithDevTools({
+    name: 'test-app'
+});
+
+const enhancer = compose(applyMiddleware(observeDelta(
+    // Register your deltas here
+    domDelta({ el, view, selectProps })
+)));
+
+const reducer = combineReducers({
+    // Register your reducers here
+});
+
+const store = createStore(reducer, __INITIAL_STATE__, enhancer);
+
+store.dispatch(init());
+"
+`;
+
+exports[`Developer runs new and answers the prompts-client/components/index.js`] = `""`;
+
+exports[`Developer runs new and answers the prompts-client/deltas/index.js`] = `""`;
+
+exports[`Developer runs new and answers the prompts-client/dom.js`] = `
+"import { children, component, Kefir, render, containerAttribute } from 'brookjs';
+import { } from './components';
+import template from './view.hbs';
+
+export const el = doc => Kefir.fromCallback(callback => {
+    callback(doc.querySelector(\`[\${containerAttribute('app')}]\`));
+});
+
+export const view = component({
+    children: children({}),
+    render: render(template)
+});
+"
+`;
+
+exports[`Developer runs new and answers the prompts-client/reducers/index.js`] = `""`;
+
+exports[`Developer runs new and answers the prompts-client/selectors/index.js`] = `
+"export const selectProps = props$ => props$;
+"
+`;
+
+exports[`Developer runs new and answers the prompts-client/services/index.js`] = `""`;
+
+exports[`Developer runs new and answers the prompts-client/view.hbs`] = `
+"<div data-brk-container=\\"app\\">
+
+</div>
+"
+`;
+
+exports[`Developer runs new and answers the prompts-package.json`] = `
+"{
+    \\"name\\": \\"test-app\\",
+    \\"version\\": \\"1.0.0\\",
+    \\"description\\": \\"A test application\\",
+    \\"main\\": \\"client/app.js\\",
+    \\"scripts\\": {
+        \\"test\\": \\"echo \\\\\\"Error: no test specified\\\\\\" && exit 1\\"
+    },
+    \\"keywords\\": [],
+    \\"author\\": \\"\\",
+    \\"license\\": \\"ISC\\",
+    \\"devDependencies\\": {
+        \\"babel-preset-brookjs\\": \\"^0.11.3\\",
+        \\"brookjs-cli\\": \\"^0.11.16\\",
+        \\"eslint-config-valtech\\": \\"^1.2.0\\",
+        \\"hygen\\": \\"^1.6.2\\"
+    },
+    \\"dependencies\\": {
+        \\"babel-polyfill\\": \\"^6.26.0\\",
+        \\"brookjs\\": \\"^0.11.16\\",
+        \\"redux\\": \\"^4.0.1\\",
+        \\"redux-devtools-extension\\": \\"^2.13.5\\"
+    }
+}
+"
+`;

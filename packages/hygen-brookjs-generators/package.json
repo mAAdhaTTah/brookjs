@@ -1,0 +1,19 @@
+{
+  "name": "hygen-brookjs-generators",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mAAdhaTTah/brookjs.git"
+  },
+  "author": "James DiGioia <jamesorodig@gmail.com> (http://jamesdigioia.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mAAdhaTTah/brookjs/issues"
+  },
+  "homepage": "https://github.com/mAAdhaTTah/brookjs#readme"
+}

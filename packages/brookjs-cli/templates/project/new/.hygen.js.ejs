@@ -1,0 +1,12 @@
+---
+to: <%= name %>/.hygen.js
+---
+const loader = require('esm');
+
+require = loader(module, { mode: 'auto', cjs: true });
+
+module.exports = {
+    helpers: {
+        dir: () => require('./.beaver.js').dir
+    }
+};

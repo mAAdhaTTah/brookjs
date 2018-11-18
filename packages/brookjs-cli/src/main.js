@@ -6,7 +6,7 @@ import { run } from './actions';
 import { envDelta, npmDelta, scaffoldDelta, terminalDelta,
     testRunnerDelta, webpackDelta } from './deltas';
 import { app, command, env, mocha, webpack } from './reducers';
-import { glob, npm, scaffold, ui, WebpackService } from './services';
+import { glob, npm, ui, WebpackService } from './services';
 
 export default R.curry(function main (name, args, options, logger) {
     const store = createStore(
@@ -14,7 +14,7 @@ export default R.curry(function main (name, args, options, logger) {
         applyMiddleware(observeDelta(
             envDelta({ process, require: loader(module, { mode: 'auto', cjs: true }) }),
             npmDelta({ npm }),
-            scaffoldDelta({ scaffold }),
+            scaffoldDelta({ logger }),
             terminalDelta({ ui: ui(logger) }),
             testRunnerDelta({ glob }),
             webpackDelta({ webpack: WebpackService })

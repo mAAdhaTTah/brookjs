@@ -1,0 +1,14 @@
+---
+to: <%= dir %>/deltas/<%= name %>.js
+---
+import { Kefir } from 'brookjs';
+import {} from '../actions';
+import {} from '../selectors';
+
+export default ({ /* services */ }) => (action$, state$) => {
+    // Create delta streams.
+
+    return Kefir.merge([
+        // Add new streams here.
+    ]);
+};

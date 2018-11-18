@@ -1,0 +1,8 @@
+---
+to: <%= dir %>/actions/index.js
+---
+export const <%= h.underscore(name, true) %> = '<%= h.underscore(name, true) %>';
+
+export const <%= name %> = () => ({
+    type: <%= h.underscore(name, true) %>
+});

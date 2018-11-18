@@ -1,8 +1,0 @@
-{
-  "presets": [
-    ["brookjs", {
-      "modules": false,
-      "useBuiltIns": true
-    }]
-  ]
-}
