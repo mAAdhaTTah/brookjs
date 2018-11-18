@@ -1,15 +1,15 @@
 ---
 to: <%= dir %>/components/<%= name %>.js
 ---
-import { component, children, render } from 'brookjs';
-import template from './<%= name %>.hbs';
+import { h } from 'brookjs-silt';
+import PropTypes from 'prop-types';
 
-export default component({
-    children: children({
+const <%= name %> = ({}) => (
+    <div>New component</div>
+);
 
-    }),
-    events: events({
+<%= name %>.propTypes = {
 
-    }),
-    render: render(template)
-})
+};
+
+export default <%= name %>;

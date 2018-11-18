@@ -18,7 +18,11 @@ export default R.curry(({ npm }, actions$, state$) => {
                 dev: false
             },
             {
-                pkg: 'brookjs',
+                pkg: 'brookjs@beta',
+                dev: false
+            },
+            {
+                pkg: 'brookjs-silt@beta',
                 dev: false
             },
             {
@@ -30,15 +34,31 @@ export default R.curry(({ npm }, actions$, state$) => {
                 dev: false
             },
             {
-                pkg: 'brookjs-cli',
+                pkg: 'react',
+                dev: false
+            },
+            {
+                pkg: 'react-dom',
+                dev: false
+            },
+            {
+                pkg: 'prop-types',
+                dev: false
+            },
+            {
+                pkg: 'brookjs-cli@beta',
                 dev: true
             },
             {
-                pkg: 'babel-preset-brookjs',
+                pkg: 'babel-preset-brookjs@beta',
                 dev: true
             },
             {
                 pkg: 'eslint-config-valtech',
+                dev: true
+            },
+            {
+                pkg: 'eslint-plugin-react',
                 dev: true
             },
             {

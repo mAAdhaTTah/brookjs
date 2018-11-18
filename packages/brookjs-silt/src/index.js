@@ -6,5 +6,4 @@ import toJunction from './toJunction';
 import view from './view';
 import withRef$ from './withRef';
 
-export { h, h as createElement, loop, observableOf, RootJunction, toJunction,
-    view, withRef$ };
+export { h, loop, observableOf, RootJunction, toJunction, view, withRef$ };
