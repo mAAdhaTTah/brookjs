@@ -55,10 +55,6 @@ class CliWorld {
         return fs.appendFile(path.join(this.cwd, file.path), file.contents);
     }
 
-    getBarrel(barrel) {
-        return fs.readFile(path.join(this.cwd, 'src', barrel, 'index.js'), 'utf-8');
-    }
-
     getFile(file, barrel) {
         return fs.readFile(path.join(this.cwd, 'src', barrel, file), 'utf-8');
     }
@@ -129,76 +125,6 @@ class CliWorld {
 
             loop();
         });
-    }
-
-    getInstanceForType(name, barrel) {
-        switch (barrel) {
-            case 'actions':
-                return `export const ${constant(name)} = '${constant(name)}';
-
-export const ${name} = () => ({
-    type: ${constant(name)}
-});`;
-            case 'components':
-                return `import { component, children, render } from 'brookjs';
-import template from './${name}.hbs';
-
-export default component({
-    children: children({
-
-    }),
-    events: events({
-
-    }),
-    render: render(template)
-})`;
-            case 'deltas':
-                return `import { Kefir } from 'brookjs';
-import {} from '../actions';
-import {} from '../selectors';
-
-export default ({ /* services */ }) => (actions$, state$) => {
-    // Create delta streams.
-
-    return Kefir.merge([
-        // Add new streams here.
-    ]);
-};`;
-            case 'reducers':
-                return `import { combineActionReducers } from 'brookjs';
-import { } from '../actions';
-
-const defaults = {};
-
-const cond = [
-
-];
-
-export default combineActionReducers(cond, defaults);`;
-            case 'selectors':
-                return `export const ${name} = state => ({});`;
-            case 'services':
-                return `import { Kefir } from 'brookjs';
-
-export default () => Kefir.never();`;
-            default:
-                throw new Error('Invalid barrel ' + barrel);
-        }
-    }
-
-    getExportForType(name, barrel) {
-        switch (barrel) {
-            case 'actions':
-            case 'selectors':
-                return `export * from './${name}';`;
-            case 'components':
-            case 'deltas':
-            case 'reducers':
-            case 'services':
-                return `export { default as ${name} } from './${name}';`;
-            default:
-                throw new Error('Invalid barrel ' + barrel);
-        }
     }
 }
 
