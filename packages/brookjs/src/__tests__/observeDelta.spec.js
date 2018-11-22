@@ -104,6 +104,32 @@ describe('observeDelta', function() {
         });
     });
 
+    it('should interleave actions emitted in the middle of queue', () => {
+        const delta1 = sinon.spy(action$ =>
+            action$.thru(ofType('FIRST_REQUEST'))
+                .map(() => ({ type: 'SECOND_REQUEST' }))
+        );
+        const delta2 = sinon.spy(action$ =>
+            Kefir.merge([
+                action$.thru(ofType('FIRST_REQUEST'))
+                    .map(() => ({ type: 'FIRST_RESPONSE' })),
+                action$.thru(ofType('SECOND_REQUEST'))
+                    .map(() => ({ type: 'SECOND_RESPONSE' }))
+            ])
+        );
+        const store = configureStore([observeDelta(delta1, delta2)])({});
+        const [action$] = delta2.args[0];
+
+        expect(action$).to.emit([
+            value({ type: 'FIRST_REQUEST' }),
+            value({ type: 'SECOND_REQUEST' }),
+            value({ type: 'SECOND_RESPONSE' }),
+            value({ type: 'FIRST_RESPONSE' }),
+        ], () => {
+            store.dispatch({ type: 'FIRST_REQUEST' });
+        });
+    });
+
     afterEach(function() {
         if (sub) {
             sub.unsubscribe();
