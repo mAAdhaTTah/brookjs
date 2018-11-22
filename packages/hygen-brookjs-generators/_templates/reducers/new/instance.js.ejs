@@ -1,13 +1,13 @@
 ---
 to: <%= dir %>/reducers/<%= name %>.js
 ---
-import { combineActionReducers } from 'brookjs';
+import { handleActions } from 'redux-actions';
 import { } from '../actions';
 
-const defaults = {};
+const defaultState = {};
 
-const cond = [
+const reducerMap = {
 
-];
+};
 
-export default combineActionReducers(cond, defaults);
+export default combineActionReducers(reducerMap, defaultState);

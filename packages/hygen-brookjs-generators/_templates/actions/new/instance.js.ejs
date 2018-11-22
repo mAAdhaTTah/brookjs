@@ -1,8 +1,10 @@
 ---
-to: <%= dir %>/actions/index.js
+to: <%= dir %>/actions/<%= name %>.js
 ---
-export const <%= h.underscore(name, true) %> = '<%= h.underscore(name, true) %>';
+import { createActions } from 'redux-actions';
 
-export const <%= name %> = () => ({
-    type: <%= h.underscore(name, true) %>
+export const {
+
+} = createActions({
+
 });

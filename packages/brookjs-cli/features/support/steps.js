@@ -81,18 +81,6 @@ Then('I see a project dir called {string} with file snapshots:', async function(
     }
 });
 
-Then('I see an {string} added to barrel for {string}', async function (name, barrel) {
-    expect(await this.getBarrel(barrel)).to.have.string(this.getInstanceForType(name, barrel));
-});
-
-Then('I see {string} exported from barrel for {string}', async function (name, barrel) {
-    expect(await this.getBarrel(barrel)).to.have.string(this.getExportForType(name, barrel));
-});
-
-Then('I see {string} with {string} in {string}', async function (file, name, barrel) {
-    expect(await this.getFile(file, barrel)).to.have.string(this.getInstanceForType(name, barrel));
-});
-
 Then('I see {string} with a file size between {int} and {int} bytes', function (bundle, lower, upper) {
     const file = path.join(this.cwd, bundle);
     expect(file).to.be.a.file(this.output.stdout);
