@@ -1,4 +1,9 @@
 ---
 to: <%= dir %>/selectors/<%= name %>.js
 ---
-export const <%= name %> = state => ({});
+import { createSelector } from 'reselect';
+
+export const <%= name %> = createSelector(
+    [],
+    state => ({})
+);

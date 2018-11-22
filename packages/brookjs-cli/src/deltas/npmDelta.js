@@ -46,6 +46,14 @@ export default R.curry(({ npm }, actions$, state$) => {
                 dev: false
             },
             {
+                pkg: 'redux-actions',
+                dev: false
+            },
+            {
+                pkg: 'reselect',
+                dev: false
+            },
+            {
                 pkg: 'brookjs-cli@beta',
                 dev: true
             },
