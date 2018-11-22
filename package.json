@@ -32,6 +32,7 @@
     "lerna": "^3.0.6",
     "raf": "^3.4.0",
     "react-dom": "^16.2.0",
+    "redux-mock-store": "^1.5.3",
     "rimraf": "^2.5.4",
     "rollup": "^0.66.0",
     "rollup-plugin-babel": "^4.0.0",

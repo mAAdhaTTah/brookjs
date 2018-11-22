@@ -8,9 +8,9 @@ import Kefir from 'kefir';
  * Provides an Observable-based way to respond to events from,
  * and emit events into, the application's central redux store.
  *
- * The delta function takes an `actions$` stream and a `state$`
+ * The delta function takes an `action$` stream and a `state$`
  * stream, and should return a new `delta$` stream, which gets
- * observed by the store. Note that the `actions$` stream will
+ * observed by the store. Note that the `action$` stream will
  * re-emit events emitted from the returned `delta$` stream.
  *
  * Exposes the returned subscription, allowing other middleware
@@ -21,22 +21,49 @@ import Kefir from 'kefir';
  */
 export default function observeDelta(...sources) {
     return store => {
-        const actions$ = Kefir.pool();
-        const state$ = Kefir.pool();
+        const action$ = new Kefir.Stream().setName('action$');
+        const state$ = new Kefir.Stream().toProperty(store.getState).setName('state$');
 
-        store.subscription = Kefir.merge(sources.map(source => source(actions$, state$.toProperty(store.getState))))
+        let emitting = false;
+        let queue = [];
+
+        store.subscription = Kefir.merge(
+            sources.map(source => source(action$, state$))
+        )
             .flatMapErrors(err => Kefir.stream(emitter => {
-                console.error('Error emitted into delta', err); // eslint-disable-line no-console
+                // eslint-disable-next-line no-console
+                console.error('Error emitted into delta', err);
                 emitter.end();
             }))
-            .observe({ value: store.dispatch });
+            .observe({
+                value(value) {
+                    if (emitting) {
+                        queue.push(value);
+                    } else {
+                        store.dispatch(value);
+                    }
+                }
+            });
 
         return next => action => {
             const result = next(action);
             const state = store.getState();
 
-            state$.plug(Kefir.constant(state));
-            actions$.plug(Kefir.constant(result));
+            emitting = true;
+
+            state$._emitValue(state);
+            action$._emitValue(result);
+
+            emitting = false;
+
+            if (queue.length) {
+                const run = queue;
+                queue = [];
+
+                for (const action of run) {
+                    store.dispatch(action);
+                }
+            }
 
             return result;
         };

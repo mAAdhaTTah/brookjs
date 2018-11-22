@@ -4,9 +4,14 @@ import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
+import configureStore from 'redux-mock-store';
+import { chaiPlugin } from 'brookjs-desalinate';
+import ofType from '../ofType';
 import observeDelta from '../observeDelta';
 
 chai.use(sinonChai);
+const { plugin, value } = chaiPlugin({ Kefir });
+chai.use(plugin);
 
 describe('observeDelta', function() {
     let delta, delta$, deltaMiddlware, reducer, initial, store, actions$, state$, sub;
@@ -21,7 +26,6 @@ describe('observeDelta', function() {
             switch (type) {
                 case 'AN_ACTION':
                     return { changed: true };
-                    break;
                 default:
                     return state;
             }
@@ -77,6 +81,53 @@ describe('observeDelta', function() {
         delta$.plug(Kefir.constant(action));
 
         expect(subscribe).to.be.calledOnce;
+    });
+
+    it('should emit the actions in the correct order', () => {
+        const delta1 = sinon.spy(action$ =>
+            action$.thru(ofType('REQUEST'))
+                .map(() => ({ type: 'FIRST_RESPONSE' }))
+        );
+        const delta2 = sinon.spy(action$ =>
+            action$.thru(ofType('FIRST_RESPONSE'))
+                .map(() => ({ type: 'SECOND_RESPONSE' }))
+        );
+        const store = configureStore([observeDelta(delta1, delta2)])({});
+        const [action$] = delta2.args[0];
+
+        expect(action$).to.emit([
+            value({ type: 'REQUEST' }),
+            value({ type: 'FIRST_RESPONSE' }),
+            value({ type: 'SECOND_RESPONSE' }),
+        ], () => {
+            store.dispatch({ type: 'REQUEST' });
+        });
+    });
+
+    it('should interleave actions emitted in the middle of queue', () => {
+        const delta1 = sinon.spy(action$ =>
+            action$.thru(ofType('FIRST_REQUEST'))
+                .map(() => ({ type: 'SECOND_REQUEST' }))
+        );
+        const delta2 = sinon.spy(action$ =>
+            Kefir.merge([
+                action$.thru(ofType('FIRST_REQUEST'))
+                    .map(() => ({ type: 'FIRST_RESPONSE' })),
+                action$.thru(ofType('SECOND_REQUEST'))
+                    .map(() => ({ type: 'SECOND_RESPONSE' }))
+            ])
+        );
+        const store = configureStore([observeDelta(delta1, delta2)])({});
+        const [action$] = delta2.args[0];
+
+        expect(action$).to.emit([
+            value({ type: 'FIRST_REQUEST' }),
+            value({ type: 'SECOND_REQUEST' }),
+            value({ type: 'SECOND_RESPONSE' }),
+            value({ type: 'FIRST_RESPONSE' }),
+        ], () => {
+            store.dispatch({ type: 'FIRST_REQUEST' });
+        });
     });
 
     afterEach(function() {
