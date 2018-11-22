@@ -21,9 +21,8 @@ import Kefir from 'kefir';
  */
 export default function observeDelta(...sources) {
     return store => {
-        const action$ = new Kefir.Stream();
-        const state$ = new Kefir.Property();
-        state$._currentEvent = store.getState();
+        const action$ = new Kefir.Stream().setName('action$');
+        const state$ = new Kefir.Stream().toProperty(store.getState).setName('state$');
 
         let emitting = false;
         let queue = [];
@@ -52,8 +51,8 @@ export default function observeDelta(...sources) {
 
             emitting = true;
 
-            state$.plug(Kefir.constant(state));
-            action$.plug(Kefir.constant(result));
+            state$._emitValue(state);
+            action$._emitValue(result);
 
             emitting = false;
 
