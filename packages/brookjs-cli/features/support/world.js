@@ -41,6 +41,10 @@ class CliWorld {
         this.cwd += '/test-app';
 
         await this.ended();
+
+        this.spawn('npm', 'install');
+
+        await this.ended();
     }
 
     outputFile (file) {
@@ -60,6 +64,10 @@ class CliWorld {
     }
 
     run(command) {
+        this.spawn(this.bin, command);
+    }
+
+    spawn(bin, command) {
         this.output = {
             stdout: '',
             stderr: '',
@@ -67,7 +75,7 @@ class CliWorld {
             code: null
         };
 
-        this.spawned = spawn(this.bin, command.split(' '), { cwd: this.cwd });
+        this.spawned = spawn(bin, command.split(' '), { cwd: this.cwd });
         this.spawned.stdin.setEncoding('utf-8');
 
         this.spawned.stdout.on('data', data => {
