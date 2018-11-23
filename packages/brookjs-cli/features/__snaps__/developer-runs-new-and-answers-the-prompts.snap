@@ -88,6 +88,37 @@ module.exports = {
 "
 `;
 
+exports[`Developer runs new and answers the prompts-.storybook/.babelrc`] = `
+"{
+  \\"presets\\": [
+    \\"brookjs\\",
+    \\"@babel/env\\"
+  ]
+}
+"
+`;
+
+exports[`Developer runs new and answers the prompts-.storybook/addons.js`] = `
+"import 'brookjs-desalinate/register';
+"
+`;
+
+exports[`Developer runs new and answers the prompts-.storybook/config.js`] = `
+"import { configure, addDecorator } from '@storybook/react';
+import { withJunction } from 'brookjs-desalinate';
+
+// automatically import all files ending in *.stories.js
+const req = require.context('../src', true, /.stories.js$/);
+function loadStories() {
+  req.keys().forEach(filename => req(filename));
+}
+
+addDecorator(withJunction);
+
+configure(loadStories, module);
+"
+`;
+
 exports[`Developer runs new and answers the prompts-client/actions/app.js`] = `
 "export const INIT = 'INIT';
 
@@ -185,36 +216,42 @@ exports[`Developer runs new and answers the prompts-client/view.hbs`] = `
 
 exports[`Developer runs new and answers the prompts-package.json`] = `
 "{
-    \\"name\\": \\"test-app\\",
-    \\"version\\": \\"1.0.0\\",
-    \\"description\\": \\"A test application\\",
-    \\"main\\": \\"client/app.js\\",
-    \\"scripts\\": {
-        \\"test\\": \\"echo \\\\\\"Error: no test specified\\\\\\" && exit 1\\"
-    },
-    \\"keywords\\": [],
-    \\"author\\": \\"\\",
-    \\"license\\": \\"ISC\\",
-    \\"devDependencies\\": {
-        \\"@babel/preset-env\\": \\"^7.0.0\\",
-        \\"babel-preset-brookjs\\": \\"^1.0.0-alpha\\",
-        \\"brookjs-cli\\": \\"^1.0.0-alpha\\",
-        \\"eslint-config-valtech\\": \\"^1.2.0\\",
-        \\"eslint-plugin-react\\": \\"^7.11.0\\",
-        \\"hygen\\": \\"^1.6.2\\"
-    },
-    \\"dependencies\\": {
-        \\"@babel/polyfill\\": \\"^7.0.0\\",
-        \\"brookjs\\": \\"^1.0.0-alpha\\",
-        \\"brookjs-silt\\": \\"^1.0.0-alpha\\",
-        \\"prop-types\\": \\"^15.6.0\\",
-        \\"react\\": \\"^16.3.0\\",
-        \\"react-dom\\": \\"^16.3.0\\",
-        \\"redux\\": \\"^4.0.0\\",
-        \\"redux-actions\\": \\"^2.6.0\\",
-        \\"redux-devtools-extension\\": \\"^2.13.0\\",
-        \\"reselect\\": \\"^4.0.0\\"
-    }
+  \\"name\\": \\"test-app\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A test application\\",
+  \\"main\\": \\"client/app.js\\",
+  \\"scripts\\": {
+    \\"test\\": \\"npm run test:lint && npm run test:unit\\",
+    \\"test:lint\\": \\"eslint src --fix\\",
+    \\"test:unit\\": \\"beaver test unit --coverage --env test\\",
+    \\"storybook\\": \\"start-storybook -p 6006\\"
+  },
+  \\"keywords\\": [],
+  \\"author\\": \\"\\",
+  \\"license\\": \\"ISC\\",
+  \\"devDependencies\\": {
+    \\"@babel/preset-env\\": \\"^7.0.0\\",
+    \\"@storybook/react\\": \\"^4.0.0\\",
+    \\"babel-loader\\": \\"^8.0.0\\",
+    \\"babel-preset-brookjs\\": \\"^1.0.0-alpha\\",
+    \\"brookjs-cli\\": \\"^1.0.0-alpha\\",
+    \\"brookjs-desalinate\\": \\"^1.0.0-alpha\\",
+    \\"eslint-config-valtech\\": \\"^1.2.0\\",
+    \\"eslint-plugin-react\\": \\"^7.11.0\\",
+    \\"hygen\\": \\"^1.6.2\\"
+  },
+  \\"dependencies\\": {
+    \\"@babel/polyfill\\": \\"^7.0.0\\",
+    \\"brookjs\\": \\"^1.0.0-alpha\\",
+    \\"brookjs-silt\\": \\"^1.0.0-alpha\\",
+    \\"prop-types\\": \\"^15.6.0\\",
+    \\"react\\": \\"^16.3.0\\",
+    \\"react-dom\\": \\"^16.3.0\\",
+    \\"redux\\": \\"^4.0.0\\",
+    \\"redux-actions\\": \\"^2.6.0\\",
+    \\"redux-devtools-extension\\": \\"^2.13.0\\",
+    \\"reselect\\": \\"^4.0.0\\"
+  }
 }
 "
 `;
