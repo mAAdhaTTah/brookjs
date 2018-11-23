@@ -25,14 +25,18 @@
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
     "build": "rollup -c ../../rollup.config.js",
+    "storybook": "start-storybook -p 6006",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
+    "@storybook/addon-actions": "^4.0.0",
+    "@storybook/addons": "^4.0.0",
     "chai-kefir": "^2.0.4",
     "deep-eql": "^3.0.1",
-    "lolex": "^2.3.1"
+    "lolex": "^2.3.1",
+    "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "chai": "^4.0.0",

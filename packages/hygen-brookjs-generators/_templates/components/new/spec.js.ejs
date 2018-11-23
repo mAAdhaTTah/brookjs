@@ -1,0 +1,15 @@
+---
+to: <%= dir %>/components/<%= name %>.spec.js
+---
+/* eslint-env mocha */
+import React from 'react';
+import ReactDOM from 'react-dom';
+import <%= name %> from './<%= name %>';
+
+describe('<%= name %>', () => {
+    it('renders without crashing', () => {
+        const div = document.createElement('div');
+        ReactDOM.render(<<%= name %> />, div);
+        ReactDOM.unmountComponentAtNode(div);
+    });
+});

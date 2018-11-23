@@ -31,6 +31,9 @@ Feature: new command
       | client/reducers/index.js   |
       | client/selectors/index.js  |
       | client/services/index.js   |
+      | .storybook/.babelrc        |
+      | .storybook/config.js       |
+      | .storybook/addons.js       |
 
   @new-yes
   Scenario: Developer runs new and accepts the defaults
@@ -52,3 +55,6 @@ Feature: new command
       | src/reducers/index.js   |
       | src/selectors/index.js  |
       | src/services/index.js   |
+      | .storybook/.babelrc     |
+      | .storybook/config.js    |
+      | .storybook/addons.js    |
