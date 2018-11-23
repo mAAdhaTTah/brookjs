@@ -1,0 +1,11 @@
+---
+to: <%= dir %>/components/<%= name %>.stories.js
+---
+import { h } from 'brookjs-silt';
+import { storiesOf } from '@storybook/react';
+import <%= name %> from './<%= name %>';
+
+storiesOf('<%= name %>', module)
+    .add('default', () => (
+        <<%= name %> />
+    ));
