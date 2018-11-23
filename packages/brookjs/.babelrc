@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["brookjs"],
+    "brookjs",
     "@babel/env"
   ],
   "env": {

@@ -8,7 +8,12 @@ const pkg = require(path.resolve(BASE_PATH, 'package.json'));
 
 const cjs = {
     namedExports: {
-        'create-react-ref': ['createRef', 'forwardRef', 'getRef']
+        'create-react-ref': ['createRef', 'forwardRef', 'getRef'],
+        '@storybook/addon-actions': ['action', 'ADDON_ID', 'PANEL_ID',
+            'EVENT_ID'],
+        '@storybook/addons': ['makeDecorator'],
+        'react': ['createContext', 'createElement', 'Component', 'Fragment',
+            'forwardRef']
     }
 };
 

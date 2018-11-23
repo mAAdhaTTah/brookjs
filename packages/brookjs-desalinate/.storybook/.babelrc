@@ -1,0 +1,6 @@
+{
+  "presets": [
+    "brookjs",
+    "@babel/env"
+  ]
+}
