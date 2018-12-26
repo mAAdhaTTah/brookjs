@@ -1,66 +1,36 @@
 import chaiKefir from 'chai-kefir';
+import createHelpers from 'kefir-test-utils';
 import deepEql from 'deep-eql';
-import lolex from 'lolex';
-
-/**
- * A lot of this code is duplicated w/ chai-kefir. Can we share?
- */
-const END = 'end';
-const VALUE = 'value';
-const ERROR = 'error';
 
 export default ({ Kefir }) => {
-    const { plugin, value, error, end, ...rest } = chaiKefir(Kefir);
-
-    const logItem = (event, current) => {
-        switch (event.type) {
-            case VALUE:
-                return value(event.value, { current });
-            case ERROR:
-                return error(event.value, { current });
-            case END:
-                return end({ current });
-        }
-    };
-
-    const withFakeTime = cb => {
-        const clock = lolex.install({ now: 1000 });
-        cb(clock.runToFrame, clock);
-        clock.uninstall();
-    };
-
-    const watchWithTime = obs => {
-        const startTime = new Date();
-        const log = [];
-        let isCurrent = true;
-        obs.onAny(event => log.push([new Date() - startTime, logItem(event, isCurrent)]));
-        isCurrent = false;
-        return log;
-    };
+    const helpers = createHelpers(Kefir);
+    const { withFakeTime, watchWithTime, send, stream, prop, value } = helpers;
+    const { plugin } = chaiKefir(Kefir);
 
     return {
-        ...rest,
-        value, error, end,
+        ...helpers,
         plugin: (chai, utils) => {
             plugin(chai, utils);
 
-            chai.Assertion.addMethod('emitEffectsInTime', function emitEffectsInTime(expected, cb) {
+            chai.Assertion.addMethod('emitFromDelta', function emitFromDelta(
+                expected,
+                cb,
+                { timeLimit = 10000 } = {}
+            ) {
                 let log;
-                const actual = utils.getActual(this, arguments).effect$$;
+                const delta = utils.getActual(this, arguments);
+                const action$ = stream();
+                const state$ = prop();
+                const delta$ = delta(action$, state$);
 
-                withFakeTime((frame, clock) => {
-                    let ran = 0;
-                    log = watchWithTime(actual);
-                    const runFrame = () => {
-                        frame();
-                        // Make sure we run the side effects ourselves,
-                        // since they're being collected here instead of
-                        // being run by virtue of being mounted.
-                        log.slice(ran).forEach(([,item]) => item.value.observe({}));
-                        ran = log.length;
+                withFakeTime((tick, clock) => {
+                    log = watchWithTime(delta$);
+                    const sendAPI = (action, state) => {
+                        send(state$, [value(state)]);
+                        send(action$, [value(action)]);
                     };
-                    cb(runFrame, clock);
-                    log = log.map(([time, item]) => [time, { ...item, value: item.value.$meta }]);
+                    cb(sendAPI, tick, clock);
+                    tick(timeLimit);
                 });
 
                 this.assert(

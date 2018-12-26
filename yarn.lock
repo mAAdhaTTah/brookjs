@@ -8184,6 +8184,13 @@ just-extend@^1.1.27:
   version "1.1.27"
   resolved "https://registry.yarnpkg.com/just-extend/-/just-extend-1.1.27.tgz#ec6e79410ff914e472652abfa0e603c03d60e905"
 
+kefir-test-utils@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/kefir-test-utils/-/kefir-test-utils-1.0.0.tgz#73352e35dd0e37fc5154ad28e1730c5b45acbe5c"
+  integrity sha512-9vvS84CtlO/kUeBnlzYR+D185NevaROfc2HTL0LnsPGB5xlrK8Yx5Fl3t24AvfjeTRLXiHKEriAgJHHPZxcZaA==
+  dependencies:
+    lolex "^2.2.0"
+
 kefir@^3.8.0:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/kefir/-/kefir-3.8.3.tgz#8e0ab10084ed8a01cbb5d4f7f18a0b859f7b9bd9"
