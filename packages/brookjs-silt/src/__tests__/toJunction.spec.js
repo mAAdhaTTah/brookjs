@@ -16,22 +16,21 @@ use(plugin);
 
 describe('toJunction', () => {
     const events = { onButtonClick: e$ => e$.map(() => ({ type: 'CLICK' })) };
+    const Button = toJunction({ events })(({ onButtonClick, text, enabled }) => (
+        enabled ? <button onClick={onButtonClick}>
+            {text}
+        </button> : <span>nothing to click</span>
+    ));
+
+    const ProvidedButton = ({ root$, text, enabled }) => (
+        <Provider value={root$}>
+            <Button text={text} enabled={enabled} />
+        </Provider>
+    );
+
+    const clickButton = wrapper => wrapper.find('button').simulate('click');
 
     describe('events', () => {
-        const Button = toJunction({ events })(({ onButtonClick, text, enabled }) => (
-            enabled ? <button onClick={onButtonClick}>
-                {text}
-            </button> : <span>nothing to click</span>
-        ));
-
-        const ProvidedButton = ({ root$, text, enabled }) => (
-            <Provider value={root$}>
-                <Button text={text} enabled={enabled} />
-            </Provider>
-        );
-
-        const clickButton = wrapper => wrapper.find('button').simulate('click');
-
         it('should render normally', () => {
             const root$ = Kefir.pool();
             const wrapper = mount(
@@ -163,6 +162,45 @@ describe('toJunction', () => {
                     sinon.match({ onButtonClick$: sinon.match.instanceOf(Kefir.Observable) }),
                     sinon.match({ text: 'Click you', enabled: true })
                 );
+        });
+    });
+
+    describe('preplug', () => {
+        it('should map stream', () => {
+            const root$ = Kefir.pool();
+            const wrapper = mount(
+                <Provider value={root$}>
+                    <Button
+                        text={'Click me'}
+                        enabled={true}
+                        preplug={child$ => child$.map(() => ({ type: 'BUTTON_CLICK' }))}
+                    />
+                </Provider>
+            );
+
+            expect(root$).to.emit([value({ type: 'BUTTON_CLICK' })], () => {
+                clickButton(wrapper);
+            });
+        });
+
+        it('should map children', () => {
+            const root$ = Kefir.pool();
+            const Wrapper = toJunction()(() => (
+                <Button
+                    text={'Click me'}
+                    enabled={true}
+                />
+            ));
+
+            const wrapper = mount(
+                <Provider value={root$}>
+                    <Wrapper preplug={child$ => child$.map(() => ({ type: 'BUTTON_CLICK' }))} />
+                </Provider>
+            );
+
+            expect(root$).to.emit([value({ type: 'BUTTON_CLICK' })], () => {
+                clickButton(wrapper);
+            });
         });
     });
 });
