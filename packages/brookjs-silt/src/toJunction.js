@@ -1,20 +1,32 @@
 import React from 'react';
 import Kefir from 'kefir';
+import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import h from './h';
-import { Consumer } from './context';
+import { Consumer, Provider } from './context';
 
-const toJunction = ({ events, combine = x => x }) => WrappedComponent => {
+const toJunction = ({ events = {}, combine = x => x } = {}) => WrappedComponent => {
     class ToJunction extends React.Component {
+        static defaultProps = {
+            preplug: x => x
+        }
+
+        static propTypes = {
+            preplug: PropTypes.func
+        }
+
         constructor(props, context) {
             super(props, context);
             this.root$ = null;
             this.events = {};
 
+            this.children$ = Kefir.pool();
+
             this.sources = {
-                list: [],
-                dict: {}
+                list: [this.children$],
+                dict: { children$: this.children$ },
+                merged: null
             };
 
             for (const key in events) {
@@ -28,11 +40,11 @@ const toJunction = ({ events, combine = x => x }) => WrappedComponent => {
         }
 
         createSource() {
-            return combine(
+            return this.props.preplug(combine(
                 this.sources.merged,
                 this.sources.dict,
                 this.props
-            );
+            ));
         }
 
         unplug() {
@@ -59,7 +71,11 @@ const toJunction = ({ events, combine = x => x }) => WrappedComponent => {
                             this.root$ = root$.plug(this.source$);
                         }
 
-                        return <WrappedComponent {...this.events} {...this.props} />;
+                        return (
+                            <Provider value={this.children$}>
+                                <WrappedComponent {...this.events} {...this.props} />
+                            </Provider>
+                        );
                     }}
                 </Consumer>
             );
