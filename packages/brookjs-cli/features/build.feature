@@ -14,4 +14,4 @@ Feature: build command
     Given I have a project
     When I run beaver with "build --env production"
     And I wait for the command to finish with code 0
-    Then I see "dist/app.js" with a file size between 250000 and 270000 bytes
+    Then I see "dist/app.js" with a file size between 250000 and 300000 bytes
