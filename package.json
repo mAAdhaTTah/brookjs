@@ -5,6 +5,7 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/helpers": "^7.0.0",
     "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/plugin-transform-modules-commonjs": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@storybook/react": "^4.0.8",

@@ -5,6 +5,11 @@ import { Provider } from './context';
 import h from './h';
 
 export default class RootJunction extends React.Component {
+    static propTypes = {
+        children: PropTypes.element.isRequired,
+        root$: PropTypes.func.isRequired
+    }
+
     constructor (props) {
         super(props);
 
@@ -27,8 +32,3 @@ export default class RootJunction extends React.Component {
         );
     }
 }
-
-RootJunction.propTypes = {
-    children: PropTypes.element.isRequired,
-    root$: PropTypes.func.isRequired
-};
