@@ -34,7 +34,10 @@ describe('withRef$', () => {
                 aggregated$={aggregated$} />
         );
 
-        expect(aggregated$).to.emit([value([wrapper.find('button').instance(), { text: 'Click me!' }], { current: true })]);
+        expect(aggregated$).to.emit([value(
+            [wrapper.find('button').instance(), { text: 'Click me!' }],
+            { current: true }
+        )]);
     });
 
     it('should remove ref$ when unmounted', () => {
@@ -48,5 +51,25 @@ describe('withRef$', () => {
         wrapper.unmount();
 
         expect(aggregated$._curSources).to.have.lengthOf(0);
+    });
+
+    it('should replace aggregated$', () => {
+        const aggregated$ = Kefir.pool();
+        const newAggregated$ = Kefir.pool();
+        const wrapper = mount(
+            <Instance
+                text={'Click me!'}
+                aggregated$={aggregated$} />
+        );
+
+        wrapper.setProps({ text: 'Click me!', aggregated$: newAggregated$ });
+
+        expect(aggregated$._curSources).to.have.lengthOf(0);
+        expect(newAggregated$._curSources).to.have.lengthOf(1);
+
+        expect(newAggregated$).to.emit([value(
+            [wrapper.find('button').instance(), { text: 'Click me!' }],
+            { current: true }
+        )]);
     });
 });

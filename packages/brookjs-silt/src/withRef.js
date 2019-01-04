@@ -37,13 +37,11 @@ export default function withRef$(c, callback) {
                             this.aggregated$.unplug(this.plugged$);
                         }
 
-                        this.aggregated$ = aggregated$;
-
                         if (!this.plugged$) {
-                            aggregated$.plug(
-                                this.plugged$ = callback(this.ref$, this.props)
-                            );
+                            this.plugged$ = callback(this.ref$, this.props);
                         }
+
+                        this.aggregated$ = aggregated$.plug(this.plugged$);
 
                         return <Reffed {...this.props} ref={this.ref} />;
                     }}
