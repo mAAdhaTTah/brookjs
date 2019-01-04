@@ -98,6 +98,29 @@ describe('toJunction', () => {
             expect(root$._curSources).to.have.lengthOf(0);
             expect(newAggregated$._curSources).to.have.lengthOf(1);
         });
+
+        it('should take events directly', () => {
+            const Button = toJunction(events)(({ onButtonClick, text, enabled }) => (
+                enabled ? <button onClick={onButtonClick}>
+                    {text}
+                </button> : <span>nothing to click</span>
+            ));
+
+            const ProvidedButton = ({ root$, text, enabled }) => (
+                <Provider value={root$}>
+                    <Button text={text} enabled={enabled} />
+                </Provider>
+            );
+
+            const root$ = Kefir.pool();
+            const wrapper = mount(
+                <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+            );
+
+            expect(root$).to.emit([value({ type: 'CLICK' })], () => {
+                clickButton(wrapper);
+            });
+        });
     });
 
     describe('combine', () => {
