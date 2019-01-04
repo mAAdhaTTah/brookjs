@@ -6,7 +6,15 @@ import wrapDisplayName from 'recompose/wrapDisplayName';
 import h from './h';
 import { Consumer, Provider } from './context';
 
-const toJunction = ({ events = {}, combine = x => x } = {}) => WrappedComponent => {
+const id = x => x;
+
+const toJunction = (events = {}) => WrappedComponent => {
+    let combine = id;
+
+    if (events.events) {
+        ({ events = {}, combine = id } = events);
+    }
+
     class ToJunction extends React.Component {
         static defaultProps = {
             preplug: x => x
