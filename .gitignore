@@ -33,6 +33,7 @@ node_modules
 .esm-cache
 .nyc_output
 .cache
+.rpt2_cache
 
 # Distribution Files
 es
