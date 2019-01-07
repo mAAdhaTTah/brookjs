@@ -12,7 +12,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:lint": "eslint src --fix",
+    "test:lint": "eslint src/**/*.ts --fix",
     "test:unit": "beaver test unit --coverage --env test",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
