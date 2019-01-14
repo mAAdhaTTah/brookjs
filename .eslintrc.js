@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   root: true,
-  parser: 'typescript-eslint-parser',
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
@@ -16,16 +16,11 @@ module.exports = {
     node: true,
     browser: true
   },
-  plugins: ['import', 'react', 'typescript'],
+  plugins: ['import', 'react'],
   extends: 'valtech',
   rules: {
-    indent: [2, 2],
     eqeqeq: [2, 'smart'],
     'wrap-iife': [2, 'inside'],
-    'no-unused-vars': 0,
-
-    // TypeScript
-    'typescript/no-unused-vars': [2],
 
     'import/no-unresolved': 2,
     'import/named': 2,
@@ -59,7 +54,6 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        extensions: ['.js', '.ts', '.tsx'],
         moduleDirectory: ['node_modules', path.join(__dirname, 'packages')]
       }
     },

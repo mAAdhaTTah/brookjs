@@ -1,12 +1,15 @@
 module.exports = api => {
-  api.cache(true);
+    api.cache(false);
 
-  return {
-    presets: ['brookjs', '@babel/typescript', '@babel/env'],
-    env: {
-      test: {
-        plugins: ['@babel/transform-modules-commonjs']
-      }
-    }
-  };
+    return {
+        plugins: [
+            '@babel/plugin-proposal-class-properties',
+            'ramda'
+        ].filter(Boolean),
+        presets: [
+            'brookjs',
+            ['@babel/env', {
+                modules: process.env.NODE_ENV === 'test' ? 'commonjs' : false
+            }]]
+    };
 };

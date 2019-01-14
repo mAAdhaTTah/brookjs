@@ -8,7 +8,6 @@ export const mocha = {
   ui: 'bdd',
   requires: [
     'ts-node/register/transpile-only',
-    '@babel/register',
     'raf/polyfill',
     'jsdom-global/register'
   ]

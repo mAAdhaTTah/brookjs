@@ -1,6 +1,6 @@
 import React from 'react';
 import Kefir from 'kefir';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import h from './h';
