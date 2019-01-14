@@ -12,11 +12,11 @@
   "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:lint": "eslint src --fix",
+    "test:lint": "eslint src/**/*.ts --fix",
     "test:unit": "beaver test unit --coverage --env test",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
-    "build": "rollup -c ../../rollup.config.js",
+    "build": "rollup -c ../../rollup.config.ts",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",

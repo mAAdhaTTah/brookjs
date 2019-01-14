@@ -1,5 +1,5 @@
 import Kefir from 'kefir';
-import PropTypes from 'prop-types';
+import * as PropTypes from 'prop-types';
 
 const spyOn = (s$, validator, propName, componentName, name) => {
     if (s$._alive) {

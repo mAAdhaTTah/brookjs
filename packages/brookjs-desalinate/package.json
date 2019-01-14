@@ -4,7 +4,6 @@
   "description": "testing tools for brookjs applications",
   "main": "dist/brookjs-desalinate.cjs.js",
   "module": "dist/brookjs-desalinate.esm.js",
-  "unpkg": "dist/brookjs-desalinate.umd.js",
   "keywords": [
     "kefir",
     "browser",

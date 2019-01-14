@@ -20,7 +20,7 @@ const getTestRequires = state =>
     state.mocha.requires.map(req => `--require ${req}`).join(' ');
 
 const getTestFilesGlob = state =>
-    path.join(R.view(lEnvCwd, state), R.view(lAppDir, state), '**/__tests__/*.spec.js');
+    path.join(R.view(lEnvCwd, state), R.view(lAppDir, state), '**/__tests__/*.spec.{js,ts,tsx}');
 
 const getCoverage = state =>
     R.view(lCommandOpts, state).coverage === true ? `nyc --reporter=text --reporter=lcov ${getTestRequires(state)}` : '';
