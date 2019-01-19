@@ -21,7 +21,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
-    "test:unit": "beaver test unit --coverage --env test",
+    "test:unit": "beaver test unit --coverage --env test && jest --testMatch=\"<rootDir>/src/**/__tests__/*.jest.js\"",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
     "build": "rollup -c ../../rollup.config.js",
@@ -35,12 +35,14 @@
     "@storybook/addons": "^4.0.0",
     "chai-kefir": "^2.0.4",
     "deep-eql": "^3.0.1",
+    "jest-kefir": "^1.0.0",
     "kefir-test-utils": "^1.0.0",
     "lolex": "^2.3.1",
     "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "chai": "^4.0.0",
+    "jest": "^23.0.0",
     "kefir": "^3.8.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
