@@ -1,13 +1,12 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import Kefir from 'kefir';
-import { expect, use } from 'chai';
-import chaiPlugin from '../chaiPlugin';
+import jestPlugin from '../jestPlugin';
 
-const { plugin, value } = chaiPlugin({ Kefir });
-use(plugin);
+const { extensions, value } = jestPlugin({ Kefir });
+expect.extend(extensions);
 
-describe('chaiPlugin', () => {
-    describe('emitFromDelta', () => {
+describe('jestPlugin', () => {
+    describe('toEmitFromDelta', () => {
         const action = { type: 'DO' };
         const state = { active: true };
         const delta = ({ respond }) => (action$, state$) =>
@@ -18,7 +17,7 @@ describe('chaiPlugin', () => {
                 respond: ([action, state]) => Kefir.constant({ action, state })
             };
 
-            expect(delta(services)).to.emitFromDelta([
+            expect(delta(services)).toEmitFromDelta([
                 [0, value({ action, state })]
             ], send => {
                 send(action, state);
@@ -30,7 +29,7 @@ describe('chaiPlugin', () => {
                 respond: ([action, state]) => Kefir.later(100, { action, state })
             };
 
-            expect(delta(services)).to.emitFromDelta([
+            expect(delta(services)).toEmitFromDelta([
                 [100, value({ action, state })],
                 [200, value({ action, state })],
             ], (send, tick) => {
@@ -50,7 +49,7 @@ describe('chaiPlugin', () => {
                 respond: ([action, state]) => Kefir.later(100, { action, state })
             };
 
-            expect(delta(services)).to.emitFromDelta([
+            expect(delta(services)).toEmitFromDelta([
                 [100, value({ action, state })],
             ], send => {
                 send(action, state);
