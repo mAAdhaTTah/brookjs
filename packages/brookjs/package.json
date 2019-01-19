@@ -5,6 +5,7 @@
   "main": "dist/brookjs.cjs.js",
   "module": "dist/brookjs.esm.js",
   "unpkg": "dist/brookjs.umd.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
