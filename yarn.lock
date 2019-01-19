@@ -9543,15 +9543,6 @@ npm-bundled@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.3.tgz#7e71703d973af3370a9591bafe3a63aca0be2308"
 
-npm-install-webpack-plugin@^4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/npm-install-webpack-plugin/-/npm-install-webpack-plugin-4.0.5.tgz#0af5bbe45eaf2648e2cd51fd8b091e0b652fef1b"
-  dependencies:
-    cross-spawn "^5.0.1"
-    json5 "^0.5.1"
-    memory-fs "^0.4.1"
-    resolve "^1.2.0"
-
 npm-lifecycle@^2.0.0:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/npm-lifecycle/-/npm-lifecycle-2.0.3.tgz#696bedf1143371163e9cc16fe872357e25d8d90e"
@@ -13514,6 +13505,16 @@ webpack-manifest-plugin@^2.0.3:
     fs-extra "^0.30.0"
     lodash ">=3.5 <5"
     tapable "^1.0.0"
+
+webpack-plugin-install-deps@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/webpack-plugin-install-deps/-/webpack-plugin-install-deps-4.0.5.tgz#af6f229674eef795c0414afbf716b7dcf787465d"
+  integrity sha512-FmzdBP6kpzlZaiXSsrARzB4SFDq324BUxNwrMwyiMjdefTMTPLmECcmPOZODqLMktCV+xFvFwgxC2X06oJdtkA==
+  dependencies:
+    cross-spawn "^5.0.1"
+    json5 "^0.5.1"
+    memory-fs "^0.4.1"
+    resolve "^1.2.0"
 
 webpack-serve-overlay@^0.3.0:
   version "0.3.0"
