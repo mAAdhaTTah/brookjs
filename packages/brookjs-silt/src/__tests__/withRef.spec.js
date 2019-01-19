@@ -13,11 +13,15 @@ const { plugin, value } = chaiPlugin({ Kefir });
 configure({ adapter: new Adapter() });
 use(plugin);
 
-const Button = withRef$(({ text }, ref) => (
+const refback = (ref$, props$) => Kefir.combine({ props$ }, { ref$ });
+
+const _Button = ({ text }, ref) => (
     <button ref={ref}>
         {text}
     </button>
-), (ref$, props) => ref$.map(el => [el, props]));
+);
+
+const Button = withRef$(refback)(_Button);
 
 const Instance = ({ text, aggregated$ }) => (
     <Provider value={aggregated$}>
@@ -35,7 +39,7 @@ describe('withRef$', () => {
         );
 
         expect(aggregated$).to.emit([value(
-            [wrapper.find('button').instance(), { text: 'Click me!' }],
+            { ref$: wrapper.find('button').instance(), props$: { text: 'Click me!' } },
             { current: true }
         )]);
     });
@@ -68,8 +72,30 @@ describe('withRef$', () => {
         expect(newAggregated$._curSources).to.have.lengthOf(1);
 
         expect(newAggregated$).to.emit([value(
-            [wrapper.find('button').instance(), { text: 'Click me!' }],
+            { ref$: wrapper.find('button').instance(), props$: { text: 'Click me!' } },
             { current: true }
         )]);
+    });
+
+    it('should emit new props', () => {
+        const aggregated$ = Kefir.pool();
+        const wrapper = mount(
+            <Instance
+                text={'Click me!'}
+                aggregated$={aggregated$} />
+        );
+        const ref$ = wrapper.find('button').instance();
+
+        expect(aggregated$).to.emit([
+            value({
+                ref$,
+                props$: { text: 'Click me!' }
+            }, {
+                current: true
+            }),
+            value({ ref$, props$: { text: 'Click me too!' } })
+        ], () => {
+            wrapper.setProps({ text: 'Click me too!' });
+        });
     });
 });
