@@ -2,7 +2,6 @@ import React from 'react';
 import Kefir from 'kefir';
 import * as PropTypes from 'prop-types';
 import { Provider } from './context';
-import h from './h';
 
 export default class RootJunction extends React.Component {
     static propTypes = {

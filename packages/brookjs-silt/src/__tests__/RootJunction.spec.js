@@ -5,8 +5,8 @@ import { expect, use } from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
+import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
-import h from '../h';
 import RootJunction from '../RootJunction';
 
 const { plugin } = chaiPlugin({ Kefir });

@@ -1,5 +1,3 @@
-import R from 'ramda';
-
 const child$s = new WeakMap();
 
 const getChildStream = (stream$, id) => {
@@ -16,7 +14,7 @@ const getChildStream = (stream$, id) => {
     return childs[id] = stream$.map(props => props.dict[id]);
 };
 
-const orderMatches = (prev, next) => R.equals(prev.order, next.order);
+const orderMatches = (prev, next) => prev.order === next.order;
 const id = x => x;
 
 export default function loop(mapper, callback) {

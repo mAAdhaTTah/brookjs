@@ -1,5 +1,3 @@
-import R from 'ramda';
-
 const $$initialized = Symbol('init');
 
 export default (callback) => stream$ => {
@@ -16,7 +14,7 @@ export default (callback) => stream$ => {
             case 'value':
                 const next = callback(event.value);
 
-                if (previous === $$initialized || !R.equals(next, previous)) {
+                if (previous === $$initialized || next !== previous) {
                     previous = next;
                     emitter.value(next);
                 }

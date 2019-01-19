@@ -19,7 +19,7 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "@babel/plugin-transform-react-jsx": "^7.0.0"
+    "@babel/preset-react": "^7.0.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }

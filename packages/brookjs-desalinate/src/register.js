@@ -1,5 +1,6 @@
 import addons from '@storybook/addons';
-import { h } from 'brookjs-silt';
+import React from 'react';
+// eslint-disable-next-line import/no-internal-modules
 import ActionLogger from '@storybook/addon-actions/dist/containers/ActionLogger';
 import { ADDON_ID, PANEL_ID } from '@storybook/addon-actions';
 

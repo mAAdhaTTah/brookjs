@@ -56,9 +56,6 @@ module.exports = {
       node: {
         moduleDirectory: ['node_modules', path.join(__dirname, 'packages')]
       }
-    },
-    react: {
-      pragma: 'h'
     }
   }
 };

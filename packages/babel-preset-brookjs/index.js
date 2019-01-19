@@ -1,7 +1,7 @@
-module.exports = function(api, { pragma = 'h' } = {}) {
-    return {
-        plugins: [
-            ['@babel/transform-react-jsx', { pragma }]
-        ]
-    };
+module.exports = function(api, {} = {}) {
+  api.cache(true);
+
+  return {
+    presets: [['@babel/react']]
+  };
 };
