@@ -3,9 +3,9 @@ import Adapter from 'enzyme-adapter-react-16.3';
 import { configure, mount } from 'enzyme';
 import { expect, use } from 'chai';
 import Kefir from 'kefir';
+import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
 import sinon from 'sinon';
-import h from '../h';
 import toJunction from '../toJunction';
 import { Provider } from '../context';
 

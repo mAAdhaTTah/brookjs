@@ -1,7 +1,8 @@
 import uuid from 'uuid/v1';
 import addons from '@storybook/addons';
 import { EVENT_ID } from '@storybook/addon-actions';
-import { h, RootJunction } from 'brookjs-silt';
+import React from 'react';
+import { RootJunction } from 'brookjs-silt';
 
 const emit = value => {
     const channel = addons.getChannel();

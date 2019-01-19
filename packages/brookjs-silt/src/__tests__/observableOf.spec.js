@@ -6,9 +6,9 @@ import { configure, mount } from 'enzyme';
 import sinonChai from 'sinon-chai';
 import sinon from 'sinon';
 import Kefir from 'kefir';
+import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
 import PropTypes from 'prop-types';
-import h from '../h';
 import observableOf from '../observableOf';
 
 const { plugin , prop, value, send, error, end } = chaiPlugin({ Kefir });

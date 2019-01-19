@@ -3,7 +3,6 @@ import Kefir from 'kefir';
 import * as PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
-import h from './h';
 import { Consumer, Provider } from './context';
 
 const id = x => x;

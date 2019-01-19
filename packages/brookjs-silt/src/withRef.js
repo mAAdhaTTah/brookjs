@@ -1,8 +1,8 @@
 import React from 'react';
 import { createRef, forwardRef, getRef } from 'create-react-ref';
+// eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import Kefir from 'kefir';
-import h from './h';
 import { Consumer } from './context';
 
 export default function withRef$(c, callback) {
