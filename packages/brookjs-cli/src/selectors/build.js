@@ -3,6 +3,7 @@
 import path from 'path';
 import R from 'ramda';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
+import NpmInstallPlugin from 'webpack-plugin-install-deps';
 import {
     lAppDir, lWebpackEntry, lCommandName, lEnvCwd, lCommandEnvOpt,
     lWebpackOutputPath, lWebpackOutputFilename, lCommandTypeArg
@@ -28,7 +29,7 @@ const selectEnvPlugins = state => {
     switch (R.view(lCommandEnvOpt, state)) {
         case 'development':
             return [
-                // new NpmInstallPlugin()
+                new NpmInstallPlugin()
             ];
         case 'production':
             return [
