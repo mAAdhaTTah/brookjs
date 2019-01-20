@@ -9,6 +9,7 @@
     "browser",
     "chai",
     "chai-plugin",
+    "jest",
     "brookjs",
     "observables"
   ],
@@ -21,7 +22,7 @@
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint src --fix",
-    "test:unit": "beaver test unit --coverage --env test && jest --testMatch=\"<rootDir>/src/**/__tests__/*.jest.js\"",
+    "test:unit": "beaver test unit --coverage --env test && jest --env=jsdom --testMatch=\"<rootDir>/src/**/__tests__/*.jest.js\"",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
     "build": "rollup -c ../../rollup.config.js",
@@ -38,6 +39,7 @@
     "jest-kefir": "^1.0.0",
     "kefir-test-utils": "^1.0.0",
     "lolex": "^2.3.1",
+    "react-testing-library": "^5.4.4",
     "uuid": "^3.3.2"
   },
   "peerDependencies": {

@@ -1,5 +1,8 @@
+import React from 'react';
 import jestKefir from 'jest-kefir';
 import createHelpers from 'kefir-test-utils';
+import { render } from 'react-testing-library';
+import { RootJunction } from 'brookjs-silt';
 
 const noop = () => {};
 
@@ -12,6 +15,7 @@ export default ({ Kefir }) => {
         ...helpers,
         extensions: {
             ...extensions,
+
             toEmitFromDelta(delta, expected, cb = noop, { timeLimit = 10000 } = {}) {
                 let log;
                 const action$ = stream();
@@ -31,6 +35,29 @@ export default ({ Kefir }) => {
                 return {
                     pass: this.equals(log, expected),
                     message: () => `Expected to emit correct values from delta`
+                };
+            },
+
+            toEmitFromJunction(element, expected, cb = noop, { timeLimit = 10000 } = {}) {
+                let log;
+                const root$ = root$ => {
+                    log = watchWithTime(root$);
+                };
+
+                withFakeTime((tick, clock) => {
+                    const api = render(
+                        <RootJunction root$={root$}>
+                            {element}
+                        </RootJunction>
+                    );
+                    cb(api, tick, clock);
+                    tick(timeLimit);
+                    api.unmount();
+                });
+
+                return {
+                    pass: this.equals(log, expected),
+                    message: () => `expected to emit values from junction`
                 };
             }
         }

@@ -8,8 +8,9 @@ export const mocha = {
   ui: 'bdd',
   requires: [
     'ts-node/register/transpile-only',
+    'react-testing-library',
+    'jsdom-global/register',
     'raf/polyfill',
-    'jsdom-global/register'
   ]
 };
 

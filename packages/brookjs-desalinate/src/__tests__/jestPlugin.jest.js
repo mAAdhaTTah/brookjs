@@ -1,5 +1,8 @@
 /* eslint-env jest */
 import Kefir from 'kefir';
+import { toJunction } from 'brookjs-silt';
+import React from 'react';
+import { fireEvent } from 'react-testing-library';
 import jestPlugin from '../jestPlugin';
 
 const { extensions, value } = jestPlugin({ Kefir });
@@ -55,6 +58,25 @@ describe('jestPlugin', () => {
                 send(action, state);
             }, {
                 timeLimit: 100
+            });
+        });
+    });
+
+    describe('toEmitFromJunction', () => {
+        const Component = ({ onClick }) => (
+            <button onClick={onClick}>Click me!</button>
+        );
+
+        const AsJunction = toJunction({ onClick: e$ => e$.map(() => ({ type: 'CLICK' })) })(Component);
+
+        it('should emit event from Component', () => {
+            expect(<AsJunction />).toEmitFromJunction([
+                [0, value({ type: 'CLICK' })],
+                [10, value({ type: 'CLICK' })],
+            ], ({ container }, tick) => {
+                fireEvent.click(container.firstChild);
+                tick(10);
+                fireEvent.click(container.firstChild);
             });
         });
     });

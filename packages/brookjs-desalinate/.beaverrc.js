@@ -8,7 +8,9 @@ export const mocha = {
     ui: 'bdd',
     requires: [
         '@babel/register',
-        'jsdom-global/register'
+        'react-testing-library',
+        'jsdom-global/register',
+        'raf/polyfill',
     ]
 };
 
