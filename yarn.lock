@@ -2196,10 +2196,10 @@
   version "0.0.39"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
 
-"@types/kefir@^3.7.0":
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/@types/kefir/-/kefir-3.7.0.tgz#15d626922e1a7def63b71ca731bb16ab9d6356f4"
-  integrity sha512-Cx37KJ3yG8egbPINCjhjWue3uplx66C8mGINFCtnduKZjrWpmEO/IH++kmFzhLsn0lutbZL9bd6d6pkx/rTzEQ==
+"@types/kefir@^3.8.0":
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/@types/kefir/-/kefir-3.8.0.tgz#cf5154218e01e9bb26003f933a70c6fae598aa4a"
+  integrity sha512-fwIskeZQeVcRivV5gV9a+Khd6UefpSU25+5YWH4KPpNfLe9+XL0Ghd3/DiaN8KmZl3KxS9Ti4l2Z1/HjDw5XNA==
   dependencies:
     "@types/node" "*"
 
