@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-brookjs",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.9",
   "description": "recommended plugins for developing brookjs applications.",
   "main": "index.js",
   "sideEffects": false,
