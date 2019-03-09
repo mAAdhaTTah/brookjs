@@ -8,11 +8,11 @@
   "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:lint": "eslint src --fix",
+    "test:lint": "eslint src/**/*.ts --fix",
     "test:unit": "beaver test unit --coverage --env test",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
-    "build": "rollup -c ../../rollup.config.js",
+    "build": "rollup -c ../../rollup.config.ts",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
@@ -23,11 +23,9 @@
   ],
   "peerDependencies": {
     "kefir": "^3.8.0",
-    "react": "^16.0.0"
+    "react": "^16.8.0"
   },
   "dependencies": {
-    "create-react-context": "^0.2.1",
-    "create-react-ref": "^0.1.0",
     "prop-types": "^15.6.0",
     "recompose": "^0.30.0"
   },
