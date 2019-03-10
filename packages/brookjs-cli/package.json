@@ -2,18 +2,19 @@
   "name": "brookjs-cli",
   "version": "1.0.0-alpha.9",
   "description": "command line tool for building brookjs applications",
-  "main": "src/index.js",
+  "main": "dist/brookjs-cli.js",
   "bin": {
     "beaver": "./bin/beaver.js"
   },
   "files": [
     "bin",
-    "src",
+    "dist",
     "templates"
   ],
   "sideEffects": false,
   "scripts": {
-    "test": "npm run test:lint && npm run test:unit && npm run test:feature",
+    "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
+    "test": "npm run test:lint && npm run test:unit",
     "test:lint": "eslint ./src --fix",
     "test:unit": "beaver test unit --coverage",
     "test:feature": "cucumber-js",

@@ -7,7 +7,6 @@ export const mocha = {
   reporter: 'spec',
   ui: 'bdd',
   requires: [
-    'ts-node/register/transpile-only',
     '@babel/register',
     'react-testing-library',
     'jsdom-global/register',
