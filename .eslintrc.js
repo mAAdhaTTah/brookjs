@@ -21,6 +21,7 @@ module.exports = {
   rules: {
     eqeqeq: [2, 'smart'],
     'wrap-iife': [2, 'inside'],
+    'one-var': 'off',
 
     'import/no-unresolved': 2,
     'import/named': 2,

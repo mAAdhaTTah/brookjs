@@ -5,7 +5,7 @@ import { Provider } from './context';
 import { Action } from 'redux';
 
 export default class RootJunction extends React.Component<{
-  root$: (p: Pool<Action, Error>) => Subscription | undefined;
+  root$: (p: Pool<Action, Error>) => Subscription | void;
   children: React.ReactNode;
 }> {
   static propTypes = {
@@ -14,7 +14,7 @@ export default class RootJunction extends React.Component<{
   };
 
   root$: Pool<Action, Error> = Kefir.pool();
-  sub?: Subscription;
+  sub?: Subscription | void;
 
   componentDidMount() {
     this.sub = this.props.root$(this.root$);

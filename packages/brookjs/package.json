@@ -17,7 +17,7 @@
     "test:unit": "beaver test unit --coverage --env test",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
-    "build": "rollup -c ../../rollup.config.ts",
+    "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
