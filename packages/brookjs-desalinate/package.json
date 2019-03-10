@@ -4,6 +4,7 @@
   "description": "testing tools for brookjs applications",
   "main": "dist/brookjs-desalinate.cjs.js",
   "module": "dist/brookjs-desalinate.esm.js",
+  "types": "dist/index.d.ts",
   "keywords": [
     "kefir",
     "browser",
@@ -21,24 +22,25 @@
   "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:lint": "eslint src --fix",
-    "test:unit": "beaver test unit --coverage --env test && jest --env=jsdom --testMatch=\"<rootDir>/src/**/__tests__/*.jest.js\"",
+    "test:lint": "eslint src/**/*.ts --fix",
+    "test:unit": "beaver test unit --coverage --env test && cross-env NODE_ENV=test jest",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
-    "build": "rollup -c ../../rollup.config.js",
+    "build": "tsc --emitDeclarationOnly || true && rollup -c ../../rollup.config.ts",
     "storybook": "start-storybook -p 6006",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "@storybook/addon-actions": "^4.0.0",
-    "@storybook/addons": "^4.0.0",
+    "@storybook/addon-actions": "^5.0.0",
+    "@storybook/addons": "^5.0.0",
     "chai-kefir": "^2.0.4",
     "deep-eql": "^3.0.1",
     "jest-kefir": "^1.0.0",
     "kefir-test-utils": "^1.0.0",
     "lolex": "^2.3.1",
+    "react": "^16.8.0",
     "react-testing-library": "^5.4.4",
     "uuid": "^3.3.2"
   },

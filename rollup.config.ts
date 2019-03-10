@@ -1,5 +1,4 @@
 import * as path from 'path';
-import typescript from 'rollup-plugin-typescript2';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
@@ -9,18 +8,11 @@ const pkg = require(path.resolve(BASE_PATH, 'package.json'));
 
 const input = 'src/index.ts';
 
-const ts = {
-  tsconfig: path.join(__dirname, 'tsconfig.build.json'),
-  tsconfigDefaults: {
-    compilerOptions: { declaration: true, noEmit: true },
-    include: path.join(BASE_PATH, 'src', '!(__tests__)', '*.ts')
-  }
-};
-
 const cjs = {
   namedExports: {
     '@storybook/addon-actions': ['action', 'ADDON_ID', 'PANEL_ID', 'EVENT_ID'],
     '@storybook/addons': ['makeDecorator'],
+    'prop-types': ['element', 'func'],
     react: [
       'createContext',
       'createElement',
@@ -41,10 +33,10 @@ const rslv = {
 };
 
 export default [
-  {
+  pkg.unpkg && {
     input,
     output: { name: pkg.name, file: pkg.unpkg, format: 'umd' },
-    plugins: [typescript(ts), babel(bbl), resolve(rslv), commonjs(cjs)]
+    plugins: [babel(bbl), resolve(rslv), commonjs(cjs)]
   },
   {
     input,
@@ -58,4 +50,4 @@ export default [
     ],
     plugins: [babel(bbl), resolve(rslv), commonjs(cjs)]
   }
-];
+].filter(Boolean);
