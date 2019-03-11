@@ -33,7 +33,6 @@ export default {
           'EVENT_ID'
         ],
         '@storybook/addons': ['makeDecorator'],
-        'prop-types': ['element', 'func'],
         react: [
           'createContext',
           'createElement',

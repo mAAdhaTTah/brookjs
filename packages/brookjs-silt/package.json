@@ -26,7 +26,6 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "prop-types": "^15.6.0",
     "recompose": "^0.30.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
