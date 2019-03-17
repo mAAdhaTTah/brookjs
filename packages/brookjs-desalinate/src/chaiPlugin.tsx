@@ -1,3 +1,4 @@
+import K, { Event } from 'kefir';
 import chaiKefir from 'chai-kefir';
 import React from 'react';
 import { RootJunction } from 'brookjs-silt';
@@ -6,9 +7,33 @@ import { Clock } from 'lolex';
 const deepEql = require('deep-eql');
 const createHelpers = require('kefir-test-utils').default;
 
+declare global {
+    namespace Chai {
+        interface InstanceOfObservable {
+            (): Assertion;
+        }
+
+        interface Assertion {
+            emit: Emit<Assertion>;
+            emitFromDelta: EmitFromDelta<Assertion>;
+        }
+
+        interface TypeComparison {
+            observable: InstanceOfObservable;
+        }
+    }
+}
+
 const noop = () => {};
 
-export default ({ Kefir }: { Kefir: typeof import('kefir') }) => {
+export type ToDelta = (action: object, state: object) => void;
+export type Tick = (time: number) => void;
+
+export type Emit<A> = <V, E>(expected: Array<Event<V, E>>, cb: () => void) => A;
+export type EmitFromDelta<A> = <V, E>(expected: Array<[number, Event<V, E>]>, cb?: (sendToDelta: ToDelta, tick: Tick) => void) => A;
+
+
+export default ({ Kefir }: { Kefir: typeof K }) => {
   const helpers = createHelpers(Kefir);
   const { withFakeTime, watchWithTime, send, stream, prop, value } = helpers;
   const { plugin } = chaiKefir(Kefir);
