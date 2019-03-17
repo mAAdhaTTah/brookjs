@@ -156,7 +156,7 @@ export default class App {
     this.running = true;
     this.debug = debug;
 
-    const unmount = render(
+    const instance = render(
       <Root commands={this.commands} argv={argv} onExit={onExit} />,
       {
         stdout,
@@ -167,7 +167,7 @@ export default class App {
 
     return (code?: number) => {
       this.running = false;
-      unmount();
+      instance.unmount();
       code != null && onExit(code);
     };
   }
