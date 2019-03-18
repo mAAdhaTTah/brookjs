@@ -9,7 +9,8 @@ export default {
   input: 'src/index.ts',
   external: [
     ...Object.keys(pkg.peerDependencies || {}),
-    ...Object.keys(pkg.dependencies || {})
+    ...Object.keys(pkg.dependencies || {}),
+    ...(pkg.bin ? ['path', 'util', 'child_process', 'fs'] : [])
   ],
   output: [
     pkg.main && { file: pkg.main, format: 'cjs' },

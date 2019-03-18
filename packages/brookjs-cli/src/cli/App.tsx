@@ -33,7 +33,7 @@ const Root = <S, A extends Action>({ commands, argv }: RootProps) => {
     const { View } = command;
     const action$ = new Kefir.Stream() as Stream<A, never>;
     const state$ = action$.scan(command.reducer, command.initialState(args));
-    const exec$ = command.exec(action$, state$);
+    const exec$ = command.exec({})(action$, state$);
     const onValue = (action: A): void => (action$ as any)._emitValue(action);
     const root = (root$: Pool<A, Error>) => root$.observe(onValue);
 
@@ -66,22 +66,22 @@ const Root = <S, A extends Action>({ commands, argv }: RootProps) => {
 };
 
 class Commands {
-  running?: Command<any, any, any>;
+  running?: Command<any, any, any, any>;
 
-  private commands: Command<any, any, any>[] = [];
+  private commands: Command<any, any, any, any>[] = [];
 
-  constructor(commands: Command<any, any, any>[] = []) {
+  constructor(commands: Command<any, any, any, any>[] = []) {
     this.commands = commands;
   }
 
-  add(command: Command<any, any, any>) {
+  add(command: Command<any, any, any, any>) {
     return new Commands([...this.commands, command]);
   }
 
   get<A>(
     argv: string[]
-  ): { command: Command<any, any, A> | null; args: Arguments<A> } {
-    let running: Command<any, any, any> | null = null;
+  ): { command: Command<any, any, A, any> | null; args: Arguments<A> } {
+    let running: Command<any, any, any, any> | null = null;
 
     const args = (this.commands.reduce(
       (yargs: Argv, command) =>
@@ -121,7 +121,7 @@ export default class App {
     this.commands = commands;
   }
 
-  addCommand(cmd: Command<any, any, any>): App {
+  addCommand(cmd: Command<any, any, any, any>): App {
     if (this.running) {
       throw new Error(
         `${this.name} is already running. Cannot add additional commands.`

@@ -26,6 +26,9 @@ describe('NewCommand#View', () => {
     it('should show an error when no name provided', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="version"
           config={{
@@ -46,6 +49,9 @@ describe('NewCommand#View', () => {
     it('should show the first question', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="version"
           config={{
@@ -66,6 +72,9 @@ describe('NewCommand#View', () => {
     it('should show the first question with version provided', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="version"
           config={{
@@ -86,6 +95,9 @@ describe('NewCommand#View', () => {
     it('should show the second question', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="description"
           config={{
@@ -106,6 +118,9 @@ describe('NewCommand#View', () => {
     it('should show the second question with description provided', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="description"
           config={{
@@ -126,6 +141,9 @@ describe('NewCommand#View', () => {
     it('should show the third question', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="dir"
           config={{
@@ -146,6 +164,9 @@ describe('NewCommand#View', () => {
     it('should show the third question with dir provided', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="dir"
           config={{
@@ -166,6 +187,9 @@ describe('NewCommand#View', () => {
     it('should show the fourth question', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="license"
           config={{
@@ -186,6 +210,9 @@ describe('NewCommand#View', () => {
     it('should show the fourth question with license provided', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="configure"
           configuring="license"
           config={{
@@ -212,6 +239,9 @@ describe('NewCommand#View', () => {
           }}
         >
           <View
+            error={null}
+            logs={[]}
+            result={null}
             step="configure"
             configuring="version"
             config={{
@@ -242,6 +272,9 @@ describe('NewCommand#View', () => {
     it('should display the current configruation', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="confirm"
           configuring={null}
           config={{
@@ -268,6 +301,9 @@ describe('NewCommand#View', () => {
           }}
         >
           <View
+            error={null}
+            logs={[]}
+            result={null}
             step="confirm"
             configuring={null}
             config={{
@@ -298,6 +334,9 @@ describe('NewCommand#View', () => {
           }}
         >
           <View
+            error={null}
+            logs={[]}
+            result={null}
             step="confirm"
             configuring={null}
             config={{
@@ -327,6 +366,9 @@ describe('NewCommand#View', () => {
       const { lastFrame, unmount } = render(
         <AppContext.Provider value={{ exit }}>
           <View
+            error={null}
+            logs={[]}
+            result={null}
             step="cancelled"
             configuring={null}
             config={{
@@ -352,9 +394,12 @@ describe('NewCommand#View', () => {
   });
 
   describe('creating', () => {
-    it('should render spinner during creating', () => {
+    it('should render spinner', () => {
       const { lastFrame, unmount } = render(
         <View
+          error={null}
+          logs={[]}
+          result={null}
           step="creating"
           configuring={null}
           config={{
@@ -370,6 +415,114 @@ describe('NewCommand#View', () => {
       expect(lastFrame()).to.matchSnapshot();
 
       unmount();
+    });
+
+    it('should render all logs', () => {
+      const { lastFrame, unmount } = render(
+        <View
+          error={null}
+          logs={[
+            {
+              level: 'notice',
+              msg: 'This is a notice mesasge.'
+            },
+            {
+              level: 'warn',
+              msg: 'This is a warn message.'
+            },
+            {
+              level: 'error',
+              msg: 'This is a error message.'
+            },
+            {
+              level: 'ok',
+              msg: 'This is a ok message.'
+            }
+          ]}
+          result={null}
+          step="creating"
+          configuring={null}
+          config={{
+            name: 'test-app',
+            version: '1.0.0',
+            description: 'A test application',
+            dir: 'client',
+            license: 'ISC'
+          }}
+        />
+      );
+
+      expect(lastFrame()).to.matchSnapshot();
+
+      unmount();
+    });
+  });
+
+  describe('error', () => {
+    it('should render error message and call exit', done => {
+      const exit = sinon.spy();
+      const error = new Error('Creating failed');
+      const { lastFrame, unmount } = render(
+        <AppContext.Provider value={{ exit }}>
+          <View
+            error={error}
+            logs={[]}
+            result={null}
+            step="error"
+            configuring={null}
+            config={{
+              name: 'test-app',
+              version: '1.0.0',
+              description: 'A test application',
+              dir: 'client',
+              license: 'ISC'
+            }}
+          />
+        </AppContext.Provider>
+      );
+
+      setTimeout(() => {
+        expect(lastFrame()).to.matchSnapshot();
+        expect(exit.calledOnce).to.equal(true);
+        expect(exit.args[0][0]).to.equal(error);
+
+        unmount();
+
+        done();
+      }, 10);
+    });
+  });
+
+  describe('complete', () => {
+    it('should render complete message and call exit', done => {
+      const exit = sinon.spy();
+      const { lastFrame, unmount } = render(
+        <AppContext.Provider value={{ exit }}>
+          <View
+            error={null}
+            logs={[]}
+            result={{ success: true, time: Date.now(), actions: [] }}
+            step="complete"
+            configuring={null}
+            config={{
+              name: 'test-app',
+              version: '1.0.0',
+              description: 'A test application',
+              dir: 'client',
+              license: 'ISC'
+            }}
+          />
+        </AppContext.Provider>
+      );
+
+      setTimeout(() => {
+        expect(lastFrame()).to.matchSnapshot();
+        expect(exit.calledOnce).to.equal(true);
+
+        unmount();
+
+        done();
+      }, 10);
     });
   });
 });

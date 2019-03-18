@@ -21,16 +21,6 @@ export const selectRcPath = state =>
 export const selectRoot = state =>
     path.join(state.env.cwd, R.view(lAppName, state));
 
-export const selectNewProjectContext = R.applySpec({
-    dir: R.view(lAppDir),
-    name: R.view(lAppName),
-    version: R.view(lAppVersion),
-    description: R.view(lAppDescription),
-    main: state => path.join(R.view(lAppDir, state), 'app.js'),
-    author: R.pipe(R.view(lAppAuthor), R.defaultTo('')),
-    license: R.view(lAppLicense),
-});
-
 export const takeStateOnBootstrap = (state$, actions$) =>
     state$.sampledBy(
         actions$.thru(ofType(READ_RC_FILE, READ_ENV, RUN))

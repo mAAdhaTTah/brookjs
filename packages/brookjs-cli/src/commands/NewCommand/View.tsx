@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Color, StdinContext, Box, AppContext } from 'ink';
+import { Color, StdinContext, Box, AppContext, Static } from 'ink';
 import { toJunction } from 'brookjs-silt';
 import TextInput from 'ink-text-input';
 import SelectInput from 'ink-select-input';
@@ -11,7 +11,8 @@ import {
   Configurable,
   unreachable,
   ConfiguredState,
-  ConfiguringState
+  ConfiguringState,
+  Log
 } from './types';
 
 type Props = State & {
@@ -41,6 +42,14 @@ const useOnSubmit = (onSubmit: () => void) => {
     };
   }, [stdin, setRawMode, onSubmit]);
 };
+
+const useExit = (error?: Error) => {
+    const { exit } = useContext(AppContext);
+
+    useEffect(() => {
+      (exit as any)(error);
+    }, [exit]);
+}
 
 type Question = {
   text: string;
@@ -134,21 +143,67 @@ const ConfirmStep: React.FC<
 );
 
 const CancelledStep: React.FC<{}> = () => {
-  const { exit } = useContext(AppContext);
-
-  useEffect(() => {
-    exit();
-  }, [exit]);
+  useExit();
 
   return <Box>Cancelled!</Box>;
 };
 
-const CreatingStep: React.FC<{ name: string; }> = ({ name }) => (
-  <Box flexDirection="row">
-    <Color green><Spinner type="arrow3"/></Color>
-    <Box marginLeft={1}>Creating app {name}</Box>
+const LogDisplay: React.FC<{ logs: Log[] }> = ({ logs }) => (
+  <Box paddingBottom={2}>
+    <Static>
+      {logs.map((log, i) => (
+        <Color key={i} green={log.level === 'ok'}>
+          {log.msg}
+        </Color>
+      ))}
+    </Static>
   </Box>
 );
+
+const CreatingStep: React.FC<{ name: string; logs: Log[] }> = ({
+  name,
+  logs
+}) => (
+  <Box flexDirection="column">
+    <LogDisplay logs={logs} />
+    <Box flexDirection="row">
+      <Color green>
+        <Spinner type="arrow3" />
+      </Color>
+      <Box marginLeft={1}>Creating app {name}</Box>
+    </Box>
+  </Box>
+);
+
+const ErrorStep: React.FC<{ error: Error }> = ({ error }) => {
+    useExit(error);
+
+    return (
+      <Box flexDirection="column" paddingTop={2}>
+        <Box>
+          <Color red>Error running new</Color>
+        </Box>
+        <Box>
+          <Color red>Message:</Color> {error.message}
+        </Box>
+      </Box>
+    );
+}
+
+const CompleteStep: React.FC<{ name: string }> = ({ name }) => {
+  useExit();
+
+  return (
+    <Box flexDirection="column" paddingTop={2}>
+      <Box>
+        <Color green>New brookjs application created at {name}</Color>
+      </Box>
+      <Box>
+        Run <Color blue>npm i</Color> or <Color blue>yarn</Color> to bootstrap
+      </Box>
+    </Box>
+  );
+};
 
 const View: React.FC<Props> = props => {
   switch (props.step) {
@@ -159,9 +214,11 @@ const View: React.FC<Props> = props => {
     case 'cancelled':
       return <CancelledStep />;
     case 'creating':
-      return <CreatingStep name={props.config.name} />;
+      return <CreatingStep name={props.config.name} logs={props.logs} />;
+    case 'error':
+      return <ErrorStep error={props.error} />;
     case 'complete':
-      return null;
+      return <CompleteStep name={props.config.name} />;
     default:
       return unreachable(props);
   }

@@ -2,6 +2,13 @@
 
 exports[`NewCommand#View cancelled should render cancelled message and call exit 1`] = `"Cancelled!"`;
 
+exports[`NewCommand#View complete should render complete message and call exit 1`] = `
+"
+
+[32mNew brookjs application created at test-app[39m
+Run [34mnpm i[39m or [34myarn[39m to bootstrap"
+`;
+
 exports[`NewCommand#View configure step should show an error when no name provided 1`] = `"[31mCalled [33mbeaver new[31m with no name.[39m"`;
 
 exports[`NewCommand#View configure step should show the first question 1`] = `
@@ -55,4 +62,27 @@ license: [32mISC[39m
   No"
 `;
 
+exports[`NewCommand#View creating should render all logs 1`] = `
+"This is a notice mesasge.This is a warn message.This is a error message.[32mThis is a ok message.[39m
+
+
+
+
+
+[32m▹▹▹▹▹[39m [39mCreating app test-app[39m"
+`;
+
+exports[`NewCommand#View creating should render spinner 1`] = `
+"
+
+[32m▹▹▹▹▹[39m [39mCreating app test-app[39m"
+`;
+
 exports[`NewCommand#View creating should render spinner during creating 1`] = `"[32m▹▹▹▹▹[39m[39mCreating app test-app[39m"`;
+
+exports[`NewCommand#View error should render error message and call exit 1`] = `
+"
+
+[31mError running new[39m
+[31mMessage:[39m Creating failed"
+`;

@@ -1,6 +1,6 @@
 import { Arguments, Argv } from 'yargs';
-import Kefir, { Property, Stream } from 'kefir';
 import { Command } from '../../cli';
+import exec from './exec';
 import View from './View';
 import {
   Step,
@@ -9,7 +9,8 @@ import {
   Args,
   unreachable,
   ConfiguringState,
-  ConfiguredState
+  ConfiguredState,
+  Services
 } from './types';
 import { defaultSteps } from './constants';
 import { Nullable } from 'typescript-nullable';
@@ -27,7 +28,7 @@ const applyDefaults = (
     defaultSteps
   );
 
-export default class NewCommand extends Command<State, Action, Args> {
+export default class NewCommand extends Command<State, Action, Args, Services> {
   builder(yargs: Argv): Argv {
     return yargs;
   }
@@ -37,6 +38,9 @@ export default class NewCommand extends Command<State, Action, Args> {
   describe = 'Create a new brookjs application';
 
   initialState = (argv: Arguments): ConfiguringState => ({
+    logs: [],
+    result: null,
+    error: null,
     config: {
       name: typeof argv.name === 'string' ? argv.name : null,
       version: null,
@@ -48,8 +52,7 @@ export default class NewCommand extends Command<State, Action, Args> {
     configuring: 'version'
   });
 
-  exec = (action$: Stream<Action, never>, state$: Property<State, never>) =>
-    Kefir.never();
+  exec = exec;
 
   reducer = (state: State, action: Action): State => {
     switch (action.type) {
@@ -98,6 +101,7 @@ export default class NewCommand extends Command<State, Action, Args> {
           case 'creating':
           case 'complete':
           case 'cancelled':
+          case 'error':
             // SUBMIT is only relevant to the configure step.
             // This code won't ever actually run.
             return state;
@@ -121,6 +125,33 @@ export default class NewCommand extends Command<State, Action, Args> {
             step: 'cancelled'
           };
         }
+      case 'LOG':
+        return {
+          ...state,
+          logs: [...state.logs, action.payload]
+        };
+      case 'CREATED':
+        // CREATED should only be emitted from creating step
+        if (state.step !== 'creating') {
+          return state;
+        }
+
+        return {
+          ...state,
+          step: 'complete',
+          result: action.payload.result
+        };
+      case 'FAILED':
+        // CREATED should only be emitted from creating step
+        if (state.step !== 'creating') {
+          return state;
+        }
+
+        return {
+          ...state,
+          step: 'error',
+          error: action.payload.error,
+        };
       default:
         return state;
     }
