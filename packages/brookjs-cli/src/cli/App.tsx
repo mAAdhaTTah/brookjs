@@ -165,10 +165,8 @@ export default class App {
       }
     );
 
-    return (code?: number) => {
-      this.running = false;
-      instance.unmount();
-      code != null && onExit(code);
+    return {
+      waitUntilExit: instance.waitUntilExit
     };
   }
 
