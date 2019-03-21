@@ -28,29 +28,54 @@ const applyDefaults = (
     defaultSteps
   );
 
-export default class NewCommand extends Command<State, Action, Args, Services> {
-  builder(yargs: Argv): Argv {
-    return yargs;
-  }
+const base = {
+  logs: [],
+  result: null,
+  error: null
+};
 
-  cmd = 'new <name>';
+const creating = (argv: Arguments): ConfiguredState => ({
+  ...base,
+  config: {
+    ...defaultSteps,
+    name: argv.name as string
+  },
+  step: 'creating',
+  configuring: null
+});
+
+const configure = (argv: Arguments): ConfiguringState => ({
+  ...base,
+  config: {
+    name: typeof argv.name === 'string' ? argv.name : null,
+    version: null,
+    description: null,
+    dir: null,
+    license: null
+  },
+  step: 'configure',
+  configuring: 'version'
+});
+
+export default class NewCommand extends Command<State, Action, Args, Services> {
+  cmd = 'new [name]';
+
+  builder(yargs: Argv): Argv {
+    return yargs
+      .positional('name', {
+        required: true,
+        describe: 'name of the new brookjs application'
+      })
+      .option('yes', {
+        alias: 'y',
+        default: false
+      });
+  }
 
   describe = 'Create a new brookjs application';
 
-  initialState = (argv: Arguments): ConfiguringState => ({
-    logs: [],
-    result: null,
-    error: null,
-    config: {
-      name: typeof argv.name === 'string' ? argv.name : null,
-      version: null,
-      description: null,
-      dir: null,
-      license: null
-    },
-    step: 'configure',
-    configuring: 'version'
-  });
+  initialState = (argv: Arguments): State =>
+    argv.yes ? creating(argv) : configure(argv);
 
   exec = exec;
 
@@ -150,7 +175,7 @@ export default class NewCommand extends Command<State, Action, Args, Services> {
         return {
           ...state,
           step: 'error',
-          error: action.payload.error,
+          error: action.payload.error
         };
       default:
         return state;

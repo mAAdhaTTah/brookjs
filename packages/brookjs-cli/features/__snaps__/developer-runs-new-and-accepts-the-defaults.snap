@@ -123,7 +123,7 @@ exports[`Developer runs new and accepts the defaults-package.json`] = `
 "{
   \\"name\\": \\"test-app\\",
   \\"version\\": \\"0.0.0\\",
-  \\"description\\": \\"\\",
+  \\"description\\": \\"A brookjs application\\",
   \\"main\\": \\"src/app.js\\",
   \\"scripts\\": {
     \\"test\\": \\"npm run test:lint && npm run test:unit\\",
