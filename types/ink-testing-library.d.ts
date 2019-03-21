@@ -1,10 +1,12 @@
 declare module 'ink-testing-library' {
+  import * as React from 'react';
+
   interface MockStdIn {
     write(str: string): void;
   }
 
   interface Helpers {
-    rerender(): void;
+    rerender(tree: React.ReactNode): void;
     lastFrame(): string;
     unmount(): void;
     stdin: MockStdIn;

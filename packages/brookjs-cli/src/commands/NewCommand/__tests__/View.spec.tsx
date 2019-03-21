@@ -24,12 +24,31 @@ describe('NewCommand#View', () => {
 
   describe('configure step', () => {
     it('should show an error when no name provided', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame, unmount, rerender } = render(
         <View
           error={null}
           logs={[]}
           result={null}
           step="configure"
+          configuring="version"
+          config={{
+            name: null,
+            version: null,
+            description: null,
+            dir: null,
+            license: null
+          }}
+        />
+      );
+
+      expect(lastFrame()).to.matchSnapshot();
+
+      rerender(
+        <View
+          error={null}
+          logs={[]}
+          result={null}
+          step="creating"
           configuring="version"
           config={{
             name: null,

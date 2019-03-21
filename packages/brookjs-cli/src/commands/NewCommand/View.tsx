@@ -82,14 +82,6 @@ const ConfigureStep: React.FC<
 > = ({ configuring, config, onChange, onSubmit }) => {
   useOnSubmit(onSubmit);
 
-  if (Nullable.isNone(config.name)) {
-    return (
-      <Color red>
-        Called <Color yellow>beaver new</Color> with no name.
-      </Color>
-    );
-  }
-
   return (
     <Box flexDirection="column">
       <Color green>App name: {config.name}</Color>
@@ -208,6 +200,14 @@ const CompleteStep: React.FC<{ name: string }> = ({ name }) => {
 };
 
 const View: React.FC<Props> = props => {
+  if (Nullable.isNone(props.config.name)) {
+    return (
+      <Color red>
+        Called <Color yellow>beaver new</Color> with no name.
+      </Color>
+    );
+  }
+
   switch (props.step) {
     case 'configure':
       return <ConfigureStep {...props} />;
