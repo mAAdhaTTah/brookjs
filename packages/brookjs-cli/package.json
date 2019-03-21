@@ -36,7 +36,6 @@
     "cross-env": "^5.1.1",
     "eslint": "^5.0.1",
     "eslint-loader": "^2.0.0",
-    "esm": "^3.0.8",
     "execa": "^1.0.0",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
@@ -63,10 +62,6 @@
     "webpack": "^4.0.0",
     "webpack-plugin-install-deps": "^4.0.5",
     "yargs": "^12.0.5"
-  },
-  "esm": {
-    "mode": "auto",
-    "cjs": true
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }

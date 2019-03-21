@@ -37,19 +37,21 @@ const useOnSubmit = (onSubmit: () => void) => {
     stdin.on('data', onData);
 
     return () => {
-      stdin.off('data', onData);
+      // @TODO(mAAdhaTTah) This fails in node-pty – not sure why
+      // stdin.off is not a function
+      stdin.off && stdin.off('data', onData);
       setRawMode!(false);
     };
   }, [stdin, setRawMode, onSubmit]);
 };
 
 const useExit = (error?: Error) => {
-    const { exit } = useContext(AppContext);
+  const { exit } = useContext(AppContext);
 
-    useEffect(() => {
-      (exit as any)(error);
-    }, [exit]);
-}
+  useEffect(() => {
+    (exit as any)(error);
+  }, [exit]);
+};
 
 type Question = {
   text: string;
@@ -176,19 +178,19 @@ const CreatingStep: React.FC<{ name: string; logs: Log[] }> = ({
 );
 
 const ErrorStep: React.FC<{ error: Error }> = ({ error }) => {
-    useExit(error);
+  useExit(error);
 
-    return (
-      <Box flexDirection="column" paddingTop={2}>
-        <Box>
-          <Color red>Error running new</Color>
-        </Box>
-        <Box>
-          <Color red>Message:</Color> {error.message}
-        </Box>
+  return (
+    <Box flexDirection="column" paddingTop={2}>
+      <Box>
+        <Color red>Error running new</Color>
       </Box>
-    );
-}
+      <Box>
+        <Color red>Message:</Color> {error.message}
+      </Box>
+    </Box>
+  );
+};
 
 const CompleteStep: React.FC<{ name: string }> = ({ name }) => {
   useExit();
