@@ -19,7 +19,7 @@
     "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint ./src --fix",
     "test:unit": "cross-env NODE_ENV=test mocha -r src/setupTests.ts src/**/__tests__/*.spec.{ts,tsx}",
     "test:unit:prev": "beaver test unit --coverage",
-    "test:feature": "cucumber-js",
+    "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require './src/setupTests.ts' --require 'features/support/*.ts'",
     "dev": "beaver dev tdd --env test"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",

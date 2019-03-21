@@ -7,6 +7,20 @@ module.exports = api => {
       'ramda',
       process.env.NODE_ENV === 'test' && '@babel/transform-modules-commonjs'
     ].filter(Boolean),
-    presets: ['brookjs', '@babel/typescript', '@babel/env', '@babel/react']
+    presets: [
+      'brookjs',
+      '@babel/typescript',
+      process.env.NODE_ENV === 'test'
+        ? [
+          '@babel/env',
+          {
+            targets: {
+              node: 'current'
+            }
+          }
+        ]
+        : '@babel/env',
+      '@babel/react'
+    ]
   };
 };
