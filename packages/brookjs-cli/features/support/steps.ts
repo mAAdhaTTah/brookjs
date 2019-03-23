@@ -11,10 +11,12 @@ import {
 } from 'cucumber';
 import { expect, use } from 'chai';
 import chaiJestSnapshot from 'chai-jest-snapshot';
+import chaiFs from 'chai-fs';
+import chaiString from 'chai-string';
 import { Question } from './world';
 
-use(require('chai-string'));
-use(require('chai-fs'));
+use(chaiString);
+use(chaiFs);
 
 use(chaiJestSnapshot);
 
