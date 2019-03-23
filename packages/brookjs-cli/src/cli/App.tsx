@@ -8,13 +8,18 @@ import { RootJunction } from 'brookjs-silt';
 import { Action } from 'redux';
 import Command from './Command';
 
-type RootProps = {
+type RootProps<S> = {
   commands: Commands;
+  services: S;
   argv: string[];
   onExit: (code: number) => void;
 };
 
-const Root = <S, A extends Action>({ commands, argv }: RootProps) => {
+const Root = <S, A extends Action, Services>({
+  commands,
+  services,
+  argv
+}: RootProps<Services>) => {
   const [app, setState] = useState<{
     state: S;
     View: React.ComponentType<S>;
@@ -33,14 +38,12 @@ const Root = <S, A extends Action>({ commands, argv }: RootProps) => {
     const { View } = command;
     const action$ = new Kefir.Stream() as Stream<A, never>;
     const state$ = action$.scan(command.reducer, command.initialState(args));
-    const exec$ = command.exec({})(action$, state$);
+    const exec$ = command.exec(services)(action$, state$);
     const onValue = (action: A): void => (action$ as any)._emitValue(action);
     const root = (root$: Pool<A, Error>) => root$.observe(onValue);
 
     const execSub = exec$.observe(onValue);
-    const stateSub = state$.observe(state =>
-      setState({ state, View, root })
-    );
+    const stateSub = state$.observe(state => setState({ state, View, root }));
 
     return () => {
       execSub.unsubscribe();
@@ -98,39 +101,43 @@ class Commands {
   }
 }
 
-interface Config {
-  commands: Commands;
-}
-
-const defaultConfig: Config = { commands: new Commands() };
-
-export default class App {
+export default class App<S> {
   code: number | null = null;
 
   debug: boolean = false;
 
-  private commands: Commands;
-
   private running: boolean = false;
 
-  static create(name: string, config: Config = defaultConfig) {
-    return new App(name, config);
+  static create<S extends object = {}>(
+    name: string,
+    commands?: Commands,
+    services?: S
+  ) {
+    return new App<S>(name, commands, services);
   }
 
-  private constructor(private name: string, { commands }: Config) {
+  private constructor(
+    private name: string,
+    private commands: Commands = new Commands(),
+    private services?: S
+  ) {
+    this.name = name;
     this.commands = commands;
+    this.services = services;
   }
 
-  addCommand(cmd: Command<any, any, any, any>): App {
+  addCommand(cmd: Command<any, any, any, any>): App<S> {
     if (this.running) {
       throw new Error(
         `${this.name} is already running. Cannot add additional commands.`
       );
     }
 
-    return new App(this.name, {
-      commands: this.commands.add(cmd)
-    });
+    return new App(this.name, this.commands.add(cmd), this.services);
+  }
+
+  registerServices(services: S) {
+    return new App(this.name, this.commands, services);
   }
 
   run(
@@ -157,7 +164,12 @@ export default class App {
     this.debug = debug;
 
     const instance = render(
-      <Root commands={this.commands} argv={argv} onExit={onExit} />,
+      <Root
+        commands={this.commands}
+        services={this.services}
+        argv={argv}
+        onExit={onExit}
+      />,
       {
         stdout,
         stdin,
