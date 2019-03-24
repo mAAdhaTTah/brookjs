@@ -79,7 +79,7 @@ export default class NewCommand extends Command<
 
   describe = 'Create a new brookjs application';
 
-  initialState = (argv: Arguments, { cwd }: { cwd: string; }): State =>
+  initialState = (argv: Arguments, { cwd }: { cwd: string }): State =>
     argv.yes ? creating(argv, cwd) : configure(argv, cwd);
 
   exec = exec;

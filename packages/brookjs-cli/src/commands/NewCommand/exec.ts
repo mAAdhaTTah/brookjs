@@ -3,13 +3,7 @@ import path from 'path';
 import { runner } from 'hygen';
 import inquirer from 'inquirer';
 import execa from 'execa';
-import {
-  Action,
-  State,
-  ConfiguredState,
-  Level,
-  LogAction
-} from './types';
+import { Action, State, ConfiguredState, Level, LogAction } from './types';
 
 /**
  * Match the Logger interface expected by Hygen.
@@ -58,7 +52,7 @@ const selectNewProjectContext = (state: ConfiguredState) => ({
   license: state.config.license
 });
 
-const exec = ({  }: typeof import ('../../services')) => (
+const exec = ({  }: typeof import('../../services')) => (
   action$: Stream<Action, never>,
   state$: Property<State, never>
 ): Observable<Action, never> =>

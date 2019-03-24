@@ -64,7 +64,7 @@ Given('I have a file called {string} exported from {string}', async function(
   ]);
 });
 
-Given('I have a project', async function() {
+Given('I have a project', { timeout: -1 }, async function() {
   await this.createProject();
 });
 
@@ -81,15 +81,19 @@ When('I respond to the prompts with:', async function(
   await this.respondTo(questions.hashes() as Question[]);
 });
 
-When('I wait for the command to finish with code {int}', async function(code) {
-  await this.ended();
+When(
+  'I wait for the command to finish with code {int}',
+  { timeout: -1 },
+  async function(code) {
+    await this.ended();
 
-  expect(this.output.code).to.equal(
-    code,
-    `Error: exited with code ${this.output.code}
+    expect(this.output.code).to.equal(
+      code,
+      `Error: exited with code ${this.output.code}
 Message: ${this.output.stderr || this.output.stdout}`
-  );
-});
+    );
+  }
+);
 
 /**
  * Then I see
