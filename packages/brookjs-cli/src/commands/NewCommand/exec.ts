@@ -8,7 +8,6 @@ import {
   State,
   ConfiguredState,
   Level,
-  Services,
   LogAction
 } from './types';
 
@@ -59,7 +58,7 @@ const selectNewProjectContext = (state: ConfiguredState) => ({
   license: state.config.license
 });
 
-const exec = ({  }: Services) => (
+const exec = ({  }: typeof import ('../../services')) => (
   action$: Stream<Action, never>,
   state$: Property<State, never>
 ): Observable<Action, never> =>
@@ -84,7 +83,7 @@ const exec = ({  }: Services) => (
         runner(argv, {
           // NOTE: This is relative to dist, where the build result is.
           templates: path.join(__dirname, '..', 'templates'),
-          cwd: process.cwd(),
+          cwd: state.cwd,
           logger: new Logger(emitter),
           createPrompter: () => inquirer,
           exec: (action, body) => {

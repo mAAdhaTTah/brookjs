@@ -6,7 +6,7 @@ async function main() {
   let code;
 
   const app = create();
-  const run = app.run(process.argv.slice(2));
+  const run = await app.run(process.argv.slice(2));
 
   try {
     await run.waitUntilExit();

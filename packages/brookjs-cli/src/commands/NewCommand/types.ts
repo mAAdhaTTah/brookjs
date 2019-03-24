@@ -1,8 +1,6 @@
 import { Nullable } from 'typescript-nullable';
 import { RunnerResult } from 'hygen';
 
-export type Services = {};
-
 export type Level = 'notice' | 'warn' | 'error' | 'ok';
 
 export type Log = {
@@ -14,6 +12,7 @@ export type ConfiguringState = {
   logs: Log[];
   result: null;
   error: null;
+  cwd: string;
   configuring: Configurable;
   config: {
     name: Nullable<string>;
@@ -31,6 +30,7 @@ export type ErrorState = {
   logs: Log[];
   result: null;
   error: Error;
+  cwd: string;
   configuring: null;
   config: {
     name: string;
@@ -46,6 +46,7 @@ export type CompleteState = {
   logs: Log[];
   result: RunnerResult;
   error: null;
+  cwd: string;
   configuring: null;
   config: {
     name: string;
@@ -61,6 +62,7 @@ export type InteractingState = {
   logs: Log[];
   result: null;
   error: null;
+  cwd: string;
   configuring: null;
   config: {
     name: string;

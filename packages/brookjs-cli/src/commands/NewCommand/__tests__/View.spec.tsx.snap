@@ -11,6 +11,8 @@ Run [34mnpm i[39m or [34myarn[39m to bootstrap"
 
 exports[`NewCommand#View configure step should show an error when no name provided 1`] = `"[31mCalled [33mbeaver new[31m with no name.[39m"`;
 
+exports[`NewCommand#View configure step should show an error when no name provided 2`] = `"[31mCalled [33mbeaver new[31m with no name.[39m"`;
+
 exports[`NewCommand#View configure step should show the first question 1`] = `
 "[32mApp name: test-app[39m
 What is the application version?: [2m0.0.0[22m"

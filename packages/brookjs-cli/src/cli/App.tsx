@@ -6,18 +6,32 @@ import { Argv, Arguments } from 'yargs';
 import { render, Color } from 'ink';
 import { RootJunction } from 'brookjs-silt';
 import { Action } from 'redux';
+import { Nullable } from 'typescript-nullable';
 import Command from './Command';
+import { RC, rc } from './RC';
+
+const loadEsm = require('esm')(module);
+
+const loaders = {
+  '.js': {
+    sync: (filename: string) => loadEsm(filename),
+    async: (filename: string) => loadEsm(filename)
+  }
+};
 
 type RootProps<S> = {
   commands: Commands;
   services: S;
+  rc: Nullable<RC>;
+  cwd: string;
   argv: string[];
-  onExit: (code: number) => void;
 };
 
 const Root = <S, A extends Action, Services>({
   commands,
   services,
+  rc,
+  cwd,
   argv
 }: RootProps<Services>) => {
   const [app, setState] = useState<{
@@ -37,7 +51,10 @@ const Root = <S, A extends Action, Services>({
 
     const { View } = command;
     const action$ = new Kefir.Stream() as Stream<A, never>;
-    const state$ = action$.scan(command.reducer, command.initialState(args));
+    const state$ = action$.scan(
+      command.reducer,
+      command.initialState(args, { rc, cwd })
+    );
     const exec$ = command.exec(services)(action$, state$);
     const onValue = (action: A): void => (action$ as any)._emitValue(action);
     const root = (root$: Pool<A, Error>) => root$.observe(onValue);
@@ -140,20 +157,18 @@ export default class App<S> {
     return new App(this.name, this.commands, services);
   }
 
-  run(
+  async run(
     argv: string[],
     {
       stdin = process.stdin,
       stdout = process.stdout,
-      debug = false,
-      onExit = (code: number) => {
-        process.exitCode = this.code = code;
-      }
+      cwd = process.cwd(),
+      debug = false
     }: {
       stdin?: typeof process.stdin;
       stdout?: typeof process.stdout;
+      cwd?: string;
       debug?: boolean;
-      onExit?: (code: number) => void;
     } = {}
   ) {
     if (this.running) {
@@ -163,12 +178,15 @@ export default class App<S> {
     this.running = true;
     this.debug = debug;
 
+    const result = await cosmiconfig(this.name, { loaders }).search();
+
     const instance = render(
       <Root
         commands={this.commands}
         services={this.services}
         argv={argv}
-        onExit={onExit}
+        cwd={cwd}
+        rc={result != null && rc.is(result.config) ? result.config : null}
       />,
       {
         stdout,
@@ -181,39 +199,4 @@ export default class App<S> {
       waitUntilExit: instance.waitUntilExit
     };
   }
-
-  // make(argv: string[]) {
-  //   return this.search()
-  //     .flatMap(result => this.process(result))
-  //     .flatMap(rc => {
-  //       const { running, v } = this.commands.parse(argv);
-  //
-  //       if (!running) {
-  //         return Kefir.constantError(new Error('No command matched'));
-  //       }
-  //
-  //       return this.exec(running, v, rc);
-  //     })
-  //     .flatMapErrors((err: Error) => {
-  //       renderToString(<Color red>Error: {err.message}</Color>);
-  //
-  //       return Kefir.never();
-  //     });
-  // }
-  //
-  // private search(): Observable<cosmiconfig.CosmiconfigResult, Error> {
-  //   return Kefir.fromPromise(cosmiconfig(this.name).search());
-  // }
-  //
-  // private process(
-  //   result: cosmiconfig.CosmiconfigResult
-  // ): Observable<RC, Error> {
-  //   if (result == null) {
-  //     return Kefir.constant<RC>({});
-  //   }
-  //
-  //   return rc.is(result.config)
-  //     ? Kefir.constant(result.config)
-  //     : Kefir.constantError(new Error('Invalid rc file loaded'));
-  // }
 }

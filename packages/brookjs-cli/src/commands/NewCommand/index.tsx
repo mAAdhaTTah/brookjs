@@ -3,14 +3,12 @@ import { Command } from '../../cli';
 import exec from './exec';
 import View from './View';
 import {
-  Step,
   State,
   Action,
   Args,
   unreachable,
   ConfiguringState,
-  ConfiguredState,
-  Services
+  ConfiguredState
 } from './types';
 import { defaultSteps } from './constants';
 import { Nullable } from 'typescript-nullable';
@@ -34,8 +32,9 @@ const base = {
   error: null
 };
 
-const creating = (argv: Arguments): ConfiguredState => ({
+const creating = (argv: Arguments, cwd: string): ConfiguredState => ({
   ...base,
+  cwd,
   config: {
     ...defaultSteps,
     name: argv.name as string
@@ -44,8 +43,9 @@ const creating = (argv: Arguments): ConfiguredState => ({
   configuring: null
 });
 
-const configure = (argv: Arguments): ConfiguringState => ({
+const configure = (argv: Arguments, cwd: string): ConfiguringState => ({
   ...base,
+  cwd,
   config: {
     name: typeof argv.name === 'string' ? argv.name : null,
     version: null,
@@ -57,7 +57,12 @@ const configure = (argv: Arguments): ConfiguringState => ({
   configuring: 'version'
 });
 
-export default class NewCommand extends Command<State, Action, Args, Services> {
+export default class NewCommand extends Command<
+  State,
+  Action,
+  Args,
+  typeof import('../../services')
+> {
   cmd = 'new [name]';
 
   builder(yargs: Argv): Argv {
@@ -74,8 +79,8 @@ export default class NewCommand extends Command<State, Action, Args, Services> {
 
   describe = 'Create a new brookjs application';
 
-  initialState = (argv: Arguments): State =>
-    argv.yes ? creating(argv) : configure(argv);
+  initialState = (argv: Arguments, { cwd }: { cwd: string; }): State =>
+    argv.yes ? creating(argv, cwd) : configure(argv, cwd);
 
   exec = exec;
 
