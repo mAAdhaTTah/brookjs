@@ -45,7 +45,7 @@ const getTestFilesGlob = (state: State) =>
   path.join(
     state.cwd,
     Nullable.maybe('src', rc => rc.dir, errorToNull(state.rc)),
-    '**/__tests__/*.{test,spec}.{ts,tsx}'
+    '**/__tests__/*.{test,spec}.{js,ts,tsx}'
   );
 
 const getCoverage = (state: State) =>
