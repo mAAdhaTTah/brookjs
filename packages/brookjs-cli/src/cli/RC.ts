@@ -6,6 +6,15 @@ export type Plugin = t.TypeOf<typeof plugin>;
 
 const required = t.type({
   dir: t.string,
+  mocha: t.partial({
+    requires: t.array(t.string),
+    ui: t.string,
+    reporter: t.string
+  })
+});
+
+const optional = t.partial({
+  plugins: t.array(t.union([t.string, plugin])),
   webpack: t.type({
     entry: t.union([
       t.string,
@@ -17,10 +26,6 @@ const required = t.type({
       filename: t.union([t.Function, t.string])
     })
   })
-});
-
-const optional = t.partial({
-  plugins: t.array(t.union([t.string, plugin]))
 });
 
 export const rc = t.intersection([required, optional]);

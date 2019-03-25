@@ -59,8 +59,8 @@ const Root = <S, A extends Action, Services>({
     const onValue = (action: A): void => (action$ as any)._emitValue(action);
     const root = (root$: Pool<A, Error>) => root$.observe(onValue);
 
-    const execSub = exec$.observe(onValue);
     const stateSub = state$.observe(state => setState({ state, View, root }));
+    const execSub = exec$.observe(onValue);
 
     return () => {
       execSub.unsubscribe();
