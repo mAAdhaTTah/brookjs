@@ -17,12 +17,11 @@ module.exports = {
     browser: true
   },
   plugins: ['import', 'react', 'typescript'],
-  extends: 'valtech',
+  extends: ['valtech', 'prettier'],
   rules: {
     eqeqeq: [2, 'smart'],
     'wrap-iife': [2, 'inside'],
     'one-var': 0,
-    indent: [2, 2],
     'no-unused-vars': 0,
 
     // TypeScript
