@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Color, StdinContext, Box, AppContext, Static } from 'ink';
+import { Color, StdinContext, Box, Static } from 'ink';
 import { toJunction } from 'brookjs-silt';
 import TextInput from 'ink-text-input';
 import SelectInput from 'ink-select-input';
@@ -14,6 +14,7 @@ import {
   ConfiguringState,
   Log
 } from './types';
+import { useExit } from '../../cli';
 
 type Props = State & {
   onChange: (value: string) => void;
@@ -43,14 +44,6 @@ const useOnSubmit = (onSubmit: () => void) => {
       setRawMode!(false);
     };
   }, [stdin, setRawMode, onSubmit]);
-};
-
-const useExit = (error?: Error) => {
-  const { exit } = useContext(AppContext);
-
-  useEffect(() => {
-    (exit as any)(error);
-  }, [exit]);
 };
 
 type Question = {
