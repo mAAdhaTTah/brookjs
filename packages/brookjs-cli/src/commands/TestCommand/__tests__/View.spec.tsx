@@ -5,7 +5,6 @@ import { chaiPlugin } from 'brookjs-desalinate';
 import Kefir from 'kefir';
 import chaiJestSnapshot from 'chai-jest-snapshot';
 import View from '../View';
-import webpack from 'webpack';
 
 const { plugin } = chaiPlugin({ Kefir });
 use(plugin);
@@ -21,7 +20,19 @@ describe('BuildCommand#View', () => {
   });
 
   it('should render missing rc view', () => {
-    const { lastFrame, unmount } = render(<View rc={null} />);
+    const { lastFrame, unmount } = render(
+      <View
+        rc={null}
+        code={null}
+        out={null}
+        err={null}
+        cwd="/path/to/cwd"
+        env="test"
+        coverage={false}
+        watch={false}
+        command={'mocha'}
+      />
+    );
 
     expect(lastFrame()).to.matchSnapshot();
 

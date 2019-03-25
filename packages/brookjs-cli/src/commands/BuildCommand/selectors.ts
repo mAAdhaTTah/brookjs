@@ -27,7 +27,7 @@ const selectEnvPlugins = (state: State) => {
 const selectAppPath = (state: State): string =>
   path.join(
     state.cwd,
-    Nullable.maybe('src', rc => rc.dir, errorToNull(state.rc))
+    Nullable.maybe('src', rc => rc.dir || 'src', errorToNull(state.rc))
   );
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {

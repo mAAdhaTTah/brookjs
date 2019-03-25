@@ -4,17 +4,14 @@ export const plugin = t.type({});
 
 export type Plugin = t.TypeOf<typeof plugin>;
 
-const required = t.type({
+export const rc = t.partial({
+  plugins: t.array(t.union([t.string, plugin])),
   dir: t.string,
   mocha: t.partial({
     requires: t.array(t.string),
     ui: t.string,
     reporter: t.string
-  })
-});
-
-const optional = t.partial({
-  plugins: t.array(t.union([t.string, plugin])),
+  }),
   webpack: t.type({
     entry: t.union([
       t.string,
@@ -27,7 +24,5 @@ const optional = t.partial({
     })
   })
 });
-
-export const rc = t.intersection([required, optional]);
 
 export type RC = t.TypeOf<typeof rc>;

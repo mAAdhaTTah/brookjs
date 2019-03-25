@@ -12,7 +12,7 @@ export default class WebpackService {
     return Kefir.constant(new WebpackService(config));
   }
 
-  private constructor(config: webpack.Configuration) {
+  constructor(config: webpack.Configuration) {
     this.config = config;
   }
 

@@ -31,6 +31,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="version"
+          cwd="/path/to/cwd"
           config={{
             name: null,
             version: null,
@@ -50,6 +51,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="creating"
           configuring="version"
+          cwd="/path/to/cwd"
           config={{
             name: null,
             version: null,
@@ -73,6 +75,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="version"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: null,
@@ -96,6 +99,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="version"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -119,6 +123,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="description"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -142,6 +147,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="description"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -165,6 +171,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="dir"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -188,6 +195,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="dir"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -211,6 +219,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="license"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -234,6 +243,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="configure"
           configuring="license"
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -263,6 +273,7 @@ describe('NewCommand#View', () => {
             result={null}
             step="configure"
             configuring="version"
+            cwd="/path/to/cwd"
             config={{
               name: 'test-app',
               version: null,
@@ -296,6 +307,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="confirm"
           configuring={null}
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -325,6 +337,7 @@ describe('NewCommand#View', () => {
             result={null}
             step="confirm"
             configuring={null}
+            cwd="/path/to/cwd"
             config={{
               name: 'test-app',
               version: '1.0.0',
@@ -358,6 +371,7 @@ describe('NewCommand#View', () => {
             result={null}
             step="confirm"
             configuring={null}
+            cwd="/path/to/cwd"
             config={{
               name: 'test-app',
               version: '1.0.0',
@@ -390,6 +404,7 @@ describe('NewCommand#View', () => {
             result={null}
             step="cancelled"
             configuring={null}
+            cwd="/path/to/cwd"
             config={{
               name: 'test-app',
               version: '1.0.0',
@@ -421,6 +436,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="creating"
           configuring={null}
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -461,6 +477,7 @@ describe('NewCommand#View', () => {
           result={null}
           step="creating"
           configuring={null}
+          cwd="/path/to/cwd"
           config={{
             name: 'test-app',
             version: '1.0.0',
@@ -489,6 +506,7 @@ describe('NewCommand#View', () => {
             result={null}
             step="error"
             configuring={null}
+            cwd="/path/to/cwd"
             config={{
               name: 'test-app',
               version: '1.0.0',
@@ -523,6 +541,7 @@ describe('NewCommand#View', () => {
             result={{ success: true, time: Date.now(), actions: [] }}
             step="complete"
             configuring={null}
+            cwd="/path/to/cwd"
             config={{
               name: 'test-app',
               version: '1.0.0',

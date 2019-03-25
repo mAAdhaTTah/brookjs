@@ -9,7 +9,12 @@ use(plugin);
 
 describe('NewCommand#exec', () => {
   it('should not do anything before creating', () => {
-    const services = {};
+    const services = {
+      WebpackService: {
+
+      } as any,
+      glob: sinon.stub()
+    };
     expect(exec(services)).to.emitFromDelta([], sendToDelta => {
       sendToDelta(
         { type: 'DUMMY' },

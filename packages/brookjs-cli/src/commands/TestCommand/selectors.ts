@@ -12,14 +12,14 @@ const getWatchCommand = (state: State) =>
 const getTestReporter = (state: State) =>
   `--reporter ${Nullable.maybe(
     'spec',
-    rc => rc.mocha.reporter || 'spec',
+    rc => Nullable.maybe('bdd', mocha => mocha.reporter || 'spec', rc.mocha),
     errorToNull(state.rc)
   )}`;
 
 const getTestUi = (state: State) =>
   `--ui ${Nullable.maybe(
     'bdd',
-    rc => rc.mocha.ui || 'bdd',
+    rc => Nullable.maybe('bdd', mocha => mocha.ui || 'bdd', rc.mocha),
     errorToNull(state.rc)
   )}`;
 
@@ -44,7 +44,7 @@ const getTestRequires = (state: State) =>
 const getTestFilesGlob = (state: State) =>
   path.join(
     state.cwd,
-    Nullable.maybe('src', rc => rc.dir, errorToNull(state.rc)),
+    Nullable.maybe('src', rc => rc.dir || state.cwd, errorToNull(state.rc)),
     '**/__tests__/*.{test,spec}.{js,ts,tsx}'
   );
 
