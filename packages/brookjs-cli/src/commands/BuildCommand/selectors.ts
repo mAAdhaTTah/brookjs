@@ -5,6 +5,7 @@ import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import { Nullable } from 'typescript-nullable';
 import { State } from './types';
+import { errorToNull } from '../../cli';
 
 const selectDefaultPlugins = (state: State) => [
   new CaseSensitivePathsPlugin({
@@ -24,10 +25,17 @@ const selectEnvPlugins = (state: State) => {
 };
 
 const selectAppPath = (state: State): string =>
-  path.join(state.cwd, Nullable.maybe('src', rc => rc.dir, state.rc));
+  path.join(
+    state.cwd,
+    Nullable.maybe('src', rc => rc.dir, errorToNull(state.rc))
+  );
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
-  let entry = Nullable.maybe('index.js', rc => rc.webpack.entry, state.rc);
+  let entry = Nullable.maybe(
+    'index.js',
+    rc => Nullable.maybe('index.js', webpack => webpack.entry, rc.webpack),
+    errorToNull(state.rc)
+  );
 
   if (typeof entry === 'string') {
     return path.join(selectAppPath(state), entry);
@@ -52,8 +60,13 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
 const selectFilename = (state: State): string => {
   let filename = Nullable.maybe(
     '[name].js',
-    rc => rc.webpack.output.filename,
-    state.rc
+    rc =>
+      Nullable.maybe(
+        '[name].js',
+        webpack => webpack.output.filename,
+        rc.webpack
+      ),
+    errorToNull(state.rc)
   );
 
   if (typeof filename === 'function') {
@@ -70,7 +83,11 @@ const selectFilename = (state: State): string => {
 const selectOutput = (state: State): webpack.Configuration['output'] => ({
   path: path.join(
     state.cwd,
-    Nullable.maybe('dist', rc => rc.webpack.output.path, state.rc)
+    Nullable.maybe(
+      'dist/',
+      rc => Nullable.maybe('dist/', webpack => webpack.output.path, rc.webpack),
+      errorToNull(state.rc)
+    )
   ),
   filename: selectFilename(state)
 });

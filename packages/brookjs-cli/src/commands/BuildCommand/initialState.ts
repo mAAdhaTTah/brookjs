@@ -17,7 +17,7 @@ const getEnv = (env: unknown): webpack.Configuration['mode'] => {
 
 const initialState = (
   args: Arguments,
-  { rc, cwd }: { rc: Nullable<RC>; cwd: string }
+  { rc, cwd }: { rc: Nullable<RC | Error>; cwd: string }
 ): State => ({
   building: true,
   results: null,

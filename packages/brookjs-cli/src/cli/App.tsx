@@ -1,12 +1,12 @@
 import Kefir, { Stream, Pool, Subscription } from 'kefir';
 import React, { useEffect, useState } from 'react';
 import cosmiconfig from 'cosmiconfig';
-import yargs from 'yargs';
-import { Argv, Arguments } from 'yargs';
+import yargs, { Argv, Arguments } from 'yargs';
 import { render, Color } from 'ink';
 import { RootJunction } from 'brookjs-silt';
 import { Action } from 'redux';
 import { Nullable } from 'typescript-nullable';
+import { ValidationError, getFunctionName, Context } from 'io-ts';
 import Command from './Command';
 import { RC, rc } from './RC';
 
@@ -22,7 +22,7 @@ const loaders = {
 type RootProps<S> = {
   commands: Commands;
   services: S;
-  rc: Nullable<RC>;
+  rc: Nullable<RC | Error>;
   cwd: string;
   argv: string[];
 };
@@ -178,7 +178,47 @@ export default class App<S> {
     this.running = true;
     this.debug = debug;
 
+    let loaded: Nullable<RC | Error> = null;
     const result = await cosmiconfig(this.name, { loaders }).search();
+
+    if (result != null) {
+      // @TODO(mAAdhaTTah) Associate with RCValidationError
+      function stringify(v: any): string {
+        if (typeof v === 'function') {
+          return getFunctionName(v);
+        }
+
+        if (typeof v === 'number' && !isFinite(v)) {
+          if (isNaN(v)) {
+            return 'NaN';
+          }
+          return v > 0 ? 'Infinity' : '-Infinity';
+        }
+
+        return JSON.stringify(v, null, '  ');
+      }
+
+      function getContextPath(context: Context): string {
+        return context.map(({ key, type }) => `${key}: ${type.name}`).join('/');
+      }
+
+      function getMessage(e: ValidationError): string {
+        return e.message !== undefined
+          ? e.message
+          : `Invalid value ${stringify(e.value)} supplied to ${getContextPath(
+              e.context
+            )}`;
+      }
+
+      loaded = rc.decode(result.config).fold<RC | Error>(
+        function failure(es) {
+          return new Error('Errors: ' + es.map(getMessage).join('; '));
+        },
+        function success(value) {
+          return value;
+        }
+      );
+    }
 
     const instance = render(
       <Root
@@ -186,7 +226,7 @@ export default class App<S> {
         services={this.services}
         argv={argv}
         cwd={cwd}
-        rc={result != null && rc.is(result.config) ? result.config : null}
+        rc={loaded}
       />,
       {
         stdout,

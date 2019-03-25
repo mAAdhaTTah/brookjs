@@ -25,6 +25,10 @@ const View: React.FC<State> = props => {
     return <Color red>RC file not loaded. Cannot build.</Color>;
   }
 
+  if (props.rc instanceof Error) {
+    return <Color red>RC file invalid. {props.rc.message}</Color>;
+  }
+
   if (props.building) {
     return <Building />;
   }

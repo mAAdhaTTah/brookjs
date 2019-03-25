@@ -7,7 +7,7 @@ import { RC } from '../../cli';
 interface BaseState {
   env: webpack.Configuration['mode'];
   cwd: string;
-  rc: Nullable<RC>;
+  rc: Nullable<RC | Error>;
 }
 
 interface BuildingState extends BaseState {

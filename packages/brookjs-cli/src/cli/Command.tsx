@@ -1,8 +1,8 @@
 import { Argv, Arguments } from 'yargs';
 import { Stream, Property } from 'kefir';
 import React from 'react';
-import { RC } from './RC';
 import { Nullable } from 'typescript-nullable';
+import { RC } from './RC';
 
 export default abstract class Command<S, A, V, Srvcs> {
   abstract builder(yargs: Argv): Argv;
@@ -13,7 +13,7 @@ export default abstract class Command<S, A, V, Srvcs> {
 
   abstract initialState: (
     args: Arguments<V>,
-    extra: { rc: Nullable<RC>; cwd: string }
+    extra: { rc: Nullable<RC | Error>; cwd: string }
   ) => S;
 
   abstract exec: (
