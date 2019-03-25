@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 import sinon from 'sinon';
 import { expect, use } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
@@ -10,9 +11,7 @@ use(plugin);
 describe('NewCommand#exec', () => {
   it('should not do anything before creating', () => {
     const services = {
-      WebpackService: {
-
-      } as any,
+      WebpackService: {} as any,
       glob: sinon.stub()
     };
     expect(exec(services)).to.emitFromDelta([], sendToDelta => {

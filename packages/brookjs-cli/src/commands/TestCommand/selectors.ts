@@ -1,7 +1,7 @@
 import path from 'path';
-import { State } from './types';
 import { Nullable } from 'typescript-nullable';
 import { errorToNull } from '../../cli';
+import { State } from './types';
 
 const getEnv = (state: State) =>
   state.env ? `cross-env NODE_ENV=${state.env}` : '';

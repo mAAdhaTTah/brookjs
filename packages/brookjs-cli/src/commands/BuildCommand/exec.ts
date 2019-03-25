@@ -1,8 +1,8 @@
 import Kefir, { Stream, Property } from 'kefir';
+import { Nullable } from 'typescript-nullable';
 import { webpackBuild } from './actions';
 import { selectWebpackConfig } from './selectors';
 import { State, Action } from './types';
-import { Nullable } from 'typescript-nullable';
 
 const exec = ({ WebpackService }: typeof import('../../services')) => (
   action$: Stream<Action, never>,

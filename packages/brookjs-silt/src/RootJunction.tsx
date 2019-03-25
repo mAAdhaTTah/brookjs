@@ -1,7 +1,7 @@
 import React from 'react';
 import Kefir, { Subscription, Pool } from 'kefir';
-import { Provider } from './context';
 import { Action } from 'redux';
+import { Provider } from './context';
 
 export default class RootJunction<A extends Action> extends React.Component<{
   root$: (p: Pool<A, Error>) => Subscription | void;

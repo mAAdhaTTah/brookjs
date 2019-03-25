@@ -6,5 +6,5 @@ export const dir = 'src';
 export const mocha = {
   reporter: 'spec',
   ui: 'bdd',
-  requires: ['./src/setupTests.ts']
+  requires: ['../../setupTests.ts']
 };

@@ -1,16 +1,14 @@
 import Spinner from 'ink-spinner';
 import { Box, Color } from 'ink';
 import React from 'react';
-import { State, CompleteState } from './types';
 import { Nullable } from 'typescript-nullable';
 import { useExit } from '../../cli';
+import { State, CompleteState } from './types';
 
 const Running: React.FC<{ command: string }> = ({ command }) => (
   <Box>
     <Spinner type="arrow3" />
-    <Box paddingLeft={1}>
-      Running command {command}...
-    </Box>
+    <Box paddingLeft={1}>Running command {command}...</Box>
   </Box>
 );
 
@@ -23,7 +21,7 @@ const Results: React.FC<{
 
   return (
     <Box>
-      <Color green>{out.trim()}</Color>
+      <Box>{out.trim()}</Box>
       {Nullable.maybe(
         null,
         err => (

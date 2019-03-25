@@ -3,9 +3,9 @@ import { expect, use } from 'chai';
 import Kefir from 'kefir';
 import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
+import { render } from 'react-testing-library';
 import withRef$ from '../withRef';
 import { Provider } from '../context';
-import { render } from 'react-testing-library';
 
 const { plugin, value } = chaiPlugin({ Kefir });
 

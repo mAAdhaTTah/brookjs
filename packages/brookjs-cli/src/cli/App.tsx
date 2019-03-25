@@ -7,10 +7,11 @@ import { RootJunction } from 'brookjs-silt';
 import { Action } from 'redux';
 import { Nullable } from 'typescript-nullable';
 import { ValidationError, getFunctionName, Context } from 'io-ts';
+import esm from 'esm';
 import Command from './Command';
 import { RC, rc } from './RC';
 
-const loadEsm = require('esm')(module);
+const loadEsm = esm(module);
 
 const loaders = {
   '.js': {

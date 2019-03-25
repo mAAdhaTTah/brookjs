@@ -1,5 +1,5 @@
-import Kefir, { Stream, Property, Observable, Emitter } from 'kefir';
 import path from 'path';
+import Kefir, { Stream, Property, Observable, Emitter } from 'kefir';
 import { runner } from 'hygen';
 import inquirer from 'inquirer';
 import execa from 'execa';

@@ -5,8 +5,8 @@ import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
 import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
-import RootJunction from '../RootJunction';
 import { render } from 'react-testing-library';
+import RootJunction from '../RootJunction';
 
 const { plugin } = chaiPlugin({ Kefir });
 

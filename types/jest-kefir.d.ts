@@ -16,7 +16,7 @@ declare module 'jest-kefir' {
   }
 
   interface HelpersFactory {
-    (Kefir: typeof import('kefir')): Helpers;
+    (Kefir: typeof import('kefir').default): Helpers;
   }
 
   const createHelpers: HelpersFactory;

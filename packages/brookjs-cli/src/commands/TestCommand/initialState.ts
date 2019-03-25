@@ -1,7 +1,7 @@
+import { Nullable } from 'typescript-nullable';
+import { Arguments } from 'yargs';
 import { RC } from '../../cli';
 import { State } from './types';
-import { Arguments } from 'yargs';
-import { Nullable } from 'typescript-nullable';
 
 const getEnv = (env: unknown): string => {
   if (typeof env === 'string') {

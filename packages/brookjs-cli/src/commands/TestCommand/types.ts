@@ -1,7 +1,7 @@
 import { ActionType } from 'typesafe-actions';
-import * as actions from './actions';
 import { Nullable } from 'typescript-nullable';
 import { RC } from '../../cli';
+import * as actions from './actions';
 
 interface BaseState {
   rc: Nullable<RC | Error>;

@@ -1,10 +1,10 @@
+import { Argv } from 'yargs';
 import { Command } from '../../cli';
 import exec from './exec';
 import initialState from './initialState';
 import reducer from './reducer';
 import View from './View';
 import { State, Action, Args } from './types';
-import { Argv } from 'yargs';
 
 export default class TestCommand extends Command<
   State,

@@ -6,6 +6,7 @@ import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { Observable } from 'kefir';
 import { Nullable } from 'typescript-nullable';
+import { useExit } from '../../cli';
 import {
   State,
   Configurable,
@@ -14,7 +15,6 @@ import {
   ConfiguringState,
   Log
 } from './types';
-import { useExit } from '../../cli';
 
 type Props = State & {
   onChange: (value: string) => void;

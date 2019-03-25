@@ -11,28 +11,40 @@ describe('eddy', () => {
 
     type State = typeof defaultState;
 
-    const reducer: EddyReducer<State, Action> = (state = defaultState, action) => {
+    const reducer: EddyReducer<State, Action> = (
+      state = defaultState,
+      action
+    ) => {
       switch (action.type) {
-      case 'HOLD':
-        return {
-          actions: [...state.actions, action.type]
-        };
-      case 'NEXT':
-        return loop({
-          actions: [...state.actions, action.type]
-        }, {
-          type: 'HOLD'
-        });
-      case 'MANY':
-        return loop({
-          actions: [...state.actions, action.type]
-        }, [{ type: 'HOLD' }, { type: 'FINAL' }, loop.NONE]);
-      case 'FINAL':
-        return loop({
-          actions: [...state.actions, action.type]
-        }, loop.NONE);
-      default:
-        return state;
+        case 'HOLD':
+          return {
+            actions: [...state.actions, action.type]
+          };
+        case 'NEXT':
+          return loop(
+            {
+              actions: [...state.actions, action.type]
+            },
+            {
+              type: 'HOLD'
+            }
+          );
+        case 'MANY':
+          return loop(
+            {
+              actions: [...state.actions, action.type]
+            },
+            [{ type: 'HOLD' }, { type: 'FINAL' }, loop.NONE]
+          );
+        case 'FINAL':
+          return loop(
+            {
+              actions: [...state.actions, action.type]
+            },
+            loop.NONE
+          );
+        default:
+          return state;
       }
     };
 
@@ -92,15 +104,17 @@ describe('eddy', () => {
 
   describe('combineReducers', () => {
     const reducerMap = {
-      pings: (state = 0, action: Action) => action.type === 'PING' && state < 2
-        ? loop(state + 1, { type: 'PONG' })
-        : state,
-      pongs: (state = 0, action: Action) => action.type === 'PONG' && state < 2
-        ? loop(state + 1, { type: 'PING' })
-        : state,
+      pings: (state = 0, action: Action) =>
+        action.type === 'PING' && state < 2
+          ? loop(state + 1, { type: 'PONG' })
+          : state,
+      pongs: (state = 0, action: Action) =>
+        action.type === 'PONG' && state < 2
+          ? loop(state + 1, { type: 'PING' })
+          : state
     };
 
-    type State = { pings: number, pongs: number };
+    type State = { pings: number; pongs: number };
 
     const reducer = combineReducers<State, Action>(reducerMap);
     let store: Store;

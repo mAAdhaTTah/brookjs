@@ -2,8 +2,8 @@ import webpack from 'webpack';
 import Spinner from 'ink-spinner';
 import { Box, Color } from 'ink';
 import React from 'react';
-import { State } from './types';
 import { Nullable } from 'typescript-nullable';
+import { State } from './types';
 
 const Building: React.FC<{}> = () => (
   <Box>

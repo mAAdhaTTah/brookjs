@@ -2,7 +2,7 @@ import React from 'react';
 import jestKefir from 'jest-kefir';
 import { render } from 'react-testing-library';
 import { RootJunction } from 'brookjs-silt';
-const createHelpers = require('kefir-test-utils').default;
+import createHelpers from 'kefir-test-utils';
 
 const noop = () => {};
 

@@ -1,4 +1,5 @@
 import { Arguments, Argv } from 'yargs';
+import { Nullable } from 'typescript-nullable';
 import { Command } from '../../cli';
 import exec from './exec';
 import View from './View';
@@ -11,7 +12,6 @@ import {
   ConfiguredState
 } from './types';
 import { defaultSteps } from './constants';
-import { Nullable } from 'typescript-nullable';
 
 const applyDefaults = (
   config: ConfiguringState['config']

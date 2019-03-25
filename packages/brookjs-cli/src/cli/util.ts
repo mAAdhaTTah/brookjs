@@ -1,7 +1,7 @@
 import { Nullable } from 'typescript-nullable';
-import { RC } from './RC';
 import { useContext, useEffect } from 'react';
 import { AppContext } from 'ink';
+import { RC } from './RC';
 
 export const errorToNull = (e: Nullable<RC | Error>): Nullable<RC> => {
   if (e instanceof Error) {

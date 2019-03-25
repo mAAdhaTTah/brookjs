@@ -3,8 +3,8 @@ import Kefir, { Observable, Pool } from 'kefir';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import { Action } from 'redux';
-import { Consumer, Provider } from './context';
 import { Omit } from 'yargs';
+import { Consumer, Provider } from './context';
 
 const id = <T extends any>(x: T) => x;
 
@@ -77,13 +77,17 @@ const toJunction = <P extends object, E extends EventConfig>(
     }
 
     createSource() {
+      const combined$ = combine(
+        this.sources.merged,
+        this.sources.dict,
+        this.props
+      );
+
       if (this.props.preplug) {
-        return this.props.preplug(
-          combine(this.sources.merged, this.sources.dict, this.props)
-        );
+        return this.props.preplug(combined$);
       }
 
-      return this.sources.merged;
+      return combined$;
     }
 
     unplug() {

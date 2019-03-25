@@ -4,24 +4,24 @@ import React from 'react';
 import { RootJunction } from 'brookjs-silt';
 import { render } from 'react-testing-library';
 import { Clock } from 'lolex';
-const deepEql = require('deep-eql');
-const createHelpers = require('kefir-test-utils').default;
+import createHelpers from 'kefir-test-utils';
+import deepEql from 'deep-eql';
 
 declare global {
-    namespace Chai {
-        interface InstanceOfObservable {
-            (): Assertion;
-        }
-
-        interface Assertion {
-            emit: Emit<Assertion>;
-            emitFromDelta: EmitFromDelta<Assertion>;
-        }
-
-        interface TypeComparison {
-            observable: InstanceOfObservable;
-        }
+  namespace Chai {
+    interface InstanceOfObservable {
+      (): Assertion;
     }
+
+    interface Assertion {
+      emit: Emit<Assertion>;
+      emitFromDelta: EmitFromDelta<Assertion>;
+    }
+
+    interface TypeComparison {
+      observable: InstanceOfObservable;
+    }
+  }
 }
 
 const noop = () => {};
@@ -30,8 +30,11 @@ export type ToDelta = (action: object, state: object) => void;
 export type Tick = (time: number) => void;
 
 export type Emit<A> = <V, E>(expected: Array<Event<V, E>>, cb: () => void) => A;
-export type EmitFromDelta<A> = <V, E>(expected: Array<[number, Event<V, E>]>, cb?: (sendToDelta: ToDelta, tick: Tick) => void) => A;
-
+export type EmitFromDelta<A> = <V, E>(
+  expected: Array<[number, Event<V, E>]>,
+  cb?: (sendToDelta: ToDelta, tick: Tick) => void,
+  options?: { timeLimit?: number }
+) => A;
 
 export default ({ Kefir }: { Kefir: typeof K }) => {
   const helpers = createHelpers(Kefir);

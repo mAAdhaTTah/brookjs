@@ -4,8 +4,8 @@ import path from 'path';
 import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import { Nullable } from 'typescript-nullable';
-import { State } from './types';
 import { errorToNull } from '../../cli';
+import { State } from './types';
 
 const selectDefaultPlugins = (state: State) => [
   new CaseSensitivePathsPlugin({

@@ -1,8 +1,8 @@
 import { ActionType } from 'typesafe-actions';
-import * as actions from './actions';
 import webpack from 'webpack';
 import { Nullable } from 'typescript-nullable';
 import { RC } from '../../cli';
+import * as actions from './actions';
 
 interface BaseState {
   env: webpack.Configuration['mode'];

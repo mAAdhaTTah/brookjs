@@ -7,6 +7,7 @@ export const mocha = {
   reporter: 'spec',
   ui: 'bdd',
   requires: [
+    '../../setupTests.ts',
     'react-testing-library',
     'jsdom-global/register',
     'raf/polyfill',
