@@ -216,7 +216,7 @@ export default class App<S> {
           return new Error('Errors: ' + es.map(getMessage).join('; '));
         },
         function success(value) {
-          return value;
+          return value as RC;
         }
       );
     }

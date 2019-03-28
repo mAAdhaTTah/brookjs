@@ -1,4 +1,5 @@
 import * as t from 'io-ts';
+import webpack from 'webpack';
 
 export const plugin = t.type({});
 
@@ -12,7 +13,8 @@ export const rc = t.partial({
     ui: t.string,
     reporter: t.string
   }),
-  webpack: t.type({
+  webpack: t.partial({
+    modifier: t.Function,
     entry: t.union([
       t.string,
       t.dictionary(t.string, t.string),
@@ -25,4 +27,22 @@ export const rc = t.partial({
   })
 });
 
-export type RC = t.TypeOf<typeof rc>;
+type RCBase = t.TypeOf<typeof rc>;
+
+type WebpackBase = RCBase['webpack'];
+
+type WebpackState = {
+  env: Required<webpack.Configuration>['mode'];
+  cmd: 'build' | 'start';
+};
+
+type Webpack = Exclude<WebpackBase, 'modifer'> & {
+  modifier?: (
+    config: webpack.Configuration,
+    state: WebpackState
+  ) => webpack.Configuration;
+};
+
+export interface RC extends RCBase {
+  webpack: Webpack;
+}

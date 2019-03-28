@@ -58,12 +58,18 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
 };
 
 const selectFilename = (state: State): string => {
+  // @TODO(James) fix this horrible code
   let filename = Nullable.maybe(
     '[name].js',
     rc =>
       Nullable.maybe(
         '[name].js',
-        webpack => webpack.output.filename,
+        webpack =>
+          Nullable.maybe(
+            '[name].js',
+            output => output.filename,
+            webpack.output
+          ),
         rc.webpack
       ),
     errorToNull(state.rc)
@@ -83,49 +89,67 @@ const selectFilename = (state: State): string => {
 const selectOutput = (state: State): webpack.Configuration['output'] => ({
   path: path.join(
     state.cwd,
-    Nullable.maybe(
+    Nullable.withDefault(
       'dist/',
-      rc => Nullable.maybe('dist/', webpack => webpack.output.path, rc.webpack),
-      errorToNull(state.rc)
+      Nullable.andThen(
+        output => output.path,
+        Nullable.andThen(
+          webpack => webpack.output,
+          Nullable.andThen(rc => rc.webpack, errorToNull(state.rc))
+        )
+      )
     )
   ),
   filename: selectFilename(state)
 });
 
-export const selectWebpackConfig = (state: State): webpack.Configuration => ({
-  entry: selectWebpackEntry(state),
-  output: selectOutput(state),
-  mode: state.env,
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: require.resolve('eslint-loader'),
-        include: selectAppPath(state),
-        enforce: 'pre',
-        options: {
-          eslintPath: require.resolve('eslint')
+export const selectWebpackConfig = (state: State): webpack.Configuration => {
+  const config: webpack.Configuration = {
+    entry: selectWebpackEntry(state),
+    output: selectOutput(state),
+    mode: state.env,
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          loader: require.resolve('eslint-loader'),
+          include: selectAppPath(state),
+          enforce: 'pre',
+          options: {
+            eslintPath: require.resolve('eslint')
+          }
+        },
+        {
+          test: /\.js$/,
+          loader: require.resolve('babel-loader'),
+          include: selectAppPath(state)
+        },
+        {
+          test: /\.hbs/,
+          loader: require.resolve('handlebars-loader'),
+          query: {
+            helperDirs: [`${selectAppPath(state)}/helpers`],
+            partialDirs: [selectAppPath(state)],
+            preventIndent: true,
+            compat: true
+          }
         }
-      },
-      {
-        test: /\.js$/,
-        loader: require.resolve('babel-loader'),
-        include: selectAppPath(state)
-      },
-      {
-        test: /\.hbs/,
-        loader: require.resolve('handlebars-loader'),
-        query: {
-          helperDirs: [`${selectAppPath(state)}/helpers`],
-          partialDirs: [selectAppPath(state)],
-          preventIndent: true,
-          compat: true
-        }
-      }
-    ]
-  },
-  resolve: {
-    mainFields: ['module', 'main']
-  },
-  plugins: [...selectDefaultPlugins(state), ...selectEnvPlugins(state)]
-});
+      ]
+    },
+    resolve: {
+      mainFields: ['module', 'main']
+    },
+    plugins: [...selectDefaultPlugins(state), ...selectEnvPlugins(state)]
+  };
+
+  const modifier = Nullable.andThen(
+    webpack => webpack.modifier,
+    Nullable.andThen(rc => rc.webpack, errorToNull(state.rc))
+  );
+
+  if (Nullable.isSome(modifier)) {
+    return modifier(config, { env: state.env, cmd: 'build' });
+  }
+
+  return config;
+};

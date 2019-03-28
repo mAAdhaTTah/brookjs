@@ -5,7 +5,7 @@ import { RC } from '../../cli';
 import * as actions from './actions';
 
 interface BaseState {
-  env: webpack.Configuration['mode'];
+  env: Required<webpack.Configuration>['mode'];
   cwd: string;
   rc: Nullable<RC | Error>;
 }

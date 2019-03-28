@@ -5,7 +5,7 @@ import { chaiPlugin } from 'brookjs-desalinate';
 import Kefir from 'kefir';
 import exec from '../exec';
 
-const { plugin, value } = chaiPlugin({ Kefir });
+const { plugin } = chaiPlugin({ Kefir });
 use(plugin);
 
 describe('NewCommand#exec', () => {

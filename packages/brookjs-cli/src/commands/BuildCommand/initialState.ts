@@ -4,7 +4,7 @@ import webpack from 'webpack';
 import { RC } from '../../cli';
 import { State } from './types';
 
-const getEnv = (env: unknown): webpack.Configuration['mode'] => {
+const getEnv = (env: unknown): Required<webpack.Configuration>['mode'] => {
   if (
     typeof env === 'string' &&
     (env === 'production' || env === 'development' || env === 'none')
