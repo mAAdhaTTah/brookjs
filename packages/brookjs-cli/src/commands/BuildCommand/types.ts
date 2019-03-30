@@ -8,6 +8,7 @@ interface BaseState {
   env: Required<webpack.Configuration>['mode'];
   cwd: string;
   rc: Nullable<RC | Error>;
+  watch: boolean;
 }
 
 interface BuildingState extends BaseState {

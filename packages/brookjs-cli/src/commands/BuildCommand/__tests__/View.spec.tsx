@@ -25,6 +25,7 @@ describe('BuildCommand#View', () => {
     const { lastFrame, unmount } = render(
       <View
         building={true}
+        watch={false}
         results={null}
         env="development"
         cwd="/path/to/wd"
@@ -41,6 +42,7 @@ describe('BuildCommand#View', () => {
     const { lastFrame, unmount } = render(
       <View
         building={true}
+        watch={false}
         results={null}
         env="development"
         cwd="/path/to/wd"
@@ -68,6 +70,7 @@ describe('BuildCommand#View', () => {
     const { lastFrame, unmount } = render(
       <View
         building={false}
+        watch={false}
         results={results}
         env="development"
         cwd="/path/to/wd"
@@ -108,6 +111,7 @@ describe('BuildCommand#View', () => {
     const { lastFrame, unmount } = render(
       <View
         building={false}
+        watch={false}
         results={results}
         env="development"
         cwd="/path/to/wd"

@@ -19,6 +19,7 @@ const initialState = (
   args: Arguments,
   { rc, cwd }: { rc: Nullable<RC | Error>; cwd: string }
 ): State => ({
+  watch: typeof args.watch === 'boolean' ? args.watch : false,
   building: true,
   results: null,
   env: getEnv(args.env),

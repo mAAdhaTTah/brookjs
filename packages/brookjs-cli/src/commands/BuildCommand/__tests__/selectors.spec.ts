@@ -18,6 +18,7 @@ describe('BuildCommand#selectors', () => {
       const modifier = sinon.stub().returns(config);
       const state: State = {
         building: true,
+        watch: false,
         env: 'production',
         results: null,
         cwd: '/path/to/cwd',

@@ -15,7 +15,9 @@ const exec = ({ WebpackService }: typeof import('../../services')) => (
       Kefir.concat<Action, never>([
         Kefir.constant(webpackBuild.request()),
         WebpackService.create(selectWebpackConfig(state))
-          .flatMap(compiler => compiler.run())
+          .flatMap(compiler =>
+            state.watch ? compiler.watch() : compiler.run()
+          )
           .map(webpackBuild.success)
           .flatMapErrors(error => Kefir.constant(webpackBuild.failure(error)))
       ])

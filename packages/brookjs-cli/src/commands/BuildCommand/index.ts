@@ -13,9 +13,13 @@ export default class BuildCommand extends Command<
   typeof import('../../services')
 > {
   builder(yargs: Argv): Argv {
-    return yargs.option('env', {
-      default: 'development'
-    });
+    return yargs
+      .option('env', {
+        default: 'development'
+      })
+      .option('watch', {
+        default: false
+      });
   }
   cmd = 'build';
 
