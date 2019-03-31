@@ -13,4 +13,6 @@ declare module 'ink-testing-library' {
   }
 
   export function render(node: React.ReactNode): Helpers;
+
+  export function cleanup(): void;
 }

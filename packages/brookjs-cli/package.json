@@ -43,7 +43,7 @@
     "handlebars-loader": "^1.6.0",
     "has-ansi": "^3.0.0",
     "hygen": "^4.0.2",
-    "ink": "^2.0.0",
+    "ink": "^2.1.0",
     "ink-select-input": "^3.1.0",
     "ink-spinner": "^3.0.0",
     "ink-text-input": "^3.0.0",

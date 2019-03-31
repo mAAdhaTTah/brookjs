@@ -139,13 +139,25 @@ class CliWorld implements World {
       code: null
     };
 
+    // Remove constants that indicate it's in CI.
+    // This is because Ink will only emit the last frame in CI.
+    const {
+      CI,
+      CONTINUOUS_INTEGRATION,
+      TRAVIS,
+      BUILD_NUMBER,
+      RUN_ID,
+      TRAVIS_PULL_REQUEST,
+      ...env
+    } = process.env as any;
+
     const spawned = (this.spawned = spawn(bin, command.split(' '), {
       name: 'xterm-color',
       cols: 80,
       rows: 30,
       encoding: 'utf-8',
       cwd: this.cwd,
-      env: process.env as any
+      env
     }));
 
     spawned.on('data', data => {

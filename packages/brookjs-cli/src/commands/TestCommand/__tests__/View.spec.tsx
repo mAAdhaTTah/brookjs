@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import React from 'react';
-import { render } from 'ink-testing-library';
+import { render, cleanup } from 'ink-testing-library';
 import { expect, use } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
 import Kefir from 'kefir';
@@ -20,8 +20,10 @@ describe('BuildCommand#View', () => {
     chaiJestSnapshot.configureUsingMochaContext(this);
   });
 
+  afterEach(cleanup);
+
   it('should render missing rc view', () => {
-    const { lastFrame, unmount } = render(
+    const { lastFrame } = render(
       <View
         rc={null}
         code={null}
@@ -36,7 +38,5 @@ describe('BuildCommand#View', () => {
     );
 
     expect(lastFrame()).to.matchSnapshot();
-
-    unmount();
   });
 });

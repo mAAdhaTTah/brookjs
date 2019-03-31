@@ -65,10 +65,10 @@ license: [32mISC[39m
 `;
 
 exports[`NewCommand#View creating should render all logs 1`] = `
-"This is a notice mesasge.This is a warn message.This is a error message.[32mThis is a ok message.[39m
-
-
-
+"This is a notice mesasge.
+This is a warn message.
+This is a error message.
+[32mThis is a ok message.[39m
 
 
 [32m▹▹▹▹▹[39m [39mCreating app test-app[39m"

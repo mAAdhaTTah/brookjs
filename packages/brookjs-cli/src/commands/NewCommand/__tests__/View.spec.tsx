@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import React from 'react';
-import { render } from 'ink-testing-library';
+import { render, cleanup } from 'ink-testing-library';
 import { AppContext } from 'ink';
 import sinon from 'sinon';
 import { expect, use } from 'chai';
@@ -23,9 +23,11 @@ describe('NewCommand#View', () => {
     chaiJestSnapshot.configureUsingMochaContext(this);
   });
 
+  afterEach(cleanup);
+
   describe('configure step', () => {
     it('should show an error when no name provided', () => {
-      const { lastFrame, unmount, rerender } = render(
+      const { lastFrame, rerender } = render(
         <View
           error={null}
           logs={[]}
@@ -64,12 +66,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the first question', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -88,12 +88,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the first question with version provided', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -112,12 +110,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the second question', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -136,12 +132,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the second question with description provided', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -160,12 +154,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the third question', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -184,12 +176,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the third question with dir provided', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -208,12 +198,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the fourth question', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -232,12 +220,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should show the fourth question with license provided', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -256,8 +242,6 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should respond to input', () => {
@@ -301,7 +285,7 @@ describe('NewCommand#View', () => {
 
   describe('confirm step', () => {
     it('should display the current configruation', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -320,8 +304,6 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should respond to confirm', () => {
@@ -397,7 +379,7 @@ describe('NewCommand#View', () => {
   describe('cancelled', () => {
     it('should render cancelled message and call exit', done => {
       const exit = sinon.spy();
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <AppContext.Provider value={{ exit }}>
           <View
             error={null}
@@ -421,8 +403,6 @@ describe('NewCommand#View', () => {
         expect(lastFrame()).to.matchSnapshot();
         expect(exit.calledOnce).to.equal(true);
 
-        unmount();
-
         done();
       }, 10);
     });
@@ -430,7 +410,7 @@ describe('NewCommand#View', () => {
 
   describe('creating', () => {
     it('should render spinner', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[]}
@@ -449,12 +429,10 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
 
     it('should render all logs', () => {
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <View
           error={null}
           logs={[
@@ -490,8 +468,6 @@ describe('NewCommand#View', () => {
       );
 
       expect(lastFrame()).to.matchSnapshot();
-
-      unmount();
     });
   });
 
@@ -499,7 +475,7 @@ describe('NewCommand#View', () => {
     it('should render error message and call exit', done => {
       const exit = sinon.spy();
       const error = new Error('Creating failed');
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <AppContext.Provider value={{ exit }}>
           <View
             error={error}
@@ -524,8 +500,6 @@ describe('NewCommand#View', () => {
         expect(exit.calledOnce).to.equal(true);
         expect(exit.args[0][0]).to.equal(error);
 
-        unmount();
-
         done();
       }, 10);
     });
@@ -534,7 +508,7 @@ describe('NewCommand#View', () => {
   describe('complete', () => {
     it('should render complete message and call exit', done => {
       const exit = sinon.spy();
-      const { lastFrame, unmount } = render(
+      const { lastFrame } = render(
         <AppContext.Provider value={{ exit }}>
           <View
             error={null}
@@ -557,8 +531,6 @@ describe('NewCommand#View', () => {
       setTimeout(() => {
         expect(lastFrame()).to.matchSnapshot();
         expect(exit.calledOnce).to.equal(true);
-
-        unmount();
 
         done();
       }, 10);
