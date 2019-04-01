@@ -7,13 +7,12 @@
   "unpkg": "dist/brookjs.umd.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:lint": "eslint src/**/*.ts --fix",
+    "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
     "test:unit": "beaver test unit --coverage --env test",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",

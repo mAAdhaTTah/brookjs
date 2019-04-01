@@ -32,10 +32,10 @@ export default function observeDelta<A extends { type: string }, S>(
   ...sources: Delta<A, S>[]
 ): Middleware<Ext, S> {
   return store => {
-    const action$: Stream<A, never> = new(Kefir as any).Stream().setName(
+    const action$: Stream<A, never> = new (Kefir as any).Stream().setName(
       'action$'
     );
-    const state$: Property<S, never> = new(Kefir as any).Stream()
+    const state$: Property<S, never> = new (Kefir as any).Stream()
       .toProperty(store.getState)
       .setName('state$');
 

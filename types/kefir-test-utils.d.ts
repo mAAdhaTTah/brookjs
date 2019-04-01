@@ -16,7 +16,7 @@ declare module 'kefir-test-utils' {
   }
 
   interface HelpersFactory {
-    (Kefir: typeof import('kefir')): Helpers;
+    (Kefir: typeof import('kefir').default): Helpers;
   }
 
   const createHelpers: HelpersFactory;

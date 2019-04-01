@@ -2,8 +2,8 @@ import React, { forwardRef, createRef } from 'react';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import Kefir, { Pool, Observable, Property } from 'kefir';
-import { Consumer } from './context';
 import { Action } from 'redux';
+import { Consumer } from './context';
 
 // Ref-forward function has 2 params.
 const isRefForwarding = <T, P>(

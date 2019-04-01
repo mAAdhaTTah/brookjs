@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildCommand#View should render missing rc view 1`] = `"[31mRC file not loaded. Cannot build.[39m"`;

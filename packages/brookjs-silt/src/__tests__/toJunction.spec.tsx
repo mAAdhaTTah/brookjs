@@ -4,9 +4,9 @@ import Kefir from 'kefir';
 import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
 import sinon from 'sinon';
+import { render, fireEvent } from 'react-testing-library';
 import toJunction from '../toJunction';
 import { Provider } from '../context';
-import { render, fireEvent } from 'react-testing-library';
 
 const { plugin, value, stream, send } = chaiPlugin({ Kefir });
 
@@ -192,7 +192,9 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
       );
 
-      wrapper.rerender(<ProvidedButton root$={root$} text={'Click you'} enabled={true} />);
+      wrapper.rerender(
+        <ProvidedButton root$={root$} text={'Click you'} enabled={true} />
+      );
 
       expect(combine)
         .to.have.been.calledTwice.and.have.been.calledWith(

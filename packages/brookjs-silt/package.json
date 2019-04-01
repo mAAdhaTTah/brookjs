@@ -9,7 +9,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "npm run test:lint && npm run test:unit",
-    "test:lint": "eslint src/**/*.ts --fix",
+    "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
     "test:unit": "beaver test unit --coverage --env test",
     "dev": "beaver dev tdd --env test",
     "clean": "rimraf dist coverage",
@@ -19,15 +19,13 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "peerDependencies": {
     "kefir": "^3.8.0",
     "react": "^16.8.0"
   },
   "dependencies": {
-    "prop-types": "^15.6.0",
     "recompose": "^0.30.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"

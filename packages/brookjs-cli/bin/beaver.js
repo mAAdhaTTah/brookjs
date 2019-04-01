@@ -1,34 +1,21 @@
 #!/usr/bin/env node
-const program = require('caporal');
-const pkg = require('../package.json');
-const { main } = require('../src');
 
-program
-    .version(pkg.version)
-    .description(pkg.description);
+const { create } = require('brookjs-cli');
 
-program
-    .command('new', 'Create a new brookjs application.')
-    .action(main('new'))
-    .argument('<name>', 'Development style.')
-    .option('-y, --yes', 'Answer "yes" to all the question, using the defaults.', program.BOOLEAN);
+async function main() {
+  let code;
 
-program
-    .command('dev', 'Develop the brookjs application.')
-    .action(main('dev'))
-    .argument('<type>', 'Development style.', ['app', 'tdd'])
-    .option('--env <env>', 'Value to set for the NODE_ENV for development run.');
+  const app = create();
+  const run = await app.run(process.argv.slice(2));
 
-program
-    .command('test', 'Run the brookjs application tests.')
-    .action(main('test'))
-    .argument('<type>', 'Tests to run.', ['unit'])
-    .option('--coverage', 'Enable test coverage.', program.BOOLEAN)
-    .option('--env <env>', 'Value to set for the NODE_ENV for the test run.');
+  try {
+    await run.waitUntilExit();
+    code = 0;
+  } catch (err) {
+    code = err.code || 1;
+  }
 
-program
-    .command('build', 'Build the brookjs application files.')
-    .action(main('build'))
-    .option('--env <env>', 'Build environment target.', ['development', 'production']);
+  process.exitCode = code;
+}
 
-program.parse(process.argv);
+main();

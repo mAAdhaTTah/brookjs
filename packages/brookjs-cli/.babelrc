@@ -1,0 +1,13 @@
+{
+  "extends": "../../babel.config",
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
+}

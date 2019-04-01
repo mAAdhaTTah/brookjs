@@ -7,8 +7,9 @@ export const mocha = {
   reporter: 'spec',
   ui: 'bdd',
   requires: [
-    'ts-node/register/transpile-only',
-    '@babel/register',
+    '../../setupTests.ts',
+    // Needs to be required first
+    // to get unmocked globals
     'react-testing-library',
     'jsdom-global/register',
     'raf/polyfill'

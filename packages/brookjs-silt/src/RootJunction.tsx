@@ -1,19 +1,13 @@
 import React from 'react';
 import Kefir, { Subscription, Pool } from 'kefir';
-import * as PropTypes from 'prop-types';
-import { Provider } from './context';
 import { Action } from 'redux';
+import { Provider } from './context';
 
-export default class RootJunction extends React.Component<{
-  root$: (p: Pool<Action, Error>) => Subscription | void;
+export default class RootJunction<A extends Action> extends React.Component<{
+  root$: (p: Pool<A, Error>) => Subscription | void;
   children: React.ReactNode;
 }> {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    root$: PropTypes.func.isRequired
-  };
-
-  root$: Pool<Action, Error> = Kefir.pool();
+  root$: Pool<A, Error> = Kefir.pool();
   sub?: Subscription | void;
 
   componentDidMount() {

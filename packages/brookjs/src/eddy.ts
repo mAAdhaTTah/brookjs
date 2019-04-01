@@ -23,6 +23,13 @@ export interface EddyReducer<S, A> {
 const isResult = <S, A>(results: any): results is Result<S, A> =>
   results[$$loop] === true;
 
+export const loop = <S, A>(state: S, action: ResultRight<A>): Result<S, A> =>
+  Object.assign([state, action] as [S, A], {
+    [$$loop]: true as true
+  });
+
+loop.NONE = NONE;
+
 const normalizeResults = <S, A>(results: S | Result<S, A>): Result<S, A> =>
   isResult(results) ? results : loop(results, NONE);
 
@@ -95,13 +102,6 @@ export const eddy = () => <S extends object, A extends Action, Ext, StateExt>(
     replaceReducer
   } as any;
 };
-
-export const loop = <S, A>(state: S, action: ResultRight<A>): Result<S, A> =>
-  Object.assign([state, action] as [S, A], {
-    [$$loop]: true as true
-  });
-
-loop.NONE = NONE;
 
 type ReducerMapObject<S, A> = { [K in keyof S]: EddyReducer<S[K], A> };
 

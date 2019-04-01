@@ -1,44 +1,43 @@
 import React from 'react';
 import Kefir, { Observable, Pool } from 'kefir';
-import * as PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
-import { Consumer, Provider } from './context';
 import { Action } from 'redux';
+import { Omit } from 'yargs';
+import { Consumer, Provider } from './context';
 
 const id = <T extends any>(x: T) => x;
 
 type EventConfig = {
-  [key: string]: (e$: Observable<Event, Error>) => Observable<Action, Error>;
+  [key: string]: (e$: Observable<any, Error>) => Observable<Action, Error>;
 };
 
 type ObservableDict = { [key: string]: Observable<Action, Error> };
 
-type ExtraProps<E extends object> = { [key in keyof E]: (e: Event) => void };
+type FirstArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
+  ? U
+  : never;
 
-const toJunction = <
-  E extends EventConfig,
-  P extends {
-    preplug: (source$: Observable<Action, Error>) => Observable<Action, Error>;
-  }
->(
-  events: E,
+type ExtractValue<V> = V extends Observable<infer E, any> ? E : never;
+
+type ExtraProps<E extends EventConfig> = {
+  [K in keyof E]: (e: ExtractValue<FirstArgument<E[K]>>) => void
+};
+
+type WithPreplug<P extends object> = P & {
+  preplug?: (source$: Observable<Action, Error>) => Observable<Action, Error>;
+};
+
+const toJunction = <P extends object, E extends EventConfig>(
+  events: EventConfig,
   combine: (
     combined$: Observable<Action, Error>,
     sources: ObservableDict,
-    props: P
+    props: Readonly<WithPreplug<Omit<P, keyof E>>>
   ) => Observable<Action, Error> = id
-) => (WrappedComponent: React.ComponentType<P & ExtraProps<E>>) =>
-  class ToJunction extends React.Component<P> {
+) => (WrappedComponent: React.ComponentType<P>) =>
+  class ToJunction extends React.Component<WithPreplug<Omit<P, keyof E>>> {
     static displayName = wrapDisplayName(WrappedComponent, 'ToJunction');
-
-    static defaultProps = {
-      preplug: id
-    };
-
-    static propTypes = {
-      preplug: PropTypes.func
-    };
 
     root$: null | Pool<Action, Error>;
     events: ExtraProps<E>;
@@ -50,7 +49,7 @@ const toJunction = <
     children$: Pool<Action, Error>;
     source$: any;
 
-    constructor(props: P) {
+    constructor(props: WithPreplug<Omit<P, keyof E>>) {
       super(props);
       this.root$ = null;
       this.events = {} as ExtraProps<E>;
@@ -78,9 +77,17 @@ const toJunction = <
     }
 
     createSource() {
-      return this.props.preplug(
-        combine(this.sources.merged, this.sources.dict, this.props)
+      const combined$ = combine(
+        this.sources.merged,
+        this.sources.dict,
+        this.props
       );
+
+      if (this.props.preplug) {
+        return this.props.preplug(combined$);
+      }
+
+      return combined$;
     }
 
     unplug() {
@@ -105,9 +112,14 @@ const toJunction = <
               this.root$ = root$.plug(this.source$);
             }
 
+            const props = {
+              ...this.events,
+              ...this.props
+            } as P;
+
             return (
               <Provider value={this.children$}>
-                <WrappedComponent {...this.events} {...this.props} />
+                <WrappedComponent {...props} />
               </Provider>
             );
           }}
