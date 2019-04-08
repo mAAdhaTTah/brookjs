@@ -12,6 +12,8 @@ declare module 'kefir-test-utils' {
     stream<V, E>(): Stream<V, E>;
     prop<V, E>(): Property<V, E>;
     value<V, E>(v: V): Event<V, E>;
+    error<V, E>(e: E): Event<V, E>;
+    end<V, E>(): Event<V, E>;
     plugin(...args: any[]): void;
   }
 
