@@ -9,17 +9,17 @@ module.exports = api => {
     ].filter(Boolean),
     presets: [
       'brookjs',
-      '@babel/typescript',
       process.env.NODE_ENV === 'test'
         ? [
-          '@babel/env',
-          {
-            targets: {
-              node: 'current'
+            '@babel/env',
+            {
+              targets: {
+                node: 'current'
+              }
             }
-          }
-        ]
+          ]
         : '@babel/env',
+      '@babel/typescript',
       '@babel/react'
     ]
   };
