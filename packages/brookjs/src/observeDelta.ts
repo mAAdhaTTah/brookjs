@@ -28,7 +28,7 @@ type Ext = {
  * @param {...Function} sources - Source-generating function.
  * @returns {Middleware} Enhanced create store function.
  */
-export default function observeDelta<A extends { type: string }, S>(
+export function observeDelta<A extends { type: string }, S>(
   ...sources: Delta<A, S>[]
 ): Middleware<Ext, S> {
   return store => {
