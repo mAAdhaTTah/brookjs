@@ -7,7 +7,7 @@ import Kefir from 'kefir';
 import configureStore from 'redux-mock-store';
 import { chaiPlugin } from 'brookjs-desalinate';
 import ofType from '../ofType';
-import observeDelta from '../observeDelta';
+import { observeDelta } from '../observeDelta';
 
 chai.use(sinonChai);
 const { plugin, value } = chaiPlugin({ Kefir });
