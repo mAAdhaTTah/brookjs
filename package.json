@@ -36,7 +36,6 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
-    "babel-plugin-ramda": "^1.6.3",
     "chai": "^4.1.2",
     "chai-dom": "^1.4.0",
     "chai-fs": "^2.0.0",
