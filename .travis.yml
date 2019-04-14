@@ -5,7 +5,6 @@ node_js:
 
 before_install:
   - export GK_LOCK_YARN_OPTS="--ignore-workspace-root-check"
-  - yarn global add greenkeeper-lockfile@2
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
@@ -13,7 +12,6 @@ before_install:
 before_script:
   - npx lerna bootstrap
   - yarn build
-  - greenkeeper-lockfile-update
 
 script:
   - yarn test
@@ -24,4 +22,3 @@ after_script:
   - ./cc-test-reporter format-coverage $PWD/packages/brookjs-desalinate/coverage/lcov.info --input-type lcov --output $PWD/coverage/codeclimate.brookjs-desalinate.json
   - ./cc-test-reporter format-coverage $PWD/packages/brookjs-silt/coverage/lcov.info --input-type lcov --output $PWD/coverage/codeclimate.brookjs-silt.json
   - ./cc-test-reporter sum-coverage --output - --parts 4 $PWD/coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
-  - greenkeeper-lockfile-upload
