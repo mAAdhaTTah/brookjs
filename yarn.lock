@@ -9057,9 +9057,9 @@ ink-text-input@^3.0.0:
     prop-types "^15.5.10"
 
 ink@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/ink/-/ink-2.1.0.tgz#3b6072e90ca25b657fa1262f0fe018f8dcc82d8e"
-  integrity sha512-2TtQ4lJgxCW2fU22j/5tSdap6v0dFeSjPuq5zTLOXLcHheEzDqS86weJA4BV0gibTAbWklvjlgM1NAUb4DmrUg==
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/ink/-/ink-2.1.1.tgz#efb2adbd30be79b4f640d7c67b524bfb030205ba"
+  integrity sha512-vP1yE/uJoiY6uB9yHalczUA02I9fg7xDUbTEZitPK5y6dvnPo9a/6UWqIB2uCYkHOhEZMN+D/TsVr4v2sz8qYA==
   dependencies:
     "@types/react" "^16.8.6"
     arrify "^1.0.1"
