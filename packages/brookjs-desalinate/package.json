@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "chai": "^4.0.0",
-    "jest": "^23.0.0",
+    "jest": "^24.0.0",
     "kefir": "^3.8.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
