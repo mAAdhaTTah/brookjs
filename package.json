@@ -55,7 +55,7 @@
     "eslint-plugin-typescript": "^0.14.0",
     "gh-pages": "^2.0.0",
     "ink-testing-library": "^1.0.1",
-    "jest": "^23.6.0",
+    "jest": "^24.0.0",
     "jsdom": "^13.1.0",
     "jsdom-global": "^3.0.2",
     "kefir": "^3.8.0",
