@@ -35,7 +35,7 @@
     "@storybook/addon-actions": "^5.0.0",
     "@storybook/addons": "^5.0.0",
     "chai-kefir": "^2.0.4",
-    "deep-eql": "^3.0.1",
+    "deep-eql": "^4.0.0",
     "jest-kefir": "^1.0.0",
     "kefir-test-utils": "^1.0.0",
     "lolex": "^2.3.1",
