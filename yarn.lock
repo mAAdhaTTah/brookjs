@@ -3247,9 +3247,9 @@
     "@types/node" "*"
 
 "@types/lolex@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@types/lolex/-/lolex-3.1.0.tgz#9fa420120be888a7f2e5761354e13cee507923e5"
-  integrity sha512-CWtrFh5aYNIpDHk3WD9q7xHdIdGpLFULpkUIy9aIKFdbeEaFSx/STbtlSA320IwAQW2NlrlDllEvE8JJ0PT1Bg==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@types/lolex/-/lolex-3.1.1.tgz#d40895223e5c8f8aa64f5500c6ca4eeab067d432"
+  integrity sha512-NU2qVtKxbt4IBvjEOW1QeUnV6KGUF6hpgJyvwZt3JrXe2qmwQF0+BiazQw+iFy9qL5ie+QHOxTzXkcvJUEh76g==
 
 "@types/minimatch@*":
   version "3.0.3"
