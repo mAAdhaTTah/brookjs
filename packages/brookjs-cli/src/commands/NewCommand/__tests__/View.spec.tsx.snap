@@ -20,7 +20,7 @@ What is the application version?: [2m0.0.0[22m"
 
 exports[`NewCommand#View configure step should show the first question with version provided 1`] = `
 "[32mApp name: test-app[39m
-What is the application version?: [7m1[27m.0.0"
+What is the application version?: 1.0.0[7m [27m"
 `;
 
 exports[`NewCommand#View configure step should show the fourth question 1`] = `
@@ -30,7 +30,7 @@ Choose a license: [2mMIT[22m"
 
 exports[`NewCommand#View configure step should show the fourth question with license provided 1`] = `
 "[32mApp name: test-app[39m
-Choose a license: [7mI[27mSC"
+Choose a license: ISC[7m [27m"
 `;
 
 exports[`NewCommand#View configure step should show the second question 1`] = `
@@ -40,7 +40,7 @@ What is the application description?: [2mA brookjs application[22m"
 
 exports[`NewCommand#View configure step should show the second question with description provided 1`] = `
 "[32mApp name: test-app[39m
-What is the application description?: [7mA[27m test application"
+What is the application description?: A test application[7m [27m"
 `;
 
 exports[`NewCommand#View configure step should show the third question 1`] = `
@@ -50,7 +50,7 @@ Relative to the project, where will the source code live?: [2msrc[22m"
 
 exports[`NewCommand#View configure step should show the third question with dir provided 1`] = `
 "[32mApp name: test-app[39m
-Relative to the project, where will the source code live?: [7mc[27mlient"
+Relative to the project, where will the source code live?: client[7m [27m"
 `;
 
 exports[`NewCommand#View confirm step should display the current configruation 1`] = `
