@@ -123,16 +123,6 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
           test: /\.js$/,
           loader: require.resolve('babel-loader'),
           include: selectAppPath(state)
-        },
-        {
-          test: /\.hbs/,
-          loader: require.resolve('handlebars-loader'),
-          query: {
-            helperDirs: [`${selectAppPath(state)}/helpers`],
-            partialDirs: [selectAppPath(state)],
-            preventIndent: true,
-            compat: true
-          }
         }
       ]
     },

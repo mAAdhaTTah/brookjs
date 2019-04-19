@@ -38,8 +38,6 @@
     "execa": "^1.0.0",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
-    "handlebars": "^4.0.10",
-    "handlebars-loader": "^1.6.0",
     "has-ansi": "^3.0.0",
     "hygen": "^4.0.2",
     "ink": "^2.1.0",
