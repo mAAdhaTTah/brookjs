@@ -9023,9 +9023,9 @@ ink-select-input@^3.1.0:
     prop-types "^15.5.10"
 
 ink-spinner@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-3.0.0.tgz#816df8ae84d687ce9c32a828a7892092412f8ddf"
-  integrity sha512-+8+MbLJTDxOAzefVNdtOpl6Ku3hLlUwrB0SrNzQ0ro2xdv0BOH99ricBo9JIkg0HPbfozk4OLBU9ZF61599lxw==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-3.0.1.tgz#7b4b206d2b18538701fd92593f9acabbfe308dce"
+  integrity sha512-AVR4Z/NXDQ7dT5ltWcCzFS9Dd4T8eaO//E2UO8VYNiJcZpPCSJ11o5A0UVPcMlZxGbGD6ikUFDR3ZgPUQk5haQ==
   dependencies:
     cli-spinners "^1.0.0"
     prop-types "^15.5.10"
