@@ -1,6 +1,6 @@
 {
   "name": "brookjs-cli",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "command line tool for building brookjs applications",
   "main": "dist/brookjs-cli.js",
   "bin": {
@@ -26,7 +26,7 @@
   "dependencies": {
     "@babel/core": "^7.0.0",
     "babel-loader": "^8.0.0",
-    "brookjs": "^1.0.0-alpha.13",
+    "brookjs": "^1.0.0-alpha.14",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
