@@ -1,4 +1,4 @@
-import React, { forwardRef, createRef } from 'react';
+import React, { forwardRef } from 'react';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import Kefir, { Pool, Observable, Property } from 'kefir';
@@ -21,12 +21,14 @@ const wrap = <T, P>(
   return WrappedComponent;
 };
 
-const withRef$ = <P, E extends Element>(
-  refback: (
-    ref$: Property<E, never>,
-    props$: Observable<P, never>
-  ) => Observable<Action, Error>
-) => (WrappedComponent: React.RefForwardingComponent<E, P>) =>
+export type Refback<P, E extends Element> = (
+  ref$: Property<E, never>,
+  props$: Observable<P, never>
+) => Observable<Action, Error>;
+
+export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
+  WrappedComponent: React.RefForwardingComponent<E, P>
+) =>
   class WithRef$ extends React.Component<P> {
     static displayName = wrapDisplayName(WrappedComponent, 'WithRef$');
 
@@ -88,5 +90,3 @@ const withRef$ = <P, E extends Element>(
       );
     }
   };
-
-export default withRef$;
