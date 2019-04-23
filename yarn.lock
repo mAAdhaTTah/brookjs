@@ -15538,10 +15538,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typesafe-actions@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/typesafe-actions/-/typesafe-actions-3.2.1.tgz#833623a4079eda5dbcb775113f6dcf02b71c03f8"
-  integrity sha512-hvhuNqsai6LzXQ+Hl6vajC9bGd/kHHL1hJvI4GQ0Rs6Fax1cjbNEsuFGy/RbfLPhBAL10n6DECEHUa+Q9E+MxQ==
+typesafe-actions@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/typesafe-actions/-/typesafe-actions-4.1.2.tgz#a0da5a8e702ad9323f11b9fd70baeb1d74e2e957"
+  integrity sha512-aLEum/3M/byzbgGPdEdVFCRwmkmOEUu/Ubkls9LTPL/tqT9Dbn8f96RnY5P2zcOTOFw2yZBBVFvrVRDDwSOV1A==
 
 typescript-eslint-parser@^22.0.0:
   version "22.0.0"
