@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   root: true,
-  parser: 'typescript-eslint-parser',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
@@ -16,8 +16,8 @@ module.exports = {
     node: true,
     browser: true
   },
-  plugins: ['import', 'react', 'typescript'],
-  extends: ['valtech', 'prettier'],
+  plugins: ['import', 'react', '@typescript-eslint'],
+  extends: ['plugin:import/typescript', 'valtech', 'prettier'],
   rules: {
     eqeqeq: [2, 'smart'],
     'wrap-iife': [2, 'inside'],
@@ -25,7 +25,7 @@ module.exports = {
     'no-unused-vars': 0,
 
     // TypeScript
-    'typescript/no-unused-vars': [2],
+    '@typescript-eslint/no-unused-vars': [2],
 
     // Import
     'import/no-unresolved': 2,
@@ -58,11 +58,12 @@ module.exports = {
     'react/jsx-uses-vars': 2
   },
   settings: {
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.js', '.ts', '.tsx']
+    },
+    'import/ignore': ['@storybook/components'],
     'import/resolver': {
-      node: {
-        extensions: ['.js', '.ts', '.tsx'],
-        moduleDirectory: ['node_modules', path.join(__dirname, 'packages')]
-      }
+      typescript: {}
     }
   }
 };

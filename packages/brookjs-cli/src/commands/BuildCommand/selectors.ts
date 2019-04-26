@@ -7,7 +7,7 @@ import { Nullable } from 'typescript-nullable';
 import { errorToNull } from '../../cli';
 import { State } from './types';
 
-const selectDefaultPlugins = (state: State) => [
+const selectDefaultPlugins = () => [
   new CaseSensitivePathsPlugin({
     debug: false
   })
@@ -129,7 +129,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     resolve: {
       mainFields: ['module', 'main']
     },
-    plugins: [...selectDefaultPlugins(state), ...selectEnvPlugins(state)]
+    plugins: [...selectDefaultPlugins(), ...selectEnvPlugins(state)]
   };
 
   const modifier = Nullable.andThen(
