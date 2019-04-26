@@ -36,7 +36,7 @@ export type EmitFromDelta<A> = <V, E>(
   options?: { timeLimit?: number }
 ) => A;
 
-export default ({ Kefir }: { Kefir: typeof K }) => {
+export const chaiPlugin = ({ Kefir }: { Kefir: typeof K }) => {
   const helpers = createHelpers(Kefir);
   const { withFakeTime, watchWithTime, send, stream, prop, value } = helpers;
   const { plugin } = chaiKefir(Kefir);

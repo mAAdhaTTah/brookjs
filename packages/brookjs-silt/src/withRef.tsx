@@ -68,14 +68,20 @@ export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
       return (
         <Consumer>
           {aggregated$ => {
-            if (this.plugged$ && this.aggregated$ !== aggregated$) {
-              this.aggregated$ && this.aggregated$.unplug(this.plugged$);
-              this.aggregated$ = aggregated$.plug(this.plugged$);
-            }
+            if (aggregated$ != null) {
+              if (this.plugged$ && this.aggregated$ !== aggregated$) {
+                this.aggregated$ && this.aggregated$.unplug(this.plugged$);
+                this.aggregated$ = aggregated$.plug(this.plugged$);
+              }
 
-            if (!this.plugged$) {
-              this.aggregated$ = aggregated$.plug(
-                (this.plugged$ = refback(this.ref$, this.props$))
+              if (!this.plugged$) {
+                this.aggregated$ = aggregated$.plug(
+                  (this.plugged$ = refback(this.ref$, this.props$))
+                );
+              }
+            } else {
+              console.error(
+                'Used `withRef$` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
               );
             }
 
