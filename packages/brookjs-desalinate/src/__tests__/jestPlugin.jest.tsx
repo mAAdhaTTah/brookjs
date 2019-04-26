@@ -3,7 +3,7 @@ import Kefir from 'kefir';
 import { toJunction } from 'brookjs-silt';
 import React from 'react';
 import { fireEvent } from 'react-testing-library';
-import jestPlugin from '../jestPlugin';
+import { jestPlugin } from '../jestPlugin';
 
 const { extensions, value } = jestPlugin({ Kefir });
 expect.extend(extensions);

@@ -29,7 +29,7 @@ type WithPreplug<P extends object> = P & {
 };
 
 const toJunction = <P extends object, E extends EventConfig>(
-  events: EventConfig,
+  events: E,
   combine: (
     combined$: Observable<Action, Error>,
     sources: ObservableDict,
@@ -107,9 +107,15 @@ const toJunction = <P extends object, E extends EventConfig>(
       return (
         <Consumer>
           {root$ => {
-            if (this.root$ !== root$) {
-              this.unplug();
-              this.root$ = root$.plug(this.source$);
+            if (root$ != null) {
+              if (this.root$ !== root$) {
+                this.unplug();
+                this.root$ = root$.plug(this.source$);
+              }
+            } else {
+              console.error(
+                'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
+              );
             }
 
             const props = {

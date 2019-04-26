@@ -27,12 +27,9 @@ export default {
     }),
     commonjs({
       namedExports: {
-        '@storybook/addon-actions': [
-          'action',
-          'ADDON_ID',
-          'PANEL_ID',
-          'EVENT_ID'
-        ],
+        '@storybook/react': ['addDecorator'],
+        '@storybook/theming': ['withTheme'],
+        '@storybook/components': ['ActionBar'],
         '@storybook/addons': ['makeDecorator'],
         react: [
           'createContext',

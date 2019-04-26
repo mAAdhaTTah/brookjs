@@ -1,8 +1,15 @@
 import React from 'react';
 import { toJunction } from 'brookjs-silt';
+import { Observable } from 'kefir';
 
-const Button = ({ onClick }) => <button onClick={onClick}>Click me!</button>;
+type Props = { onClick: any };
 
-export default toJunction({
-  onClick: e$ => e$.map(() => ({ type: 'CLICK' }))
-})(Button);
+const Button: React.FC<Props> = ({ onClick }) => (
+  <button onClick={onClick}>Click me!</button>
+);
+
+const events = {
+  onClick: (e$: Observable<any, any>) => e$.map(() => ({ type: 'CLICK' }))
+};
+
+export default toJunction<Props, typeof events>(events)(Button);
