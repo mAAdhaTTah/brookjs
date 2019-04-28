@@ -16,6 +16,7 @@ declare global {
     interface Assertion {
       emit: Emit<Assertion>;
       emitFromDelta: EmitFromDelta<Assertion>;
+      emitFromJunction: EmitFromJunction<Assertion>;
     }
 
     interface TypeComparison {
@@ -32,7 +33,12 @@ export type Tick = (time: number) => void;
 export type Emit<A> = <V, E>(expected: Array<Event<V, E>>, cb: () => void) => A;
 export type EmitFromDelta<A> = <V, E>(
   expected: Array<[number, Event<V, E>]>,
-  cb?: (sendToDelta: ToDelta, tick: Tick) => void,
+  cb?: (sendToDelta: ToDelta, tick: Tick, clock: Clock) => void,
+  options?: { timeLimit?: number }
+) => A;
+export type EmitFromJunction<A> = <V, E>(
+  expected: Array<[number, Event<V, E>]>,
+  cb?: (api: ReturnType<typeof render>, tick: Tick, clock: Clock) => void,
   options?: { timeLimit?: number }
 ) => A;
 

@@ -46,13 +46,13 @@
     "polished": "^3.2.0",
     "react": "^16.8.0",
     "react-inspector": "^2.3.1",
-    "react-testing-library": "^7.0.0",
     "uuid": "^3.3.2"
   },
   "peerDependencies": {
     "chai": "^4.0.0",
     "jest": "^24.0.0",
-    "kefir": "^3.8.0"
+    "kefir": "^3.8.0",
+    "react-testing-library": "^7.0.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }
