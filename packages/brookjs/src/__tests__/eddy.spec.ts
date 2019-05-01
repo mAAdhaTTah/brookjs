@@ -51,7 +51,7 @@ describe('eddy', () => {
     let store: Store;
 
     beforeEach(() => {
-      store = createStore(reducer as any, eddy());
+      store = eddy()(createStore)(reducer);
     });
 
     it('should return a redux store', () => {

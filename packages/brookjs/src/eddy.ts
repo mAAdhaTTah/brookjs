@@ -33,9 +33,9 @@ loop.NONE = NONE;
 const normalizeResults = <S, A extends Action>(results: S | Result<S, A>): Result<S, A> =>
   isResult(results) ? results : loop(results, NONE) as any;
 
-export const eddy = () => <S extends object, A extends Action, Ext, StateExt>(
+export const eddy = () => (
   createStore: StoreCreator
-) => (
+) => <S extends object, A extends Action, Ext, StateExt>(
   reducer: Reducer<S, A> | EddyReducer<S, A>,
   state?: DeepPartial<S> | StoreEnhancer<Ext, StateExt>,
   enhancer?: StoreEnhancer<Ext, StateExt>
