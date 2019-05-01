@@ -10,28 +10,28 @@ import {
 const $$loop = Symbol('@brookjs/loop');
 const NONE = Symbol('@brookjs/none');
 
-type Dispatchable<A> = A | typeof NONE;
-type ResultRight<A> = Dispatchable<A> | Dispatchable<A>[];
-type Result<S, A> = [S, ResultRight<A>] & {
+type Dispatchable<A extends Action> = A | typeof NONE;
+type ResultRight<A extends Action> = Dispatchable<A> | Dispatchable<A>[];
+type Result<S, A extends Action> = [S, ResultRight<A>] & {
   [$$loop]: true;
 };
 
-export interface EddyReducer<S, A> {
+export interface EddyReducer<S, A extends Action> {
   (state: S | undefined, action: A): S | Result<S, A>;
 }
 
-const isResult = <S, A>(results: any): results is Result<S, A> =>
+const isResult = <S, A extends Action>(results: any): results is Result<S, A> =>
   results[$$loop] === true;
 
-export const loop = <S, A>(state: S, action: ResultRight<A>): Result<S, A> =>
+export const loop = <S, A extends Action>(state: S, action: ResultRight<A>): Result<S, A> =>
   Object.assign([state, action] as [S, A], {
     [$$loop]: true as true
   });
 
 loop.NONE = NONE;
 
-const normalizeResults = <S, A>(results: S | Result<S, A>): Result<S, A> =>
-  isResult(results) ? results : loop(results, NONE);
+const normalizeResults = <S, A extends Action>(results: S | Result<S, A>): Result<S, A> =>
+  isResult(results) ? results : loop(results, NONE) as any;
 
 export const eddy = () => <S extends object, A extends Action, Ext, StateExt>(
   createStore: StoreCreator
@@ -103,13 +103,13 @@ export const eddy = () => <S extends object, A extends Action, Ext, StateExt>(
   } as any;
 };
 
-type ReducerMapObject<S, A> = { [K in keyof S]: EddyReducer<S[K], A> };
+type ReducerMapObject<S, A extends Action> = { [K in keyof S]: EddyReducer<S[K], A> };
 
-export interface LiftedLoopReducer<S, A> {
+export interface LiftedLoopReducer<S, A extends Action> {
   (state: S | undefined, action: A): Result<S, A>;
 }
 
-export const combineReducers = <S, A>(
+export const combineReducers = <S, A extends Action>(
   reducerMap: ReducerMapObject<S, A>
 ): LiftedLoopReducer<S, A> => {
   const reducerKeys = Object.keys(reducerMap);
