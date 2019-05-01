@@ -23,19 +23,26 @@ export interface EddyReducer<S, A extends Action> {
 const isResult = <S, A extends Action>(results: any): results is Result<S, A> =>
   results[$$loop] === true;
 
-export const loop = <S, A extends Action>(state: S, action: ResultRight<A>): Result<S, A> =>
+export const loop = <S, A extends Action>(
+  state: S,
+  action: ResultRight<A>
+): Result<S, A> =>
   Object.assign([state, action] as [S, A], {
     [$$loop]: true as true
   });
 
 loop.NONE = NONE;
 
-const normalizeResults = <S, A extends Action>(results: S | Result<S, A>): Result<S, A> =>
-  isResult(results) ? results : loop(results, NONE) as any;
+const normalizeResults = <S, A extends Action>(
+  results: S | Result<S, A>
+): Result<S, A> => (isResult(results) ? results : (loop(results, NONE) as any));
 
-export const eddy = () => (
-  createStore: StoreCreator
-) => <S extends object, A extends Action, Ext, StateExt>(
+export const eddy = () => (createStore: StoreCreator) => <
+  S extends object,
+  A extends Action,
+  Ext,
+  StateExt
+>(
   reducer: Reducer<S, A> | EddyReducer<S, A>,
   state?: DeepPartial<S> | StoreEnhancer<Ext, StateExt>,
   enhancer?: StoreEnhancer<Ext, StateExt>
@@ -103,7 +110,9 @@ export const eddy = () => (
   } as any;
 };
 
-type ReducerMapObject<S, A extends Action> = { [K in keyof S]: EddyReducer<S[K], A> };
+type ReducerMapObject<S, A extends Action> = {
+  [K in keyof S]: EddyReducer<S[K], A>
+};
 
 export interface LiftedLoopReducer<S, A extends Action> {
   (state: S | undefined, action: A): Result<S, A>;
