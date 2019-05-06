@@ -89,7 +89,7 @@ describe('BuildCommand#View', () => {
   });
 
   it('should render built view', () => {
-    const results: webpack.Stats = {
+    const results = {
       compilation: {} as any,
       hasErrors() {
         return false;
@@ -103,7 +103,7 @@ describe('BuildCommand#View', () => {
       toString() {
         return 'Compilation results!';
       }
-    };
+    } as webpack.Stats;
     const { lastFrame } = render(
       <View
         building={false}
