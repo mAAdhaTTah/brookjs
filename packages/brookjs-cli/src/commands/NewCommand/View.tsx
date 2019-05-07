@@ -116,14 +116,14 @@ const ConfirmStep: React.FC<
         items={[
           {
             label: 'Yes',
-            value: true
+            value: 1
           },
           {
             label: 'No',
-            value: false
+            value: 0
           }
         ]}
-        onSelect={({ value }) => onConfirm(value)}
+        onSelect={({ value }) => onConfirm(!!value)}
       />
     </Box>
   </Box>
