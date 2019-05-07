@@ -8436,9 +8436,9 @@ init-package-json@^1.10.3:
     validate-npm-package-name "^3.0.0"
 
 ink-select-input@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ink-select-input/-/ink-select-input-3.1.0.tgz#f653c5470d1c1760e0b2e93cab028289958a5cb9"
-  integrity sha512-wZOrDaaUqhVBAzbgeDAI1tdrWvgraw5RGpyxi0YD+R7SoRB6EglD5ZA6f1A8Rds0ZC/lwk0/Wrzz6VxQ6Ew+wg==
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/ink-select-input/-/ink-select-input-3.1.1.tgz#4af3b4cf5aee427801a3506bc50b1f634342cfd5"
+  integrity sha512-us7U7a1NtbXW/jhi73LnVetvVazUVnJysMA1cxM7Vk597W8Ka2SeAW7tiwlzu/14PBGyRusWvoxvaeOn1Ctxbg==
   dependencies:
     arr-rotate "^1.0.0"
     figures "^2.0.0"
