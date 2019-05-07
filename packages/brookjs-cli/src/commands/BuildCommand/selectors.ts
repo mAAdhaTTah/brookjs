@@ -111,7 +111,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     module: {
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(j|t)sx?$/,
           loader: require.resolve('eslint-loader'),
           include: selectAppPath(state),
           enforce: 'pre',
@@ -120,7 +120,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
           }
         },
         {
-          test: /\.js$/,
+          test: /\.(j|t)sx?$/,
           loader: require.resolve('babel-loader'),
           include: selectAppPath(state)
         }
