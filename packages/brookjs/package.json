@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "1.0.0-alpha.18",
+  "version": "1.0.0-alpha.19",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs.cjs.js",
   "module": "dist/brookjs.esm.js",
