@@ -47,7 +47,7 @@
     "cli-spinners": "^2.0.0",
     "cucumber": "^5.0.0",
     "dirty-chai": "^2.0.1",
-    "docz": "^0.11.0",
+    "docz": "^1.1.0",
     "eslint": "^5.0.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-config-valtech": "^1.0.0",
