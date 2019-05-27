@@ -188,5 +188,5 @@ export default class NewCommand extends Command<
   };
 
   // @TODO(mAAdhaTTah) This needs to actually work.
-  View = View as any;
+  View = View as React.ComponentType<State>;
 }
