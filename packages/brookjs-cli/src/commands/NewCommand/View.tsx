@@ -221,10 +221,10 @@ const View: React.FC<Props> = props => {
 
 const events = {
   onChange: (e$: Observable<string, Error>) =>
-    e$.map((value: string) => ({ type: 'INPUT', payload: { value } })),
+    e$.map(value => ({ type: 'INPUT', payload: { value } })),
   onSubmit: (e$: Observable<void, Error>) => e$.map(() => ({ type: 'SUBMIT' })),
   onConfirm: (e$: Observable<boolean, Error>) =>
-    e$.map((value: boolean) => ({ type: 'CONFIRM', payload: { value } }))
+    e$.map(value => ({ type: 'CONFIRM', payload: { value } }))
 };
 
-export default toJunction<Props, typeof events>(events)(View);
+export default toJunction(events)(View);
