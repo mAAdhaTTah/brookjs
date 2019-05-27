@@ -1,3 +1,8 @@
+/* eslint-disable import/export */
+/*
+  disabled because overloads are broken:
+  https://github.com/benmosher/eslint-plugin-import/issues/1357
+*/
 import React from 'react';
 import Kefir, { Observable, Pool } from 'kefir';
 // eslint-disable-next-line import/no-internal-modules
@@ -8,7 +13,7 @@ import { Omit } from 'recompose';
 
 const id = <T extends any>(x: T) => x;
 
-type EventConfig = {
+export type EventConfig = {
   [key: string]: (e$: Observable<any, Error>) => Observable<Action, Error>;
 };
 
@@ -36,24 +41,24 @@ type WithProps<E extends EventConfig, P extends ProvidedProps<E>> = Omit<
   preplug?: (source$: Observable<Action, Error>) => Observable<Action, Error>;
 };
 
-type Combiner<E extends EventConfig, P extends ProvidedProps<E>> = (
+export type Combiner<E extends EventConfig, P extends ProvidedProps<E>> = (
   combined$: Observable<Action, Error>,
   sources: ObservableDict<E>,
   props: Readonly<WithProps<E, P>>
 ) => Observable<Action, Error>;
 
-function toJunction<E extends EventConfig>(
+export function toJunction<E extends EventConfig>(
   events: E
 ): <P extends ProvidedProps<E>>(
   WrappedComponent: React.ComponentType<P>
 ) => React.ComponentType<WithProps<E, P>>;
-function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
+export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
   events: E,
   combine: Combiner<E, P>
 ): (
   WrappedComponent: React.ComponentType<P>
 ) => React.ComponentType<WithProps<E, P>>;
-function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
+export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
   events: E,
   combine: Combiner<E, P> = id
 ) {
@@ -158,4 +163,3 @@ function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
       }
     };
 }
-export default toJunction;
