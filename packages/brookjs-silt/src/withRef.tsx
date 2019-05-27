@@ -11,8 +11,8 @@ const isRefForwarding = <T, P>(
 ): x is React.RefForwardingComponent<T, P> =>
   typeof x === 'function' && x.length === 2;
 
-const wrap = <T, P>(
-  WrappedComponent: React.ComponentType<P> | React.RefForwardingComponent<T, P>
+const wrap = <E, P>(
+  WrappedComponent: React.ComponentType<P> | React.RefForwardingComponent<E, P>
 ) => {
   if (isRefForwarding(WrappedComponent)) {
     return forwardRef(WrappedComponent);
@@ -23,7 +23,7 @@ const wrap = <T, P>(
 
 export type Refback<P, E extends Element> = (
   ref$: Property<E, never>,
-  props$: Observable<P, never>
+  props$: Property<P, never>
 ) => Observable<Action, Error>;
 
 export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
