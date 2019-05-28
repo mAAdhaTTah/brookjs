@@ -1,6 +1,6 @@
 import RootJunction from './RootJunction';
-import toJunction from './toJunction';
 import view from './view';
 
+export * from './toJunction';
 export * from './withRef';
-export { RootJunction, toJunction, view };
+export { RootJunction, view };
