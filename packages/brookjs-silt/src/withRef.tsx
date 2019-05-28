@@ -46,6 +46,8 @@ export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
 
     plugged$?: Observable<Action, Error>;
 
+    refback = (el: E | null) => el && (this.ref$ as any)._emitValue(el);
+
     componentWillUnmount() {
       this.aggregated$ &&
         this.plugged$ &&
@@ -85,12 +87,7 @@ export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
               );
             }
 
-            return (
-              <WithRef$.Target
-                {...this.props}
-                ref={(el: E | null) => el && (this.ref$ as any)._emitValue(el)}
-              />
-            );
+            return <WithRef$.Target {...this.props} ref={this.refback} />;
           }}
         </Consumer>
       );
