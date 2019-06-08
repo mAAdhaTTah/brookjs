@@ -165,7 +165,8 @@ describe('toJunction', () => {
       expect(combine).to.have.been.calledOnce.and.have.been.calledWith(
         sinon.match.instanceOf(Kefir.Observable),
         sinon.match({
-          onButtonClick$: sinon.match.instanceOf(Kefir.Observable)
+          onButtonClick$: sinon.match.instanceOf(Kefir.Observable),
+          children$: sinon.match.instanceOf(Kefir.Observable)
         }),
         sinon.match({ text: 'Click me', enabled: true })
       );
@@ -200,14 +201,16 @@ describe('toJunction', () => {
         .to.have.been.calledTwice.and.have.been.calledWith(
           sinon.match.instanceOf(Kefir.Observable),
           sinon.match({
-            onButtonClick$: sinon.match.instanceOf(Kefir.Observable)
+            onButtonClick$: sinon.match.instanceOf(Kefir.Observable),
+            children$: sinon.match.instanceOf(Kefir.Observable)
           }),
           sinon.match({ text: 'Click me', enabled: true })
         )
         .and.have.been.calledWith(
           sinon.match.instanceOf(Kefir.Observable),
           sinon.match({
-            onButtonClick$: sinon.match.instanceOf(Kefir.Observable)
+            onButtonClick$: sinon.match.instanceOf(Kefir.Observable),
+            children$: sinon.match.instanceOf(Kefir.Observable)
           }),
           sinon.match({ text: 'Click you', enabled: true })
         );

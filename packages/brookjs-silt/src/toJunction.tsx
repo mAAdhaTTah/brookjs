@@ -9,7 +9,6 @@ import Kefir, { Observable, Pool } from 'kefir';
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import { Action } from 'redux';
 import { Consumer, Provider } from './context';
-import { Omit } from 'recompose';
 
 const id = <T extends any>(x: T) => x;
 
@@ -97,7 +96,7 @@ export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
             (e$ as any)._emitValue(e);
           };
           this.sources.list.push(
-            (this.sources.dict[key + '$'] = events[key](e$))
+            ((this.sources.dict as any)[key + '$'] = events[key](e$))
           );
         }
 
