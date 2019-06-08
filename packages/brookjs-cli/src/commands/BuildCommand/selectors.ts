@@ -86,20 +86,16 @@ const selectFilename = (state: State): string => {
   return filename;
 };
 
+const selectPath = (state: State) => {
+  const webpack = Nullable.andThen(rc => rc.webpack, errorToNull(state.rc));
+  const output = Nullable.andThen(webpack => webpack.output, webpack);
+  const dist = Nullable.andThen(output => output.path, output);
+
+  return path.join(state.cwd, Nullable.withDefault('dist/', dist));
+};
+
 const selectOutput = (state: State): webpack.Configuration['output'] => ({
-  path: path.join(
-    state.cwd,
-    Nullable.withDefault(
-      'dist/',
-      Nullable.andThen(
-        output => output.path,
-        Nullable.andThen(
-          webpack => webpack.output,
-          Nullable.andThen(rc => rc.webpack, errorToNull(state.rc))
-        )
-      )
-    )
-  ),
+  path: selectPath(state),
   filename: selectFilename(state)
 });
 
@@ -132,10 +128,8 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     plugins: [...selectDefaultPlugins(), ...selectEnvPlugins(state)]
   };
 
-  const modifier = Nullable.andThen(
-    webpack => webpack.modifier,
-    Nullable.andThen(rc => rc.webpack, errorToNull(state.rc))
-  );
+  const webpack = Nullable.andThen(rc => rc.webpack, errorToNull(state.rc));
+  const modifier = Nullable.andThen(webpack => webpack.modifier, webpack);
 
   if (Nullable.isSome(modifier)) {
     return modifier(config, { env: state.env, cmd: 'build' });
