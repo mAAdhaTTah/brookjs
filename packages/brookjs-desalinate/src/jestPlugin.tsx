@@ -1,6 +1,6 @@
 import React from 'react';
 import jestKefir from 'jest-kefir';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import { RootJunction } from 'brookjs-silt';
 import createHelpers from 'kefir-test-utils';
 

@@ -4,7 +4,7 @@ import Kefir from 'kefir';
 import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
 import sinon from 'sinon';
-import { render, fireEvent } from 'react-testing-library';
+import { render, fireEvent } from '@testing-library/react';
 import { toJunction } from '../toJunction';
 import { Provider } from '../context';
 

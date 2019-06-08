@@ -10,7 +10,7 @@ export const mocha = {
     '../../setupTests.ts',
     // Needs to be required first
     // to get unmocked globals
-    'react-testing-library',
+    '@testing-library/react',
     'jsdom-global/register',
     'raf/polyfill'
   ]

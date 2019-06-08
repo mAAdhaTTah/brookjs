@@ -3,7 +3,7 @@ import Kefir from 'kefir';
 import { expect, use } from 'chai';
 import { toJunction } from 'brookjs-silt';
 import React from 'react';
-import { fireEvent } from 'react-testing-library';
+import { fireEvent } from '@testing-library/react';
 import { chaiPlugin } from '../chaiPlugin';
 
 const { plugin, value } = chaiPlugin({ Kefir });

@@ -2,7 +2,7 @@ import K, { Event } from 'kefir';
 import chaiKefir from 'chai-kefir';
 import React from 'react';
 import { RootJunction } from 'brookjs-silt';
-import { render } from 'react-testing-library';
+import { render } from '@testing-library/react';
 import { Clock } from 'lolex';
 import createHelpers from 'kefir-test-utils';
 import deepEql from 'deep-eql';
