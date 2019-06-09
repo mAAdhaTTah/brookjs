@@ -123,6 +123,12 @@ class CliWorld implements World {
     return fs.appendFile(path.join(this.cwd, file.path), file.contents);
   }
 
+  async prependFile(file: File) {
+    const targetPath = path.join(this.cwd, file.path);
+    const contents = await fs.readFile(targetPath, 'utf-8');
+    return fs.outputFile(targetPath, file.contents + contents);
+  }
+
   getFile(file: string, barrel: string) {
     return fs.readFile(path.join(this.cwd, 'src', barrel, file), 'utf-8');
   }
@@ -191,18 +197,10 @@ class CliWorld implements World {
     }
   }
 
-  outputMatches(matches: string) {
-    return new Promise<void>(resolve => {
-      const loop = () => {
-        if (this.output.stdout.trim().includes(matches)) {
-          resolve();
-        } else {
-          setTimeout(loop, 200);
-        }
-      };
-
-      loop();
-    });
+  async outputMatches(matches: string) {
+    while (!this.output.stdout.trim().includes(matches)) {
+      await this.wait(200);
+    }
   }
 
   async ended() {

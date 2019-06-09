@@ -68,6 +68,13 @@ Given('I have a project', { timeout: -1 }, async function() {
   await this.createProject();
 });
 
+Given('I import an unknown file', async function () {
+  await this.appendFile({
+    path: path.join('src', 'app.js'),
+    contents: "import './file-does-not-exist';\n"
+  });
+});
+
 /**
  * When I Do
  */
@@ -128,4 +135,11 @@ Then('I see {string} with a file size between {int} and {int} bytes', function(
   expect(fs.statSync(file).size)
     .to.be.above(lower)
     .and.below(upper);
+});
+
+Then('I expect the output to match the snapshot', async function() {
+  expect(this.output.stdout).to.matchSnapshot(
+    this.snapshot.filename,
+    `${this.snapshot.testname}-output`
+  );
 });

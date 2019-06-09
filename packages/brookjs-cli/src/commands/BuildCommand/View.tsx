@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import Spinner from 'ink-spinner';
-import { Box, Color } from 'ink';
-import React from 'react';
+import { Box, Color, AppContext } from 'ink';
+import React, { useEffect, useContext } from 'react';
 import { Nullable } from 'typescript-nullable';
 import { State } from './types';
 
@@ -16,9 +16,20 @@ const Built: React.FC<{ results: webpack.Stats }> = ({ results }) => (
   <Box>{results.toString({ colors: true })}</Box>
 );
 
-const BuildError: React.FC<{ results: Error }> = ({ results }) => (
-  <Box>{results.message}</Box>
-);
+const BuildError: React.FC<{ error: Error; watch: boolean }> = ({
+  error,
+  watch
+}) => {
+  const { exit } = useContext(AppContext);
+
+  useEffect(() => {
+    if (!watch) {
+      exit(error);
+    }
+  }, [watch, exit]);
+
+  return <Box>{error.message}</Box>;
+};
 
 const View: React.FC<State> = props => {
   if (Nullable.isNone(props.rc)) {
@@ -34,7 +45,18 @@ const View: React.FC<State> = props => {
   }
 
   if (props.results instanceof Error) {
-    return <BuildError results={props.results} />;
+    return <BuildError watch={props.watch} error={props.results} />;
+  }
+
+  if (!props.watch && props.results.hasErrors()) {
+    const { errors } = props.results.toJson('errors-only');
+
+    return (
+      <BuildError
+        watch={props.watch}
+        error={new Error(`Build failed with errors: ${errors.join(', ')}`)}
+      />
+    );
   }
 
   return <Built results={props.results} />;
