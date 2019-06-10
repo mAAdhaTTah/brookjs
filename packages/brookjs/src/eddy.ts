@@ -111,7 +111,7 @@ export const eddy = () => (createStore: StoreCreator) => <
 };
 
 type ReducerMapObject<S, A extends Action> = {
-  [K in keyof S]: EddyReducer<S[K], A>
+  [K in keyof S]: EddyReducer<S[K], A>;
 };
 
 export interface LiftedLoopReducer<S, A extends Action> {

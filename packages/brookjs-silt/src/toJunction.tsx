@@ -17,7 +17,7 @@ export type EventConfig = {
 };
 
 type ObservableDict<E extends EventConfig> = {
-  [key in keyof E]: Observable<Action, Error>
+  [key in keyof E]: Observable<Action, Error>;
 } & {
   children$: Observable<Action, Error>;
 };
@@ -30,7 +30,7 @@ type ExtractFirstArgumentValue<T> = T extends (
   : never;
 
 type ProvidedProps<E extends EventConfig> = {
-  [K in keyof E]: (e: ExtractFirstArgumentValue<E[K]>) => void
+  [K in keyof E]: (e: ExtractFirstArgumentValue<E[K]>) => void;
 };
 
 type WithProps<E extends EventConfig, P extends ProvidedProps<E>> = Omit<
