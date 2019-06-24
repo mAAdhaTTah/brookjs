@@ -8205,9 +8205,9 @@ humanize-url@^1.0.0:
     strip-url-auth "^1.0.0"
 
 hygen@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/hygen/-/hygen-4.0.2.tgz#884c0e2a58a0d4194fba90cef9c3521f0224392b"
-  integrity sha512-xzPrDLf8DdGH4k/sK/K8xWciH8cxgPqKc12NMY50XJTirHWUhKF5EH5mmGMGduiecZmb2DXc1xdWNieXy93YpQ==
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/hygen/-/hygen-4.0.5.tgz#3a3e2df362ddde060162d05f58c253edac54feba"
+  integrity sha512-yBQaf0AYEI63lgRx7L17kFe1ui4jT00ujDuH6F+Q0QdbIL7H5L5XN2tll4XlJzml1qrVlPfSNGA5PGW5AIxK8w==
   dependencies:
     chalk "^2.4.2"
     change-case "^3.1.0"
