@@ -7331,10 +7331,10 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
-"fp-ts@^1.0.0 || ^2.0.0-rc.6":
-  version "1.19.2"
-  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.19.2.tgz#adf0b31aabcf245e81a35173cec47685d2c9dafe"
-  integrity sha512-d0XFXQDffTtwyfO7uhYz7xWhZcdRxHCbvxPhWrk8uPDKyE04lQooBWCggtqNYNnlkj46K8c5jGDrYc2UKN/1nA==
+fp-ts@^1.0.0:
+  version "1.19.3"
+  resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-1.19.3.tgz#261a60d1088fbff01f91256f91d21d0caaaaa96f"
+  integrity sha512-H5KQDspykdHuztLTg+ajGN0Z2qUjcEf3Ybxc6hLt0k7/zPkn29XnKnxlBPyW2XIddWrGaJBzBl4VLYOtk39yZg==
 
 fragment-cache@^0.2.1:
   version "0.2.1"
@@ -8506,11 +8506,11 @@ invert-kv@^2.0.0:
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
 
 io-ts@^1.6.4:
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-1.10.2.tgz#479ba4a410cd3106380a86e7cef721faeec28dc2"
-  integrity sha512-r6jxDJ4myujW7s0Z/yrkABP4WlNSaZlzfeWVSAfk6r3E0VdiTHZUOw/is8i5r5G9Uxbww9VgMLgdRkuM5fBl5A==
+  version "1.10.4"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-1.10.4.tgz#cd5401b138de88e4f920adbcb7026e2d1967e6e2"
+  integrity sha512-b23PteSnYXSONJ6JQXRAlvJhuw8KOtkqa87W4wDtvMrud/DTJd5X+NpOOI+O/zZwVq6v0VLAaJ+1EDViKEuN9g==
   dependencies:
-    fp-ts "^1.0.0 || ^2.0.0-rc.6"
+    fp-ts "^1.0.0"
 
 ip-regex@^2.1.0:
   version "2.1.0"
