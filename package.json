@@ -18,7 +18,7 @@
     "@types/chai-string": "^1.4.1",
     "@types/cosmiconfig": "^5.0.3",
     "@types/cucumber": "^4.0.5",
-    "@types/execa": "^0.9.0",
+    "@types/execa": "^2.0.0",
     "@types/fs-extra": "^8.0.0",
     "@types/inquirer": "^6.0.0",
     "@types/kefir": "^3.8.0",
