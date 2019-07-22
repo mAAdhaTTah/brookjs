@@ -2668,9 +2668,9 @@
     "@types/node" "*"
 
 "@types/cucumber@^4.0.5":
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/@types/cucumber/-/cucumber-4.0.6.tgz#0228e6aa9f1e3d8e9b9e619fcbb570be0283e198"
-  integrity sha512-erSh5h+vjq0A8KoWBnc2EfZEJVE4RrImaBuznoasBG6sor+oIm3NcuypBTc61L+ezETTq+j8zizZGoGG/A84vA==
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/@types/cucumber/-/cucumber-4.0.7.tgz#e452f5298bb77f3ae8fdb65bc00d94165c4d7e51"
+  integrity sha512-uYvDSl+JV1fT1U9EIFXlnb7DjZdRNYZHQFppQf9aYAe71joppErWenznupwZUj9zuo+SAFYNoongarQpNOb+pQ==
 
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
