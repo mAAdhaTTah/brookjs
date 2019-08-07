@@ -8555,9 +8555,9 @@ ink-testing-library@^1.0.1:
   integrity sha512-VEG4W6j/csZOERsey1ocXRY2LtePHSWNUM2QN2l2ruv9UrwRov//26nNcz4NAFFRoWx4bZQcfaJ/q+QLAZKAyA==
 
 ink-text-input@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ink-text-input/-/ink-text-input-3.2.0.tgz#7c5d89324eedf7073a1ad22c883038a3dfb517cf"
-  integrity sha512-ppfLo5o2h+RJDF0F6H52k/N7nb8SeKkT8ilmsTKV/klhbqu13fA9d8zwJjd+LYDN2tMaFfulSpdykbnxBls22w==
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/ink-text-input/-/ink-text-input-3.2.1.tgz#099dd54f693053a340fb76cff051b5e3e775dd94"
+  integrity sha512-gU5Q3+xq0koDsTEkW0U6k3nNXjN4r9g/b6goo/jHlK2g4R5M6d22KnLEO6yFDYHQO1D27aTdSUk4HH+Nz8lQKg==
   dependencies:
     prop-types "^15.5.10"
 
