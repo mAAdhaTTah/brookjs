@@ -2682,9 +2682,9 @@
     wait-for-expect "^1.2.0"
 
 "@testing-library/react@^8.0.1":
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-8.0.6.tgz#614340646f32027426377dc6e5895a566eeb61b5"
-  integrity sha512-/4oeS0eatnHvAf9yuxIg1/8pjl1OrtWN7SLpDFEdxFjllIAEL09xXhA88C93vvlN+8enZa+xlXJ8ecohECT6Yg==
+  version "8.0.8"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-8.0.8.tgz#aeba59adaf2b9258117bea927428a8fe4240db06"
+  integrity sha512-GvA5rcyT2TsFozqijEejXI64P4mMmzX2qkEfb7JNKrkdFXLiXdZqSYr/96PerLpsN23gJkKicAhqqT8qo9Kr3g==
   dependencies:
     "@babel/runtime" "^7.5.4"
     "@testing-library/dom" "^5.5.4"
