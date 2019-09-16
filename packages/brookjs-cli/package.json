@@ -44,7 +44,7 @@
     "ink-select-input": "^3.1.0",
     "ink-spinner": "^3.0.0",
     "ink-text-input": "^3.0.0",
-    "inquirer": "^6.2.2",
+    "inquirer": "^7.0.0",
     "io-ts": "^1.6.4",
     "kefir": "^3.8.0",
     "lerna": "^3.0.6",
