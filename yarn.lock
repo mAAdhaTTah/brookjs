@@ -2921,9 +2921,9 @@
     "@types/webpack" "*"
 
 "@types/chai-fs@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/chai-fs/-/chai-fs-2.0.1.tgz#f45b56bd2051c6996e3cd4695beea7ba3eccfd44"
-  integrity sha512-RDpSaSOKVYVm47Za+2yqshpSCfnOzg4dthff9fRva9MfQBqts/1hmH1Z2j+JQ7WB1pjdIB0at1j5dbDWJXiEOQ==
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/chai-fs/-/chai-fs-2.0.2.tgz#1abcb8d6fe52246e4a9a8b512abc5ca4b466b356"
+  integrity sha512-nS385nRPNvi9UjSUCDE7f84IXZnIzooPh7Ky88kdRfSFk72juvQENqrqyrKkJeXJsN9bMG9/5zVGr06GcBRB5g==
   dependencies:
     "@types/chai" "*"
     "@types/node" "*"
