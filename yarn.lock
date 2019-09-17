@@ -8613,9 +8613,9 @@ humanize-url@^1.0.0:
     strip-url-auth "^1.0.0"
 
 hygen@^4.0.2:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/hygen/-/hygen-4.0.8.tgz#2fd30facf8addb10829869c13e9c6b338aed24c4"
-  integrity sha512-1hmfmzUkheds3t7Kogcw5qyv9tlmNT+OQuIch6T+NbcXGOvr1HzHbAwRPo2ADP9qMmx4GcLCbHkv8uvZkpaGSA==
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/hygen/-/hygen-4.0.9.tgz#170a83b1c37f7bfd87613b6fbab1982e8a6b37b1"
+  integrity sha512-hj7HRPF3fkx7nIXmbSB+RYAWmjI8b9L67hf7tjlo6akdG6O0npXFBberexvUvh3xQXI3LyiN53QIQHOd7SQGIA==
   dependencies:
     chalk "^2.4.2"
     change-case "^3.1.0"
@@ -8625,7 +8625,6 @@ hygen@^4.0.2:
     front-matter "^2.3.0"
     fs-extra "^7.0.1"
     inflection "^1.12.0"
-    lodash "^4.17.11"
     yargs-parser "^13.0.0"
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
