@@ -33,7 +33,7 @@
     "cosmiconfig": "^5.0.7",
     "cross-env": "^5.1.1",
     "eslint": "^5.0.1",
-    "eslint-loader": "^2.0.0",
+    "eslint-loader": "^3.0.0",
     "esm": "^3.2.20",
     "execa": "^1.0.0",
     "fs-extra": "^8.0.1",
