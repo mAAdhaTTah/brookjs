@@ -31,7 +31,7 @@
     "chalk": "^2.1.0",
     "change-case": "^3.0.1",
     "cosmiconfig": "^5.0.7",
-    "cross-env": "^5.1.1",
+    "cross-env": "^6.0.0",
     "eslint": "^5.0.1",
     "eslint-loader": "^3.0.0",
     "esm": "^3.2.20",
