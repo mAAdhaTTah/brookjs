@@ -68,7 +68,7 @@ Given('I have a project', { timeout: -1 }, async function() {
   await this.createProject();
 });
 
-Given('I import an unknown file', async function () {
+Given('I import an unknown file', async function() {
   await this.appendFile({
     path: path.join('src', 'app.js'),
     contents: "import './file-does-not-exist';\n"
@@ -124,17 +124,9 @@ Then('I see a project dir called {string} with file snapshots:', async function(
   }
 });
 
-Then('I see {string} with a file size between {int} and {int} bytes', function(
-  bundle: string,
-  lower: number,
-  upper: number
-) {
-  const file = path.join(this.cwd, bundle);
+Then('I see a file called {string}', function(filename: string) {
+  const file = path.join(this.cwd, filename);
   expect(file).to.be.a.file(this.output.stdout);
-
-  expect(fs.statSync(file).size)
-    .to.be.above(lower)
-    .and.below(upper);
 });
 
 Then('I expect the output to match the snapshot', async function() {
