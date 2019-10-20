@@ -16,7 +16,7 @@
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "clean": "rimraf dist coverage",
     "test": "npm run test:lint && npm run test:unit && npm run test:feature",
-    "test:lint": "prettier --check \"src/**/*.{ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
+    "test:lint": "eslint \"src/**/*.{ts,tsx}\"",
     "test:unit": "beaver test unit --coverage",
     "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require '../../setupTests.ts' --require 'features/support/*.ts'",
     "dev": "beaver dev tdd --env test"

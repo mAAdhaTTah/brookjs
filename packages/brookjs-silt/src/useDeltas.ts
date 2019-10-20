@@ -9,11 +9,17 @@ import {
   useLayoutEffect,
   useRef
 } from 'react';
-import Kefir, { Observable } from 'kefir';
-import { Delta } from 'brookjs';
+import Kefir, { Observable, Stream } from 'kefir';
+import { Delta } from 'brookjs-types';
 
 // Reuse this array to avoid React triggering rerenders.
 const defaultDeltas: any[] = [];
+
+const createAction$ = <R extends Reducer<any, any>>() =>
+  new Kefir.Stream<ReducerAction<R>, never>();
+
+const createState$ = <R extends Reducer<any, any>>() =>
+  new Kefir.Property<ReducerState<R>, never>();
 
 export const useDeltas = <R extends Reducer<any, any>>(
   reducer: R,
@@ -22,15 +28,9 @@ export const useDeltas = <R extends Reducer<any, any>>(
 ) => {
   const [state, _dispatch] = useReducer(reducer, initialState);
 
-  const actions$ = useMemo(
-    () => new Kefir.Stream<ReducerAction<R>, never>(),
-    []
-  );
+  const actions$ = useMemo<Stream<ReducerAction<R>, never>>(createAction$, []);
 
-  const state$ = useMemo(
-    () => new Kefir.Property<ReducerState<R>, never>(),
-    []
-  );
+  const state$ = useMemo<Stream<ReducerState<R>, never>>(createState$, []);
 
   const lastAction = useRef<ReducerAction<R> | null>(null);
 
@@ -52,7 +52,7 @@ export const useDeltas = <R extends Reducer<any, any>>(
       Kefir.merge<ReducerAction<R>, never>(
         deltas.map(delta => delta(actions$, state$))
       ),
-    [deltas, state$, actions$]
+    [...deltas, state$, actions$]
   );
 
   useEffect(() => {

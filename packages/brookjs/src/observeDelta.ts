@@ -1,9 +1,6 @@
-import Kefir, { Stream, Property, Observable, Subscription } from 'kefir';
+import Kefir, { Stream, Property, Subscription } from 'kefir';
 import { Middleware } from 'redux';
-
-export interface Delta<A, S> {
-  (action$: Stream<A, never>, state$: Property<S, never>): Observable<A, never>;
-}
+import { Delta } from 'brookjs-types';
 
 type Ext = {
   subscription: Subscription;
