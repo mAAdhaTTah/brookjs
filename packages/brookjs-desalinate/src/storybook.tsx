@@ -189,6 +189,7 @@ const emit = (value: any) => {
 
 export const withJunction = makeDecorator({
   name: 'withJunction',
+  parameterName: 'withJunction',
   wrapper: (Story: Function, context: any) => (
     <RootJunction
       root$={root$ => {

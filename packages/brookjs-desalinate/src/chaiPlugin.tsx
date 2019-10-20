@@ -27,6 +27,8 @@ declare global {
 
 const noop = () => {};
 
+type EmitOptions = { timeLimit?: number };
+
 export type ToDelta = (action: object, state: object) => void;
 export type Tick = (time: number) => void;
 
@@ -34,12 +36,12 @@ export type Emit<A> = <V, E>(expected: Array<Event<V, E>>, cb: () => void) => A;
 export type EmitFromDelta<A> = <V, E>(
   expected: Array<[number, Event<V, E>]>,
   cb?: (sendToDelta: ToDelta, tick: Tick, clock: Clock) => void,
-  options?: { timeLimit?: number }
+  options?: EmitOptions
 ) => A;
 export type EmitFromJunction<A> = <V, E>(
   expected: Array<[number, Event<V, E>]>,
   cb?: (api: ReturnType<typeof render>, tick: Tick, clock: Clock) => void,
-  options?: { timeLimit?: number }
+  options?: EmitOptions
 ) => A;
 
 export const chaiPlugin = ({ Kefir }: { Kefir: typeof K }) => {
@@ -56,7 +58,7 @@ export const chaiPlugin = ({ Kefir }: { Kefir: typeof K }) => {
         this: any,
         expected: any,
         cb: (a: any, b: any, c: any) => void = noop,
-        { timeLimit = 10000 } = {}
+        { timeLimit = 10000 }: EmitOptions = {}
       ) {
         let log;
         const delta = utils.getActual(this, arguments);
@@ -87,7 +89,7 @@ export const chaiPlugin = ({ Kefir }: { Kefir: typeof K }) => {
         this: any,
         expected: any,
         cb: (a: any, b: any, c: any) => void = noop,
-        { timeLimit = 10000 } = {}
+        { timeLimit = 10000 }: EmitOptions = {}
       ) {
         let log;
         const root$ = (root$: any) => {

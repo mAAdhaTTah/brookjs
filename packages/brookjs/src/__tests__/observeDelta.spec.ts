@@ -6,7 +6,7 @@ import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
 import configureStore from 'redux-mock-store';
 import { chaiPlugin } from 'brookjs-desalinate';
-import ofType from '../ofType';
+import { ofType } from 'brookjs-flow';
 import { observeDelta } from '../observeDelta';
 
 chai.use(sinonChai);

@@ -66,15 +66,11 @@ export const eddy = () => (createStore: StoreCreator) => <
   };
 
   if (typeof state === 'function') {
-    enhancer = state;
+    enhancer = state as StoreEnhancer<Ext, StateExt>;
     state = undefined;
   }
 
-  const store = createStore(
-    upgradeReducer(reducer),
-    state as DeepPartial<S>,
-    enhancer as StoreEnhancer<Ext, StateExt>
-  );
+  const store = createStore(upgradeReducer(reducer), state, enhancer);
 
   const runCommands = (run: ResultRight<A>[]) => {
     for (const cmd of run) {
