@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "1.0.0-alpha.23",
+  "version": "1.0.0-alpha.24",
   "description": "reactive programming with reactjs",
   "main": "dist/brookjs-silt.cjs.js",
   "module": "dist/brookjs-silt.esm.js",
@@ -26,7 +26,7 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "brookjs-types": "^1.0.0-alpha.19",
+    "brookjs-types": "^1.0.0-alpha.24",
     "recompose": "^0.30.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
