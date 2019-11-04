@@ -82,6 +82,7 @@ export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
                 );
               }
             } else {
+              // eslint-disable-next-line no-console
               console.error(
                 'Used `withRef$` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
               );

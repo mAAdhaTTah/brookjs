@@ -141,6 +141,7 @@ export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
                   this.root$ = root$.plug(this.source$);
                 }
               } else {
+                // eslint-disable-next-line no-console
                 console.error(
                   'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
                 );
