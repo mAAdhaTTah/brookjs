@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Developer runs new and accepts the defaults-.babelrc`] = `
+exports[`Developer runs new and accepts the defaults-.babelrc 1`] = `
 "{
   \\"presets\\": [
     \\"brookjs\\",
@@ -12,7 +12,7 @@ exports[`Developer runs new and accepts the defaults-.babelrc`] = `
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.beaverrc.js`] = `
+exports[`Developer runs new and accepts the defaults-.beaverrc.js 1`] = `
 "export const dir = 'src';
 
 /**
@@ -40,7 +40,7 @@ export const webpack = {
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.eslintrc.js`] = `
+exports[`Developer runs new and accepts the defaults-.eslintrc.js 1`] = `
 "module.exports = {
     root: true,
     parserOptions: {
@@ -75,7 +75,7 @@ exports[`Developer runs new and accepts the defaults-.eslintrc.js`] = `
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.hygen.js`] = `
+exports[`Developer runs new and accepts the defaults-.hygen.js 1`] = `
 "const loader = require('esm');
 
 require = loader(module, { mode: 'auto', cjs: true });
@@ -88,7 +88,7 @@ module.exports = {
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.storybook/.babelrc`] = `
+exports[`Developer runs new and accepts the defaults-.storybook/.babelrc 1`] = `
 "{
   \\"presets\\": [
     \\"brookjs\\",
@@ -98,12 +98,12 @@ exports[`Developer runs new and accepts the defaults-.storybook/.babelrc`] = `
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.storybook/addons.js`] = `
+exports[`Developer runs new and accepts the defaults-.storybook/addons.js 1`] = `
 "import 'brookjs-desalinate/register';
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.storybook/config.js`] = `
+exports[`Developer runs new and accepts the defaults-.storybook/config.js 1`] = `
 "import { configure, addDecorator } from '@storybook/react';
 import { withJunction } from 'brookjs-desalinate';
 
@@ -119,7 +119,7 @@ configure(loadStories, module);
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-package.json`] = `
+exports[`Developer runs new and accepts the defaults-package.json 1`] = `
 "{
   \\"name\\": \\"test-app\\",
   \\"version\\": \\"0.0.0\\",
@@ -161,7 +161,7 @@ exports[`Developer runs new and accepts the defaults-package.json`] = `
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/actions/app.js`] = `
+exports[`Developer runs new and accepts the defaults-src/actions/app.js 1`] = `
 "export const INIT = 'INIT';
 
 export const init = () => ({
@@ -170,12 +170,12 @@ export const init = () => ({
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/actions/index.js`] = `
+exports[`Developer runs new and accepts the defaults-src/actions/index.js 1`] = `
 "export * from './app';
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/app.js`] = `
+exports[`Developer runs new and accepts the defaults-src/app.js 1`] = `
 "import '@babel/polyfill';
 import { observeDelta, eddy, combineReducers, fromReduxStore } from 'brookjs';
 import { h, RootJunction } from 'brookjs-silt';
@@ -220,11 +220,11 @@ store.dispatch(init());
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/components/index.js`] = `""`;
+exports[`Developer runs new and accepts the defaults-src/components/index.js 1`] = `""`;
 
-exports[`Developer runs new and accepts the defaults-src/deltas/index.js`] = `""`;
+exports[`Developer runs new and accepts the defaults-src/deltas/index.js 1`] = `""`;
 
-exports[`Developer runs new and accepts the defaults-src/dom.js`] = `
+exports[`Developer runs new and accepts the defaults-src/dom.js 1`] = `
 "import { children, component, Kefir, render, containerAttribute } from 'brookjs';
 import { } from './components';
 import template from './view.hbs';
@@ -240,16 +240,16 @@ export const view = component({
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/reducers/index.js`] = `""`;
+exports[`Developer runs new and accepts the defaults-src/reducers/index.js 1`] = `""`;
 
-exports[`Developer runs new and accepts the defaults-src/selectors/index.js`] = `
+exports[`Developer runs new and accepts the defaults-src/selectors/index.js 1`] = `
 "export const selectProps = props$ => props$;
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/services/index.js`] = `""`;
+exports[`Developer runs new and accepts the defaults-src/services/index.js 1`] = `""`;
 
-exports[`Developer runs new and accepts the defaults-src/view.hbs`] = `
+exports[`Developer runs new and accepts the defaults-src/view.hbs 1`] = `
 "<div data-brk-container=\\"app\\">
 
 </div>
