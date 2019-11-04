@@ -1,16 +1,13 @@
 /* eslint-env jest */
 import React from 'react';
 import { render, cleanup } from 'ink-testing-library';
-import { expect, use } from 'chai';
-import { chaiPlugin } from 'brookjs-desalinate';
+import { jestPlugin } from 'brookjs-desalinate';
 import Kefir from 'kefir';
-import chaiJestSnapshot from 'chai-jest-snapshot';
 import webpack from 'webpack';
 import View from '../View';
 
-const { plugin } = chaiPlugin({ Kefir });
-use(plugin);
-use(chaiJestSnapshot);
+const { extensions } = jestPlugin({ Kefir });
+expect.extend(extensions);
 
 describe('BuildCommand#View', () => {
   afterEach(cleanup);
@@ -27,7 +24,7 @@ describe('BuildCommand#View', () => {
       />
     );
 
-    expect(lastFrame()).to.matchSnapshot();
+    expect(lastFrame()).toMatchSnapshot();
   });
 
   it('should render building view', () => {
@@ -51,7 +48,7 @@ describe('BuildCommand#View', () => {
       />
     );
 
-    expect(lastFrame()).to.matchSnapshot();
+    expect(lastFrame()).toMatchSnapshot();
   });
 
   it('should render error view', () => {
@@ -77,7 +74,7 @@ describe('BuildCommand#View', () => {
       />
     );
 
-    expect(lastFrame()).to.matchSnapshot();
+    expect(lastFrame()).toMatchSnapshot();
   });
 
   it('should render built view', () => {
@@ -116,6 +113,6 @@ describe('BuildCommand#View', () => {
       />
     );
 
-    expect(lastFrame()).to.matchSnapshot();
+    expect(lastFrame()).toMatchSnapshot();
   });
 });

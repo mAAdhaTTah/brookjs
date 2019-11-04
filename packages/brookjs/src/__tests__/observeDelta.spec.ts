@@ -1,20 +1,16 @@
 /* eslint-env jest */
 import { applyMiddleware, createStore } from 'redux';
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import Kefir from 'kefir';
 import configureStore from 'redux-mock-store';
-import { chaiPlugin } from 'brookjs-desalinate';
+import { jestPlugin } from 'brookjs-desalinate';
 import { ofType } from 'brookjs-flow';
 import { observeDelta } from '../observeDelta';
 
-chai.use(sinonChai);
-const { plugin, value } = chaiPlugin({ Kefir });
-chai.use(plugin);
+const { extensions, value } = jestPlugin({ Kefir });
+expect.extend(extensions);
 
 describe('observeDelta', function() {
-  let delta,
+  let delta: jest.Mock,
     delta$,
     deltaMiddlware,
     reducer,
@@ -25,7 +21,7 @@ describe('observeDelta', function() {
     sub;
 
   beforeEach(function() {
-    delta = sinon.spy(function() {
+    delta = jest.fn(function() {
       return (delta$ = Kefir.pool());
     });
     deltaMiddlware = observeDelta(delta);
@@ -39,71 +35,71 @@ describe('observeDelta', function() {
       }
     };
     store = createStore(reducer, initial, applyMiddleware(deltaMiddlware));
-    [actions$, state$] = delta.args[0];
+    [actions$, state$] = delta.mock.calls[0];
   });
 
   it('should call the delta with actions$ and state$', function() {
-    expect(actions$).to.be.an.instanceof(Kefir.Observable);
-    expect(state$).to.be.an.instanceof(Kefir.Observable);
+    expect(actions$).toBeObservable();
+    expect(state$).toBeObservable();
   });
 
   it('should dispatch action to actions$', function() {
     const action = { type: 'AN_ACTION' };
-    const value = sinon.spy();
+    const value = jest.fn();
     sub = actions$.observe({ value });
 
     store.dispatch(action);
 
-    expect(value).to.have.been.calledOnce;
-    expect(value).to.have.been.calledWithExactly(action);
+    expect(value).toHaveBeenCalledTimes(1);
+    expect(value).toHaveBeenCalledWith(action);
   });
 
   it('should dispatch state to state$', function() {
     const action = { type: 'AN_ACTION' };
-    const value = sinon.spy();
+    const value = jest.fn();
     sub = state$.observe({ value });
 
     store.dispatch(action);
 
-    expect(value).to.have.been.calledTwice;
-    expect(value).to.have.been.calledWith({ changed: false });
-    expect(value).to.have.been.calledWith({ changed: true });
+    expect(value).toHaveBeenCalledTimes(2);
+    expect(value).toHaveBeenNthCalledWith(1, { changed: false });
+    expect(value).toHaveBeenNthCalledWith(2, { changed: true });
   });
 
   it('should dispatch delta$ events to actions$', function() {
     const action = { type: 'AN_ACTION' };
-    const value = sinon.spy();
+    const value = jest.fn();
     sub = actions$.observe({ value });
 
     delta$.plug(Kefir.constant(action));
 
-    expect(value).to.have.been.calledOnce;
-    expect(value).to.have.been.calledWithExactly(action);
+    expect(value).toHaveBeenCalledTimes(1);
+    expect(value).toHaveBeenCalledWith(action);
   });
 
   it('should dispatch delta$ events to store', function() {
     const action = { type: 'AN_ACTION' };
-    const subscribe = sinon.spy();
+    const subscribe = jest.fn();
     store.subscribe(subscribe);
 
     delta$.plug(Kefir.constant(action));
 
-    expect(subscribe).to.be.calledOnce;
+    expect(subscribe).toHaveBeenCalledTimes(1);
   });
 
   it('should emit the actions in the correct order', () => {
-    const delta1 = sinon.spy(action$ =>
+    const delta1 = jest.fn(action$ =>
       action$.thru(ofType('REQUEST')).map(() => ({ type: 'FIRST_RESPONSE' }))
     );
-    const delta2 = sinon.spy(action$ =>
+    const delta2 = jest.fn(action$ =>
       action$
         .thru(ofType('FIRST_RESPONSE'))
         .map(() => ({ type: 'SECOND_RESPONSE' }))
     );
     const store = configureStore([observeDelta(delta1, delta2)])({});
-    const [action$] = delta2.args[0];
+    const [action$] = delta2.mock.calls[0];
 
-    expect(action$).to.emit(
+    expect(action$).toEmit(
       [
         value({ type: 'REQUEST' }),
         value({ type: 'FIRST_RESPONSE' }),
@@ -116,12 +112,12 @@ describe('observeDelta', function() {
   });
 
   it('should interleave actions emitted in the middle of queue', () => {
-    const delta1 = sinon.spy(action$ =>
+    const delta1 = jest.fn(action$ =>
       action$
         .thru(ofType('FIRST_REQUEST'))
         .map(() => ({ type: 'SECOND_REQUEST' }))
     );
-    const delta2 = sinon.spy(action$ =>
+    const delta2 = jest.fn(action$ =>
       Kefir.merge([
         action$
           .thru(ofType('FIRST_REQUEST'))
@@ -132,9 +128,9 @@ describe('observeDelta', function() {
       ])
     );
     const store = configureStore([observeDelta(delta1, delta2)])({});
-    const [action$] = delta2.args[0];
+    const [action$] = delta2.mock.calls[0];
 
-    expect(action$).to.emit(
+    expect(action$).toEmit(
       [
         value({ type: 'FIRST_REQUEST' }),
         value({ type: 'SECOND_REQUEST' }),

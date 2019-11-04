@@ -1,17 +1,16 @@
 /* eslint-env jest */
-import { expect, use } from 'chai';
-import { chaiPlugin } from 'brookjs-desalinate';
+import { jestPlugin } from 'brookjs-desalinate';
 import Kefir from 'kefir';
 import ofType from '../ofType';
 
-const { plugin, send, value, stream } = chaiPlugin({ Kefir });
-use(plugin);
+const { extensions, send, value, stream } = jestPlugin({ Kefir });
+expect.extend(extensions);
 
 describe('ofType', () => {
   it('should match when passing one type', () => {
     const action$ = stream();
 
-    expect(action$.thru(ofType('MATCHED'))).to.emit(
+    expect(action$.thru(ofType('MATCHED'))).toEmit(
       [value({ type: 'MATCHED' })],
       () => {
         send(action$, [
@@ -27,7 +26,7 @@ describe('ofType', () => {
     matched.toString = () => 'MATCHED';
     const action$ = stream();
 
-    expect(action$.thru(ofType(matched))).to.emit(
+    expect(action$.thru(ofType(matched))).toEmit(
       [value({ type: 'MATCHED' })],
       () => {
         send(action$, [
@@ -41,7 +40,7 @@ describe('ofType', () => {
   it('should match when passing multiple types', () => {
     const action$ = stream();
 
-    expect(action$.thru(ofType('MATCHED_ONE', 'MATCHED_TWO'))).to.emit(
+    expect(action$.thru(ofType('MATCHED_ONE', 'MATCHED_TWO'))).toEmit(
       [value({ type: 'MATCHED_ONE' }), value({ type: 'MATCHED_TWO' })],
       () => {
         send(action$, [
@@ -61,7 +60,7 @@ describe('ofType', () => {
     matchedTwo.toString = () => 'MATCHED_TWO';
     const action$ = stream();
 
-    expect(action$.thru(ofType(matchedOne, matchedTwo))).to.emit(
+    expect(action$.thru(ofType(matchedOne, matchedTwo))).toEmit(
       [value({ type: 'MATCHED_ONE' }), value({ type: 'MATCHED_TWO' })],
       () => {
         send(action$, [
