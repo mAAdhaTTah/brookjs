@@ -10,6 +10,7 @@ import { ValidationError, getFunctionName, Context } from 'io-ts';
 import esm from 'esm';
 import Command from './Command';
 import { RC, rc } from './RC';
+import ErrorBoundary from './ErrorBoundary';
 
 const loadEsm = esm(module);
 
@@ -222,13 +223,15 @@ export default class App<S> {
     }
 
     const instance = render(
-      <Root
-        commands={this.commands}
-        services={this.services}
-        argv={argv}
-        cwd={cwd}
-        rc={loaded}
-      />,
+      <ErrorBoundary>
+        <Root
+          commands={this.commands}
+          services={this.services}
+          argv={argv}
+          cwd={cwd}
+          rc={loaded}
+        />
+      </ErrorBoundary>,
       {
         stdout,
         stdin,
