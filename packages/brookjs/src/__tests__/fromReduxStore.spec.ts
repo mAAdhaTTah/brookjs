@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import chai, { expect } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
 import $$observable from 'symbol-observable';

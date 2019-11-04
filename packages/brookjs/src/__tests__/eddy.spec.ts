@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import { expect } from 'chai';
 import { createStore, Store, Action } from 'redux';
 import { eddy, loop, combineReducers, EddyReducer } from '../eddy';

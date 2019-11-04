@@ -80,8 +80,6 @@ exports[`NewCommand#View creating should render spinner 1`] = `
 [32m▹▹▹▹▹[39m [39mCreating app test-app[39m"
 `;
 
-exports[`NewCommand#View creating should render spinner during creating 1`] = `"[32m▹▹▹▹▹[39m[39mCreating app test-app[39m"`;
-
 exports[`NewCommand#View error should render error message and call exit 1`] = `
 "
 

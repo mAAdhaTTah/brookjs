@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import React from 'react';
 import { render, cleanup } from 'ink-testing-library';
 import { AppContext } from 'ink';
@@ -15,14 +15,6 @@ use(plugin);
 use(chaiJestSnapshot);
 
 describe('NewCommand#View', () => {
-  before(function() {
-    chaiJestSnapshot.resetSnapshotRegistry();
-  });
-
-  beforeEach(function() {
-    chaiJestSnapshot.configureUsingMochaContext(this);
-  });
-
   afterEach(cleanup);
 
   describe('configure step', () => {

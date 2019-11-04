@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import React from 'react';
 import { render, cleanup } from 'ink-testing-library';
 import { expect, use } from 'chai';
@@ -12,14 +12,6 @@ use(plugin);
 use(chaiJestSnapshot);
 
 describe('BuildCommand#View', () => {
-  before(function() {
-    chaiJestSnapshot.resetSnapshotRegistry();
-  });
-
-  beforeEach(function() {
-    chaiJestSnapshot.configureUsingMochaContext(this);
-  });
-
   afterEach(cleanup);
 
   it('should render missing rc view', () => {

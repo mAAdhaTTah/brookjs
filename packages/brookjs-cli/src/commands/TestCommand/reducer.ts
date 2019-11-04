@@ -1,26 +1,20 @@
 import { getType } from 'typesafe-actions';
 import { State, Action } from './types';
-import { shellCommand } from './actions';
+import { testRun } from './actions';
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case getType(shellCommand.request):
+    case getType(testRun.request):
+      return state;
+    case getType(testRun.success):
       return {
         ...state,
-        command: action.payload
+        status: 'complete'
       };
-    case getType(shellCommand.success):
+    case getType(testRun.failure):
       return {
         ...state,
-        code: 0,
-        out: action.payload.stdout
-      };
-    case getType(shellCommand.failure):
-      return {
-        ...state,
-        code: action.payload.code,
-        out: action.payload.stdout,
-        err: action.payload.stderr
+        status: 'error'
       };
   }
 };

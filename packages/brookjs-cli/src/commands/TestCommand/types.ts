@@ -9,21 +9,20 @@ interface BaseState {
   env: string;
   coverage: boolean;
   watch: boolean;
-  command: Nullable<string>;
 }
 
-export interface IncompleteState extends BaseState {
-  code: null;
-  out: null;
-  err: null;
+export interface RunningState extends BaseState {
+  status: 'running'
 }
 
 export interface CompleteState extends BaseState {
-  code: number;
-  out: string;
-  err: Nullable<string>;
+  status: 'complete'
 }
 
-export type State = IncompleteState | CompleteState;
+export interface ErrorState extends BaseState {
+  status: 'error'
+}
+
+export type State = RunningState | CompleteState | ErrorState;
 export type Action = ActionType<typeof actions>;
 export type Args = {};

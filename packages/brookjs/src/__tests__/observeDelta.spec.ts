@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import { applyMiddleware, createStore } from 'redux';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';

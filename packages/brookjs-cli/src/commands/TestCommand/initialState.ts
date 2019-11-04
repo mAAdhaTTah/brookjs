@@ -20,10 +20,7 @@ const initialState = (
   env: getEnv(args.env),
   coverage: args.coverage === true,
   watch: args.watch === true,
-  command: null,
-  code: null,
-  out: null,
-  err: null
+  status: 'running'
 });
 
 export default initialState;

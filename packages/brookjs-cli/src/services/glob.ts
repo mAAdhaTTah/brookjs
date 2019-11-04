@@ -3,4 +3,4 @@ import Kefir, { Stream } from 'kefir';
 
 export default (target: string): Stream<string[], Error> =>
   // @TODO(mAAdhaTTah) fix fromNodeCallback upstream
-  Kefir.fromNodeCallback(cb => glob(target, cb as any));
+  Kefir.fromNodeCallback(cb => glob(target, cb));

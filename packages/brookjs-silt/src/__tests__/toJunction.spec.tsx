@@ -1,9 +1,10 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import { expect, use } from 'chai';
 import Kefir from 'kefir';
 import React from 'react';
 import { chaiPlugin } from 'brookjs-desalinate';
 import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import { render, fireEvent } from '@testing-library/react';
 import { toJunction } from '../toJunction';
 import { Provider } from '../context';
@@ -11,6 +12,7 @@ import { Provider } from '../context';
 const { plugin, value, stream, send } = chaiPlugin({ Kefir });
 
 use(plugin);
+use(sinonChai);
 
 describe('toJunction', () => {
   const events = { onButtonClick: e$ => e$.map(() => ({ type: 'CLICK' })) };

@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import Kefir from 'kefir';
 import { expect, use } from 'chai';
 import { toJunction } from 'brookjs-silt';

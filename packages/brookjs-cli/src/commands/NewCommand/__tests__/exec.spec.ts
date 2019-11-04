@@ -1,4 +1,4 @@
-/* eslint-env mocha */
+/* eslint-env jest */
 import sinon from 'sinon';
 import { expect, use } from 'chai';
 import { chaiPlugin } from 'brookjs-desalinate';
