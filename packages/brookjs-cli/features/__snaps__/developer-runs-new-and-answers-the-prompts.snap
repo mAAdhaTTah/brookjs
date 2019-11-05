@@ -223,7 +223,7 @@ exports[`Developer runs new and answers the prompts-package.json 1`] = `
   \\"scripts\\": {
     \\"test\\": \\"npm run test:lint && npm run test:unit\\",
     \\"test:lint\\": \\"eslint src --fix\\",
-    \\"test:unit\\": \\"beaver test unit --coverage --env test\\",
+    \\"test:unit\\": \\"beaver test unit --coverage\\",
     \\"storybook\\": \\"start-storybook -p 6006\\"
   },
   \\"keywords\\": [],
