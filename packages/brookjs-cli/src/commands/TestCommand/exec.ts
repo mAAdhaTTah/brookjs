@@ -21,6 +21,7 @@ const exec = ({ fs }: typeof import('../../services')) => (
         dir: Kefir.constant(getDir(state.rc)),
         coverage: Kefir.constant(state.coverage),
         watch: Kefir.constant(state.watch),
+        jest: Kefir.constant(errorToNull(state.rc)?.jest ?? {}),
         setupTests: fs
           // If tsconfig.json exists, we're going to assume typescript.
           .access(path.join(state.cwd, 'tsconfig.json'))
@@ -37,10 +38,10 @@ const exec = ({ fs }: typeof import('../../services')) => (
           )
       })
     )
-    .map(({ dir, coverage, watch, setupTests }) => {
+    .map(({ dir, coverage, watch, jest, setupTests }) => {
       const argv = [];
 
-      const config = {
+      const config: any = {
         roots: [path.join('<rootDir>', dir)],
         collectCoverageFrom: [
           `${dir}/**/*.{js,jsx,ts,tsx}`,
@@ -74,6 +75,10 @@ const exec = ({ fs }: typeof import('../../services')) => (
         moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'node']
       };
 
+      for (const [key, value] of Object.entries(jest)) {
+        config[key] = value;
+      }
+
       argv.push(`--config`, JSON.stringify(config));
       argv.push('--env', 'jsdom');
 
@@ -89,6 +94,8 @@ const exec = ({ fs }: typeof import('../../services')) => (
     })
     .flatMap(argv =>
       Kefir.stream(emitter => {
+        process.env.NODE_ENV = 'test';
+        process.env.BABEL_ENV = 'test';
         emitter.value(testRun.request());
         jest
           .run(argv)
