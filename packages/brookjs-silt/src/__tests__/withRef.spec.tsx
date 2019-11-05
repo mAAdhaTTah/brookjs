@@ -1,15 +1,14 @@
-/* eslint-env mocha */
-import { expect, use } from 'chai';
+/* eslint-env jest */
 import Kefir from 'kefir';
 import React from 'react';
-import { chaiPlugin } from 'brookjs-desalinate';
+import { jestPlugin } from 'brookjs-desalinate';
 import { render } from '@testing-library/react';
 import { withRef$ } from '../withRef';
 import { Provider } from '../context';
 
-const { plugin, value } = chaiPlugin({ Kefir });
+const { extensions, value } = jestPlugin({ Kefir });
 
-use(plugin);
+expect.extend(extensions);
 
 const refback = (ref$, props$) => Kefir.combine({ props$ }, { ref$ });
 
@@ -30,7 +29,7 @@ describe('withRef$', () => {
       <Instance text={'Click me!'} aggregated$={aggregated$} />
     );
 
-    expect(aggregated$).to.emit([
+    expect(aggregated$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
@@ -49,7 +48,7 @@ describe('withRef$', () => {
 
     wrapper.unmount();
 
-    expect(aggregated$._curSources).to.have.lengthOf(0);
+    expect(aggregated$._curSources).toHaveLength(0);
   });
 
   it('should replace aggregated$', () => {
@@ -63,10 +62,10 @@ describe('withRef$', () => {
       <Instance text={'Click me!'} aggregated$={newAggregated$} />
     );
 
-    expect(aggregated$._curSources).to.have.lengthOf(0);
-    expect(newAggregated$._curSources).to.have.lengthOf(1);
+    expect(aggregated$._curSources).toHaveLength(0);
+    expect(newAggregated$._curSources).toHaveLength(1);
 
-    expect(newAggregated$).to.emit([
+    expect(newAggregated$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
@@ -84,7 +83,7 @@ describe('withRef$', () => {
     );
     const ref$ = wrapper.container.querySelector('button');
 
-    expect(aggregated$).to.emit(
+    expect(aggregated$).toEmit(
       [
         value(
           {

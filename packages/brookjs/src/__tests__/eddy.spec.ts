@@ -1,5 +1,4 @@
-/* eslint-env mocha */
-import { expect } from 'chai';
+/* eslint-env jest */
 import { createStore, Store, Action } from 'redux';
 import { eddy, loop, combineReducers, EddyReducer } from '../eddy';
 
@@ -55,9 +54,9 @@ describe('eddy', () => {
     });
 
     it('should return a redux store', () => {
-      expect(store.subscribe).to.be.a('function');
-      expect(store.getState).to.be.a('function');
-      expect(store.getState()).to.equal(defaultState);
+      expect(store.subscribe).toBeInstanceOf(Function);
+      expect(store.getState).toBeInstanceOf(Function);
+      expect(store.getState()).toBe(defaultState);
     });
 
     it('should upgrade new reducers', () => {
@@ -66,13 +65,13 @@ describe('eddy', () => {
       };
       const reducer = () => defaultState;
       store.replaceReducer(reducer);
-      expect(store.getState()).to.equal(defaultState);
+      expect(store.getState()).toBe(defaultState);
     });
 
     it('should handle normal actions by default', () => {
       store.dispatch({ type: 'HOLD' });
 
-      expect(store.getState()).to.deep.equal({
+      expect(store.getState()).toEqual({
         actions: ['HOLD']
       });
     });
@@ -80,7 +79,7 @@ describe('eddy', () => {
     it('should dispatch actions returned by loop', () => {
       store.dispatch({ type: 'NEXT' });
 
-      expect(store.getState()).to.deep.equal({
+      expect(store.getState()).toEqual({
         actions: ['NEXT', 'HOLD']
       });
     });
@@ -88,7 +87,7 @@ describe('eddy', () => {
     it('should dispatch array of actions', () => {
       store.dispatch({ type: 'MANY' });
 
-      expect(store.getState()).to.deep.equal({
+      expect(store.getState()).toEqual({
         actions: ['MANY', 'HOLD', 'FINAL']
       });
     });
@@ -96,7 +95,7 @@ describe('eddy', () => {
     it('should not dispatch action with NONE', () => {
       store.dispatch({ type: 'FINAL' });
 
-      expect(store.getState()).to.deep.equal({
+      expect(store.getState()).toEqual({
         actions: ['FINAL']
       });
     });
@@ -124,12 +123,12 @@ describe('eddy', () => {
     });
 
     it('should return a reducer function', () => {
-      expect(reducer).to.be.a('function');
+      expect(reducer).toBeInstanceOf(Function);
     });
 
     it('should dispatch actions returned from subreducers', () => {
       store.dispatch({ type: 'PING' });
-      expect(store.getState()).to.deep.equal({
+      expect(store.getState()).toEqual({
         pings: 2,
         pongs: 2
       });
@@ -138,7 +137,7 @@ describe('eddy', () => {
     it('should return same state if unchanged', () => {
       const prevState = store.getState();
       store.dispatch({ type: 'OTHER' });
-      expect(store.getState()).to.equal(prevState);
+      expect(store.getState()).toBe(prevState);
     });
   });
 });

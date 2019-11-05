@@ -1,20 +1,18 @@
-/* eslint-env mocha */
-import sinon from 'sinon';
-import { expect, use } from 'chai';
-import { chaiPlugin } from 'brookjs-desalinate';
+/* eslint-env jest */
+import { jestPlugin } from 'brookjs-desalinate';
 import Kefir from 'kefir';
 import exec from '../exec';
 
-const { plugin } = chaiPlugin({ Kefir });
-use(plugin);
+const { extensions } = jestPlugin({ Kefir });
+expect.extend(extensions);
 
 describe('NewCommand#exec', () => {
   it('should not do anything before creating', () => {
     const services = {
       WebpackService: {} as any,
-      glob: sinon.stub()
+      glob: jest.fn()
     };
-    expect(exec(services)).to.emitFromDelta([], sendToDelta => {
+    expect(exec(services)).toEmitFromDelta([], sendToDelta => {
       sendToDelta(
         { type: 'DUMMY' },
         {

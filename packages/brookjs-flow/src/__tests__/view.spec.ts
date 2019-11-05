@@ -1,30 +1,31 @@
-/* eslint-env mocha */
-import { expect, use } from 'chai';
+/* eslint-env jest */
 import Kefir from 'kefir';
-import { chaiPlugin } from 'brookjs-desalinate';
+import { jestPlugin } from 'brookjs-desalinate';
 import view from '../view';
 
-const { plugin, stream, prop, value, send, error, end } = chaiPlugin({ Kefir });
-use(plugin);
+const { extensions, stream, prop, value, send, error, end } = jestPlugin({
+  Kefir
+});
+expect.extend(extensions);
 
 describe('view', () => {
   it('should be a function', () => {
-    expect(view).to.be.a('function');
+    expect(view).toBeInstanceOf(Function);
   });
 
   it('should take a callback and return a function', () => {
-    expect(view(x => x)).to.be.a('function');
+    expect(view(x => x)).toBeInstanceOf(Function);
   });
 
   it('should be able to be passed to Observable#thru', () => {
-    expect(stream().thru(view(x => x))).to.be.an.observable.stream();
-    expect(prop().thru(view(x => x))).to.be.an.observable.property();
+    expect(stream().thru(view(x => x))).toBeStream();
+    expect(prop().thru(view(x => x))).toBeProperty();
   });
 
   it('should emit result from function callback', () => {
     const a = stream();
 
-    expect(a.thru(view(x => !x))).to.emit([value(true)], () => {
+    expect(a.thru(view(x => !x))).toEmit([value(true)], () => {
       send(a, [value(false)]);
     });
   });
@@ -32,7 +33,7 @@ describe('view', () => {
   it('should not emit result when equals previous', () => {
     const a = stream();
 
-    expect(a.thru(view(x => !x))).to.emit([value(true)], () => {
+    expect(a.thru(view(x => !x))).toEmit([value(true)], () => {
       send(a, [value(false), value(false)]);
     });
   });
@@ -40,7 +41,7 @@ describe('view', () => {
   it('should emit errors and end', () => {
     const a = stream();
 
-    expect(a.thru(view(x => !x))).to.emit([error(true), end()], () => {
+    expect(a.thru(view(x => !x))).toEmit([error(true), end()], () => {
       send(a, [error(true), end()]);
     });
   });
@@ -48,7 +49,7 @@ describe('view', () => {
   it('should emit undefined on the first element', () => {
     const a = stream();
 
-    expect(a.thru(view(x => x))).to.emit([value(undefined), end()], () => {
+    expect(a.thru(view(x => x))).toEmit([value(undefined), end()], () => {
       send(a, [value(undefined), end()]);
     });
   });

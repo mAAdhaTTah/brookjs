@@ -8,11 +8,6 @@ export type Plugin = t.TypeOf<typeof plugin>;
 export const rc = t.partial({
   plugins: t.array(t.union([t.string, plugin])),
   dir: t.string,
-  mocha: t.partial({
-    requires: t.array(t.string),
-    ui: t.string,
-    reporter: t.string
-  }),
   webpack: t.partial({
     modifier: t.Function,
     entry: t.union([

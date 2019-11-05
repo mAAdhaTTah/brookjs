@@ -11,7 +11,11 @@ type Result = {
   message: () => string;
 };
 
-export const jestPlugin = ({ Kefir }: { Kefir: typeof import('kefir') }) => {
+export const jestPlugin = ({
+  Kefir
+}: {
+  Kefir: typeof import('kefir').default;
+}) => {
   const helpers = createHelpers(Kefir);
   const { withFakeTime, watchWithTime, send, stream, prop, value } = helpers;
   const { extensions } = jestKefir(Kefir);

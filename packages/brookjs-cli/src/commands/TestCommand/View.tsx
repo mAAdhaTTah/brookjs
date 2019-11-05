@@ -1,40 +1,27 @@
-import Spinner from 'ink-spinner';
 import { Box, Color } from 'ink';
 import React from 'react';
 import { Nullable } from 'typescript-nullable';
 import { useExit } from '../../cli';
-import { State, CompleteState } from './types';
+import { State, CompleteState, ErrorState } from './types';
 
-const Running: React.FC<{ command: string }> = ({ command }) => (
+const Running: React.FC = React.memo(() => (
   <Box>
-    <Spinner type="arrow3" />
-    <Box paddingLeft={1}>Running command {command}...</Box>
+    <Color yellow>Running Jest...</Color>
   </Box>
-);
+));
 
-const Results: React.FC<{
-  code: number;
-  out: string;
-  err: Nullable<string>;
-}> = ({ code, out, err }) => {
-  useExit(code !== 0 ? new Error(code + '') : undefined);
+const Results: React.FC = () => {
+  useExit();
 
   return (
     <Box>
-      <Box>{out.trim()}</Box>
-      {Nullable.maybe(
-        null,
-        err => (
-          <Color red>{err}</Color>
-        ),
-        err
-      )}
+      <Color green>Finished running tests</Color>
     </Box>
   );
 };
 
-const isComplete = (state: State): state is CompleteState =>
-  Nullable.isSome(state.code);
+const isDone = (state: State): state is CompleteState | ErrorState =>
+  state.status === 'complete';
 
 const View: React.FC<State> = props => {
   if (Nullable.isNone(props.rc)) {
@@ -45,14 +32,11 @@ const View: React.FC<State> = props => {
     return <Color red>RC file invalid. {props.rc.message}</Color>;
   }
 
-  if (!isComplete(props)) {
-    if (Nullable.isNone(props.command)) {
-      return null;
-    }
-    return <Running command={props.command.replace(props.cwd + '/', '')} />;
+  if (!isDone(props)) {
+    return <Running />;
   }
 
-  return <Results code={props.code} out={props.out} err={props.err} />;
+  return <Results />;
 };
 
 export default View;

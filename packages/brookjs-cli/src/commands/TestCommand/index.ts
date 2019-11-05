@@ -14,9 +14,6 @@ export default class TestCommand extends Command<
 > {
   builder(yargs: Argv): Argv {
     return yargs
-      .option('env', {
-        default: 'test'
-      })
       .option('coverage', {
         default: false
       })

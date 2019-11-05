@@ -1,26 +1,27 @@
-/* eslint-env mocha */
-import chai, { expect } from 'chai';
-import { chaiPlugin } from 'brookjs-desalinate';
+/* eslint-env jest */
+import { jestPlugin } from 'brookjs-desalinate';
 import $$observable from 'symbol-observable';
-import Kefir, { Observer } from 'kefir';
+import Kefir from 'kefir';
+import { Store } from 'redux';
+import { Observer } from 'recompose';
 import fromReduxStore from '../fromReduxStore';
 
-const { plugin, value } = chaiPlugin({ Kefir });
-chai.use(plugin);
+const { extensions, value } = jestPlugin({ Kefir });
+expect.extend(extensions);
 
-const createMockStore = state => {
+const createMockStore = <T extends {}>(state?: T): Store => {
   const store = {
     state,
     callbacks: [] as Function[],
 
-    setState(state) {
+    setState(state: T) {
       store.state = state;
 
       store.runCallbacks();
     },
 
-    getState() {
-      return store.state;
+    getState(): T {
+      return store.state as T;
     },
 
     subscribe(callback: Function) {
@@ -33,7 +34,7 @@ const createMockStore = state => {
 
     [$$observable]() {
       return {
-        subscribe: (observer: Observer<object, void>) => {
+        subscribe: (observer: Observer<T>) => {
           const observe = () => observer.next(store.getState());
 
           observe();
@@ -50,32 +51,32 @@ const createMockStore = state => {
     }
   };
 
-  return store;
+  return (store as unknown) as Store;
 };
 
 describe('fromReduxStore', () => {
   it('should be a function', () => {
-    expect(fromReduxStore).to.be.a('function');
+    expect(fromReduxStore).toBeInstanceOf(Function);
   });
 
   it('should return a property', () => {
     const store = createMockStore();
 
-    expect(fromReduxStore(store)).to.be.an.observable.property();
+    expect(fromReduxStore(store)).toBeProperty();
   });
 
   it('should emit the initial value', () => {
     const store = createMockStore(true);
     const state$ = fromReduxStore(store);
 
-    expect(state$).to.emit([value(true, { current: true })]);
+    expect(state$).toEmit([value(true, { current: true })]);
   });
 
   it('should emit new values', () => {
     const store = createMockStore(true);
     const state$ = fromReduxStore(store);
 
-    expect(state$).to.emit(
+    expect(state$).toEmit(
       [value(true, { current: true }), value(false)],
       () => {
         store.setState(false);

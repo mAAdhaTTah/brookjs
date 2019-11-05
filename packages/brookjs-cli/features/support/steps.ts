@@ -1,27 +1,38 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import {
-  BeforeAll,
   Before,
   Given,
   When,
   Then,
   After,
-  TableDefinition
+  TableDefinition,
+  BeforeAll
 } from 'cucumber';
-import { expect, use } from 'chai';
-import chaiJestSnapshot from 'chai-jest-snapshot';
-import chaiFs from 'chai-fs';
-import chaiString from 'chai-string';
+import expect from 'expect';
+import { SnapshotState, toMatchSnapshot } from 'jest-snapshot';
 import { Question } from './world';
 
-use(chaiString);
-use(chaiFs);
-
-use(chaiJestSnapshot);
-
 BeforeAll(function() {
-  chaiJestSnapshot.resetSnapshotRegistry();
+  expect.extend({
+    toMatchSnapshot(actual: string, filename: string, testname: string) {
+      const snapshotState = new SnapshotState(filename, {
+        updateSnapshot: process.env.SNAPSHOT_UPDATE ? 'all' : 'new'
+      } as any);
+
+      const result = toMatchSnapshot.call(
+        {
+          snapshotState,
+          currentTestName: testname
+        },
+        actual
+      );
+
+      snapshotState.save();
+
+      return result;
+    }
+  });
 });
 
 After(function() {
@@ -94,7 +105,7 @@ When(
   async function(code) {
     await this.ended();
 
-    expect(this.output.code).to.equal(
+    expect(this.output.code).toBe(
       code,
       `Error: exited with code ${this.output.code}
 Message: ${this.output.stderr || this.output.stdout}`
@@ -111,13 +122,13 @@ Then('I see a project dir called {string} with file snapshots:', async function(
 ) {
   const expected = files.raw().map(([_]) => _);
   const target = path.join(this.cwd, project);
-  expect(target)
-    .to.be.a.directory()
-    .with.deep.contents.that.include.members(expected);
+  expect(fs.statSync(target).isDirectory()).toBe(true);
 
   for (const filename of expected) {
+    expect(fs.statSync(path.join(target, filename)).isFile()).toBe(true);
+
     const contents = fs.readFileSync(path.join(target, filename)).toString();
-    expect(contents).to.matchSnapshot(
+    expect(contents).toMatchSnapshot(
       this.snapshot.filename,
       `${this.snapshot.testname}-${filename}`
     );
@@ -126,11 +137,11 @@ Then('I see a project dir called {string} with file snapshots:', async function(
 
 Then('I see a file called {string}', function(filename: string) {
   const file = path.join(this.cwd, filename);
-  expect(file).to.be.a.file(this.output.stdout);
+  expect(fs.statSync(file).isFile()).toBe(true);
 });
 
 Then('I expect the output to match the snapshot', async function() {
-  expect(this.output.stdout).to.matchSnapshot(
+  expect(this.output.stdout).toMatchSnapshot(
     this.snapshot.filename,
     `${this.snapshot.testname}-output`
   );

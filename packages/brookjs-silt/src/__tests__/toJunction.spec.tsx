@@ -1,16 +1,14 @@
-/* eslint-env mocha */
-import { expect, use } from 'chai';
+/* eslint-env jest */
 import Kefir from 'kefir';
 import React from 'react';
-import { chaiPlugin } from 'brookjs-desalinate';
-import sinon from 'sinon';
+import { jestPlugin } from 'brookjs-desalinate';
 import { render, fireEvent } from '@testing-library/react';
 import { toJunction } from '../toJunction';
 import { Provider } from '../context';
 
-const { plugin, value, stream, send } = chaiPlugin({ Kefir });
+const { extensions, value, stream, send } = jestPlugin({ Kefir });
 
-use(plugin);
+expect.extend(extensions);
 
 describe('toJunction', () => {
   const events = { onButtonClick: e$ => e$.map(() => ({ type: 'CLICK' })) };
@@ -38,7 +36,7 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
       );
 
-      expect(wrapper.container.innerHTML).to.equal('<button>Click me</button>');
+      expect(wrapper.container.innerHTML).toBe('<button>Click me</button>');
     });
 
     it('should update normally', () => {
@@ -51,9 +49,7 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click me'} enabled={false} />
       );
 
-      expect(wrapper.container.innerHTML).to.equal(
-        '<span>nothing to click</span>'
-      );
+      expect(wrapper.container.innerHTML).toBe('<span>nothing to click</span>');
     });
 
     it('should emit events through root stream', () => {
@@ -62,7 +58,7 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
       );
 
-      expect(root$).to.emit([value({ type: 'CLICK' })], () => {
+      expect(root$).toEmit([value({ type: 'CLICK' })], () => {
         clickButton(wrapper);
       });
     });
@@ -77,7 +73,7 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click you'} enabled={true} />
       );
 
-      expect(root$).to.emit([value({ type: 'CLICK' })], () => {
+      expect(root$).toEmit([value({ type: 'CLICK' })], () => {
         clickButton(wrapper);
       });
     });
@@ -90,7 +86,7 @@ describe('toJunction', () => {
 
       wrapper.unmount();
 
-      expect(root$._curSources).to.have.lengthOf(0);
+      expect(root$._curSources).toHaveLength(0);
     });
 
     it('should unplug from old root stream if new root stream provided', () => {
@@ -108,8 +104,8 @@ describe('toJunction', () => {
           enabled={true}
         />
       );
-      expect(root$._curSources).to.have.lengthOf(0);
-      expect(newAggregated$._curSources).to.have.lengthOf(1);
+      expect(root$._curSources).toHaveLength(0);
+      expect(newAggregated$._curSources).toHaveLength(1);
     });
 
     it('should take events directly', () => {
@@ -132,7 +128,7 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
       );
 
-      expect(root$).to.emit([value({ type: 'CLICK' })], () => {
+      expect(root$).toEmit([value({ type: 'CLICK' })], () => {
         clickButton(wrapper);
       });
     });
@@ -141,7 +137,7 @@ describe('toJunction', () => {
   describe('combine', () => {
     it('should call combine with correct arguments and use returned stream', () => {
       const source$ = stream();
-      const combine = sinon.spy(() => source$);
+      const combine = jest.fn(() => source$);
       const Button = toJunction(events, combine)(
         ({ onButtonClick, text, enabled }) =>
           enabled ? (
@@ -159,21 +155,23 @@ describe('toJunction', () => {
       const root$ = Kefir.pool();
       render(<ProvidedButton root$={root$} text={'Click me'} enabled={true} />);
 
-      expect(root$).to.emit([value({ type: 'EMITTED' })], () => {
+      expect(root$).toEmit([value({ type: 'EMITTED' })], () => {
         send(source$, [value({ type: 'EMITTED' })]);
       });
-      expect(combine).to.have.been.calledOnce.and.have.been.calledWith(
-        sinon.match.instanceOf(Kefir.Observable),
-        sinon.match({
-          onButtonClick$: sinon.match.instanceOf(Kefir.Observable),
-          children$: sinon.match.instanceOf(Kefir.Observable)
-        }),
-        sinon.match({ text: 'Click me', enabled: true })
+      expect(combine).toHaveBeenCalledTimes(1);
+
+      expect(combine).toHaveBeenCalledWith(
+        expect.any(Kefir.Observable),
+        {
+          onButtonClick$: expect.any(Kefir.Observable),
+          children$: expect.any(Kefir.Observable)
+        },
+        { text: 'Click me', enabled: true }
       );
     });
 
     it('should call combine with updated props', () => {
-      const combine = sinon.spy(() => Kefir.never());
+      const combine = jest.fn(() => Kefir.never());
       const Button = toJunction(events, combine)(
         ({ onButtonClick, text, enabled }) =>
           enabled ? (
@@ -197,23 +195,25 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click you'} enabled={true} />
       );
 
-      expect(combine)
-        .to.have.been.calledTwice.and.have.been.calledWith(
-          sinon.match.instanceOf(Kefir.Observable),
-          sinon.match({
-            onButtonClick$: sinon.match.instanceOf(Kefir.Observable),
-            children$: sinon.match.instanceOf(Kefir.Observable)
-          }),
-          sinon.match({ text: 'Click me', enabled: true })
-        )
-        .and.have.been.calledWith(
-          sinon.match.instanceOf(Kefir.Observable),
-          sinon.match({
-            onButtonClick$: sinon.match.instanceOf(Kefir.Observable),
-            children$: sinon.match.instanceOf(Kefir.Observable)
-          }),
-          sinon.match({ text: 'Click you', enabled: true })
-        );
+      expect(combine).toHaveBeenCalledTimes(2);
+      expect(combine).toHaveBeenNthCalledWith(
+        1,
+        expect.any(Kefir.Observable),
+        {
+          onButtonClick$: expect.any(Kefir.Observable),
+          children$: expect.any(Kefir.Observable)
+        },
+        { text: 'Click me', enabled: true }
+      );
+      expect(combine).toHaveBeenNthCalledWith(
+        2,
+        expect.any(Kefir.Observable),
+        {
+          onButtonClick$: expect.any(Kefir.Observable),
+          children$: expect.any(Kefir.Observable)
+        },
+        { text: 'Click you', enabled: true }
+      );
     });
   });
 
@@ -230,7 +230,7 @@ describe('toJunction', () => {
         </Provider>
       );
 
-      expect(root$).to.emit([value({ type: 'BUTTON_CLICK' })], () => {
+      expect(root$).toEmit([value({ type: 'BUTTON_CLICK' })], () => {
         clickButton(wrapper);
       });
     });
@@ -249,7 +249,7 @@ describe('toJunction', () => {
         </Provider>
       );
 
-      expect(root$).to.emit([value({ type: 'BUTTON_CLICK' })], () => {
+      expect(root$).toEmit([value({ type: 'BUTTON_CLICK' })], () => {
         clickButton(wrapper);
       });
     });
