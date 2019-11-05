@@ -70,7 +70,7 @@
     "docs:dev": "docz dev",
     "docs:build": "docz build",
     "docs:deploy": "yarn docs:build && gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
-    "test": "monorepo-run test",
+    "test": "lerna run test",
     "pub": "lerna publish --npm-client npm --npm-tag beta --concurrency 1"
   },
   "workspaces": [
