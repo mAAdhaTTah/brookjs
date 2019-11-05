@@ -16,15 +16,6 @@ exports[`Developer runs new and accepts the defaults-.beaverrc.js 1`] = `
 "export const dir = 'src';
 
 /**
- * Mocha testing configuration.
- */
-export const mocha = {
-    reporter: 'spec',
-    ui: 'bdd',
-    requires: []
-};
-
-/**
  * Webpack build configuration.
  */
 export const webpack = {

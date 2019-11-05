@@ -22,7 +22,7 @@ describe('BuildCommand#View', () => {
         env="test"
         coverage={false}
         watch={false}
-        command={'mocha'}
+        command={'jest'}
       />
     );
 
