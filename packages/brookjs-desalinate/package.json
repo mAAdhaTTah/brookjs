@@ -20,8 +20,8 @@
   "scripts": {
     "test": "yarn test:lint && yarn test:unit",
     "test:lint": "prettier --check \"{src,.storybook,stories}/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
-    "test:unit": "beaver test unit --coverage --env test",
-    "dev": "beaver dev tdd --env test",
+    "test:unit": "beaver test unit --coverage",
+    "dev": "beaver dev tdd",
     "clean": "rimraf dist coverage",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "storybook": "start-storybook -p 6006",

@@ -20,7 +20,7 @@
     "test:lint": "eslint \"src/**/*.{ts,tsx}\"",
     "test:unit": "beaver test unit --coverage",
     "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require '../../setupTests.ts' --require 'features/support/*.ts'",
-    "dev": "beaver dev tdd --env test"
+    "dev": "beaver dev tdd"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",

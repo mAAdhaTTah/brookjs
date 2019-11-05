@@ -16,15 +16,6 @@ exports[`Developer runs new and accepts the defaults-.beaverrc.js 1`] = `
 "export const dir = 'src';
 
 /**
- * Mocha testing configuration.
- */
-export const mocha = {
-    reporter: 'spec',
-    ui: 'bdd',
-    requires: []
-};
-
-/**
  * Webpack build configuration.
  */
 export const webpack = {
@@ -128,7 +119,7 @@ exports[`Developer runs new and accepts the defaults-package.json 1`] = `
   \\"scripts\\": {
     \\"test\\": \\"npm run test:lint && npm run test:unit\\",
     \\"test:lint\\": \\"eslint src --fix\\",
-    \\"test:unit\\": \\"beaver test unit --coverage --env test\\",
+    \\"test:unit\\": \\"beaver test unit --coverage\\",
     \\"storybook\\": \\"start-storybook -p 6006\\"
   },
   \\"keywords\\": [],

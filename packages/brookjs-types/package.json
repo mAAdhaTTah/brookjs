@@ -13,7 +13,7 @@
   "scripts": {
     "test": "yarn test:lint",
     "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
-    "dev": "beaver dev tdd --env test",
+    "dev": "beaver dev tdd",
     "clean": "rimraf dist coverage",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "prepublishOnly": "yarn clean && yarn build"
