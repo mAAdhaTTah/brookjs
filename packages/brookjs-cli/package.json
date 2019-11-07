@@ -41,7 +41,7 @@
     "fs-extra": "^8.0.1",
     "glob": "^7.1.2",
     "has-ansi": "^4.0.0",
-    "hygen": "^4.0.2",
+    "hygen": "^5.0.1",
     "identity-obj-proxy": "^3.0.0",
     "ink": "^2.1.0",
     "ink-select-input": "^3.1.0",
