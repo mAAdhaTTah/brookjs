@@ -86,6 +86,28 @@ Given('I import an unknown file', async function() {
   });
 });
 
+Given('I have a passing test', async function() {
+  await this.outputFile({
+    path: path.join('src', '__tests__', 'App.spec.js'),
+    contents: `describe('passing test', () => {
+  it('should pass', () => {
+    expect(1 + 1).toBe(2);
+  });
+});`
+  });
+});
+
+Given('I have a failing test', async function() {
+  await this.outputFile({
+    path: path.join('src', '__tests__', 'App.spec.js'),
+    contents: `describe('failing test', () => {
+  it('should pass', () => {
+    expect(1 + 1).toBe(3);
+  });
+});`
+  });
+});
+
 /**
  * When I Do
  */
@@ -140,9 +162,10 @@ Then('I see a file called {string}', function(filename: string) {
   expect(fs.statSync(file).isFile()).toBe(true);
 });
 
-Then('I expect the output to match the snapshot', async function() {
-  expect(this.output.stdout).toMatchSnapshot(
-    this.snapshot.filename,
-    `${this.snapshot.testname}-output`
-  );
+Then('I see passing test results', function() {
+  expect(this.output.stdout).toMatch(/1 passed/);
+});
+
+Then('I see failing test results', function() {
+  expect(this.output.stdout).toMatch(/1 failed/);
 });
