@@ -15,9 +15,11 @@ export default class BuildCommand extends Command<
   builder(yargs: Argv): Argv {
     return yargs
       .option('env', {
+        describe: 'Environment build target. One of: development, production.',
         default: 'development'
       })
       .option('watch', {
+        describe: 'Watch the files and rebuild on changes',
         default: false
       });
   }

@@ -14,16 +14,21 @@ export default class TestCommand extends Command<
 > {
   builder(yargs: Argv): Argv {
     return yargs
+      .positional('type', {
+        describe: 'Type of test to run. One of: unit.'
+      })
       .option('coverage', {
+        describe: 'Add coverage data to output.',
         default: false
       })
       .option('watch', {
+        describe: 'Watch files & rerun the tests on changes.',
         default: false
       });
   }
-  cmd = 'test';
+  cmd = 'test <type>';
 
-  describe = 'Run the brookjs unit tests.';
+  describe = 'Run the application tests.';
 
   initialState = initialState;
 
