@@ -4,7 +4,7 @@ Feature: new command
   As a developer
   I want to bootstrap a new application with configuration
 
-  @new-prompts
+  @prompts
   Scenario: Developer runs new and answers the prompts
     When I run beaver with "new test-app"
     And I respond to the prompts with:
@@ -35,7 +35,7 @@ Feature: new command
       | .storybook/config.js       |
       | .storybook/addons.js       |
 
-  @new-yes
+  @yes
   Scenario: Developer runs new and accepts the defaults
     When I run beaver with "new test-app -y"
     And I wait for the command to finish with code 0

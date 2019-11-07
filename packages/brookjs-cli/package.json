@@ -19,7 +19,7 @@
     "test": "yarn test:lint && yarn test:unit && yarn test:feature",
     "test:lint": "eslint \"src/**/*.{ts,tsx}\"",
     "test:unit": "beaver test unit --coverage",
-    "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require '../../setupTests.ts' --require 'features/support/*.ts'",
+    "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require './features/setupTests.ts' --require 'features/support/*.ts'",
     "dev": "beaver dev tdd"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
