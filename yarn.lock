@@ -3043,10 +3043,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cucumber@^4.0.5":
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/@types/cucumber/-/cucumber-4.0.7.tgz#e452f5298bb77f3ae8fdb65bc00d94165c4d7e51"
-  integrity sha512-uYvDSl+JV1fT1U9EIFXlnb7DjZdRNYZHQFppQf9aYAe71joppErWenznupwZUj9zuo+SAFYNoongarQpNOb+pQ==
+"@types/cucumber@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@types/cucumber/-/cucumber-6.0.0.tgz#dd84559988304e3287cf78f6807a8bf420333e3b"
+  integrity sha512-XKOML2sycfOE8pePkEJcD14UTC519Welx7Buwy3pgTYM+tL2G3NmSPX9RA4eaEEuQ1WlXMriYaZ4PS0v4iNMcw==
 
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
