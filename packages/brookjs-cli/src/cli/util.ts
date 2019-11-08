@@ -15,6 +15,6 @@ export const useExit = (error?: Error) => {
   const { exit } = useContext(AppContext);
 
   useEffect(() => {
-    (exit as any)(error);
+    exit(error);
   }, [exit]);
 };
