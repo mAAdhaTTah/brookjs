@@ -26,6 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.0.0",
+    "@babel/register": "^7.0.0",
     "babel-loader": "^8.0.0",
     "brookjs": "^1.0.0-alpha.24",
     "camelcase": "^5.3.1",

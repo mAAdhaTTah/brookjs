@@ -108,6 +108,20 @@ Given('I have a failing test', async function() {
   });
 });
 
+Given('I add a {string} command with body', async function(
+  ext: string,
+  contents: string
+) {
+  if (!['ts', 'tsx', 'js'].includes(ext)) {
+    throw new Error(`ext should be ts or js, got ${ext}`);
+  }
+
+  await this.outputFile({
+    path: path.join('src', '..', 'commands', `index.${ext}`),
+    contents
+  });
+});
+
 /**
  * When I Do
  */
@@ -168,4 +182,8 @@ Then('I see passing test results', function() {
 
 Then('I see failing test results', function() {
   expect(this.output.stdout).toMatch(/1 failed/);
+});
+
+Then('I see this in stdout', function(output: string) {
+  expect(this.output.stdout).toMatch(output);
 });

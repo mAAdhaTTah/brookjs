@@ -153,6 +153,57 @@ export default class App<S> {
     return new App(this.name, this.commands.add(cmd), this.services);
   }
 
+  loadCommandsFrom(dir: string) {
+    // It's not a consistent reference,
+    // so we don't want to suggest it's a `this` alias.
+    // eslint-disable-next-line consistent-this
+    let app: App<S> = this;
+    let commands: { [key: string]: any } = {};
+
+    try {
+      commands = this.load(dir);
+    } catch {
+      return app;
+    }
+
+    for (const key in commands) {
+      const command = new commands[key]();
+
+      if (command instanceof Command) {
+        app = app.addCommand(command);
+      } else {
+        // warning needed
+        // eslint-disable-next-line no-console
+        console.warn(`Command ${key} not loaded from ${dir}. Not a Command.`);
+      }
+    }
+
+    return app;
+  }
+
+  private load(dir: string) {
+    // @TODO(mAAdhaTTah) harmonize usage of preset
+    require('@babel/register')({
+      only: [dir],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      babelrc: true,
+      presets: [
+        '@babel/typescript',
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: 'current'
+            }
+          }
+        ]
+      ],
+      plugins: ['@babel/plugin-transform-modules-commonjs']
+    });
+
+    return require(dir);
+  }
+
   registerServices(services: S) {
     return new App(this.name, this.commands, services);
   }
