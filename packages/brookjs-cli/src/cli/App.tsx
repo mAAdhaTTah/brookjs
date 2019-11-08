@@ -123,8 +123,6 @@ class Commands {
 export default class App<S> {
   code: number | null = null;
 
-  debug: boolean = false;
-
   private running: boolean = false;
 
   static create<S extends object = {}>(
@@ -178,7 +176,6 @@ export default class App<S> {
     }
 
     this.running = true;
-    this.debug = debug;
 
     let loaded: Nullable<RC | Error> = null;
     const result = await cosmiconfig(this.name, { loaders }).search();
