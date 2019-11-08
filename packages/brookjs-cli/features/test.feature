@@ -15,7 +15,7 @@ Feature: test command
 
   @unit
   @fail
-  Scenario: Developer runs test unit with passing tests
+  Scenario: Developer runs test unit with failing tests
     Given I have a project
     And I have a failing test
     When I run beaver with "test unit"
