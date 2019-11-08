@@ -9,7 +9,7 @@ import { Nullable } from 'typescript-nullable';
 import { ValidationError, getFunctionName, Context } from 'io-ts';
 import esm from 'esm';
 import Command from './Command';
-import { RC, rc } from './RC';
+import { RC } from './RC';
 import ErrorBoundary from './ErrorBoundary';
 
 const loadEsm = esm(module);
@@ -228,7 +228,7 @@ export default class App<S> {
 
     this.running = true;
 
-    let loaded: Nullable<RC | Error> = null;
+    let rc: Nullable<RC | Error> = null;
     const result = await cosmiconfig(this.name, { loaders }).search();
 
     if (result != null) {
@@ -260,7 +260,7 @@ export default class App<S> {
             )}`;
       }
 
-      loaded = rc.decode(result.config).fold<RC | Error>(
+      rc = RC.decode(result.config).fold<RC | Error>(
         function failure(es) {
           return new Error('Errors: ' + es.map(getMessage).join('; '));
         },
@@ -277,7 +277,7 @@ export default class App<S> {
           services={this.services}
           argv={argv}
           cwd={cwd}
-          rc={loaded}
+          rc={rc}
         />
       </ErrorBoundary>,
       {

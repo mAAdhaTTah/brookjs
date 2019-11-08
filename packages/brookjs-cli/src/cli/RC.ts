@@ -5,7 +5,7 @@ export const plugin = t.type({});
 
 export type Plugin = t.TypeOf<typeof plugin>;
 
-export const rc = t.partial({
+export const RC = t.partial({
   plugins: t.array(t.union([t.string, plugin])),
   dir: t.string,
   jest: t.exact(
@@ -60,7 +60,7 @@ export const rc = t.partial({
   })
 });
 
-type RCBase = t.TypeOf<typeof rc>;
+type RCBase = t.TypeOf<typeof RC>;
 
 type WebpackBase = RCBase['webpack'];
 
@@ -69,7 +69,7 @@ type WebpackState = {
   cmd: 'build' | 'start';
 };
 
-type Webpack = Exclude<WebpackBase, 'modifer'> & {
+type Webpack = Omit<WebpackBase, 'modifer'> & {
   modifier?: (
     config: webpack.Configuration,
     state: WebpackState
