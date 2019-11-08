@@ -94,6 +94,7 @@ export type Action =
 
 export type Args = {
   name: string;
+  yes: boolean;
 };
 
 export const unreachable = (x: never): never => {

@@ -25,4 +25,7 @@ export interface ErrorState extends BaseState {
 
 export type State = RunningState | CompleteState | ErrorState;
 export type Action = ActionType<typeof actions>;
-export type Args = {};
+export type Args = {
+  coverage: boolean;
+  watch: boolean;
+};

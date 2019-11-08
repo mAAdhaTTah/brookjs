@@ -1,12 +1,10 @@
 import { App} from './cli';
 import { BuildCommand, NewCommand, TestCommand } from './commands';
-import * as s from './services';
 
-const create = ({ services = s }: { services?: typeof s } = {}) =>
+const create = () =>
   App.create('beaver')
-    .registerServices(services)
-    .addCommand(new NewCommand())
-    .addCommand(new BuildCommand())
-    .addCommand(new TestCommand());
+    .addCommand(NewCommand)
+    .addCommand(BuildCommand)
+    .addCommand(TestCommand);
 
 export default create;
