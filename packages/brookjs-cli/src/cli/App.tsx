@@ -1,16 +1,12 @@
-import Kefir, { Stream, Pool, Subscription } from 'kefir';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import cosmiconfig from 'cosmiconfig';
-import yargs, { Argv, Arguments } from 'yargs';
 import { render, Color } from 'ink';
-import { RootJunction } from 'brookjs-silt';
-import { Action } from 'redux';
-import { Nullable } from 'typescript-nullable';
 import { ValidationError, getFunctionName, Context } from 'io-ts';
 import esm from 'esm';
-import Command from './Command';
-import { RC, rc } from './RC';
+import { RC } from './RC';
 import ErrorBoundary from './ErrorBoundary';
+import { Commands, Command } from './Command';
+import { Maybe } from './util';
 
 const loadEsm = esm(module);
 
@@ -21,142 +17,75 @@ const loaders = {
   }
 };
 
-type RootProps<S> = {
-  commands: Commands;
-  services: S;
-  rc: Nullable<RC | Error>;
-  cwd: string;
-  argv: string[];
-};
-
-const Root = <S, A extends Action, Services>({
-  commands,
-  services,
-  rc,
-  cwd,
-  argv
-}: RootProps<Services>) => {
-  const [app, setState] = useState<{
-    state: S;
-    View: React.ComponentType<S>;
-    root: (root$: Pool<A, Error>) => Subscription;
-  }>();
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const { command, args } = commands.get(argv);
-
-    if (command == null) {
-      setError(`Command not found for ${argv.join(' ')}`);
-      return;
-    }
-
-    const { View } = command;
-    const action$ = new Kefir.Stream() as Stream<A, never>;
-    const state$ = action$.scan(
-      command.reducer,
-      command.initialState(args, { rc, cwd })
-    );
-    const exec$ = command.exec(services)(action$, state$);
-    const onValue = (action: A): void => (action$ as any)._emitValue(action);
-    const root = (root$: Pool<A, Error>) => root$.observe(onValue);
-
-    const stateSub = state$.observe(state => setState({ state, View, root }));
-    const execSub = exec$.observe(onValue);
-
-    return () => {
-      execSub.unsubscribe();
-      stateSub.unsubscribe();
-    };
-  }, []);
-
-  if (error != null) {
-    return <Color red>{error}</Color>;
-  }
-
-  if (app) {
-    const { root, state, View } = app;
-
-    return (
-      <RootJunction<A> root$={root}>
-        <View {...state} />
-      </RootJunction>
-    );
-  }
-
-  return <Color grey>Loading...</Color>;
-};
-
-class Commands {
-  running?: Command<any, any, any, any>;
-
-  private commands: Command<any, any, any, any>[] = [];
-
-  constructor(commands: Command<any, any, any, any>[] = []) {
-    this.commands = commands;
-  }
-
-  add(command: Command<any, any, any, any>) {
-    return new Commands([...this.commands, command]);
-  }
-
-  get<A>(
-    argv: string[]
-  ): { command: Command<any, any, A, any> | null; args: Arguments<A> } {
-    let running: Command<any, any, any, any> | null = null;
-
-    const args = (this.commands.reduce(
-      (yargs: Argv, command) =>
-        yargs.command(
-          command.cmd,
-          command.describe,
-          command.builder,
-          () => (running = command)
-        ),
-      yargs
-    ) as Argv).parse(argv) as Arguments<A>;
-
-    return { command: running, args };
-  }
-}
-
-export default class App<S> {
-  code: number | null = null;
-
-  debug: boolean = false;
-
-  private running: boolean = false;
-
-  static create<S extends object = {}>(
-    name: string,
-    commands?: Commands,
-    services?: S
-  ) {
-    return new App<S>(name, commands, services);
+export class App {
+  static create(name: string, commands?: Commands) {
+    return new App(name, commands);
   }
 
   private constructor(
     private name: string,
-    private commands: Commands = new Commands(),
-    private services?: S
+    private commands: Commands = new Commands()
   ) {
     this.name = name;
     this.commands = commands;
-    this.services = services;
   }
 
-  addCommand(cmd: Command<any, any, any, any>): App<S> {
-    if (this.running) {
-      throw new Error(
-        `${this.name} is already running. Cannot add additional commands.`
-      );
+  addCommand(cmd: Command<any>): App {
+    if (!Command.is(cmd)) {
+      throw new Error();
     }
 
-    return new App(this.name, this.commands.add(cmd), this.services);
+    return new App(this.name, this.commands.add(cmd));
   }
 
-  registerServices(services: S) {
-    return new App(this.name, this.commands, services);
+  loadCommandsFrom(dir: string) {
+    // It's not a consistent reference,
+    // so we don't want to suggest it's a `this` alias.
+    // eslint-disable-next-line consistent-this
+    let app: App = this;
+    let commands: { [key: string]: Command<any> } = {};
+
+    try {
+      commands = this.load(dir);
+    } catch {
+      return app;
+    }
+
+    for (const key in commands) {
+      try {
+        app = app.addCommand(commands[key]);
+      } catch (e) {
+        // We want to warn on an invalid command.
+        // @TODO(mAAdhaTTah) add to errors object & render on startup?
+        // eslint-disable-next-line no-console
+        console.error(`${key} is not a valid command.`);
+      }
+    }
+
+    return app;
+  }
+
+  private load(dir: string) {
+    // @TODO(mAAdhaTTah) harmonize usage of preset
+    require('@babel/register')({
+      only: [dir],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      babelrc: true,
+      presets: [
+        '@babel/typescript',
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              node: 'current'
+            }
+          }
+        ]
+      ],
+      plugins: ['@babel/plugin-transform-modules-commonjs']
+    });
+
+    return require(dir);
   }
 
   async run(
@@ -173,14 +102,7 @@ export default class App<S> {
       debug?: boolean;
     } = {}
   ) {
-    if (this.running) {
-      throw new Error(`${this.name} is already running. Cannot run again.`);
-    }
-
-    this.running = true;
-    this.debug = debug;
-
-    let loaded: Nullable<RC | Error> = null;
+    let rc: Maybe<RC | Error> = null;
     const result = await cosmiconfig(this.name, { loaders }).search();
 
     if (result != null) {
@@ -212,7 +134,7 @@ export default class App<S> {
             )}`;
       }
 
-      loaded = rc.decode(result.config).fold<RC | Error>(
+      rc = RC.decode(result.config).fold<RC | Error>(
         function failure(es) {
           return new Error('Errors: ' + es.map(getMessage).join('; '));
         },
@@ -222,15 +144,15 @@ export default class App<S> {
       );
     }
 
+    const { command, args } = this.commands.get(argv);
+
     const instance = render(
       <ErrorBoundary>
-        <Root
-          commands={this.commands}
-          services={this.services}
-          argv={argv}
-          cwd={cwd}
-          rc={loaded}
-        />
+        {command == null ? (
+          <Color red>Command not found for {argv.join(' ')}</Color>
+        ) : (
+          <command.View args={args} cwd={cwd} rc={rc} />
+        )}
       </ErrorBoundary>,
       {
         stdout,

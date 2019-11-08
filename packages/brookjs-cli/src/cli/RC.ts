@@ -1,12 +1,7 @@
 import * as t from 'io-ts';
 import webpack from 'webpack';
 
-export const plugin = t.type({});
-
-export type Plugin = t.TypeOf<typeof plugin>;
-
-export const rc = t.partial({
-  plugins: t.array(t.union([t.string, plugin])),
+export const RC = t.partial({
   dir: t.string,
   jest: t.exact(
     t.partial({
@@ -60,16 +55,16 @@ export const rc = t.partial({
   })
 });
 
-type RCBase = t.TypeOf<typeof rc>;
+type RCBase = t.TypeOf<typeof RC>;
 
-type WebpackBase = RCBase['webpack'];
+type WebpackBase = Required<RCBase>['webpack'];
 
 type WebpackState = {
   env: Required<webpack.Configuration>['mode'];
   cmd: 'build' | 'start';
 };
 
-type Webpack = Exclude<WebpackBase, 'modifer'> & {
+type Webpack = Omit<WebpackBase, 'modifier'> & {
   modifier?: (
     config: webpack.Configuration,
     state: WebpackState
@@ -77,5 +72,5 @@ type Webpack = Exclude<WebpackBase, 'modifer'> & {
 };
 
 export interface RC extends RCBase {
-  webpack: Webpack;
+  webpack?: Webpack;
 }

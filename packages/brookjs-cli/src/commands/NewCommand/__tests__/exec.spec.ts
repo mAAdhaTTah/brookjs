@@ -6,13 +6,14 @@ import exec from '../exec';
 const { extensions } = jestPlugin({ Kefir });
 expect.extend(extensions);
 
+jest.mock('../../../services', () => ({
+  WebpackService: {} as any,
+  glob: jest.fn()
+}))
+
 describe('NewCommand#exec', () => {
   it('should not do anything before creating', () => {
-    const services = {
-      WebpackService: {} as any,
-      glob: jest.fn()
-    };
-    expect(exec(services)).toEmitFromDelta([], sendToDelta => {
+    expect(exec).toEmitFromDelta([], sendToDelta => {
       sendToDelta(
         { type: 'DUMMY' },
         {

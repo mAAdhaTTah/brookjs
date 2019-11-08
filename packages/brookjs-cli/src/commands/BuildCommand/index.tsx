@@ -1,17 +1,16 @@
+import React from 'react';
 import { Argv } from 'yargs';
+import { useDeltas, RootJunction } from 'brookjs-silt';
 import { Command } from '../../cli';
 import exec from './exec';
 import initialState from './initialState';
 import reducer from './reducer';
 import View from './View';
-import { State, Action, Args } from './types';
+import { Args } from './types';
 
-export default class BuildCommand extends Command<
-  State,
-  Action,
-  Args,
-  typeof import('../../services')
-> {
+const BuildCommand: Command<Args> = {
+  cmd: 'build',
+  describe: 'Build the brookjs application.',
   builder(yargs: Argv): Argv {
     return yargs
       .option('env', {
@@ -22,16 +21,21 @@ export default class BuildCommand extends Command<
         describe: 'Watch the files and rebuild on changes',
         default: false
       });
-  }
-  cmd = 'build';
+  },
 
-  describe = 'Build the brookjs application.';
+  View: ({ args, rc, cwd }) => {
+  const { state, root$ } = useDeltas(
+    reducer,
+    initialState(args, { rc, cwd }),
+    [exec]
+  );
 
-  initialState = initialState;
-
-  exec = exec;
-
-  reducer = reducer;
-
-  View = View;
+  return (
+    <RootJunction root$={root$}>
+      <View {...state} />
+    </RootJunction>
+  );
 }
+};
+
+export default BuildCommand;

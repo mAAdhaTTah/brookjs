@@ -7,6 +7,9 @@ exports[`Developer runs new and accepts the defaults-.babelrc 1`] = `
     [\\"@babel/env\\", {
          modules: false
     }]
+  ],
+  \\"plugins\\": [
+    \\"@babel/plugin-proposal-class-properties\\"
   ]
 }
 "
@@ -127,6 +130,7 @@ exports[`Developer runs new and accepts the defaults-package.json 1`] = `
   \\"license\\": \\"MIT\\",
   \\"devDependencies\\": {
     \\"@babel/preset-env\\": \\"^7.0.0\\",
+    \\"@babel/plugin-proposal-class-properties\\": \\"^7.0.0\\",
     \\"@storybook/react\\": \\"^4.0.0\\",
     \\"babel-loader\\": \\"^8.0.0\\",
     \\"babel-preset-brookjs\\": \\"^1.0.0-alpha\\",

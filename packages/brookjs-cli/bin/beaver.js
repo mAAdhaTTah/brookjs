@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-
+const path = require('path');
 const { create } = require('brookjs-cli');
 
 async function main() {
-  let code;
+  const run = await create()
+    .loadCommandsFrom(path.join(process.cwd(), 'commands'))
+    .run(process.argv.slice(2));
 
-  const app = create();
-  const run = await app.run(process.argv.slice(2));
+  let code;
 
   try {
     await run.waitUntilExit();

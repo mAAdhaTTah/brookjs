@@ -2,7 +2,6 @@ import webpack from 'webpack';
 import Spinner from 'ink-spinner';
 import { Box, Color, AppContext } from 'ink';
 import React, { useEffect, useContext } from 'react';
-import { Nullable } from 'typescript-nullable';
 import { State } from './types';
 
 const Building: React.FC<{}> = () => (
@@ -32,7 +31,7 @@ const BuildError: React.FC<{ error: Error; watch: boolean }> = ({
 };
 
 const View: React.FC<State> = props => {
-  if (Nullable.isNone(props.rc)) {
+  if (props.rc == null) {
     return <Color red>RC file not loaded. Cannot build.</Color>;
   }
 

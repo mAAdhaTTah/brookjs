@@ -1,4 +1,4 @@
-export { default as App } from './App';
-export { default as Command } from './Command';
+export * from './App';
 export * from './RC';
+export { Command } from './Command'
 export * from './util';

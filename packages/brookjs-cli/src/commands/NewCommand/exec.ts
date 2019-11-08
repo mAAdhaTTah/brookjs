@@ -52,7 +52,7 @@ const selectNewProjectContext = (state: ConfiguredState) => ({
   license: state.config.license
 });
 
-const exec = ({  }: typeof import('../../services')) => (
+const exec = (
   action$: Stream<Action, never>,
   state$: Property<State, never>
 ): Observable<Action, never> =>

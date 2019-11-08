@@ -1,10 +1,9 @@
 import { ActionType } from 'typesafe-actions';
-import { Nullable } from 'typescript-nullable';
-import { RC } from '../../cli';
+import { RC, Maybe } from '../../cli';
 import * as actions from './actions';
 
 interface BaseState {
-  rc: Nullable<RC | Error>;
+  rc: Maybe<RC | Error>;
   cwd: string;
   env: string;
   coverage: boolean;
@@ -25,4 +24,7 @@ export interface ErrorState extends BaseState {
 
 export type State = RunningState | CompleteState | ErrorState;
 export type Action = ActionType<typeof actions>;
-export type Args = {};
+export type Args = {
+  coverage: boolean;
+  watch: boolean;
+};

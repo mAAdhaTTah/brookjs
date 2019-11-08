@@ -1,29 +1,55 @@
-import { Argv, Arguments } from 'yargs';
-import { Stream, Property } from 'kefir';
 import React from 'react';
-import { Nullable } from 'typescript-nullable';
+import yargs, { Argv, Arguments } from 'yargs';
+import * as t from 'io-ts';
 import { RC } from './RC';
+import { Maybe } from './util';
 
-export default abstract class Command<S, A, V, Srvcs> {
-  abstract builder(yargs: Argv): Argv;
+export const Command = t.type({
+  builder: t.Function,
+  cmd: t.string,
+  describe: t.string,
+  View: t.Function
+});
 
-  abstract cmd: string;
+type CommandBase = Omit<t.TypeOf<typeof Command>, 'builder' | 'View'>;
+type Builder<A> = (yargs: Argv<A>) => Argv<A>;
 
-  abstract describe: string;
+export interface Command<A> extends CommandBase {
+  builder: Builder<A>;
+  View: React.ComponentType<{
+    args: Arguments<A>;
+    rc: Maybe<RC | Error>;
+    cwd: string;
+  }>;
+}
 
-  abstract initialState: (
-    args: Arguments<V>,
-    extra: { rc: Nullable<RC | Error>; cwd: string }
-  ) => S;
+export class Commands {
+  private commands: Command<any>[] = [];
 
-  abstract exec: (
-    services: Srvcs
-  ) => (
-    action$: Stream<A, never>,
-    state$: Property<S, never>
-  ) => Stream<A, never>;
+  constructor(commands: Command<any>[] = []) {
+    this.commands = commands;
+  }
 
-  abstract reducer: (state: S, action: A) => S;
+  add(command: Command<any>) {
+    return new Commands([...this.commands, command]);
+  }
 
-  abstract View: React.ComponentType<S>;
+  get<A>(argv: string[]): { command: Command<A> | null; args: Arguments<A> } {
+    let running: Command<any> | null = null;
+
+    const args = this.commands
+      .reduce<Argv>(
+        (yargs: Argv, command) =>
+          yargs.command(
+            command.cmd,
+            command.describe,
+            command.builder,
+            () => (running = command)
+          ),
+        yargs
+      )
+      .parse(argv) as Arguments<A>;
+
+    return { command: running, args };
+  }
 }

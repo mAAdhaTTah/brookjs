@@ -1,13 +1,12 @@
 import { ActionType } from 'typesafe-actions';
 import webpack from 'webpack';
-import { Nullable } from 'typescript-nullable';
-import { RC } from '../../cli';
+import { RC, Maybe } from '../../cli';
 import * as actions from './actions';
 
 interface BaseState {
   env: Required<webpack.Configuration>['mode'];
   cwd: string;
-  rc: Nullable<RC | Error>;
+  rc: Maybe<RC | Error>;
   watch: boolean;
 }
 

@@ -2,6 +2,7 @@ import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
 import { errorToNull } from '../../cli';
+import { fs } from '../../services'
 import { testRun } from './actions';
 import { State, Action } from './types';
 
@@ -10,7 +11,7 @@ const getDir = (rc: State['rc']) => errorToNull(rc)?.dir ?? 'src';
 const setupTestsPath = (state: State, testExtension: string) =>
   path.join(state.cwd, getDir(state.rc), `setupTests.${testExtension}`);
 
-const exec = ({ fs }: typeof import('../../services')) => (
+const exec = (
   action$: Stream<Action, never>,
   state$: Property<State, never>
 ): Stream<Action, never> =>
