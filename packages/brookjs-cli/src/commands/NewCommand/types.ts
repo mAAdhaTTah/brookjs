@@ -1,5 +1,5 @@
-import { Nullable } from 'typescript-nullable';
 import { RunnerResult } from 'hygen';
+import { Maybe } from '../../cli';
 
 export type Level = 'notice' | 'warn' | 'error' | 'ok';
 
@@ -15,11 +15,11 @@ export type ConfiguringState = {
   cwd: string;
   configuring: Configurable;
   config: {
-    name: Nullable<string>;
-    version: Nullable<string>;
-    description: Nullable<string>;
-    dir: Nullable<string>;
-    license: Nullable<string>;
+    name: Maybe<string>;
+    version: Maybe<string>;
+    description: Maybe<string>;
+    dir: Maybe<string>;
+    license: Maybe<string>;
   };
   step: 'configure';
 };

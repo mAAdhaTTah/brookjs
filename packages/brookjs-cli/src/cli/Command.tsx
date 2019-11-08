@@ -1,8 +1,8 @@
 import React from 'react';
 import yargs, { Argv, Arguments } from 'yargs';
-import { Nullable } from 'typescript-nullable';
 import * as t from 'io-ts';
 import { RC } from './RC';
+import { Maybe } from './util';
 
 export const Command = t.type({
   builder: t.Function,
@@ -18,7 +18,7 @@ export interface Command<A> extends CommandBase {
   builder: Builder<A>;
   View: React.ComponentType<{
     args: Arguments<A>;
-    rc: Nullable<RC | Error>;
+    rc: Maybe<RC | Error>;
     cwd: string;
   }>;
 }

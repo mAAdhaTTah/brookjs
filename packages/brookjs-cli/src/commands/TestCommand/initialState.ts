@@ -1,6 +1,5 @@
-import { Nullable } from 'typescript-nullable';
 import { Arguments } from 'yargs';
-import { RC } from '../../cli';
+import { RC, Maybe } from '../../cli';
 import { State, Args } from './types';
 
 const getEnv = (env: unknown): string => {
@@ -13,7 +12,7 @@ const getEnv = (env: unknown): string => {
 
 const initialState = (
   args: Arguments<Args>,
-  { rc, cwd }: { rc: Nullable<RC | Error>; cwd: string }
+  { rc, cwd }: { rc: Maybe<RC | Error>; cwd: string }
 ): State => ({
   rc,
   cwd,

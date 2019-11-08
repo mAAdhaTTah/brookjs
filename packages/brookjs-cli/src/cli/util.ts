@@ -1,9 +1,10 @@
-import { Nullable } from 'typescript-nullable';
 import { useContext, useEffect } from 'react';
 import { AppContext } from 'ink';
 import { RC } from './RC';
 
-export const errorToNull = (e: Nullable<RC | Error>): Nullable<RC> => {
+export type Maybe<T> = T | null | undefined;
+
+export const errorToNull = (e: Maybe<RC | Error>): Maybe<RC> => {
   if (e instanceof Error) {
     return null;
   }

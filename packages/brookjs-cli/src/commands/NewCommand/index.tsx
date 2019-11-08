@@ -1,11 +1,11 @@
+import React from 'react';
+import { useDeltas, RootJunction } from 'brookjs-silt';
 import { Command } from '../../cli';
 import exec from './exec';
 import View from './View';
 import { Args } from './types';
-import { useDeltas, RootJunction } from 'brookjs-silt';
 import reducer from './reducer';
 import initialState from './initialState';
-import React from 'react';
 
 const NewCommand: Command<Args> = {
   cmd: 'new [name]',

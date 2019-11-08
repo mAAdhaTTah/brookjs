@@ -3,7 +3,6 @@
 import path from 'path';
 import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
-import { Nullable } from 'typescript-nullable';
 import { errorToNull } from '../../cli';
 import { State } from './types';
 
@@ -25,10 +24,7 @@ const selectEnvPlugins = (state: State) => {
 };
 
 const selectAppPath = (state: State): string =>
-  path.join(
-    state.cwd,
-    Nullable.maybe('src', rc => rc.dir || 'src', errorToNull(state.rc))
-  );
+  path.join(state.cwd, errorToNull(state.rc)?.dir ?? 'src');
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
   let entry = errorToNull(state.rc)?.webpack?.entry ?? 'index.js';
@@ -54,22 +50,7 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
 };
 
 const selectFilename = (state: State): string => {
-  // @TODO(James) fix this horrible code
-  let filename = Nullable.maybe(
-    '[name].js',
-    rc =>
-      Nullable.maybe(
-        '[name].js',
-        webpack =>
-          Nullable.maybe(
-            '[name].js',
-            output => output.filename,
-            webpack.output
-          ),
-        rc.webpack
-      ),
-    errorToNull(state.rc)
-  );
+  let filename = errorToNull(state.rc)?.webpack?.output?.filename ?? '[name].js';
 
   if (typeof filename === 'function') {
     filename = filename(state);
@@ -82,13 +63,11 @@ const selectFilename = (state: State): string => {
   return filename;
 };
 
-const selectPath = (state: State) => {
-  const webpack = Nullable.andThen(rc => rc.webpack, errorToNull(state.rc));
-  const output = Nullable.andThen(webpack => webpack.output, webpack);
-  const dist = Nullable.andThen(output => output.path, output);
-
-  return path.join(state.cwd, Nullable.withDefault('dist/', dist));
-};
+const selectPath = (state: State) =>
+  path.join(
+    state.cwd,
+    errorToNull(state.rc)?.webpack?.output?.path ?? 'dist/'
+  );
 
 const selectOutput = (state: State): webpack.Configuration['output'] => ({
   path: selectPath(state),
@@ -124,12 +103,6 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     plugins: [...selectDefaultPlugins(), ...selectEnvPlugins(state)]
   };
 
-  const webpack = Nullable.andThen(rc => rc.webpack, errorToNull(state.rc));
-  const modifier = Nullable.andThen(webpack => webpack.modifier, webpack);
-
-  if (Nullable.isSome(modifier)) {
-    return modifier(config, { env: state.env, cmd: 'build' });
-  }
-
-  return config;
+  const modifier = errorToNull(state.rc)?.webpack?.modifier;
+  return modifier?.(config, { env: state.env, cmd: 'build' }) ?? config;
 };

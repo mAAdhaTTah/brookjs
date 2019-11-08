@@ -1,5 +1,4 @@
 import Kefir, { Stream, Property } from 'kefir';
-import { Nullable } from 'typescript-nullable';
 import { WebpackService } from '../../services';
 import { webpackBuild } from './actions';
 import { selectWebpackConfig } from './selectors';
@@ -11,7 +10,7 @@ const exec = (
 ): Stream<Action, never> =>
   state$
     .take(1)
-    .filter(state => Nullable.isSome(state.rc))
+    .filter(state => state.rc != null)
     .flatMap(state =>
       Kefir.concat<Action, never>([
         Kefir.constant(webpackBuild.request()),

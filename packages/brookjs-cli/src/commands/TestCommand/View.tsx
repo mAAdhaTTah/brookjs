@@ -1,6 +1,5 @@
 import { Box, Color } from 'ink';
 import React from 'react';
-import { Nullable } from 'typescript-nullable';
 import { useExit } from '../../cli';
 import { State, CompleteState, ErrorState } from './types';
 
@@ -24,7 +23,7 @@ const isDone = (state: State): state is CompleteState | ErrorState =>
   state.status === 'complete';
 
 const View: React.FC<State> = props => {
-  if (Nullable.isNone(props.rc)) {
+  if (props.rc == null) {
     return <Color red>RC file not loaded. Cannot build.</Color>;
   }
 

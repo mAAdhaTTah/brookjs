@@ -5,7 +5,6 @@ import TextInput from 'ink-text-input';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { Observable } from 'kefir';
-import { Nullable } from 'typescript-nullable';
 import { useExit } from '../../cli';
 import {
   State,
@@ -81,7 +80,7 @@ const ConfigureStep: React.FC<
       <Box>
         {questions[configuring].text}:{' '}
         <TextInput
-          value={Nullable.withDefault('', config[configuring])}
+          value={config[configuring] ?? ''}
           placeholder={questions[configuring].placeholder}
           focus={true}
           onChange={onChange}
@@ -193,7 +192,7 @@ const CompleteStep: React.FC<{ name: string }> = ({ name }) => {
 };
 
 const View: React.FC<Props> = props => {
-  if (Nullable.isNone(props.config.name)) {
+  if (props.config.name == null) {
     return (
       <Color red>
         Called <Color yellow>beaver new</Color> with no name.

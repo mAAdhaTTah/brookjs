@@ -1,12 +1,12 @@
 import React from 'react';
 import cosmiconfig from 'cosmiconfig';
 import { render, Color } from 'ink';
-import { Nullable } from 'typescript-nullable';
 import { ValidationError, getFunctionName, Context } from 'io-ts';
 import esm from 'esm';
 import { RC } from './RC';
 import ErrorBoundary from './ErrorBoundary';
 import { Commands, Command } from './Command';
+import { Maybe } from './util';
 
 const loadEsm = esm(module);
 
@@ -55,6 +55,9 @@ export class App {
       try {
         app = app.addCommand(commands[key]);
       } catch (e) {
+        // We want to warn on an invalid command.
+        // @TODO(mAAdhaTTah) add to errors object & render on startup?
+        // eslint-disable-next-line no-console
         console.error(`${key} is not a valid command.`);
       }
     }
@@ -99,7 +102,7 @@ export class App {
       debug?: boolean;
     } = {}
   ) {
-    let rc: Nullable<RC | Error> = null;
+    let rc: Maybe<RC | Error> = null;
     const result = await cosmiconfig(this.name, { loaders }).search();
 
     if (result != null) {

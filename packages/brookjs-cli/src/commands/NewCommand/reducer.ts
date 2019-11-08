@@ -1,4 +1,3 @@
-import { Nullable } from 'typescript-nullable';
 import {
   State,
   Action,
@@ -16,7 +15,7 @@ const applyDefaults = (
   >(
     (acc, key) => ({
       ...acc,
-      [key]: Nullable.withDefault(acc[key], config[key])
+      [key]: config[key] ?? acc[key]
     }),
     defaultSteps
   );
