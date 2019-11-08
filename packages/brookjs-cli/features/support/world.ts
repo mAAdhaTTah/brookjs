@@ -23,7 +23,6 @@ declare module 'cucumber' {
 
     output: {
       stdout: string;
-      stderr: string;
       closed: boolean;
       code: number | null;
     };
@@ -81,12 +80,10 @@ class CliWorld implements World {
 
   output: {
     stdout: string;
-    stderr: string;
     closed: boolean;
     code: number | null;
   } = {
     stdout: '',
-    stderr: '',
     closed: false,
     code: null
   };
@@ -140,7 +137,6 @@ class CliWorld implements World {
   spawn(bin: string, command: string) {
     this.output = {
       stdout: '',
-      stderr: '',
       closed: false,
       code: null
     };
