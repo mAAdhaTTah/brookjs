@@ -31,11 +31,7 @@ const selectAppPath = (state: State): string =>
   );
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
-  let entry = Nullable.maybe(
-    'index.js',
-    rc => Nullable.maybe('index.js', webpack => webpack.entry, rc.webpack),
-    errorToNull(state.rc)
-  );
+  let entry = errorToNull(state.rc)?.webpack?.entry ?? 'index.js';
 
   if (typeof entry === 'string') {
     return path.join(selectAppPath(state), entry);
