@@ -25,6 +25,7 @@
     "clean": "rimraf dist coverage",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "storybook": "start-storybook -p 6006",
+    "format": "prettier --write \"{src,.storybook,stories}/**/*.{js,ts,tsx}\"",
     "prepublishOnly": "yarn clean && yarn build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",

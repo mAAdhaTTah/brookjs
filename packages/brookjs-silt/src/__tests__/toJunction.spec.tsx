@@ -138,13 +138,15 @@ describe('toJunction', () => {
     it('should call combine with correct arguments and use returned stream', () => {
       const source$ = stream();
       const combine = jest.fn(() => source$);
-      const Button = toJunction(events, combine)(
-        ({ onButtonClick, text, enabled }) =>
-          enabled ? (
-            <button onClick={onButtonClick}>{text}</button>
-          ) : (
-            <span>nothing to click</span>
-          )
+      const Button = toJunction(
+        events,
+        combine
+      )(({ onButtonClick, text, enabled }) =>
+        enabled ? (
+          <button onClick={onButtonClick}>{text}</button>
+        ) : (
+          <span>nothing to click</span>
+        )
       );
 
       const ProvidedButton = ({ root$, text, enabled }) => (
@@ -172,13 +174,15 @@ describe('toJunction', () => {
 
     it('should call combine with updated props', () => {
       const combine = jest.fn(() => Kefir.never());
-      const Button = toJunction(events, combine)(
-        ({ onButtonClick, text, enabled }) =>
-          enabled ? (
-            <button onClick={onButtonClick}>{text}</button>
-          ) : (
-            <span>nothing to click</span>
-          )
+      const Button = toJunction(
+        events,
+        combine
+      )(({ onButtonClick, text, enabled }) =>
+        enabled ? (
+          <button onClick={onButtonClick}>{text}</button>
+        ) : (
+          <span>nothing to click</span>
+        )
       );
 
       const ProvidedButton = ({ root$, text, enabled }) => (

@@ -34,7 +34,10 @@ describe('jestPlugin', () => {
       };
 
       expect(delta(services)).toEmitFromDelta(
-        [[100, value({ action, state })], [200, value({ action, state })]],
+        [
+          [100, value({ action, state })],
+          [200, value({ action, state })]
+        ],
         (send, tick) => {
           // One tick
           send(action, state);
@@ -77,7 +80,10 @@ describe('jestPlugin', () => {
 
     it('should emit event from Component', () => {
       expect(<AsJunction />).toEmitFromJunction(
-        [[0, value({ type: 'CLICK' })], [10, value({ type: 'CLICK' })]],
+        [
+          [0, value({ type: 'CLICK' })],
+          [10, value({ type: 'CLICK' })]
+        ],
         ({ container }, tick) => {
           fireEvent.click(container.firstChild);
           tick(10);

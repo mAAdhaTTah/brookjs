@@ -24,18 +24,18 @@ const BuildCommand: Command<Args> = {
   },
 
   View: ({ args, rc, cwd }) => {
-  const { state, root$ } = useDeltas(
-    reducer,
-    initialState(args, { rc, cwd }),
-    [exec]
-  );
+    const { state, root$ } = useDeltas(
+      reducer,
+      initialState(args, { rc, cwd }),
+      [exec]
+    );
 
-  return (
-    <RootJunction root$={root$}>
-      <View {...state} />
-    </RootJunction>
-  );
-}
+    return (
+      <RootJunction root$={root$}>
+        <View {...state} />
+      </RootJunction>
+    );
+  }
 };
 
 export default BuildCommand;
