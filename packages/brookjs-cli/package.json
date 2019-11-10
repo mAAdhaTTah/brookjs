@@ -3,6 +3,7 @@
   "version": "1.0.0-alpha.25",
   "description": "command line tool for building brookjs applications",
   "main": "dist/brookjs-cli.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "beaver": "./bin/beaver.js"
   },
