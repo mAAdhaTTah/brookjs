@@ -16,6 +16,7 @@
     "dev": "beaver dev tdd",
     "clean": "rimraf dist coverage",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
     "prepublishOnly": "yarn clean && yarn build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",

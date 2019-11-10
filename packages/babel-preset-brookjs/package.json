@@ -5,7 +5,8 @@
   "main": "index.js",
   "sideEffects": false,
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "format": "prettier --write index.js",
+    "test": "prettier --check index.js"
   },
   "keywords": [
     "babel",
