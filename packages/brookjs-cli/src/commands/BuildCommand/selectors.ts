@@ -50,7 +50,8 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
 };
 
 const selectFilename = (state: State): string => {
-  let filename = errorToNull(state.rc)?.webpack?.output?.filename ?? '[name].js';
+  let filename =
+    errorToNull(state.rc)?.webpack?.output?.filename ?? '[name].js';
 
   if (typeof filename === 'function') {
     filename = filename(state);
@@ -64,10 +65,7 @@ const selectFilename = (state: State): string => {
 };
 
 const selectPath = (state: State) =>
-  path.join(
-    state.cwd,
-    errorToNull(state.rc)?.webpack?.output?.path ?? 'dist/'
-  );
+  path.join(state.cwd, errorToNull(state.rc)?.webpack?.output?.path ?? 'dist/');
 
 const selectOutput = (state: State): webpack.Configuration['output'] => ({
   path: selectPath(state),

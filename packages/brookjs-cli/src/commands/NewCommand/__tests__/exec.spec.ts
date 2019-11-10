@@ -9,7 +9,7 @@ expect.extend(extensions);
 jest.mock('../../../services', () => ({
   WebpackService: {} as any,
   glob: jest.fn()
-}))
+}));
 
 describe('NewCommand#exec', () => {
   it('should not do anything before creating', () => {

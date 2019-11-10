@@ -2,7 +2,7 @@ import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
 import { errorToNull } from '../../cli';
-import { fs } from '../../services'
+import { fs } from '../../services';
 import { testRun } from './actions';
 import { State, Action } from './types';
 

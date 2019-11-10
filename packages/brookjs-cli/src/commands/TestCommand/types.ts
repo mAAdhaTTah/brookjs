@@ -11,15 +11,15 @@ interface BaseState {
 }
 
 export interface RunningState extends BaseState {
-  status: 'running'
+  status: 'running';
 }
 
 export interface CompleteState extends BaseState {
-  status: 'complete'
+  status: 'complete';
 }
 
 export interface ErrorState extends BaseState {
-  status: 'error'
+  status: 'error';
 }
 
 export type State = RunningState | CompleteState | ErrorState;

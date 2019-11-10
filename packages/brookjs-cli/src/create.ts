@@ -1,4 +1,4 @@
-import { App} from './cli';
+import { App } from './cli';
 import { BuildCommand, NewCommand, TestCommand } from './commands';
 
 const create = () =>

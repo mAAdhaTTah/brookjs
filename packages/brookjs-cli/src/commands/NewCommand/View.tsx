@@ -69,9 +69,10 @@ const questions: { [key in Configurable]: Question } = {
   }
 };
 
-const ConfigureStep: React.FC<
-  ConfiguringState & { onChange: (value: string) => void; onSubmit: () => void }
-> = ({ configuring, config, onChange, onSubmit }) => {
+const ConfigureStep: React.FC<ConfiguringState & {
+  onChange: (value: string) => void;
+  onSubmit: () => void;
+}> = ({ configuring, config, onChange, onSubmit }) => {
   useOnSubmit(onSubmit);
 
   return (
@@ -90,9 +91,9 @@ const ConfigureStep: React.FC<
   );
 };
 
-const ConfirmStep: React.FC<
-  ConfiguredState & { onConfirm: (value: boolean) => void }
-> = ({ config: { name, version, description, dir, license }, onConfirm }) => (
+const ConfirmStep: React.FC<ConfiguredState & {
+  onConfirm: (value: boolean) => void;
+}> = ({ config: { name, version, description, dir, license }, onConfirm }) => (
   <Box flexDirection="column">
     <Box>Configuration:</Box>
     <Box>
