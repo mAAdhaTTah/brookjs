@@ -1,15 +1,12 @@
 import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
-import { errorToNull } from '../../cli';
-import { fs } from '../../services';
+import { errorToNull, RC, Maybe } from '../../cli';
+import * as project from '../../project';
 import { testRun } from './actions';
 import { State, Action } from './types';
 
-const getDir = (rc: State['rc']) => errorToNull(rc)?.dir ?? 'src';
-
-const setupTestsPath = (state: State, testExtension: string) =>
-  path.join(state.cwd, getDir(state.rc), `setupTests.${testExtension}`);
+const getDir = (rc: Maybe<RC | Error>) => errorToNull(rc)?.dir ?? 'src';
 
 const exec = (
   action$: Stream<Action, never>,
@@ -23,19 +20,14 @@ const exec = (
         coverage: Kefir.constant(state.coverage),
         watch: Kefir.constant(state.watch),
         jest: Kefir.constant(errorToNull(state.rc)?.jest ?? {}),
-        setupTests: fs
-          // If tsconfig.json exists, we're going to assume typescript.
-          .access(path.join(state.cwd, 'tsconfig.json'))
-          .map(() => 'ts')
-          .flatMapErrors(() => Kefir.constant('js'))
+        setupTests: project
+          .extension$(state.cwd)
           .flatMap(testExtension =>
-            fs
-              // If setupTests.{ts,js} exists in the src dir, then we'll use it.
-              .access(setupTestsPath(state, testExtension))
-              .map(() => [
-                `<rootDir>/${getDir(state.rc)}/setupTests.${testExtension}`
-              ])
-              .flatMapErrors(() => Kefir.constant([]))
+            project.setupTestsConfig$(
+              state.cwd,
+              getDir(state.rc),
+              testExtension
+            )
           )
       })
     )
