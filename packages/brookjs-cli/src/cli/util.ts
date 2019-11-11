@@ -1,10 +1,9 @@
 import { useContext, useEffect } from 'react';
 import { AppContext } from 'ink';
-import { RC } from './RC';
 
 export type Maybe<T> = T | null | undefined;
 
-export const errorToNull = (e: Maybe<RC | Error>): Maybe<RC> => {
+export const errorToNull = <T>(e: Maybe<T | Error>): Maybe<T> => {
   if (e instanceof Error) {
     return null;
   }
