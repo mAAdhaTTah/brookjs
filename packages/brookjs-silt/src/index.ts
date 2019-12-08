@@ -1,6 +1,6 @@
 import RootJunction from './RootJunction';
 
 export * from './toJunction';
-export * from './useDeltas';
+export { default as useDeltas } from './useDeltas';
 export * from './withRef';
 export { RootJunction };
