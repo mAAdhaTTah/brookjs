@@ -1,6 +1,6 @@
 {
   "name": "brookjs-cli",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.27",
   "description": "command line tool for building brookjs applications",
   "main": "dist/brookjs-cli.js",
   "types": "dist/index.d.ts",
