@@ -52,7 +52,7 @@
     "inquirer": "^7.0.0",
     "io-ts": "^1.6.4",
     "jest": "^24.0.0",
-    "jest-environment-jsdom-fourteen": "^0.1.0",
+    "jest-environment-jsdom-fourteen": "^1.0.1",
     "kefir": "^3.8.0",
     "react": "^16.8.1",
     "react-app-polyfill": "^1.0.4",
