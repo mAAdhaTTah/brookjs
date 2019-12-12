@@ -37,7 +37,7 @@
     "babel-loader": "^8.0.4",
     "cli-spinners": "^2.0.0",
     "cucumber": "^6.0.3",
-    "docz": "^1.0.0",
+    "docz": "^2.2.0",
     "eslint": "^5.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-valtech": "^1.0.0",
