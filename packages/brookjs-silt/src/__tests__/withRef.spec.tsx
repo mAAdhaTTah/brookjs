@@ -23,6 +23,16 @@ const Instance = ({ text, aggregated$ }) => (
 );
 
 describe('withRef$', () => {
+  it('should warn if rendered outside of provider', () => {
+    const mock = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<Button />);
+
+    expect(mock).toHaveBeenCalledTimes(1);
+
+    mock.mockRestore();
+  });
+
   it('should emit value from ref$', () => {
     const aggregated$ = Kefir.pool();
     const wrapper = render(
@@ -102,5 +112,29 @@ describe('withRef$', () => {
         );
       }
     );
+  });
+
+  it('should work with components that can take a ref directly', () => {
+    const aggregated$ = Kefir.pool();
+    const Button = withRef$(refback)('button');
+    const Instance = ({ text, aggregated$ }) => (
+      <Provider value={aggregated$}>
+        <Button text={text} />
+      </Provider>
+    );
+
+    const wrapper = render(
+      <Instance text={'Click me!'} aggregated$={aggregated$} />
+    );
+
+    expect(aggregated$).toEmit([
+      value(
+        {
+          ref$: wrapper.container.querySelector('button'),
+          props$: { text: 'Click me!' }
+        },
+        { current: true }
+      )
+    ]);
   });
 });

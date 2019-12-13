@@ -113,9 +113,7 @@ describe('eddy', () => {
           : state
     };
 
-    type State = { pings: number; pongs: number };
-
-    const reducer = combineReducers<State, Action>(reducerMap);
+    const reducer = combineReducers(reducerMap);
     let store: Store;
 
     beforeEach(() => {

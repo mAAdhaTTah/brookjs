@@ -117,7 +117,7 @@ export interface LiftedLoopReducer<S, A extends Action> {
 export const combineReducers = <S, A extends Action>(
   reducerMap: ReducerMapObject<S, A>
 ): LiftedLoopReducer<S, A> => {
-  const reducerKeys = Object.keys(reducerMap);
+  const reducerKeys = Object.keys(reducerMap) as (keyof S)[];
 
   return (state: S = {} as S, action: A): Result<S, A> => {
     let hasChanged = false;
@@ -126,18 +126,18 @@ export const combineReducers = <S, A extends Action>(
 
     for (let i = 0; i < reducerKeys.length; i++) {
       const key = reducerKeys[i];
-      const reducer = (reducerMap as any)[key];
-      const previousStateForKey = (state as any)[key];
+      const reducer = reducerMap[key];
+      const previousStateForKey = state[key];
       const [nextStateForKey, cmd] = normalizeResults(
         reducer(previousStateForKey, action)
       );
 
       if (cmd !== NONE) {
-        cmds.push(cmd);
+        cmds.push(...(Array.isArray(cmd) ? cmd : [cmd]));
       }
 
       hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
-      (nextState as any)[key] = nextStateForKey;
+      nextState[key] = nextStateForKey;
     }
 
     return loop(hasChanged ? nextState : state, cmds);
