@@ -117,4 +117,45 @@ describe('useDeltas', () => {
       counter: 1
     });
   });
+
+  it('should dispatch sync action from delta', () => {
+    const delta = jest.fn(() => Kefir.constant({ type: 'INCREMENT' }));
+    const { result } = renderHook(() =>
+      useDeltas(reducer, initialState, [delta])
+    );
+
+    expect(result.current.state).toEqual({
+      counter: 1
+    });
+  });
+
+  it('should dispatch action into delta if state does not change', () => {
+    const delta = jest.fn(() => Kefir.never());
+    const { result } = renderHook(() =>
+      useDeltas(reducer, initialState, [delta])
+    );
+
+    const [action$, state$] = delta.mock.calls[0];
+
+    expect(Kefir.zip([action$, state$.sampledBy(action$)])).toEmit(
+      [
+        value([{ type: 'RANDOM' }, { counter: 0 }]),
+        value([{ type: 'INCREMENT' }, { counter: 1 }]),
+        value([{ type: 'SOMETHING_ELSE' }, { counter: 1 }])
+      ],
+      () => {
+        act(() => {
+          result.current.dispatch({ type: 'RANDOM' });
+        });
+
+        act(() => {
+          result.current.dispatch({ type: 'INCREMENT' });
+        });
+
+        act(() => {
+          result.current.dispatch({ type: 'SOMETHING_ELSE' });
+        });
+      }
+    );
+  });
 });
