@@ -26,8 +26,18 @@ describe('toJunction', () => {
     </Provider>
   );
 
-  const clickButton = ({ container }) =>
-    fireEvent.click(container.querySelector('button'));
+  const clickButton = ({ container }: { container: HTMLElement }) =>
+    fireEvent.click(container.querySelector('button')!);
+
+  it('should warn if rendered outside of provider', () => {
+    const mock = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<Button />);
+
+    expect(mock).toHaveBeenCalledTimes(1);
+
+    mock.mockRestore();
+  });
 
   describe('events', () => {
     it('should render normally', () => {

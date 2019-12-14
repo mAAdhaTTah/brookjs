@@ -49,7 +49,7 @@ export type Combiner<E extends EventConfig, P extends ProvidedProps<E>> = (
 export function toJunction<E extends EventConfig>(
   events: E
 ): <P extends ProvidedProps<E>>(
-  WrappedComponent: React.ComponentType<P>
+  WrappedComponent: React.ElementType<P>
 ) => React.ComponentType<WithProps<E, P>>;
 export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
   events: E,

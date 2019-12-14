@@ -12,6 +12,16 @@ import {
 import Kefir, { Observable } from 'kefir';
 import { Delta } from 'brookjs-types';
 
+const useSingleton = <T>(creator: () => T): T => {
+  const ref = useRef<T | null>(null);
+
+  if (ref.current == null) {
+    ref.current = creator();
+  }
+
+  return ref.current;
+};
+
 // Reuse this array to avoid React triggering rerenders.
 const defaultDeltas: any[] = [];
 
@@ -28,8 +38,8 @@ const useDeltas = <R extends Reducer<any, any>>(
 ) => {
   const [state, _dispatch] = useReducer(reducer, initialState);
 
-  const actions$ = useRef(createAction$<R>()).current;
-  const state$ = useRef(createState$<R>()).current;
+  const actions$ = useSingleton(() => createAction$<R>());
+  const state$ = useSingleton(() => createState$<R>());
   const lastAction = useRef<ReducerAction<R> | null>(null);
 
   const dispatch = useCallback(

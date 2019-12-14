@@ -12,7 +12,7 @@ const isRefForwarding = <T, P>(
   typeof x === 'function' && x.length === 2;
 
 const wrap = <E, P>(
-  WrappedComponent: React.ComponentType<P> | React.RefForwardingComponent<E, P>
+  WrappedComponent: React.ElementType<P> | React.RefForwardingComponent<E, P>
 ) => {
   if (isRefForwarding(WrappedComponent)) {
     return forwardRef(WrappedComponent);
@@ -27,12 +27,15 @@ export type Refback<P, E extends Element> = (
 ) => Observable<Action, Error>;
 
 export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
-  WrappedComponent: React.RefForwardingComponent<E, P>
+  WrappedComponent: React.RefForwardingComponent<E, P> | React.ElementType<P>
 ) =>
   class WithRef$ extends React.Component<P> {
-    static displayName = wrapDisplayName(WrappedComponent, 'WithRef$');
+    static displayName =
+      typeof WrappedComponent !== 'string'
+        ? wrapDisplayName(WrappedComponent, 'WithRef$')
+        : `WithRef(${WrappedComponent})`;
 
-    static Target = wrap(WrappedComponent);
+    static Target: any = wrap(WrappedComponent);
 
     props$ = new Kefir.Stream<P, never>()
       .toProperty(() => this.props)
