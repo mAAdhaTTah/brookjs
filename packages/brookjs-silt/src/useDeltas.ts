@@ -1,13 +1,34 @@
-import {
-  Reducer,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import Kefir, { Observable, Property, Stream } from 'kefir';
+import { Action, Reducer } from 'redux';
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
+import Kefir, { Observable, Property } from 'kefir';
+import { upgradeReducer, EddyReducer } from 'brookjs';
 import { Delta } from 'brookjs-types';
+
+class Queue<T> extends Kefir.Stream<T, never> {
+  private draining = false;
+  private list: T[] = [];
+
+  emit = (value: T) => {
+    this.list.push(value);
+
+    if (!this.draining) {
+      this.drain();
+    }
+  };
+
+  private drain() {
+    this.draining = true;
+
+    while (this.list.length) {
+      (this as any)._dispatcher.dispatch({
+        type: 'value',
+        value: this.list.shift()
+      });
+    }
+
+    this.draining = false;
+  }
+}
 
 const useSingleton = <T>(creator: () => T): T => {
   const ref = useRef<T | null>(null);
@@ -35,14 +56,14 @@ const useSubscribe = <V>(
 // Reuse this array to avoid React triggering rerenders.
 const defaultDeltas: any[] = [];
 
-const useDeltas = <S, A>(
-  reducer: Reducer<S, A>,
+const useDeltas = <S, A extends Action<string>>(
+  reducer: Reducer<S, A> | EddyReducer<S, A>,
   initialState: S,
   deltas: Delta<A, S>[] = defaultDeltas
 ) => {
-  const action$: Stream<A, never> = useSingleton(() => new Kefir.Stream());
+  const action$: Queue<A> = useSingleton(() => new Queue());
   const state$: Property<S, never> = useMemo(
-    () => action$.scan(reducer, initialState),
+    () => action$.scan(upgradeReducer(reducer, action$.emit), initialState),
     [action$, reducer]
   );
   const [state, setState] = useState(initialState);
@@ -53,21 +74,15 @@ const useDeltas = <S, A>(
     () => Kefir.merge(deltas.map(delta => delta(action$, state$))),
     [...deltas, action$, state$]
   );
-  const dispatch = useCallback(
-    (action: A) => {
-      (action$ as any)._emitValue(action);
-    },
+
+  useSubscribe(delta$, action$.emit);
+
+  const root$ = useCallback(
+    (root$: Observable<A, Error>) => root$.observe(action$.emit),
     [action$]
   );
 
-  useSubscribe(delta$, dispatch);
-
-  const root$ = useCallback(
-    (root$: Observable<A, Error>) => root$.observe(dispatch),
-    [dispatch]
-  );
-
-  return { state, root$, dispatch };
+  return { state, root$, dispatch: action$.emit };
 };
 
 export default useDeltas;

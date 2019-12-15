@@ -10,15 +10,15 @@ import {
 const $$loop = Symbol('@brookjs/loop');
 const NONE = Symbol('@brookjs/none');
 
-type Dispatchable<A extends Action> = A | typeof NONE;
-type ResultRight<A extends Action> = Dispatchable<A> | Dispatchable<A>[];
-type Result<S, A extends Action> = [S, ResultRight<A>] & {
+export type Dispatchable<A extends Action> = A | typeof NONE;
+export type ResultRight<A extends Action> = Dispatchable<A> | Dispatchable<A>[];
+export type Result<L, A extends Action> = [L, ResultRight<A>] & {
   [$$loop]: true;
 };
 
-export interface EddyReducer<S, A extends Action> {
-  (state: S | undefined, action: A): S | Result<S, A>;
-}
+export type EddyReducer<S, A extends Action> =
+  | ((state: S | undefined, action: A) => S | Result<S, A>)
+  | ((state: S, action: A) => S | Result<S, A>);
 
 const isResult = <S, A extends Action>(results: any): results is Result<S, A> =>
   results[$$loop] === true;
@@ -37,6 +37,36 @@ const normalizeResults = <S, A extends Action>(
   results: S | Result<S, A>
 ): Result<S, A> => (isResult(results) ? results : (loop(results, NONE) as any));
 
+type HandleCmd<A extends Action> = (cmd: A) => void;
+
+const iterateCmd = <A extends Action>(
+  cmd: ResultRight<A>,
+  handleCmd: HandleCmd<A>
+) => {
+  if (cmd !== loop.NONE) {
+    if (Array.isArray(cmd)) {
+      cmd.forEach(c => iterateCmd(c, handleCmd));
+    } else {
+      handleCmd(cmd);
+    }
+  }
+};
+
+export const upgradeReducer = <
+  L,
+  A extends Action,
+  R extends (...args: any[]) => L | Result<L, A>
+>(
+  reducer: R,
+  handleCmd: HandleCmd<A>
+): ((...args: Parameters<R>) => L) => (...args) => {
+  const [nextState, cmd] = normalizeResults(reducer(...args));
+
+  iterateCmd(cmd, handleCmd);
+
+  return nextState;
+};
+
 export const eddy = () => (createStore: StoreCreator) => <
   S extends object,
   A extends Action,
@@ -48,29 +78,18 @@ export const eddy = () => (createStore: StoreCreator) => <
   enhancer?: StoreEnhancer<Ext, StateExt>
 ): Store<S & StateExt, A> & Ext => {
   let queue: ResultRight<A>[] = [];
-
-  const upgradeReducer = (reducer: Reducer<S, A> | EddyReducer<S, A>) => (
-    state: S | undefined,
-    action: A
-  ) => {
-    const [nextState, cmd] = normalizeResults(reducer(state, action)) as [
-      S,
-      ResultRight<A>
-    ];
-
-    if (cmd !== NONE) {
-      queue.push(cmd);
-    }
-
-    return nextState;
-  };
+  const handleCmd = (cmd: A) => queue.push(cmd);
 
   if (typeof state === 'function') {
     enhancer = state as StoreEnhancer<Ext, StateExt>;
     state = undefined;
   }
 
-  const store = createStore(upgradeReducer(reducer), state, enhancer);
+  const store = createStore(
+    upgradeReducer(reducer, handleCmd),
+    state,
+    enhancer
+  );
 
   const runCommands = (run: ResultRight<A>[]) => {
     for (const cmd of run) {
@@ -97,7 +116,7 @@ export const eddy = () => (createStore: StoreCreator) => <
   };
 
   const replaceReducer = (reducer: Reducer<S, A> | EddyReducer<S, A>) =>
-    store.replaceReducer(upgradeReducer(reducer));
+    store.replaceReducer(upgradeReducer(reducer, handleCmd));
 
   return {
     ...store,

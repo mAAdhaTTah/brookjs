@@ -37,7 +37,7 @@
     "@storybook/react": "^5.0.0",
     "@storybook/theming": "^5.0.0",
     "brookjs-silt": "^1.0.0-alpha.27",
-    "jest-kefir": "^1.0.0",
+    "jest-kefir": "^2.0.0",
     "kefir-test-utils": "^1.0.0",
     "lolex": "^5.1.1",
     "polished": "^3.2.0",
