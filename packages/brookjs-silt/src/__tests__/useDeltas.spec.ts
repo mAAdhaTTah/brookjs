@@ -1,6 +1,8 @@
 /* eslint-env jest */
 import Kefir from 'kefir';
 import { jestPlugin } from 'brookjs-desalinate';
+import { ofType } from 'brookjs-flow';
+import { loop } from 'brookjs';
 import { renderHook, act } from '@testing-library/react-hooks';
 import useDeltas from '../useDeltas';
 
@@ -157,5 +159,83 @@ describe('useDeltas', () => {
         });
       }
     );
+  });
+
+  it('should dispatch actions from eddy reducer', () => {
+    const initialState = {
+      actions: []
+    };
+    const eddyReducer = (state, action) => {
+      switch (action.type) {
+        case 'INCREMENT':
+          return loop(
+            { ...state, actions: [...state.actions, action.type] },
+            { type: 'DOUBLE' }
+          );
+        default:
+          return { ...state, actions: [...state.actions, action.type] };
+      }
+    };
+    const { result } = renderHook(() => useDeltas(eddyReducer, initialState));
+
+    act(() => {
+      result.current.dispatch({ type: 'INCREMENT' });
+    });
+
+    act(() => {
+      result.current.dispatch({ type: 'INCREMENT' });
+    });
+
+    expect(result.current.state).toEqual({
+      actions: ['INCREMENT', 'DOUBLE', 'INCREMENT', 'DOUBLE']
+    });
+  });
+
+  it('should dispatch actions from eddy & delta in correct order', () => {
+    const initialState = {
+      actions: []
+    };
+    const eddyReducer = (state, action) => {
+      switch (action.type) {
+        case 'INCREMENT':
+          return loop(
+            { ...state, actions: [...state.actions, action.type] },
+            { type: 'DOUBLE' }
+          );
+        case 'DOUBLE':
+          return loop(
+            { ...state, actions: [...state.actions, action.type] },
+            { type: 'SQR_ROOT' }
+          );
+        default:
+          return { ...state, actions: [...state.actions, action.type] };
+      }
+    };
+    const delta = action$ =>
+      action$.thru(ofType('SQR_ROOT')).map(() => ({ type: 'THIRD' }));
+    const { result } = renderHook(() =>
+      useDeltas(eddyReducer, initialState, [delta])
+    );
+
+    act(() => {
+      result.current.dispatch({ type: 'INCREMENT' });
+    });
+
+    act(() => {
+      result.current.dispatch({ type: 'INCREMENT' });
+    });
+
+    expect(result.current.state).toEqual({
+      actions: [
+        'INCREMENT',
+        'DOUBLE',
+        'SQR_ROOT',
+        'THIRD',
+        'INCREMENT',
+        'DOUBLE',
+        'SQR_ROOT',
+        'THIRD'
+      ]
+    });
   });
 });

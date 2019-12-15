@@ -27,6 +27,7 @@
     "react": "^16.8.0"
   },
   "dependencies": {
+    "brookjs": "^1.0.0-alpha.26",
     "brookjs-types": "^1.0.0-alpha.26",
     "recompose": "^0.30.0"
   },
