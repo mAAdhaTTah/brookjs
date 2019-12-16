@@ -10,8 +10,8 @@ declare namespace jest {
         clock: import('lolex').Clock
       ) => void,
       opts?: { timeLimit?: number }
-    );
-    toEmitFromJunction(
+    ): R;
+    toEmitFromJunction<V, E>(
       expect: import('kefir-test-utils').EventWithTime<V, E>[],
       cb?: (
         api: import('@testing-library/react').RenderResult,
@@ -19,6 +19,6 @@ declare namespace jest {
         clock: import('lolex').Clock
       ) => void,
       opts?: { timeLimit?: number }
-    );
+    ): R;
   }
 }
