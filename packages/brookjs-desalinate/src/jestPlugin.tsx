@@ -1,8 +1,7 @@
 import React from 'react';
-import jestKefir from 'jest-kefir';
+import jestKefir, { Helpers } from 'jest-kefir';
 import { render } from '@testing-library/react';
 import { RootJunction } from 'brookjs-silt';
-import createHelpers from 'kefir-test-utils';
 
 const noop = () => {};
 
@@ -15,10 +14,9 @@ export const jestPlugin = ({
   Kefir
 }: {
   Kefir: typeof import('kefir').default;
-}) => {
-  const helpers = createHelpers(Kefir);
+}): Helpers => {
+  const { extensions, ...helpers } = jestKefir(Kefir);
   const { withFakeTime, watchWithTime, send, stream, prop, value } = helpers;
-  const { extensions } = jestKefir(Kefir);
 
   return {
     ...helpers,
