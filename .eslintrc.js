@@ -16,6 +16,9 @@ module.exports = {
     node: true,
     browser: true
   },
+  globals: {
+    KTU: true,
+  },
   plugins: ['import', 'react', '@typescript-eslint'],
   extends: ['plugin:import/typescript', 'valtech', 'prettier'],
   rules: {

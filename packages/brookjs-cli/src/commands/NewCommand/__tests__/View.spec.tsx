@@ -3,12 +3,9 @@ import React from 'react';
 import { render, cleanup } from 'ink-testing-library';
 import { AppContext } from 'ink';
 import { RootJunction } from 'brookjs-silt';
-import { jestPlugin } from 'brookjs-desalinate';
-import Kefir from 'kefir';
 import View from '../View';
 
-const { extensions, value } = jestPlugin({ Kefir });
-expect.extend(extensions);
+const { value } = KTU;
 
 describe('NewCommand#View', () => {
   afterEach(cleanup);

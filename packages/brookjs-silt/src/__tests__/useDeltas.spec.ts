@@ -1,14 +1,11 @@
 /* eslint-env jest */
 import Kefir from 'kefir';
-import { jestPlugin } from 'brookjs-desalinate';
 import { ofType } from 'brookjs-flow';
 import { loop } from 'brookjs';
 import { renderHook, act } from '@testing-library/react-hooks';
 import useDeltas from '../useDeltas';
 
-const { extensions, stream, send, value } = jestPlugin({ Kefir });
-
-expect.extend(extensions);
+const { stream, send, value } = KTU;
 
 describe('useDeltas', () => {
   const initialState = {

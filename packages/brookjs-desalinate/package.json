@@ -13,6 +13,7 @@
     "observables"
   ],
   "files": [
+    "extend-expect.js",
     "register.js",
     "dist"
   ],

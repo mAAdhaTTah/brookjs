@@ -1,14 +1,11 @@
 /* eslint-env jest */
 import Kefir from 'kefir';
 import React from 'react';
-import { jestPlugin } from 'brookjs-desalinate';
 import { render } from '@testing-library/react';
 import { withRef$ } from '../withRef';
 import { Provider } from '../context';
 
-const { extensions, value } = jestPlugin({ Kefir });
-
-expect.extend(extensions);
+const { value } = KTU;
 
 const refback = (ref$, props$) => Kefir.combine({ props$ }, { ref$ });
 

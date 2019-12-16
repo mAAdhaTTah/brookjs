@@ -1,13 +1,10 @@
 /* eslint-env jest */
-import { jestPlugin } from 'brookjs-desalinate';
 import $$observable from 'symbol-observable';
-import Kefir from 'kefir';
 import { Store } from 'redux';
 import { Observer } from 'recompose';
 import fromReduxStore from '../fromReduxStore';
 
-const { extensions, value } = jestPlugin({ Kefir });
-expect.extend(extensions);
+const { value } = KTU;
 
 const createMockStore = <T extends {}>(state?: T): Store => {
   const store = {

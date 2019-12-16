@@ -1,10 +1,5 @@
 /* eslint-env jest */
-import { jestPlugin } from 'brookjs-desalinate';
-import Kefir from 'kefir';
 import exec from '../exec';
-
-const { extensions } = jestPlugin({ Kefir });
-expect.extend(extensions);
 
 jest.mock('../../../services', () => ({
   WebpackService: {} as any,
