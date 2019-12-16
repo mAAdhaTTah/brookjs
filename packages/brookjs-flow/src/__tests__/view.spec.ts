@@ -1,12 +1,7 @@
 /* eslint-env jest */
-import Kefir from 'kefir';
-import { jestPlugin } from 'brookjs-desalinate';
 import view from '../view';
 
-const { extensions, stream, prop, value, send, error, end } = jestPlugin({
-  Kefir
-});
-expect.extend(extensions);
+const { stream, prop, value, send, error, end } = KTU;
 
 describe('view', () => {
   it('should be a function', () => {

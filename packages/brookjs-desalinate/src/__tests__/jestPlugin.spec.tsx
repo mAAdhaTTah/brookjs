@@ -3,10 +3,8 @@ import Kefir from 'kefir';
 import { toJunction } from 'brookjs-silt';
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { jestPlugin } from '../jestPlugin';
 
-const { extensions, value } = jestPlugin({ Kefir });
-expect.extend(extensions);
+const { value } = KTU;
 
 describe('jestPlugin', () => {
   describe('toEmitFromDelta', () => {

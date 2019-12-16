@@ -1,10 +1,7 @@
 /* eslint-env jest */
-import { jestPlugin } from 'brookjs-desalinate';
-import Kefir from 'kefir';
 import ofType from '../ofType';
 
-const { extensions, send, value, stream } = jestPlugin({ Kefir });
-expect.extend(extensions);
+const { send, value, stream } = KTU;
 
 describe('ofType', () => {
   it('should match when passing one type', () => {

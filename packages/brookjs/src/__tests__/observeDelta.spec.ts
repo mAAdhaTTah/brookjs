@@ -2,12 +2,10 @@
 import { applyMiddleware, createStore } from 'redux';
 import Kefir from 'kefir';
 import configureStore from 'redux-mock-store';
-import { jestPlugin } from 'brookjs-desalinate';
 import { ofType } from 'brookjs-flow';
 import { observeDelta } from '../observeDelta';
 
-const { extensions, value } = jestPlugin({ Kefir });
-expect.extend(extensions);
+const { value } = KTU;
 
 describe('observeDelta', function() {
   let delta: jest.Mock,

@@ -1,12 +1,7 @@
 /* eslint-env jest */
 import React from 'react';
 import { render, cleanup } from 'ink-testing-library';
-import { jestPlugin } from 'brookjs-desalinate';
-import Kefir from 'kefir';
 import View from '../View';
-
-const { extensions } = jestPlugin({ Kefir });
-expect.extend(extensions);
 
 describe('BuildCommand#View', () => {
   afterEach(cleanup);

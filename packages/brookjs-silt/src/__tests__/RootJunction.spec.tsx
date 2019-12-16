@@ -1,13 +1,7 @@
 /* eslint-env jest */
-import Kefir from 'kefir';
 import React from 'react';
-import { jestPlugin } from 'brookjs-desalinate';
 import { render } from '@testing-library/react';
 import RootJunction from '../RootJunction';
-
-const { extensions } = jestPlugin({ Kefir });
-
-expect.extend(extensions);
 
 describe('RootJunction', () => {
   it('should provide aggregated$ as context', () => {

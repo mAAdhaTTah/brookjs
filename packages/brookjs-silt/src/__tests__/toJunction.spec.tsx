@@ -1,14 +1,11 @@
 /* eslint-env jest */
 import Kefir from 'kefir';
 import React from 'react';
-import { jestPlugin } from 'brookjs-desalinate';
 import { render, fireEvent } from '@testing-library/react';
 import { toJunction } from '../toJunction';
 import { Provider } from '../context';
 
-const { extensions, value, stream, send } = jestPlugin({ Kefir });
-
-expect.extend(extensions);
+const { value, stream, send } = KTU;
 
 describe('toJunction', () => {
   const events = { onButtonClick: e$ => e$.map(() => ({ type: 'CLICK' })) };
