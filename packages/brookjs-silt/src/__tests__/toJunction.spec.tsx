@@ -1,23 +1,27 @@
 /* eslint-env jest */
-import Kefir from 'kefir';
+import Kefir, { Observable } from 'kefir';
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { toJunction } from '../toJunction';
+import { toJunction, Combiner } from '../toJunction';
 import { Provider } from '../context';
 
-const { value, stream, send } = KTU;
+const { value, stream, pool, send } = KTU;
 
 describe('toJunction', () => {
-  const events = { onButtonClick: e$ => e$.map(() => ({ type: 'CLICK' })) };
-  const Button = toJunction(events)(({ onButtonClick, text, enabled }) =>
+  const events = {
+    onButtonClick: (
+      e$: Observable<React.MouseEvent<HTMLButtonElement>, never>
+    ) => e$.map(() => ({ type: 'CLICK' }))
+  };
+  const _Button: React.FC<any> = ({ onButtonClick, text, enabled }) =>
     enabled ? (
       <button onClick={onButtonClick}>{text}</button>
     ) : (
       <span>nothing to click</span>
-    )
-  );
+    );
+  const Button = toJunction(events)(_Button);
 
-  const ProvidedButton = ({ root$, text, enabled }) => (
+  const ProvidedButton = ({ root$, text, enabled }: any) => (
     <Provider value={root$}>
       <Button text={text} enabled={enabled} />
     </Provider>
@@ -93,7 +97,7 @@ describe('toJunction', () => {
 
       wrapper.unmount();
 
-      expect(root$._curSources).toHaveLength(0);
+      expect((root$ as any)._curSources).toHaveLength(0);
     });
 
     it('should unplug from old root stream if new root stream provided', () => {
@@ -111,12 +115,14 @@ describe('toJunction', () => {
           enabled={true}
         />
       );
-      expect(root$._curSources).toHaveLength(0);
-      expect(newAggregated$._curSources).toHaveLength(1);
+      expect((root$ as any)._curSources).toHaveLength(0);
+      expect((newAggregated$ as any)._curSources).toHaveLength(1);
     });
 
     it('should take events directly', () => {
-      const Button = toJunction(events)(({ onButtonClick, text, enabled }) =>
+      const Button = toJunction(
+        events
+      )(({ onButtonClick, text, enabled }: any) =>
         enabled ? (
           <button onClick={onButtonClick}>{text}</button>
         ) : (
@@ -124,7 +130,7 @@ describe('toJunction', () => {
         )
       );
 
-      const ProvidedButton = ({ root$, text, enabled }) => (
+      const ProvidedButton = ({ root$, text, enabled }: any) => (
         <Provider value={root$}>
           <Button text={text} enabled={enabled} />
         </Provider>
@@ -142,21 +148,34 @@ describe('toJunction', () => {
   });
 
   describe('combine', () => {
+    type Props = {
+      text: string;
+      enabled: boolean;
+      onButtonClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    };
+
+    type ProvidedProps = {
+      root$: any;
+      text: string;
+      enabled: true;
+    };
+
     it('should call combine with correct arguments and use returned stream', () => {
-      const source$ = stream();
-      const combine = jest.fn(() => source$);
-      const Button = toJunction(
-        events,
-        combine
-      )(({ onButtonClick, text, enabled }) =>
+      const source$ = stream<any, any>();
+      const combine: Combiner<Props, typeof events> = jest.fn(() => source$);
+      const _Button: React.FC<Props> = ({ onButtonClick, text, enabled }) =>
         enabled ? (
           <button onClick={onButtonClick}>{text}</button>
         ) : (
           <span>nothing to click</span>
-        )
-      );
+        );
+      const Button = toJunction(events, combine)(_Button);
 
-      const ProvidedButton = ({ root$, text, enabled }) => (
+      const ProvidedButton: React.FC<ProvidedProps> = ({
+        root$,
+        text,
+        enabled
+      }) => (
         <Provider value={root$}>
           <Button text={text} enabled={enabled} />
         </Provider>
@@ -180,19 +199,22 @@ describe('toJunction', () => {
     });
 
     it('should call combine with updated props', () => {
-      const combine = jest.fn(() => Kefir.never());
-      const Button = toJunction(
-        events,
-        combine
-      )(({ onButtonClick, text, enabled }) =>
+      const combine: Combiner<Props, typeof events> = jest.fn(() =>
+        Kefir.never()
+      );
+      const _Button: React.FC<Props> = ({ onButtonClick, text, enabled }) =>
         enabled ? (
           <button onClick={onButtonClick}>{text}</button>
         ) : (
           <span>nothing to click</span>
-        )
-      );
+        );
+      const Button = toJunction(events, combine)(_Button);
 
-      const ProvidedButton = ({ root$, text, enabled }) => (
+      const ProvidedButton: React.FC<ProvidedProps> = ({
+        root$,
+        text,
+        enabled
+      }) => (
         <Provider value={root$}>
           <Button text={text} enabled={enabled} />
         </Provider>
@@ -230,7 +252,7 @@ describe('toJunction', () => {
 
   describe('preplug', () => {
     it('should map stream', () => {
-      const root$ = Kefir.pool();
+      const root$ = pool<any, any>();
       const wrapper = render(
         <Provider value={root$}>
           <Button
@@ -247,7 +269,7 @@ describe('toJunction', () => {
     });
 
     it('should map children', () => {
-      const root$ = Kefir.pool();
+      const root$ = pool<any, any>();
       const Wrapper = toJunction()(() => (
         <Button text={'Click me'} enabled={true} />
       ));

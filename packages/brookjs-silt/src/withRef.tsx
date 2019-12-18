@@ -21,12 +21,14 @@ const wrap = <E, P>(
   return WrappedComponent;
 };
 
-export type Refback<P, E extends Element> = (
+export type Refback<P, E extends Element, R extends { type: string }> = (
   ref$: Property<E, never>,
   props$: Property<P, never>
-) => Observable<Action, Error>;
+) => Observable<R, Error>;
 
-export const withRef$ = <P, E extends Element>(refback: Refback<P, E>) => (
+export const withRef$ = <P, E extends Element, R extends { type: string }>(
+  refback: Refback<P, E, R>
+) => (
   WrappedComponent: React.RefForwardingComponent<E, P> | React.ElementType<P>
 ) =>
   class WithRef$ extends React.Component<P> {

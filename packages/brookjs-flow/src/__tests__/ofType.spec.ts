@@ -5,7 +5,7 @@ const { send, value, stream } = KTU;
 
 describe('ofType', () => {
   it('should match when passing one type', () => {
-    const action$ = stream();
+    const action$ = stream<{ type: string }, never>();
 
     expect(action$.thru(ofType('MATCHED'))).toEmit(
       [value({ type: 'MATCHED' })],
@@ -21,7 +21,7 @@ describe('ofType', () => {
   it('should match when passing one type with Function#toString', () => {
     const matched = () => ({ type: 'MATCHED' });
     matched.toString = () => 'MATCHED';
-    const action$ = stream();
+    const action$ = stream<{ type: string }, never>();
 
     expect(action$.thru(ofType(matched))).toEmit(
       [value({ type: 'MATCHED' })],
@@ -35,7 +35,7 @@ describe('ofType', () => {
   });
 
   it('should match when passing multiple types', () => {
-    const action$ = stream();
+    const action$ = stream<{ type: string }, never>();
 
     expect(action$.thru(ofType('MATCHED_ONE', 'MATCHED_TWO'))).toEmit(
       [value({ type: 'MATCHED_ONE' }), value({ type: 'MATCHED_TWO' })],
@@ -55,7 +55,7 @@ describe('ofType', () => {
     matchedOne.toString = () => 'MATCHED_ONE';
     const matchedTwo = () => ({ type: 'MATCHED_TWO' });
     matchedTwo.toString = () => 'MATCHED_TWO';
-    const action$ = stream();
+    const action$ = stream<{ type: string }, never>();
 
     expect(action$.thru(ofType(matchedOne, matchedTwo))).toEmit(
       [value({ type: 'MATCHED_ONE' }), value({ type: 'MATCHED_TWO' })],

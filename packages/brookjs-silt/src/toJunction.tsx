@@ -1,10 +1,5 @@
-/* eslint-disable import/export */
-/*
-  disabled because overloads are broken:
-  https://github.com/benmosher/eslint-plugin-import/issues/1357
-*/
 import React from 'react';
-import Kefir, { Observable, Pool } from 'kefir';
+import Kefir, { Observable, Pool, Stream } from 'kefir';
 // eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import { Action } from 'redux';
@@ -12,54 +7,54 @@ import { Consumer, Provider } from './context';
 
 const id = <T extends any>(x: T) => x;
 
-export type EventConfig = {
-  [key: string]: (e$: Observable<any, Error>) => Observable<Action, Error>;
-};
-
-type ObservableDict<E extends EventConfig> = {
-  [key in keyof E]: Observable<Action, Error>;
+type ObservableDict<E extends { [key: string]: any }> = {
+  [K in keyof E]: Observable<Action, Error>;
 } & {
   children$: Observable<Action, Error>;
 };
 
-type ExtractFirstArgumentValue<T> = T extends (
-  arg1: Observable<infer E, any>,
-  ...args: any[]
-) => any
-  ? E
-  : never;
-
-type ProvidedProps<E extends EventConfig> = {
-  [K in keyof E]: (e: ExtractFirstArgumentValue<E[K]>) => void;
+type ProvidedProps<E extends { [key: string]: any }> = {
+  [K in keyof E]: (e: E[K]) => void;
 };
 
-type WithProps<E extends EventConfig, P extends ProvidedProps<E>> = Omit<
+type WithProps<E extends { [key: string]: any }, P extends {}> = Omit<
   P,
   keyof E
 > & {
-  preplug?: (source$: Observable<Action, Error>) => Observable<Action, Error>;
+  preplug?: (
+    source$: Observable<Action<string>, Error>
+  ) => Observable<Action<string>, Error>;
 };
 
-export type Combiner<E extends EventConfig, P extends ProvidedProps<E>> = (
+export type Combiner<P extends {}, E extends { [key: string]: any } = {}> = (
   combined$: Observable<Action, Error>,
   sources: ObservableDict<E>,
   props: Readonly<WithProps<E, P>>
 ) => Observable<Action, Error>;
 
-export function toJunction<E extends EventConfig>(
-  events: E
-): <P extends ProvidedProps<E>>(
+type Events<E> = {
+  [K in keyof E]: (
+    obs$: Stream<E[K], never>
+  ) => Observable<Action<string>, never>;
+};
+
+export function toJunction(): <P extends {}>(
+  WrappedComponent: React.ElementType<P>
+) => React.ComponentType<WithProps<{}, P>>;
+export function toJunction<E extends { [key: string]: any }>(
+  events: Events<E>
+): <P extends {}>(
   WrappedComponent: React.ElementType<P>
 ) => React.ComponentType<WithProps<E, P>>;
-export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
-  events: E,
-  combine: Combiner<E, P>
+export function toJunction<E extends { [key: string]: any }, P extends {}>(
+  events: Events<E>,
+  combine: Combiner<P, Events<E>>
 ): (
   WrappedComponent: React.ComponentType<P>
 ) => React.ComponentType<WithProps<E, P>>;
-export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
-  events: E,
-  combine: Combiner<E, P> = id
+export function toJunction<E extends { [key: string]: any }, P extends {}>(
+  events: Events<E> = {} as Events<E>,
+  combine: Combiner<P, E> = id
 ) {
   return (
     WrappedComponent: React.ComponentType<P>
@@ -91,7 +86,7 @@ export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
         };
 
         for (const key in events) {
-          const e$ = new Kefir.Stream<Event, Error>();
+          const e$ = new Kefir.Stream<any, never>();
           this.events[key] = e => {
             (e$ as any)._emitValue(e);
           };
@@ -119,7 +114,7 @@ export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
       }
 
       unplug() {
-        this.root$ && this.root$.unplug(this.source$);
+        this.root$?.unplug(this.source$);
       }
 
       componentWillUnmount() {
@@ -128,7 +123,7 @@ export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
 
       componentDidUpdate() {
         this.unplug();
-        this.root$ && this.root$.plug((this.source$ = this.createSource()));
+        this.root$?.plug((this.source$ = this.createSource()));
       }
 
       render() {
@@ -150,7 +145,8 @@ export function toJunction<E extends EventConfig, P extends ProvidedProps<E>>(
               const props = {
                 ...this.props,
                 ...this.events
-              } as P;
+                // @TODO(mAAdhaTTah) would be nice for this to type right.
+              } as any;
 
               return (
                 <Provider value={this.children$}>

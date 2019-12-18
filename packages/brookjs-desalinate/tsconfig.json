@@ -6,8 +6,5 @@
  "include": [
    "./src",
    "../../types/*.d.ts"
- ],
- "exclude": [
-   "./src/__tests__"
  ]
 }

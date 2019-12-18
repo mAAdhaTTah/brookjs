@@ -7,11 +7,15 @@ import useDeltas from '../useDeltas';
 
 const { stream, send, value } = KTU;
 
+type State = { counter: number };
+
+type Action = { type: string };
+
 describe('useDeltas', () => {
-  const initialState = {
+  const initialState: State = {
     counter: 0
   };
-  const reducer = (state, action) => {
+  const reducer = (state: State, action: Action): State => {
     switch (action.type) {
       case 'INCREMENT':
         return {
@@ -76,7 +80,7 @@ describe('useDeltas', () => {
       useDeltas(reducer, initialState, [delta])
     );
 
-    const [action$, state$] = delta.mock.calls[0];
+    const [action$, state$] = delta.mock.calls[0] as any;
 
     // Initial state
     expect(state$).toEmit([value(initialState, { current: true })]);
@@ -100,8 +104,8 @@ describe('useDeltas', () => {
   });
 
   it('should dispatch actions from the provided delta', () => {
-    let delta$;
-    const delta = jest.fn(function() {
+    let delta$: any;
+    const delta: any = jest.fn(function() {
       return (delta$ = Kefir.pool());
     });
     const { result } = renderHook(() =>
@@ -134,7 +138,7 @@ describe('useDeltas', () => {
       useDeltas(reducer, initialState, [delta])
     );
 
-    const [action$, state$] = delta.mock.calls[0];
+    const [action$, state$]: any = delta.mock.calls[0];
 
     expect(Kefir.zip([action$, state$.sampledBy(action$)])).toEmit(
       [
@@ -162,7 +166,7 @@ describe('useDeltas', () => {
     const initialState = {
       actions: []
     };
-    const eddyReducer = (state, action) => {
+    const eddyReducer = (state: any, action: any) => {
       switch (action.type) {
         case 'INCREMENT':
           return loop(
@@ -192,7 +196,7 @@ describe('useDeltas', () => {
     const initialState = {
       actions: []
     };
-    const eddyReducer = (state, action) => {
+    const eddyReducer = (state: any, action: any) => {
       switch (action.type) {
         case 'INCREMENT':
           return loop(
@@ -208,7 +212,7 @@ describe('useDeltas', () => {
           return { ...state, actions: [...state.actions, action.type] };
       }
     };
-    const delta = action$ =>
+    const delta = (action$: any) =>
       action$.thru(ofType('SQR_ROOT')).map(() => ({ type: 'THIRD' }));
     const { result } = renderHook(() =>
       useDeltas(eddyReducer, initialState, [delta])
