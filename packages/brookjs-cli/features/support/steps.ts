@@ -24,7 +24,7 @@ BeforeAll(function() {
         {
           snapshotState,
           currentTestName: testname
-        },
+        } as any,
         actual
       );
 
@@ -141,11 +141,7 @@ When(
   async function(code) {
     await this.ended();
 
-    expect(this.output.code).toBe(
-      code,
-      `Error: exited with code ${this.output.code}
-Message: ${this.output.stderr || this.output.stdout}`
-    );
+    expect(this.output.code).toBe(code);
   }
 );
 

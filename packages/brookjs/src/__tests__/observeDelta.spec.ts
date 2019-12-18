@@ -1,42 +1,43 @@
 /* eslint-env jest */
 import { applyMiddleware, createStore } from 'redux';
-import Kefir from 'kefir';
+import Kefir, { Pool, Subscription } from 'kefir';
 import configureStore from 'redux-mock-store';
 import { ofType } from 'brookjs-flow';
+import { Reducer } from 'react';
 import { observeDelta } from '../observeDelta';
 
 const { value } = KTU;
 
-describe('observeDelta', function() {
-  let delta: jest.Mock,
-    delta$,
-    deltaMiddlware,
+const setup = () => {
+  let delta$: Pool<{ type: string }, never>;
+  const delta = jest.fn(() => (delta$ = Kefir.pool<{ type: string }, never>()));
+  const initial = { changed: false };
+  const reducer: Reducer<any, any> = function reducer(
+    state = initial,
+    { type }
+  ) {
+    switch (type) {
+      case 'AN_ACTION':
+        return { changed: true };
+      default:
+        return state;
+    }
+  };
+  const store = createStore(
     reducer,
     initial,
-    store,
-    actions$,
-    state$,
-    sub;
+    applyMiddleware(observeDelta(delta))
+  );
+  const [actions$, state$] = delta.mock.calls[0] as any;
 
-  beforeEach(function() {
-    delta = jest.fn(function() {
-      return (delta$ = Kefir.pool());
-    });
-    deltaMiddlware = observeDelta(delta);
-    initial = { changed: false };
-    reducer = function reducer(state = {}, { type }) {
-      switch (type) {
-        case 'AN_ACTION':
-          return { changed: true };
-        default:
-          return state;
-      }
-    };
-    store = createStore(reducer, initial, applyMiddleware(deltaMiddlware));
-    [actions$, state$] = delta.mock.calls[0];
-  });
+  return { delta, delta$: delta$!, reducer, initial, store, actions$, state$ };
+};
+
+describe('observeDelta', function() {
+  let sub: Subscription | undefined;
 
   it('should call the delta with actions$ and state$', function() {
+    const { actions$, state$ } = setup();
     expect(actions$).toBeObservable();
     expect(state$).toBeObservable();
   });
@@ -44,6 +45,7 @@ describe('observeDelta', function() {
   it('should dispatch action to actions$', function() {
     const action = { type: 'AN_ACTION' };
     const value = jest.fn();
+    const { actions$, store } = setup();
     sub = actions$.observe({ value });
 
     store.dispatch(action);
@@ -55,6 +57,7 @@ describe('observeDelta', function() {
   it('should dispatch state to state$', function() {
     const action = { type: 'AN_ACTION' };
     const value = jest.fn();
+    const { state$, store } = setup();
     sub = state$.observe({ value });
 
     store.dispatch(action);
@@ -67,6 +70,7 @@ describe('observeDelta', function() {
   it('should dispatch delta$ events to actions$', function() {
     const action = { type: 'AN_ACTION' };
     const value = jest.fn();
+    const { actions$, delta$ } = setup();
     sub = actions$.observe({ value });
 
     delta$.plug(Kefir.constant(action));
@@ -78,6 +82,7 @@ describe('observeDelta', function() {
   it('should dispatch delta$ events to store', function() {
     const action = { type: 'AN_ACTION' };
     const subscribe = jest.fn();
+    const { delta$, store } = setup();
     store.subscribe(subscribe);
 
     delta$.plug(Kefir.constant(action));
@@ -116,7 +121,7 @@ describe('observeDelta', function() {
         .map(() => ({ type: 'SECOND_REQUEST' }))
     );
     const delta2 = jest.fn(action$ =>
-      Kefir.merge([
+      Kefir.merge<{ type: string }, never>([
         action$
           .thru(ofType('FIRST_REQUEST'))
           .map(() => ({ type: 'FIRST_RESPONSE' })),

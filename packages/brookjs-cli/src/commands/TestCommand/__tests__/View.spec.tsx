@@ -9,15 +9,12 @@ describe('BuildCommand#View', () => {
   it('should render missing rc view', () => {
     const { lastFrame } = render(
       <View
+        status="running"
         rc={null}
-        code={null}
-        out={null}
-        err={null}
         cwd="/path/to/cwd"
         env="test"
         coverage={false}
         watch={false}
-        command={'jest'}
       />
     );
 

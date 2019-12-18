@@ -1,4 +1,4 @@
-import 'jest-kefir/extend-expect';
+/// <reference types="jest-kefir/extend-expect" />
 
 declare namespace jest {
   interface Matchers<R, T> {

@@ -39,8 +39,8 @@ const useOnSubmit = (onSubmit: () => void) => {
     return () => {
       // @TODO(mAAdhaTTah) This fails in node-pty – not sure why
       // stdin.off is not a function
-      stdin.off && stdin.off('data', onData);
-      setRawMode!(false);
+      stdin.off?.('data', onData);
+      setRawMode?.(false);
     };
   }, [stdin, setRawMode, onSubmit]);
 };
@@ -220,10 +220,10 @@ const View: React.FC<Props> = props => {
 };
 
 const events = {
-  onChange: (e$: Observable<string, Error>) =>
+  onChange: (e$: Observable<string, never>) =>
     e$.map(value => ({ type: 'INPUT', payload: { value } })),
-  onSubmit: (e$: Observable<void, Error>) => e$.map(() => ({ type: 'SUBMIT' })),
-  onConfirm: (e$: Observable<boolean, Error>) =>
+  onSubmit: (e$: Observable<void, never>) => e$.map(() => ({ type: 'SUBMIT' })),
+  onConfirm: (e$: Observable<boolean, never>) =>
     e$.map(value => ({ type: 'CONFIRM', payload: { value } }))
 };
 

@@ -9,7 +9,7 @@ const Button: React.FC<Props> = ({ onClick }) => (
 );
 
 const events = {
-  onClick: (e$: Observable<any, any>) => e$.map(() => ({ type: 'CLICK' }))
+  onClick: (e$: Observable<any, never>) => e$.map(() => ({ type: 'CLICK' }))
 };
 
-export default toJunction<Props, typeof events>(events)(Button);
+export default toJunction(events)(Button);

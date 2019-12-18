@@ -6,7 +6,9 @@ import fromReduxStore from '../fromReduxStore';
 
 const { value } = KTU;
 
-const createMockStore = <T extends {}>(state?: T): Store => {
+const createMockStore = <T extends {}>(
+  state?: T
+): Store & { setState(state: T): void } => {
   const store = {
     state,
     callbacks: [] as Function[],
@@ -48,7 +50,7 @@ const createMockStore = <T extends {}>(state?: T): Store => {
     }
   };
 
-  return (store as unknown) as Store;
+  return store as any;
 };
 
 describe('fromReduxStore', () => {
