@@ -1,6 +1,6 @@
 import { Stream } from 'kefir';
 
-interface ActionCreator<A extends { type: string }> {
+export interface ActionCreator<A extends { type: string }> {
   (...a: any[]): A;
 }
 
@@ -17,10 +17,10 @@ interface ActionCreator<A extends { type: string }> {
  *
  * Intended to be used with Kefir's `thru` method.
  */
-function ofType<A1 extends { type: string }, E, V extends { type: string }>(
+export function ofType<A1 extends { type: string }, E, V extends { type: string }>(
   ac1: ActionCreator<A1>
 ): (obs: Stream<V, E>) => Stream<A1, E>;
-function ofType<
+export function ofType<
   A1 extends { type: string },
   A2 extends { type: string },
   E,
@@ -29,7 +29,7 @@ function ofType<
   ac1: ActionCreator<A1>,
   ac2: ActionCreator<A2>
 ): (obs: Stream<V, E>) => Stream<A1 | A2, E>;
-function ofType<
+export function ofType<
   A1 extends { type: string },
   A2 extends { type: string },
   A3 extends { type: string },
@@ -40,7 +40,7 @@ function ofType<
   ac2: ActionCreator<A2>,
   ac3: ActionCreator<A3>
 ): (obs: Stream<V, E>) => Stream<A1 | A2 | A3, E>;
-function ofType<
+export function ofType<
   A1 extends { type: string },
   A2 extends { type: string },
   A3 extends { type: string },
@@ -53,7 +53,7 @@ function ofType<
   ac3: ActionCreator<A3>,
   ac4: ActionCreator<A4>
 ): (obs: Stream<V, E>) => Stream<A1 | A2 | A3 | A4, E>;
-function ofType<
+export function ofType<
   A1 extends { type: string },
   A2 extends { type: string },
   A3 extends { type: string },
@@ -68,10 +68,10 @@ function ofType<
   ac4: ActionCreator<A4>,
   ac5: ActionCreator<A5>
 ): (obs: Stream<V, E>) => Stream<A1 | A2 | A3 | A4 | A5, E>;
-function ofType<A extends { type: string }, E>(
+export function ofType<A extends { type: string }, E>(
   ...types: string[]
 ): (obs: Stream<A, E>) => Stream<A, E>;
-function ofType<A extends { type: string }, E>(
+export function ofType<A extends { type: string }, E>(
   ...types: any[]
 ): (obs: Stream<A, E>) => Stream<A, E> {
   return obs$ =>
@@ -95,5 +95,3 @@ function ofType<A extends { type: string }, E>(
       })
       .setName(obs$, 'ofType');
 }
-
-export default ofType;

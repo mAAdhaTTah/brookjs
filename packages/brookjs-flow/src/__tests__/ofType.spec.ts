@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import ofType from '../ofType';
+import { ofType } from '../ofType';
 
 const { send, value, stream } = KTU;
 
