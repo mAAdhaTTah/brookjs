@@ -1,11 +1,13 @@
 import path from 'path';
 import Kefir, { Observable } from 'kefir';
-import { fs } from '../services';
+import fs from './fs';
 
-export const setupTestsPath = (cwd: string, dir: string, ext: string) =>
+export type Ext = 'ts' | 'js';
+
+export const setupTestsPath = (cwd: string, dir: string, ext: Ext) =>
   path.join(cwd, dir, `setupTests.${ext}`);
 
-export const extension$ = (cwd: string): Observable<'ts' | 'js', never> =>
+export const extension$ = (cwd: string): Observable<Ext, never> =>
   fs
     .access(path.join(cwd, 'tsconfig.json'))
     .map(() => 'ts')
@@ -14,7 +16,7 @@ export const extension$ = (cwd: string): Observable<'ts' | 'js', never> =>
 export const setupTestsConfig$ = (
   cwd: string,
   dir: string,
-  ext: string
+  ext: Ext
 ): Observable<string[], never> =>
   fs
     .access(setupTestsPath(cwd, dir, ext))
