@@ -16,11 +16,10 @@ async function main() {
 
   const run = await app.run(process.argv.slice(2));
 
-  let code;
+  let code = 0;
 
   try {
     await run.waitUntilExit();
-    code = 0;
   } catch (err) {
     code = err.code || 1;
   }
