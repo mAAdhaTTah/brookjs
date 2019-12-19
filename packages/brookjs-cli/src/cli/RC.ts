@@ -1,5 +1,6 @@
 import * as t from 'io-ts';
 import webpack from 'webpack';
+import * as format from './format';
 
 export const RC = t.partial({
   dir: t.string,
@@ -74,3 +75,20 @@ type Webpack = Omit<WebpackBase, 'modifier'> & {
 export interface RC extends RCBase {
   webpack?: Webpack;
 }
+
+export class RCError extends Error {
+  private errors: t.Errors;
+
+  constructor(errors: t.Errors, message?: string) {
+    super(message);
+    this.errors = errors;
+  }
+
+  toString() {
+    return (
+      'Errors: ' + this.errors.map(err => format.getMessage(err)).join('; ')
+    );
+  }
+}
+
+export type RCResult = RC | RCError;

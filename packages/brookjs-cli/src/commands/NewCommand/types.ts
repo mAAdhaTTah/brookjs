@@ -1,4 +1,3 @@
-import { runner } from 'hygen';
 import { Maybe } from '../../cli';
 
 type RunnerResult = ReturnType<typeof import('hygen').runner> extends Promise<

@@ -1,5 +1,5 @@
 import { Arguments } from 'yargs';
-import { RC, Maybe } from '../../cli';
+import { Maybe, RCResult } from '../../cli';
 import { State, Args } from './types';
 
 const getEnv = (env: unknown): string => {
@@ -12,7 +12,7 @@ const getEnv = (env: unknown): string => {
 
 const initialState = (
   args: Arguments<Args>,
-  { rc, cwd }: { rc: Maybe<RC | Error>; cwd: string }
+  { rc, cwd }: { rc: Maybe<RCResult>; cwd: string }
 ): State => ({
   rc,
   cwd,

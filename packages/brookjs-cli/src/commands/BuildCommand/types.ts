@@ -1,12 +1,12 @@
 import { ActionType } from 'typesafe-actions';
 import webpack from 'webpack';
-import { RC, Maybe } from '../../cli';
+import { Maybe, RCResult } from '../../cli';
 import * as actions from './actions';
 
 interface BaseState {
   env: Required<webpack.Configuration>['mode'];
   cwd: string;
-  rc: Maybe<RC | Error>;
+  rc: Maybe<RCResult>;
   watch: boolean;
 }
 

@@ -1,6 +1,6 @@
 import { Arguments } from 'yargs';
 import webpack from 'webpack';
-import { RC, Maybe } from '../../cli';
+import { Maybe, RCResult } from '../../cli';
 import { State } from './types';
 
 const getEnv = (env: unknown): Required<webpack.Configuration>['mode'] => {
@@ -16,7 +16,7 @@ const getEnv = (env: unknown): Required<webpack.Configuration>['mode'] => {
 
 const initialState = (
   args: Arguments,
-  { rc, cwd }: { rc: Maybe<RC | Error>; cwd: string }
+  { rc, cwd }: { rc: Maybe<RCResult>; cwd: string }
 ): State => ({
   watch: typeof args.watch === 'boolean' ? args.watch : false,
   building: true,
