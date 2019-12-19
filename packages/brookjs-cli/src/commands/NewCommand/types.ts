@@ -1,4 +1,4 @@
-import { Maybe } from '../../cli';
+import { Maybe } from 'brookjs-types';
 
 type RunnerResult = ReturnType<typeof import('hygen').runner> extends Promise<
   infer T

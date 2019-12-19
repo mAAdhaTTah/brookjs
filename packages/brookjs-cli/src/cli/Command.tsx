@@ -1,8 +1,8 @@
 import React from 'react';
 import yargs, { Argv, Arguments } from 'yargs';
 import * as t from 'io-ts';
+import { Maybe } from 'brookjs-types';
 import { RCResult } from './RC';
-import { Maybe } from './util';
 
 export const Command = t.type({
   builder: t.Function,

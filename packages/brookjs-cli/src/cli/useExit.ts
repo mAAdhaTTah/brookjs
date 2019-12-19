@@ -1,16 +1,14 @@
 import { useContext, useEffect } from 'react';
 import { AppContext } from 'ink';
-import { RCError } from './RC';
 
-export type Maybe<T> = T | null | undefined;
+export class ExitError extends Error {
+  public code: number;
 
-export const rcErrorToNull = <T>(e: Maybe<T | RCError>): Maybe<T> => {
-  if (e instanceof Error) {
-    return null;
+  constructor(code: number, message?: string) {
+    super(message);
+    this.code = code;
   }
-
-  return e;
-};
+}
 
 export const useExit = (error?: Error) => {
   const { exit } = useContext(AppContext);

@@ -1,5 +1,6 @@
 import { ActionType } from 'typesafe-actions';
-import { Maybe, RCResult } from '../../cli';
+import { Maybe } from 'brookjs-types';
+import { RCResult } from '../../cli';
 import * as actions from './actions';
 
 interface BaseState {

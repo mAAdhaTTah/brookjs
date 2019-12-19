@@ -1,6 +1,7 @@
 import { Arguments } from 'yargs';
 import webpack from 'webpack';
-import { Maybe, RCResult } from '../../cli';
+import { Maybe } from 'brookjs-types';
+import { RCResult } from '../../cli';
 import { State } from './types';
 
 const getEnv = (env: unknown): Required<webpack.Configuration>['mode'] => {

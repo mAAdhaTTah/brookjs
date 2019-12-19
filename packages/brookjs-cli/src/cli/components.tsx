@@ -1,9 +1,9 @@
 import React, { ErrorInfo } from 'react';
 import { Color, Static, Box, AppContext } from 'ink';
 import * as t from 'io-ts';
+import { Maybe } from 'brookjs-types';
 import { RCResult } from './RC';
 import { Command } from './Command';
-import { Maybe } from './util';
 import { getMessage } from './format';
 
 export const LoadDirError: React.FC<{ dir: string; error: Error }> = ({
