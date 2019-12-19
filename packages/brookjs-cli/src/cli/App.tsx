@@ -3,8 +3,9 @@ import cosmiconfig from 'cosmiconfig';
 import { render } from 'ink';
 import esm from 'esm';
 import { Maybe } from 'brookjs-types';
-import { RC, RCError, RCResult } from './RC';
-import { Commands, Command } from './Command';
+import { RC, RCError, RCResult } from '../RC';
+import { Command } from './Command';
+import Commands from './Commands';
 import ErrorBoundary, {
   CommandValidationError,
   LoadDirError,

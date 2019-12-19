@@ -2,7 +2,7 @@ import React, { ErrorInfo } from 'react';
 import { Color, Static, Box, AppContext } from 'ink';
 import * as t from 'io-ts';
 import { Maybe } from 'brookjs-types';
-import { RCResult } from './RC';
+import { RCResult } from '../RC';
 import { Command } from './Command';
 import { getMessage } from './format';
 

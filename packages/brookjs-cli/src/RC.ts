@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 import webpack from 'webpack';
 import { Maybe } from 'brookjs-types';
-import * as format from './format';
+import * as format from './cli/format';
 
 export const RC = t.partial({
   dir: t.string,

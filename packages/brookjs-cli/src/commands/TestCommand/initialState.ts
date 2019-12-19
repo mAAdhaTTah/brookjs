@@ -1,6 +1,6 @@
 import { Arguments } from 'yargs';
 import { Maybe } from 'brookjs-types';
-import { RCResult } from '../../cli';
+import { RCResult } from '../../RC';
 import { State, Args } from './types';
 
 const getEnv = (env: unknown): string => {

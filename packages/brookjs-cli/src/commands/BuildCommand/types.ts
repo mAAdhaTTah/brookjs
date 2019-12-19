@@ -1,7 +1,7 @@
 import { ActionType } from 'typesafe-actions';
 import webpack from 'webpack';
 import { Maybe } from 'brookjs-types';
-import { RCResult } from '../../cli';
+import { RCResult } from '../../RC';
 import * as actions from './actions';
 
 interface BaseState {
