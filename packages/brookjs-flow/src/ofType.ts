@@ -17,9 +17,11 @@ export interface ActionCreator<A extends { type: string }> {
  *
  * Intended to be used with Kefir's `thru` method.
  */
-export function ofType<A1 extends { type: string }, E, V extends { type: string }>(
-  ac1: ActionCreator<A1>
-): (obs: Stream<V, E>) => Stream<A1, E>;
+export function ofType<
+  A1 extends { type: string },
+  E,
+  V extends { type: string }
+>(ac1: ActionCreator<A1>): (obs: Stream<V, E>) => Stream<A1, E>;
 export function ofType<
   A1 extends { type: string },
   A2 extends { type: string },

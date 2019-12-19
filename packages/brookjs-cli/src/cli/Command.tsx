@@ -22,5 +22,3 @@ export interface Command<A> extends CommandBase {
     cwd: string;
   }>;
 }
-
-

@@ -9,13 +9,24 @@ export default class Commands {
   add(command: Command<any>) {
     return new Commands([...this.commands, command]);
   }
-  get<A>(argv: string[]): {
+  get<A>(
+    argv: string[]
+  ): {
     command: Command<A> | null;
     args: Arguments<A>;
   } {
     let running: Command<A> | null = null;
     const args = this.commands
-      .reduce<Argv>((yargs: Argv, command) => yargs.command(command.cmd, command.describe, command.builder, () => (running = command)), yargs)
+      .reduce<Argv>(
+        (yargs: Argv, command) =>
+          yargs.command(
+            command.cmd,
+            command.describe,
+            command.builder,
+            () => (running = command)
+          ),
+        yargs
+      )
       .parse(argv) as Arguments<A>;
     return { command: running, args };
   }
