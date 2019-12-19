@@ -1,12 +1,12 @@
 import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
-import { errorToNull, RC, Maybe } from '../../cli';
+import { rcErrorToNull, Maybe, RCResult } from '../../cli';
 import * as project from '../../project';
 import { testRun } from './actions';
 import { State, Action } from './types';
 
-const getDir = (rc: Maybe<RC | Error>) => errorToNull(rc)?.dir ?? 'src';
+const getDir = (rc: Maybe<RCResult>) => rcErrorToNull(rc)?.dir ?? 'src';
 
 const exec = (
   action$: Stream<Action, never>,
@@ -19,7 +19,7 @@ const exec = (
         dir: Kefir.constant(getDir(state.rc)),
         coverage: Kefir.constant(state.coverage),
         watch: Kefir.constant(state.watch),
-        jest: Kefir.constant(errorToNull(state.rc)?.jest ?? {}),
+        jest: Kefir.constant(rcErrorToNull(state.rc)?.jest ?? {}),
         setupTests: project
           .extension$(state.cwd)
           .flatMap(testExtension =>

@@ -52,7 +52,7 @@ Feature: cli commands
       And I wait for the command to finish with code 0
       Then I see this in stdout
         """
-        InvalidCommand is not a valid command.
+        Required property $.describe missing.
         """
 
     @valid
@@ -105,5 +105,5 @@ Feature: cli commands
         And I wait for the command to finish with code 0
         Then I see this in stdout
           """
-          InvalidCommand is not a valid command.
+          Required property $.describe missing.
           """

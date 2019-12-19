@@ -3,8 +3,8 @@ import { BuildCommand, NewCommand, TestCommand } from './commands';
 
 const create = () =>
   App.create('beaver')
-    .addCommand(NewCommand)
-    .addCommand(BuildCommand)
-    .addCommand(TestCommand);
+    .addCommand('NewCommand', NewCommand)
+    .addCommand('BuildCommand', BuildCommand)
+    .addCommand('TestCommand', TestCommand);
 
 export default create;

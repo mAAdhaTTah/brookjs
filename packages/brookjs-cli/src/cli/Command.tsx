@@ -1,7 +1,7 @@
 import React from 'react';
 import yargs, { Argv, Arguments } from 'yargs';
 import * as t from 'io-ts';
-import { RC } from './RC';
+import { RCResult } from './RC';
 import { Maybe } from './util';
 
 export const Command = t.type({
@@ -18,7 +18,7 @@ export interface Command<A> extends CommandBase {
   builder: Builder<A>;
   View: React.ComponentType<{
     args: Arguments<A>;
-    rc: Maybe<RC | Error>;
+    rc: Maybe<RCResult>;
     cwd: string;
   }>;
 }
@@ -35,7 +35,7 @@ export class Commands {
   }
 
   get<A>(argv: string[]): { command: Command<A> | null; args: Arguments<A> } {
-    let running: Command<any> | null = null;
+    let running: Command<A> | null = null;
 
     const args = this.commands
       .reduce<Argv>(

@@ -1,12 +1,15 @@
 import React from 'react';
 import cosmiconfig from 'cosmiconfig';
-import { render, Color } from 'ink';
-import { ValidationError, getFunctionName, Context } from 'io-ts';
+import { render } from 'ink';
 import esm from 'esm';
-import { RC } from './RC';
-import ErrorBoundary from './ErrorBoundary';
+import { RC, RCError, RCResult } from './RC';
 import { Commands, Command } from './Command';
 import { Maybe } from './util';
+import ErrorBoundary, {
+  CommandValidationError,
+  LoadDirError,
+  Root
+} from './components';
 
 const loadEsm = esm(module);
 
@@ -24,45 +27,38 @@ export class App {
 
   private constructor(
     private name: string,
-    private commands: Commands = new Commands()
-  ) {
-    this.name = name;
-    this.commands = commands;
-  }
+    private commands: Commands = new Commands(),
+    private errors: JSX.Element[] = []
+  ) {}
 
-  addCommand(cmd: Command<any>): App {
-    if (!Command.is(cmd)) {
-      throw new Error();
-    }
-
-    return new App(this.name, this.commands.add(cmd));
+  addCommand(name: string, cmd: unknown): App {
+    return Command.decode(cmd).fold(
+      errors =>
+        new App(this.name, this.commands, [
+          ...this.errors,
+          <CommandValidationError
+            key={this.errors.length}
+            name={name}
+            errors={errors}
+          />
+        ]),
+      cmd =>
+        new App(this.name, this.commands.add(cmd as Command<any>), this.errors)
+    );
   }
 
   loadCommandsFrom(dir: string) {
-    // It's not a consistent reference,
-    // so we don't want to suggest it's a `this` alias.
-    // eslint-disable-next-line consistent-this
-    let app: App = this;
-    let commands: { [key: string]: Command<any> } = {};
-
     try {
-      commands = this.load(dir);
-    } catch {
-      return app;
+      return Object.entries(this.load(dir)).reduce<App>(
+        (app, [name, cmd]) => app.addCommand(name, cmd),
+        this
+      );
+    } catch (error) {
+      return new App(this.name, this.commands, [
+        ...this.errors,
+        <LoadDirError key={this.errors.length} error={error} dir={dir} />
+      ]);
     }
-
-    for (const key in commands) {
-      try {
-        app = app.addCommand(commands[key]);
-      } catch (e) {
-        // We want to warn on an invalid command.
-        // @TODO(mAAdhaTTah) add to errors object & render on startup?
-        // eslint-disable-next-line no-console
-        console.error(`${key} is not a valid command.`);
-      }
-    }
-
-    return app;
   }
 
   private load(dir: string) {
@@ -102,45 +98,13 @@ export class App {
       debug?: boolean;
     } = {}
   ) {
-    let rc: Maybe<RC | Error> = null;
+    let rc: Maybe<RCResult> = null;
     const result = await cosmiconfig(this.name, { loaders }).search();
 
     if (result != null) {
-      // @TODO(mAAdhaTTah) Associate with RCValidationError
-      function stringify(v: any): string {
-        if (typeof v === 'function') {
-          return getFunctionName(v);
-        }
-
-        if (typeof v === 'number' && !isFinite(v)) {
-          if (isNaN(v)) {
-            return 'NaN';
-          }
-          return v > 0 ? 'Infinity' : '-Infinity';
-        }
-
-        return JSON.stringify(v, null, '  ');
-      }
-
-      function getContextPath(context: Context): string {
-        return context.map(({ key, type }) => `${key}: ${type.name}`).join('/');
-      }
-
-      function getMessage(e: ValidationError): string {
-        return e.message !== undefined
-          ? e.message
-          : `Invalid value ${stringify(e.value)} supplied to ${getContextPath(
-              e.context
-            )}`;
-      }
-
-      rc = RC.decode(result.config).fold<RC | Error>(
-        function failure(es) {
-          return new Error('Errors: ' + es.map(getMessage).join('; '));
-        },
-        function success(value) {
-          return value as RC;
-        }
+      rc = RC.decode(result.config).fold<RCResult>(
+        es => new RCError(es),
+        value => value as RC
       );
     }
 
@@ -148,11 +112,7 @@ export class App {
 
     const instance = render(
       <ErrorBoundary>
-        {command == null ? (
-          <Color red>Command not found for {argv.join(' ')}</Color>
-        ) : (
-          <command.View args={args} cwd={cwd} rc={rc} />
-        )}
+        <Root {...{ command, argv, args, cwd, rc, errors: this.errors }} />
       </ErrorBoundary>,
       {
         stdout,

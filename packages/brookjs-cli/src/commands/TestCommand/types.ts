@@ -1,9 +1,9 @@
 import { ActionType } from 'typesafe-actions';
-import { RC, Maybe } from '../../cli';
+import { Maybe, RCResult } from '../../cli';
 import * as actions from './actions';
 
 interface BaseState {
-  rc: Maybe<RC | Error>;
+  rc: Maybe<RCResult>;
   cwd: string;
   env: string;
   coverage: boolean;
