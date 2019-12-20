@@ -1,5 +1,5 @@
 import React from 'react';
-import cosmiconfig from 'cosmiconfig';
+import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
 import { render } from 'ink';
 import esm from 'esm';
 import { Maybe } from 'brookjs-types';
@@ -15,10 +15,8 @@ import ErrorBoundary, {
 const loadEsm = esm(module);
 
 const loaders = {
-  '.js': {
-    sync: (filename: string) => loadEsm(filename),
-    async: (filename: string) => loadEsm(filename)
-  }
+  ...defaultLoaders,
+  '.js': (filename: string) => loadEsm(filename)
 };
 
 export class App {
