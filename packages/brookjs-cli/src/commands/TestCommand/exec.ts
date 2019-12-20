@@ -1,8 +1,9 @@
 import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
-import { rcErrorToNull, Maybe, RCResult } from '../../cli';
-import * as project from '../../project';
+import { Maybe } from 'brookjs-types';
+import { rcErrorToNull, RCResult } from '../../RC';
+import { project } from '../../services';
 import { testRun } from './actions';
 import { State, Action } from './types';
 

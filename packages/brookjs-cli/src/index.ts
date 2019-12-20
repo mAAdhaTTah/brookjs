@@ -1,5 +1,5 @@
-import * as project from './project';
+import * as services from './services';
 
-export { Command } from './cli';
+export * from './cli';
 export { default as create } from './create';
-export { project };
+export { services };

@@ -4,7 +4,7 @@ const { promises: fs } = require('fs');
 const { create } = require('brookjs-cli');
 
 async function main() {
-  const app = create();
+  let app = create();
 
   const cmdPath = path.join(process.cwd(), 'commands');
 

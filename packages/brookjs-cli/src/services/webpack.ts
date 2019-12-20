@@ -2,8 +2,6 @@ import Kefir, { Property, Stream } from 'kefir';
 import webpack from 'webpack';
 
 export default class WebpackService {
-  config: webpack.Configuration;
-
   static get watch() {
     return {};
   }
@@ -12,9 +10,7 @@ export default class WebpackService {
     return Kefir.constant(new WebpackService(config));
   }
 
-  constructor(config: webpack.Configuration) {
-    this.config = config;
-  }
+  private constructor(private config: webpack.Configuration) {}
 
   private compiler(): Property<webpack.Compiler, Error> {
     try {

@@ -1,6 +1,7 @@
 import * as t from 'io-ts';
 import webpack from 'webpack';
-import * as format from './format';
+import { Maybe } from 'brookjs-types';
+import * as format from './cli/format';
 
 export const RC = t.partial({
   dir: t.string,
@@ -92,3 +93,11 @@ export class RCError extends Error {
 }
 
 export type RCResult = RC | RCError;
+
+export const rcErrorToNull = <T>(e: Maybe<T | RCError>): Maybe<T> => {
+  if (e instanceof Error) {
+    return null;
+  }
+
+  return e;
+};

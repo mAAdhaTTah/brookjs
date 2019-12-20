@@ -3,7 +3,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
-import { rcErrorToNull } from '../../cli';
+import { rcErrorToNull } from '../../RC';
 import { State } from './types';
 
 const selectDefaultPlugins = () => [
