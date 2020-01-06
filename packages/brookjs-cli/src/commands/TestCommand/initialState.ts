@@ -1,7 +1,6 @@
 import { Arguments } from 'yargs';
-import { Maybe } from 'brookjs-types';
-import { RCResult } from '../../RC';
 import { State, Args } from './types';
+import { RC } from './RC';
 
 const getEnv = (env: unknown): string => {
   if (typeof env === 'string') {
@@ -13,9 +12,9 @@ const getEnv = (env: unknown): string => {
 
 const initialState = (
   args: Arguments<Args>,
-  { rc, cwd }: { rc: Maybe<RCResult>; cwd: string }
+  { rc, cwd }: { rc: unknown; cwd: string }
 ): State => ({
-  rc,
+  rc: RC.decode(rc).getOrElse({}),
   cwd,
   env: getEnv(args.env),
   coverage: args.coverage === true,

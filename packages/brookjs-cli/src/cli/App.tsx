@@ -2,8 +2,6 @@ import React from 'react';
 import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
 import { render } from 'ink';
 import esm from 'esm';
-import { Maybe } from 'brookjs-types';
-import { RC, RCError, RCResult } from '../RC';
 import { Command } from './Command';
 import Commands from './Commands';
 import ErrorBoundary, {
@@ -27,7 +25,7 @@ export class App {
   private constructor(
     private name: string,
     private commands: Commands = new Commands(),
-    private errors: JSX.Element[] = []
+    private errors: React.ReactNode[] = []
   ) {}
 
   addCommand(name: string, cmd: unknown): App {
@@ -97,15 +95,8 @@ export class App {
       debug?: boolean;
     } = {}
   ) {
-    let rc: Maybe<RCResult> = null;
-    const result = await cosmiconfig(this.name, { loaders }).search();
-
-    if (result != null) {
-      rc = RC.decode(result.config).fold<RCResult>(
-        es => new RCError(es),
-        value => value as RC
-      );
-    }
+    const rc: unknown =
+      (await cosmiconfig(this.name, { loaders }).search())?.config ?? null;
 
     const { command, args } = this.commands.get(argv);
 

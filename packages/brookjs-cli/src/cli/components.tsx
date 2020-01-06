@@ -1,10 +1,10 @@
 import React, { ErrorInfo } from 'react';
-import { Color, Static, Box, AppContext } from 'ink';
+import { Color, Static, Box, AppContext, AppProps } from 'ink';
 import * as t from 'io-ts';
 import { Maybe } from 'brookjs-types';
-import { RCResult } from '../RC';
 import { Command } from './Command';
 import { getMessage } from './format';
+import { ExitError } from './useExit';
 
 export const LoadDirError: React.FC<{ dir: string; error: Error }> = ({
   dir,
@@ -43,8 +43,8 @@ export const Root: React.FC<{
   argv: string[];
   args: any;
   cwd: string;
-  rc: Maybe<RCResult>;
-  errors: JSX.Element[];
+  rc: unknown;
+  errors: React.ReactNode[];
 }> = ({ command, argv, args, cwd, rc, errors }) => (
   <>
     <Static>{errors}</Static>
@@ -58,7 +58,11 @@ export const Root: React.FC<{
 
 type ErrorState = { error: null | Error; errorInfo: null | ErrorInfo };
 
-export default class ErrorBoundary extends React.Component<{}, ErrorState> {
+export default class ErrorBoundary extends React.Component<
+  {},
+  ErrorState,
+  AppProps
+> {
   state: ErrorState = {
     error: null,
     errorInfo: null
@@ -66,9 +70,11 @@ export default class ErrorBoundary extends React.Component<{}, ErrorState> {
 
   static contextType = AppContext;
 
+  declare context: React.ContextType<typeof AppContext>;
+
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ error, errorInfo }, () => {
-      this.context.exit(1);
+      this.context.exit(new ExitError(1));
     });
   }
 
