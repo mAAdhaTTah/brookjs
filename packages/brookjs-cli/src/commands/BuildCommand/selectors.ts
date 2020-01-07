@@ -3,7 +3,6 @@
 import path from 'path';
 import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
-import { rcErrorToNull } from '../../RC';
 import { State } from './types';
 
 const selectDefaultPlugins = () => [
@@ -24,10 +23,10 @@ const selectEnvPlugins = (state: State) => {
 };
 
 const selectAppPath = (state: State): string =>
-  path.join(state.cwd, rcErrorToNull(state.rc)?.dir ?? 'src');
+  path.join(state.cwd, state.rc?.dir ?? 'src');
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
-  let entry = rcErrorToNull(state.rc)?.webpack?.entry ?? 'index.js';
+  let entry = state.rc?.webpack?.entry ?? 'index.js';
 
   if (typeof entry === 'string') {
     return path.join(selectAppPath(state), entry);
@@ -50,8 +49,7 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
 };
 
 const selectFilename = (state: State): string => {
-  let filename =
-    rcErrorToNull(state.rc)?.webpack?.output?.filename ?? '[name].js';
+  let filename = state.rc?.webpack?.output?.filename ?? '[name].js';
 
   if (typeof filename === 'function') {
     filename = filename(state);
@@ -65,10 +63,7 @@ const selectFilename = (state: State): string => {
 };
 
 const selectPath = (state: State) =>
-  path.join(
-    state.cwd,
-    rcErrorToNull(state.rc)?.webpack?.output?.path ?? 'dist/'
-  );
+  path.join(state.cwd, state.rc?.webpack?.output?.path ?? 'dist/');
 
 const selectOutput = (state: State): webpack.Configuration['output'] => ({
   path: selectPath(state),
@@ -104,6 +99,6 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     plugins: [...selectDefaultPlugins(), ...selectEnvPlugins(state)]
   };
 
-  const modifier = rcErrorToNull(state.rc)?.webpack?.modifier;
+  const modifier = state.rc?.webpack?.modifier;
   return modifier?.(config, { env: state.env, cmd: 'build' }) ?? config;
 };

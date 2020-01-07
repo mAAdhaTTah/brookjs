@@ -1,10 +1,10 @@
 import { ActionType } from 'typesafe-actions';
 import { Maybe } from 'brookjs-types';
-import { RCResult } from '../../RC';
+import { RC } from './RC';
 import * as actions from './actions';
 
 interface BaseState {
-  rc: Maybe<RCResult>;
+  rc: Maybe<RC>;
   cwd: string;
   env: string;
   coverage: boolean;

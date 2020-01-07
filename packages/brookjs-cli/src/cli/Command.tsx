@@ -1,8 +1,6 @@
 import React from 'react';
 import { Argv, Arguments } from 'yargs';
 import * as t from 'io-ts';
-import { Maybe } from 'brookjs-types';
-import { RCResult } from '../RC';
 
 export const Command = t.type({
   builder: t.Function,
@@ -18,7 +16,7 @@ export interface Command<A> extends CommandBase {
   builder: Builder<A>;
   View: React.ComponentType<{
     args: Arguments<A>;
-    rc: Maybe<RCResult>;
+    rc: unknown;
     cwd: string;
   }>;
 }

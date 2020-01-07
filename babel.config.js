@@ -2,12 +2,6 @@ module.exports = api => {
   api.cache(false);
 
   return {
-    plugins: [
-      '@babel/plugin-proposal-class-properties',
-      '@babel/plugin-proposal-optional-chaining',
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-      process.env.NODE_ENV === 'test' && '@babel/transform-modules-commonjs'
-    ].filter(Boolean),
     presets: [
       'brookjs',
       process.env.NODE_ENV === 'test'
@@ -20,8 +14,15 @@ module.exports = api => {
             }
           ]
         : '@babel/env',
-      '@babel/typescript',
       '@babel/react'
-    ]
+    ],
+    plugins: [
+      // @TODO(mAAdhaTTah) remove isTSX workaround
+      ['@babel/transform-typescript', { allowDeclareFields: true, isTSX: true }],
+      '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-optional-chaining',
+      '@babel/plugin-proposal-nullish-coalescing-operator',
+      process.env.NODE_ENV === 'test' && '@babel/transform-modules-commonjs'
+    ].filter(Boolean)
   };
 };

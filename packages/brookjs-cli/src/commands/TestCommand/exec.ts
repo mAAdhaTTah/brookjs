@@ -2,12 +2,12 @@ import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
 import { Maybe } from 'brookjs-types';
-import { rcErrorToNull, RCResult } from '../../RC';
 import { project } from '../../services';
 import { testRun } from './actions';
+import { RC } from './RC';
 import { State, Action } from './types';
 
-const getDir = (rc: Maybe<RCResult>) => rcErrorToNull(rc)?.dir ?? 'src';
+const getDir = (rc: Maybe<RC>) => rc?.dir ?? 'src';
 
 const exec = (
   action$: Stream<Action, never>,
@@ -20,7 +20,7 @@ const exec = (
         dir: Kefir.constant(getDir(state.rc)),
         coverage: Kefir.constant(state.coverage),
         watch: Kefir.constant(state.watch),
-        jest: Kefir.constant(rcErrorToNull(state.rc)?.jest ?? {}),
+        jest: Kefir.constant(state.rc?.jest ?? {}),
         setupTests: project
           .extension$(state.cwd)
           .flatMap(testExtension =>

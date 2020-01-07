@@ -1,13 +1,13 @@
 import { ActionType } from 'typesafe-actions';
 import webpack from 'webpack';
 import { Maybe } from 'brookjs-types';
-import { RCResult } from '../../RC';
+import { RC } from './RC';
 import * as actions from './actions';
 
 interface BaseState {
   env: Required<webpack.Configuration>['mode'];
   cwd: string;
-  rc: Maybe<RCResult>;
+  rc: Maybe<RC>;
   watch: boolean;
 }
 
