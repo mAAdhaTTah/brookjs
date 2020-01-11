@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { Color, StdinContext, Box, Static } from 'ink';
+import React, { useEffect } from 'react';
+import { Color, Box, Static, useStdin } from 'ink';
 import { toJunction } from 'brookjs-silt';
 import TextInput from 'ink-text-input';
 import SelectInput from 'ink-select-input';
@@ -22,7 +22,7 @@ type Props = State & {
 };
 
 const useOnSubmit = (onSubmit: () => void) => {
-  const { stdin, setRawMode } = useContext(StdinContext);
+  const { stdin, setRawMode } = useStdin();
 
   useEffect(() => {
     const onData = (data: Buffer) => {

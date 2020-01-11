@@ -1,5 +1,5 @@
-import { useContext, useEffect } from 'react';
-import { AppContext } from 'ink';
+import { useEffect } from 'react';
+import { useApp } from 'ink';
 
 export class ExitError extends Error {
   public code: number;
@@ -11,7 +11,7 @@ export class ExitError extends Error {
 }
 
 export const useExit = (error?: Error) => {
-  const { exit } = useContext(AppContext);
+  const { exit } = useApp();
 
   useEffect(() => {
     exit(error);
