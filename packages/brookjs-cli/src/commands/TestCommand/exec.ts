@@ -49,8 +49,10 @@ const exec = (
         ],
         testEnvironment: 'jest-environment-jsdom-fourteen',
         transform: {
-          '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
           // require.resolve is relative to brookjs-cli/dist
+          '^.+\\.(js|jsx|ts|tsx)$': require.resolve(
+            path.join(__dirname, '..', 'jest', 'babelTransform.js')
+          ),
           '^.+\\.css$': require.resolve(
             path.join(__dirname, '..', 'jest', 'cssTransform.js')
           ),
@@ -88,8 +90,7 @@ const exec = (
     })
     .flatMap(argv =>
       Kefir.stream(emitter => {
-        process.env.NODE_ENV = 'test';
-        process.env.BABEL_ENV = 'test';
+        process.env.BABEL_ENV = process.env.NODE_ENV = 'test';
         emitter.value(testRun.request());
         jest
           .run(argv)

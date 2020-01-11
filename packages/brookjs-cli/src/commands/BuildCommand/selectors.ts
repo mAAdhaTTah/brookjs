@@ -5,6 +5,51 @@ import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import { State } from './types';
 
+const isEnvProduction = (state: State) => state.env === 'production';
+
+const selectAppPath = (state: State): string =>
+  path.join(state.cwd, state.rc?.dir ?? 'src');
+
+const defaultBabelConfig = {
+  presets: ['brookjs']
+};
+
+const selectDefaultRules = (state: State) => [
+  { parser: { requireEnsure: false } },
+  {
+    test: /\.m?(j|t)sx?$/,
+    loader: require.resolve('babel-loader'),
+    include: selectAppPath(state),
+    options: {
+      babelrc: false,
+      configFile: false,
+      cacheDirectory: true,
+      cacheCompression: false,
+      compact: isEnvProduction(state),
+      ...(state.rc?.babel?.modifier?.(defaultBabelConfig) ?? defaultBabelConfig)
+    }
+  }
+];
+
+const selectEnvRules = (state: State) => {
+  switch (state.env) {
+    case 'development':
+      return [
+        {
+          test: /\.(j|t)sx?$/,
+          loader: require.resolve('eslint-loader'),
+          include: selectAppPath(state),
+          enforce: 'pre' as const,
+          options: {
+            eslintPath: require.resolve('eslint')
+          }
+        }
+      ];
+    default:
+      return [];
+  }
+};
+
 const selectDefaultPlugins = () => [
   new CaseSensitivePathsPlugin({
     debug: false
@@ -21,9 +66,6 @@ const selectEnvPlugins = (state: State) => {
       return [];
   }
 };
-
-const selectAppPath = (state: State): string =>
-  path.join(state.cwd, state.rc?.dir ?? 'src');
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
   let entry = state.rc?.webpack?.entry ?? 'index.js';
@@ -76,22 +118,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     output: selectOutput(state),
     mode: state.env,
     module: {
-      rules: [
-        {
-          test: /\.(j|t)sx?$/,
-          loader: require.resolve('eslint-loader'),
-          include: selectAppPath(state),
-          enforce: 'pre',
-          options: {
-            eslintPath: require.resolve('eslint')
-          }
-        },
-        {
-          test: /\.(j|t)sx?$/,
-          loader: require.resolve('babel-loader'),
-          include: selectAppPath(state)
-        }
-      ]
+      rules: [...selectDefaultRules(state), ...selectEnvRules(state)]
     },
     resolve: {
       mainFields: ['module', 'main']
@@ -99,6 +126,8 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     plugins: [...selectDefaultPlugins(), ...selectEnvPlugins(state)]
   };
 
-  const modifier = state.rc?.webpack?.modifier;
-  return modifier?.(config, { env: state.env, cmd: 'build' }) ?? config;
+  return (
+    state.rc?.webpack?.modifier?.(config, { env: state.env, cmd: 'build' }) ??
+    config
+  );
 };
