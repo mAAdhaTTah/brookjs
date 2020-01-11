@@ -70,7 +70,9 @@ export default class ErrorBoundary extends React.Component<
 
   static contextType = AppContext;
 
-  declare context: React.ContextType<typeof AppContext>;
+  // @TODO(mAAdhaTTah) use this when plugin ordering is fixed
+  // declare context: React.ContextType<typeof AppContext>;
+  context!: React.ContextType<typeof AppContext>;
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ error, errorInfo }, () => {

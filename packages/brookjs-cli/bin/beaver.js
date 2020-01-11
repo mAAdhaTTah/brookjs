@@ -14,7 +14,7 @@ async function main() {
     }
   } catch {}
 
-  const run = await app.run(process.argv.slice(2));
+  const run = app.run(process.argv.slice(2));
 
   let code = 0;
 

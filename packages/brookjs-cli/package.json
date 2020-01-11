@@ -39,7 +39,6 @@
     "cross-env": "^6.0.0",
     "eslint": "^5.0.1",
     "eslint-loader": "^3.0.0",
-    "esm": "^3.2.20",
     "execa": "^3.4.0",
     "fs-extra": "^8.0.1",
     "glob": "^7.1.2",

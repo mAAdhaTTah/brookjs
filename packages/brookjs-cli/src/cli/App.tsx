@@ -1,7 +1,9 @@
 import React from 'react';
-import { cosmiconfig, defaultLoaders } from 'cosmiconfig';
-import { render } from 'ink';
-import esm from 'esm';
+import { defaultLoaders, cosmiconfigSync } from 'cosmiconfig';
+import { render, RenderOptions } from 'ink';
+import { TransformOptions } from '@babel/core';
+import * as t from 'io-ts';
+import { babelIO } from '../rc';
 import { Command } from './Command';
 import Commands from './Commands';
 import ErrorBoundary, {
@@ -10,14 +12,36 @@ import ErrorBoundary, {
   Root
 } from './components';
 
-const loadEsm = esm(module);
+const RC = t.partial({
+  babel: babelIO
+});
 
-const loaders = {
-  ...defaultLoaders,
-  '.js': (filename: string) => loadEsm(filename)
-};
+type RC = t.Type<typeof RC>;
+
+const toBabel: Array<string> = [];
+
+require('@babel/register')({
+  only: [
+    (filename: string) => {
+      for (const target of toBabel) {
+        if (filename.includes(target)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  ],
+  extensions: ['.js', '.jsx', '.ts', '.tsx'],
+  babelrc: false,
+  // @TODO(mAAdhaTTah) use brookjs preset
+  presets: ['react-app'],
+  plugins: ['@babel/plugin-transform-modules-commonjs']
+});
 
 export class App {
+  private rc?: unknown;
+
   static create(name: string, commands?: Commands) {
     return new App(name, commands);
   }
@@ -58,45 +82,40 @@ export class App {
     }
   }
 
-  private load(dir: string) {
-    // @TODO(mAAdhaTTah) harmonize usage of preset
-    require('@babel/register')({
-      only: [dir],
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      babelrc: true,
-      presets: [
-        '@babel/typescript',
-        [
-          '@babel/preset-env',
-          {
-            targets: {
-              node: 'current'
-            }
-          }
-        ]
-      ],
-      plugins: ['@babel/plugin-transform-modules-commonjs']
-    });
-
-    return require(dir);
+  private load(target: string) {
+    toBabel.push(target);
+    return require(target);
   }
 
-  async run(
+  getRC(): unknown {
+    if (this.rc !== undefined) {
+      return this.rc;
+    }
+
+    return (this.rc =
+      cosmiconfigSync(this.name, {
+        loaders: {
+          ...defaultLoaders,
+          '.js': (filename: string) => this.load(filename),
+          '.ts': (filename: string) => this.load(filename),
+          '.tsx': (filename: string) => this.load(filename)
+        }
+      }).search()?.config ?? null);
+  }
+
+  getBabelConfig(base: TransformOptions): TransformOptions {
+    return (
+      RC.decode(this.getRC())
+        .getOrElse({})
+        ?.babel?.modifier?.(base) ?? base
+    );
+  }
+
+  run(
     argv: string[],
-    {
-      stdin = process.stdin,
-      stdout = process.stdout,
-      cwd = process.cwd(),
-      debug = false
-    }: {
-      stdin?: typeof process.stdin;
-      stdout?: typeof process.stdout;
-      cwd?: string;
-      debug?: boolean;
-    } = {}
+    { cwd = process.cwd(), ...opts }: RenderOptions & { cwd?: string } = {}
   ) {
-    const rc: unknown =
-      (await cosmiconfig(this.name, { loaders }).search())?.config ?? null;
+    const rc = this.getRC();
 
     const { command, args } = this.commands.get(argv);
 
@@ -104,11 +123,7 @@ export class App {
       <ErrorBoundary>
         <Root {...{ command, argv, args, cwd, rc, errors: this.errors }} />
       </ErrorBoundary>,
-      {
-        stdout,
-        stdin,
-        debug
-      }
+      opts
     );
 
     return {
