@@ -6,6 +6,13 @@ import { Command } from './Command';
 import { getMessage } from './format';
 import { ExitError } from './useExit';
 
+export const ExplosiveBullet: React.FC<{ message: string }> = ({ message }) => (
+  <Box flexDirection="row">
+    <Box marginRight={2}>💥</Box>
+    <Box>{message}</Box>
+  </Box>
+);
+
 export const LoadDirError: React.FC<{ dir: string; error: Error }> = ({
   dir,
   error
@@ -29,10 +36,7 @@ export const CommandValidationError: React.FC<{
         Command {name} was not loaded due to validation errors:
       </Color>
       {errors.map((error, i) => (
-        <Box key={i} flexDirection="row">
-          <Box marginRight={2}>💥</Box>
-          <Box>{getMessage(error)}</Box>
-        </Box>
+        <ExplosiveBullet key={i} message={getMessage(error)} />
       ))}
     </Box>
   );
