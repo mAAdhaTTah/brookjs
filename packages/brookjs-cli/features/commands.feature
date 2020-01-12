@@ -8,7 +8,7 @@ Feature: cli commands
   @js
   Scenario: Developer adds a valid js command
     Given I have a project
-    And I add a "js" command with body
+    And I create "commands.js" with contents
       """
       import React from 'react';
       import Kefir from 'kefir';
@@ -34,7 +34,7 @@ Feature: cli commands
     @js
     Scenario: Developer adds an invalid js command
       Given I have a project
-      And I add a "js" command with body
+      And I create "commands.js" with contents
         """
         import React from 'react';
         import Kefir from 'kefir';
@@ -59,7 +59,7 @@ Feature: cli commands
     @ts
     Scenario: Developer adds a valid ts command
       Given I have a project
-      And I add a "tsx" command with body
+      And I create "commands.tsx" with contents
         """
         import React from 'react';
         import Kefir from 'kefir';
@@ -86,7 +86,7 @@ Feature: cli commands
       @ts
       Scenario: Developer adds an invalid ts command
         Given I have a project
-        And I add a "tsx" command with body
+        And I create "commands.tsx" with contents
           """
           import React from 'react';
           import Kefir from 'kefir';

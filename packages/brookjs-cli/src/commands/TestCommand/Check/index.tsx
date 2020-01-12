@@ -1,0 +1,36 @@
+import React from 'react';
+import { useDeltas } from 'brookjs-silt';
+import { unreachable } from 'brookjs-types';
+import { Arguments } from 'yargs';
+import { Args } from './types';
+import { reducer } from './reducer';
+import { initialState } from './initialState';
+import { Globbing, Checking, Completed } from './components';
+import { exec } from './exec';
+
+const Check: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
+  rc,
+  cwd
+}) => {
+  const { state } = useDeltas(reducer, initialState(cwd, rc), [exec]);
+
+  switch (state.status) {
+    case 'globbing':
+      return <Globbing />;
+    case 'checking':
+      return <Checking total={state.files.length} />;
+    case 'completed':
+      return (
+        <Completed
+          total={state.files.length}
+          unformatted={state.files
+            .filter(file => file.status === 'checked' && !file.correct)
+            .map(file => file.path.replace(`${state.cwd}/`, ''))}
+        />
+      );
+    default:
+      return unreachable(state.status);
+  }
+};
+
+export default Check;

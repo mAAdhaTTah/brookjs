@@ -1,17 +1,14 @@
 #!/usr/bin/env node
 const path = require('path');
-const { promises: fs } = require('fs');
 const { create } = require('brookjs-cli');
 
 async function main() {
   let app = create();
 
-  const cmdPath = path.join(process.cwd(), 'commands');
-
   try {
-    if (await fs.stat(cmdPath)) {
-      app = app.loadCommandsFrom(cmdPath);
-    }
+    app = app.loadCommandsFrom(
+      require.resolve(path.join(process.cwd(), 'commands'))
+    );
   } catch {}
 
   const run = app.run(process.argv.slice(2));

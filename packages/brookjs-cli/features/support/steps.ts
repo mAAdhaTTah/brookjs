@@ -13,6 +13,8 @@ import expect from 'expect';
 import { SnapshotState, toMatchSnapshot } from 'jest-snapshot';
 import { Question } from './world';
 
+const addEOL = (str: string) => str + '\n';
+
 BeforeAll(function() {
   expect.extend({
     toMatchSnapshot(actual: string, filename: string, testname: string) {
@@ -53,73 +55,22 @@ Before(function(testCase) {
 /**
  * Given I Have
  */
-Given('I have project with {string}', async function(type: string) {
-  await this.createProjectWith([
-    {
-      path: `src/${type}/index.js`,
-      contents: ''
-    }
-  ]);
-});
-
-Given('I have a file called {string} exported from {string}', async function(
-  file: string,
-  barrel: string
-) {
-  await Promise.all([
-    this.outputFile({ path: path.join('src', barrel, file), contents: '' }),
-    this.appendFile({
-      path: path.join('src', barrel, 'index.js'),
-      contents: `export * from './${file}';`
-    })
-  ]);
-});
-
 Given('I have a project', { timeout: -1 }, async function() {
   await this.createProject();
 });
 
-Given('I import an unknown file', async function() {
-  await this.appendFile({
-    path: path.join('src', 'app.js'),
-    contents: "import './file-does-not-exist';\n"
-  });
-});
-
-Given('I have a passing test', async function() {
-  await this.outputFile({
-    path: path.join('src', '__tests__', 'App.spec.js'),
-    contents: `describe('passing test', () => {
-  it('should pass', () => {
-    expect(1 + 1).toBe(2);
-  });
-});`
-  });
-});
-
-Given('I have a failing test', async function() {
-  await this.outputFile({
-    path: path.join('src', '__tests__', 'App.spec.js'),
-    contents: `describe('failing test', () => {
-  it('should pass', () => {
-    expect(1 + 1).toBe(3);
-  });
-});`
-  });
-});
-
-Given('I add a {string} command with body', async function(
-  ext: string,
+Given('I create {string} with contents', async function(
+  path: string,
   contents: string
 ) {
-  if (!['ts', 'tsx', 'js'].includes(ext)) {
-    throw new Error(`ext should be ts or js, got ${ext}`);
-  }
+  await this.outputFile({ path, contents: addEOL(contents) });
+});
 
-  await this.outputFile({
-    path: path.join('src', '..', 'commands', `index.${ext}`),
-    contents
-  });
+Given('I append to {string} with contents', async function(
+  path: string,
+  contents: string
+) {
+  await this.appendFile({ path, contents: addEOL(contents) });
 });
 
 /**
@@ -170,14 +121,6 @@ Then('I see a project dir called {string} with file snapshots:', async function(
 Then('I see a file called {string}', function(filename: string) {
   const file = path.join(this.cwd, filename);
   expect(fs.statSync(file).isFile()).toBe(true);
-});
-
-Then('I see passing test results', function() {
-  expect(this.output.stdout).toMatch(/1 passed/);
-});
-
-Then('I see failing test results', function() {
-  expect(this.output.stdout).toMatch(/1 failed/);
 });
 
 Then('I see this in stdout', function(output: string) {
