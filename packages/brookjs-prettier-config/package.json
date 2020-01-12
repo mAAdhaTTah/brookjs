@@ -1,0 +1,23 @@
+{
+  "name": "brookjs-prettier-config",
+  "version": "1.0.0-alpha.29",
+  "description": "reactive programming tools for well-structured, testable applications",
+  "main": "dist/brookjs-prettier-config.cjs.js",
+  "module": "dist/brookjs-prettier-config.esm.js",
+  "unpkg": "dist/brookjs-prettier-config.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "yarn test:lint",
+    "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
+    "clean": "rimraf dist",
+    "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
+    "prepublishOnly": "yarn clean && yarn build"
+  },
+  "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
+  "license": "MIT"
+}
