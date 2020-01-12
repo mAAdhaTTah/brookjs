@@ -2,33 +2,30 @@
 to: <%= name %>/.eslintrc.js
 ---
 module.exports = {
-    root: true,
-    parserOptions: {
-        ecmaVersion: 8,
-        sourceType: 'module',
-        ecmaFeatures: {
-            impliedStrict: true,
-            jsx: true,
-        },
-    },
-    plugins: [
-        'react',
-    ],
-    env: {
-        es6: true,
-        node: true,
-        browser: true,
-    },
-    extends: [
-        'valtech'
-    ],
-    settings: {
-        'react': {
-            pragma: 'h',
-        }
-    },
-    rules: {
-        'react/jsx-uses-react': 2,
-        'react/jsx-uses-vars': 2,
+  root: true,
+  parserOptions: {
+    ecmaVersion: 8,
+    sourceType: 'module',
+    ecmaFeatures: {
+      impliedStrict: true,
+      jsx: true
     }
+  },
+  plugins: ['react'],
+  env: {
+    es6: true,
+    node: true,
+    browser: true
+  },
+  extends: ['valtech', 'prettier'],
+  settings: {
+    react: {
+      pragma: 'h'
+    }
+  },
+  rules: {
+    'react/jsx-uses-react': 2,
+    'react/jsx-uses-vars': 2
+  }
 };
+

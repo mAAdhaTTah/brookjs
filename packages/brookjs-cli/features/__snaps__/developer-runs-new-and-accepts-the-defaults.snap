@@ -36,36 +36,33 @@ export const webpack = {
 
 exports[`Developer runs new and accepts the defaults-.eslintrc.js 1`] = `
 "module.exports = {
-    root: true,
-    parserOptions: {
-        ecmaVersion: 8,
-        sourceType: 'module',
-        ecmaFeatures: {
-            impliedStrict: true,
-            jsx: true,
-        },
-    },
-    plugins: [
-        'react',
-    ],
-    env: {
-        es6: true,
-        node: true,
-        browser: true,
-    },
-    extends: [
-        'valtech'
-    ],
-    settings: {
-        'react': {
-            pragma: 'h',
-        }
-    },
-    rules: {
-        'react/jsx-uses-react': 2,
-        'react/jsx-uses-vars': 2,
+  root: true,
+  parserOptions: {
+    ecmaVersion: 8,
+    sourceType: 'module',
+    ecmaFeatures: {
+      impliedStrict: true,
+      jsx: true
     }
+  },
+  plugins: ['react'],
+  env: {
+    es6: true,
+    node: true,
+    browser: true
+  },
+  extends: ['valtech', 'prettier'],
+  settings: {
+    react: {
+      pragma: 'h'
+    }
+  },
+  rules: {
+    'react/jsx-uses-react': 2,
+    'react/jsx-uses-vars': 2
+  }
 };
+
 "
 `;
 
@@ -138,7 +135,8 @@ exports[`Developer runs new and accepts the defaults-package.json 1`] = `
     \\"brookjs-desalinate\\": \\"^1.0.0-alpha\\",
     \\"eslint-config-valtech\\": \\"^1.2.0\\",
     \\"eslint-plugin-react\\": \\"^7.11.0\\",
-    \\"hygen\\": \\"^1.6.2\\"
+    \\"hygen\\": \\"^1.6.2\\",
+    \\"prettier\\": \\"^1.19.0\\"
   },
   \\"dependencies\\": {
     \\"@babel/polyfill\\": \\"^7.0.0\\",
@@ -160,7 +158,7 @@ exports[`Developer runs new and accepts the defaults-src/actions/app.js 1`] = `
 "export const INIT = 'INIT';
 
 export const init = () => ({
-    type: INIT
+  type: INIT
 });
 "
 `;
@@ -185,30 +183,25 @@ import {} from './selectors';
 const { __INITIAL_STATE__ } = global;
 
 const compose = composeWithDevTools({
-    name: 'test-app'
+  name: 'test-app'
 });
 
-const enhancer = compose(
-    applyMiddleware(observeDelta(
-        // Register your deltas here
-    )),
-    eddy()
-);
+const enhancer = compose(applyMiddleware(observeDelta()), eddy());
 
-const reducer = combineReducers({
-    // Register your reducers here
-});
+const reducer = combineReducers({});
 
 const store = createStore(reducer, __INITIAL_STATE__, enhancer);
 const state$ = fromReduxStore(store);
 
 ReactDOM.render(
-    <RootJunction silt-embeddable root$={root$ => root$.observe(store.dispatch)}>
-        {state$.map(state => (
-            <pre><code>{JSON.stringify(state)}</code></pre>
-        ))}
-    </RootJunction>,
-    document.getElementById('app')
+  <RootJunction silt-embeddable root$={root$ => root$.observe(store.dispatch)}>
+    {state$.map(state => (
+      <pre>
+        <code>{JSON.stringify(state)}</code>
+      </pre>
+    ))}
+  </RootJunction>,
+  document.getElementById('app')
 );
 
 store.dispatch(init());
@@ -220,17 +213,24 @@ exports[`Developer runs new and accepts the defaults-src/components/index.js 1`]
 exports[`Developer runs new and accepts the defaults-src/deltas/index.js 1`] = `""`;
 
 exports[`Developer runs new and accepts the defaults-src/dom.js 1`] = `
-"import { children, component, Kefir, render, containerAttribute } from 'brookjs';
-import { } from './components';
+"import {
+  children,
+  component,
+  Kefir,
+  render,
+  containerAttribute
+} from 'brookjs';
+import {} from './components';
 import template from './view.hbs';
 
-export const el = doc => Kefir.fromCallback(callback => {
+export const el = doc =>
+  Kefir.fromCallback(callback => {
     callback(doc.querySelector(\`[\${containerAttribute('app')}]\`));
-});
+  });
 
 export const view = component({
-    children: children({}),
-    render: render(template)
+  children: children({}),
+  render: render(template)
 });
 "
 `;
