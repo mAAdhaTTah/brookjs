@@ -1,32 +1,29 @@
-import path from 'path';
 import { Delta } from 'brookjs-types';
-import { sampleStateAtAction } from 'brookjs-flow';
+import { sampleStateAtAction, ofType } from 'brookjs-flow';
 import Kefir from 'kefir';
-import { glob, prettier } from '../../../services';
-import * as actions from './actions';
+import { prettier } from '../../../services';
+import { globLintDelta, globLint } from '../../../deltas';
+import { check } from './actions';
 import { State, Action } from './types';
 
 export const exec: Delta<Action, State> = (action$, state$) => {
-  const glob$ = state$.take(1).flatMap(state =>
-    glob(path.join(state.cwd, state.rc?.dir ?? 'src', '**/*.{js,jsx,ts,tsx}'))
-      .map(files => actions.globDir.success(files))
-      .flatMapErrors(err => Kefir.constant(actions.globDir.failure(err)))
+  const globLint$ = globLintDelta(
+    action$.thru(ofType(globLint.request)),
+    state$
   );
 
   const check$ = sampleStateAtAction(
     action$,
     state$,
-    actions.check.project.request
+    check.project.request
   ).flatMap(state =>
     Kefir.concat<Action, never>([
       Kefir.merge(state.files.map(file => prettier.check(file.path)))
-        .map(result => actions.check.file.success(result))
-        .flatMapErrors(error =>
-          Kefir.constant(actions.check.file.failure(error))
-        ),
-      Kefir.constant(actions.check.project.success())
+        .map(result => check.file.success(result))
+        .flatMapErrors(error => Kefir.constant(check.file.failure(error))),
+      Kefir.constant(check.project.success())
     ])
   );
 
-  return Kefir.merge<Action, never>([glob$, check$]);
+  return Kefir.merge<Action, never>([globLint$, check$]);
 };

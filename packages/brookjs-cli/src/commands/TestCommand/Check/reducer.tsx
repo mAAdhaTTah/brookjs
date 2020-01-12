@@ -2,14 +2,15 @@ import { getType } from 'typesafe-actions';
 import { EddyReducer, loop } from 'brookjs';
 import { State, Action } from './types';
 import { initialState } from './initialState';
-import { globDir, check } from './actions';
+import { check } from './actions';
+import { globLint } from '../../../deltas';
 
 export const reducer: EddyReducer<State, Action> = (
   state = initialState('/', null),
   action
 ) => {
   switch (action.type) {
-    case getType(globDir.success):
+    case getType(globLint.success):
       return loop(
         {
           ...state,

@@ -1,12 +1,6 @@
 import { createAsyncAction } from 'typesafe-actions';
 import { prettier } from '../../../services';
 
-export const globDir = createAsyncAction(
-  'GLOB_DIR_STARTED',
-  'GLOB_DIR_SUCCEEDED',
-  'GLOB_DIR_FAILED'
-)<void, string[], Error>();
-
 export const check = {
   project: createAsyncAction(
     'CHECK_PROJECT_STARTED',
