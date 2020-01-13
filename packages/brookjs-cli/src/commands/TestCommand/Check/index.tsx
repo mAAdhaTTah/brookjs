@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import { useDeltas } from 'brookjs-silt';
 import { unreachable } from 'brookjs-types';
 import { Arguments } from 'yargs';
+import { globLint } from '../../../deltas';
 import { Args } from './types';
 import { reducer } from './reducer';
 import { initialState } from './initialState';
 import { Globbing, Checking, Completed } from './components';
 import { exec } from './exec';
-import { globLint } from '../../../deltas';
 
 const Check: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   rc,

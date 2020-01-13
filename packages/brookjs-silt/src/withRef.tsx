@@ -54,9 +54,9 @@ export const withRef$ = <P, E extends Element, R extends { type: string }>(
     refback = (el: E | null) => el && (this.ref$ as any)._emitValue(el);
 
     componentWillUnmount() {
-      this.aggregated$ &&
-        this.plugged$ &&
-        this.aggregated$.unplug(this.plugged$);
+      if (this.plugged$) {
+        this.aggregated$?.unplug(this.plugged$);
+      }
     }
 
     componentDidMount() {
@@ -93,6 +93,7 @@ export const withRef$ = <P, E extends Element, R extends { type: string }>(
               );
             }
 
+            // eslint-disable-next-line react/jsx-pascal-case
             return <WithRef$.Target {...this.props} ref={this.refback} />;
           }}
         </Consumer>

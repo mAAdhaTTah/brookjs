@@ -8,6 +8,7 @@ import { ExitError } from './useExit';
 
 export const ExplosiveBullet: React.FC<{ message: string }> = ({ message }) => (
   <Box flexDirection="row">
+    {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
     <Box marginRight={2}>💥</Box>
     <Box>{message}</Box>
   </Box>

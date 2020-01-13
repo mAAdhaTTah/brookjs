@@ -64,6 +64,8 @@ const useDeltas = <S, A extends Action<string>>(
   const action$: Queue<A> = useSingleton(() => new Queue());
   const state$: Property<S, never> = useMemo(
     () => action$.scan(upgradeReducer(reducer, action$.emit), initialState),
+    // leaving out `initialState` cuz that only matters the first time.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [action$, reducer]
   );
   const [state, setState] = useState(initialState);
@@ -72,6 +74,9 @@ const useDeltas = <S, A extends Action<string>>(
 
   const delta$: Observable<A, never> = useMemo(
     () => Kefir.merge(deltas.map(delta => delta(action$, state$))),
+    // leaving out `deltas` cuz we're spreading it instead.
+    // we're doing this so people can pass in the `delta` as an array.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [...deltas, action$, state$]
   );
 

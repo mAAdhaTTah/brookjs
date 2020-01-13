@@ -41,7 +41,13 @@ const selectEnvRules = (state: State) => {
           include: selectAppPath(state),
           enforce: 'pre' as const,
           options: {
-            eslintPath: require.resolve('eslint')
+            cache: true,
+            formatter: require.resolve('react-dev-utils/eslintFormatter'),
+            eslintPath: require.resolve('eslint'),
+            baseConfig: {
+              extends: [require.resolve('eslint-config-brookjs')]
+            },
+            useEslintrc: false
           }
         }
       ];
