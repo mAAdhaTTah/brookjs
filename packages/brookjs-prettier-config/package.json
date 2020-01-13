@@ -1,6 +1,6 @@
 {
   "name": "brookjs-prettier-config",
-  "version": "1.0.0-alpha.29",
+  "version": "1.0.0-alpha.30",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs-prettier-config.cjs.js",
   "module": "dist/brookjs-prettier-config.esm.js",
