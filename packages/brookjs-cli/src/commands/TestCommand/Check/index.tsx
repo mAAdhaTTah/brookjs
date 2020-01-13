@@ -6,8 +6,9 @@ import { globLint } from '../../../deltas';
 import { Args } from './types';
 import { reducer } from './reducer';
 import { initialState } from './initialState';
-import { Globbing, Checking, Completed } from './components';
+import { Globbing, Running } from '../components';
 import { exec } from './exec';
+import { Completed } from './Completed';
 
 const Check: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   rc,
@@ -23,7 +24,7 @@ const Check: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
     case 'globbing':
       return <Globbing />;
     case 'checking':
-      return <Checking total={state.files.length} />;
+      return <Running action="Checking" total={state.files.length} />;
     case 'completed':
       return (
         <Completed

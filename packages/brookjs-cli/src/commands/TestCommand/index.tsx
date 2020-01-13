@@ -3,8 +3,9 @@ import { unreachable } from 'brookjs-types';
 import { Command } from '../../cli';
 import Check from './Check';
 import Unit from './Unit';
+import Lint from './Lint';
 
-const types = ['check', 'unit'] as const;
+const types = ['check', 'lint', 'unit'] as const;
 
 type Args = {
   coverage: boolean;
@@ -38,8 +39,10 @@ const TestCommand: Command<Args> = {
         return <Check {...props} />;
       case 'unit':
         return <Unit {...props} />;
+      case 'lint':
+        return <Lint {...props} />;
       default:
-        unreachable(props.args.type);
+        return unreachable(props.args.type);
     }
   }
 };

@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// @TODO(mAAdhaTTah) This needs to be set so we can use @babel/register
+// to load commands & rc files. Would be nice to get rid of this and
+// scope this change to the compiling process.
+process.env.NODE_ENV = 'production';
+
 const path = require('path');
 const { create } = require('brookjs-cli');
 
