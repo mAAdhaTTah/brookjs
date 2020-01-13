@@ -25,7 +25,7 @@ const BuildError: React.FC<{ error: Error; watch: boolean }> = ({
     if (!watch) {
       exit(error);
     }
-  }, [watch, exit]);
+  }, [watch, exit, error]);
 
   return <Box>{error.message}</Box>;
 };

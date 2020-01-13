@@ -1,0 +1,32 @@
+{
+  "name": "eslint-config-brookjs",
+  "version": "1.0.0-alpha.29",
+  "description": "reactive programming tools for well-structured, testable applications",
+  "main": "dist/eslint-config-brookjs.cjs.js",
+  "module": "dist/eslint-config-brookjs.esm.js",
+  "unpkg": "dist/eslint-config-brookjs.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "test": "yarn test:lint",
+    "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
+    "clean": "rimraf dist",
+    "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
+    "prepublishOnly": "yarn clean && yarn build"
+  },
+  "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
+    "babel-eslint": "^10.0.0",
+    "eslint-config-react-app": "^5.0.0",
+    "eslint-plugin-flowtype": "^4.0.0",
+    "eslint-plugin-jsx-a11y": "^6.0.0",
+    "eslint-plugin-react-hooks": "^2.0.0"
+  }
+}

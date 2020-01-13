@@ -1,6 +1,6 @@
 import { Box, Color } from 'ink';
 import React from 'react';
-import { useExit } from '../../cli';
+import { useExit } from '../../../cli';
 import { State, CompleteState, ErrorState } from './types';
 
 const Running: React.FC = React.memo(() => (

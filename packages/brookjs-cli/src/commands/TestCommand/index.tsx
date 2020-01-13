@@ -1,41 +1,49 @@
 import React from 'react';
-import { useDeltas, RootJunction } from 'brookjs-silt';
+import { unreachable } from 'brookjs-types';
 import { Command } from '../../cli';
-import exec from './exec';
-import initialState from './initialState';
-import reducer from './reducer';
-import View from './View';
-import { Args } from './types';
+import Check from './Check';
+import Unit from './Unit';
+import Lint from './Lint';
+
+const types = ['check', 'lint', 'unit'] as const;
+
+type Args = {
+  coverage: boolean;
+  watch: boolean;
+  type: typeof types extends ReadonlyArray<infer T> ? T : never;
+};
 
 const TestCommand: Command<Args> = {
   builder(yargs) {
-    return yargs
-      .positional('type', {
-        describe: 'Type of test to run. One of: unit.'
-      })
-      .option('coverage', {
+    return yargs.options({
+      type: {
+        required: true,
+        describe: `Type of test to run. One of: ${types.join(', ')}.`,
+        choices: types
+      },
+      coverage: {
         describe: 'Add coverage data to output.',
         default: false
-      })
-      .option('watch', {
+      },
+      watch: {
         describe: 'Watch files & rerun the tests on changes.',
         default: false
-      });
+      }
+    });
   },
   cmd: 'test <type>',
   describe: 'Run the application tests.',
-  View: ({ args, rc, cwd }) => {
-    const { state, root$ } = useDeltas(
-      reducer,
-      initialState(args, { rc, cwd }),
-      [exec]
-    );
-
-    return (
-      <RootJunction root$={root$}>
-        <View {...state} />
-      </RootJunction>
-    );
+  View: props => {
+    switch (props.args.type) {
+      case 'check':
+        return <Check {...props} />;
+      case 'unit':
+        return <Unit {...props} />;
+      case 'lint':
+        return <Lint {...props} />;
+      default:
+        return unreachable(props.args.type);
+    }
   }
 };
 

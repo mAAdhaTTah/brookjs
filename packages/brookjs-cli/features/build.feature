@@ -21,6 +21,9 @@ Feature: build command
   @broken
   Scenario: Developer runs broken build
     Given I have a project
-    And I import an unknown file
+    And I append to "src/app.js" with contents
+      """
+      import './file-does-not-exist';
+      """
     When I run beaver with "build --env development"
     Then I wait for the command to finish with code 1

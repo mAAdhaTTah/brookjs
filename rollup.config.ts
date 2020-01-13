@@ -3,6 +3,8 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import babel from 'rollup-plugin-babel';
 
+process.env.BABEL_ENV = process.env.NODE_ENV = 'production';
+
 const pkg = require(path.resolve(process.cwd(), 'package.json'));
 
 export default {
@@ -19,6 +21,7 @@ export default {
   ].filter(Boolean),
   plugins: [
     babel({
+      runtimeHelpers: true,
       configFile: path.join(__dirname, 'babel.config.js'),
       extensions: ['.ts', '.tsx', '.js']
     }),

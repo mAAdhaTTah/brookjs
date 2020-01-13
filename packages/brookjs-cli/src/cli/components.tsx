@@ -6,6 +6,14 @@ import { Command } from './Command';
 import { getMessage } from './format';
 import { ExitError } from './useExit';
 
+export const ExplosiveBullet: React.FC<{ message: string }> = ({ message }) => (
+  <Box flexDirection="row">
+    {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+    <Box marginRight={2}>💥</Box>
+    <Box>{message}</Box>
+  </Box>
+);
+
 export const LoadDirError: React.FC<{ dir: string; error: Error }> = ({
   dir,
   error
@@ -29,10 +37,7 @@ export const CommandValidationError: React.FC<{
         Command {name} was not loaded due to validation errors:
       </Color>
       {errors.map((error, i) => (
-        <Box key={i} flexDirection="row">
-          <Box marginRight={2}>💥</Box>
-          <Box>{getMessage(error)}</Box>
-        </Box>
+        <ExplosiveBullet key={i} message={getMessage(error)} />
       ))}
     </Box>
   );
@@ -70,7 +75,9 @@ export default class ErrorBoundary extends React.Component<
 
   static contextType = AppContext;
 
-  declare context: React.ContextType<typeof AppContext>;
+  // @TODO(mAAdhaTTah) use this when plugin ordering is fixed
+  // declare context: React.ContextType<typeof AppContext>;
+  context!: React.ContextType<typeof AppContext>;
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({ error, errorInfo }, () => {

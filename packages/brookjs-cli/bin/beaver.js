@@ -1,20 +1,22 @@
 #!/usr/bin/env node
+// @TODO(mAAdhaTTah) This needs to be set so we can use @babel/register
+// to load commands & rc files. Would be nice to get rid of this and
+// scope this change to the compiling process.
+process.env.NODE_ENV = 'production';
+
 const path = require('path');
-const { promises: fs } = require('fs');
 const { create } = require('brookjs-cli');
 
 async function main() {
   let app = create();
 
-  const cmdPath = path.join(process.cwd(), 'commands');
-
   try {
-    if (await fs.stat(cmdPath)) {
-      app = app.loadCommandsFrom(cmdPath);
-    }
+    app = app.loadCommandsFrom(
+      require.resolve(path.join(process.cwd(), 'commands'))
+    );
   } catch {}
 
-  const run = await app.run(process.argv.slice(2));
+  const run = app.run(process.argv.slice(2));
 
   let code = 0;
 

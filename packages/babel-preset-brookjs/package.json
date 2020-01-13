@@ -20,7 +20,9 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "@babel/preset-react": "^7.0.0"
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.0.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "babel-preset-react-app": "^9.1.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }
