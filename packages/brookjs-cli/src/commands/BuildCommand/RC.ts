@@ -1,7 +1,6 @@
 import * as t from 'io-ts';
 import webpack from 'webpack';
-import { TransformOptions } from '@babel/core';
-import { babelIO } from '../../rc';
+import { Babel } from '../../rc';
 
 export const RC = t.partial({
   dir: t.string,
@@ -17,7 +16,8 @@ export const RC = t.partial({
       filename: t.union([t.Function, t.string])
     })
   }),
-  babel: babelIO
+  babel: Babel,
+  client: t.union([t.literal('yarn'), t.literal('npm')])
 });
 
 type RCBase = t.TypeOf<typeof RC>;
@@ -34,12 +34,6 @@ type Webpack = Omit<WebpackBase, 'modifier'> & {
     config: webpack.Configuration,
     state: WebpackState
   ) => webpack.Configuration;
-};
-
-type BabelBase = Required<RCBase>['babel'];
-
-type Babel = Omit<BabelBase, 'modifier'> & {
-  modifier?: (config: TransformOptions) => TransformOptions;
 };
 
 export interface RC extends RCBase {

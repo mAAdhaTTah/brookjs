@@ -3,7 +3,7 @@ import { defaultLoaders, cosmiconfigSync } from 'cosmiconfig';
 import { render, RenderOptions } from 'ink';
 import { TransformOptions } from '@babel/core';
 import * as t from 'io-ts';
-import { babelIO } from '../rc';
+import { Babel } from '../rc';
 import { Command } from './Command';
 import Commands from './Commands';
 import ErrorBoundary, {
@@ -13,7 +13,7 @@ import ErrorBoundary, {
 } from './components';
 
 const RC = t.partial({
-  babel: babelIO
+  babel: Babel
 });
 
 type RC = t.Type<typeof RC>;

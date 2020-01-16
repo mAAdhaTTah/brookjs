@@ -11980,6 +11980,16 @@ npm-bundled@^1.0.1:
   resolved "https://registry.yarnpkg.com/npm-bundled/-/npm-bundled-1.0.6.tgz#e7ba9aadcef962bb61248f91721cd932b3fe6bdd"
   integrity sha512-8/JCaftHwbd//k6y2rEWp6k1wxVfpFzB6t1p825+cUb7Ym2XQfhwIC5KwhrvzZRJu+LtDE585zVaS32+CGtf0g==
 
+npm-install-webpack-plugin@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/npm-install-webpack-plugin/-/npm-install-webpack-plugin-4.0.5.tgz#0af5bbe45eaf2648e2cd51fd8b091e0b652fef1b"
+  integrity sha1-CvW75F6vJkjizVH9iwkeC2Uv7xs=
+  dependencies:
+    cross-spawn "^5.0.1"
+    json5 "^0.5.1"
+    memory-fs "^0.4.1"
+    resolve "^1.2.0"
+
 npm-lifecycle@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/npm-lifecycle/-/npm-lifecycle-3.1.2.tgz#06f2253ea3b9e122ce3e55e3496670a810afcc84"

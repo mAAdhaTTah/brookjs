@@ -1,8 +1,7 @@
-// @todo: readd NpmInstallPlugin
-// @todo: clean up this file (extra functions, commented out code, etc.)
 import path from 'path';
-import webpack from 'webpack';
+import webpack, { Plugin, RuleSetRule } from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
+import NpmInstallPlugin from 'npm-install-webpack-plugin';
 import { State } from './types';
 
 const isEnvProduction = (state: State) => state.env === 'production';
@@ -14,7 +13,7 @@ const defaultBabelConfig = {
   presets: ['brookjs']
 };
 
-const selectDefaultRules = (state: State) => [
+const selectDefaultRules = (state: State): RuleSetRule[] => [
   { parser: { requireEnsure: false } },
   {
     test: /\.m?(j|t)sx?$/,
@@ -31,7 +30,7 @@ const selectDefaultRules = (state: State) => [
   }
 ];
 
-const selectEnvRules = (state: State) => {
+const selectEnvRules = (state: State): RuleSetRule[] => {
   switch (state.env) {
     case 'development':
       return [
@@ -56,16 +55,21 @@ const selectEnvRules = (state: State) => {
   }
 };
 
-const selectDefaultPlugins = () => [
+const selectDefaultPlugins = (): Plugin[] => [
   new CaseSensitivePathsPlugin({
     debug: false
   })
 ];
 
-const selectEnvPlugins = (state: State) => {
+const selectEnvPlugins = (state: State): Plugin[] => {
   switch (state.env) {
     case 'development':
-      return [];
+      return [
+        new NpmInstallPlugin({
+          quiet: true,
+          yarn: state.rc?.client === 'yarn'
+        })
+      ];
     case 'production':
       return [];
     default:
