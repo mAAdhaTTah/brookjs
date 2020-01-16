@@ -3,6 +3,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
+import { Plugin as ShakePlugin } from 'webpack-common-shake';
 import { State } from './types';
 
 const isEnvProduction = (state: State) => state.env === 'production';
@@ -67,7 +68,14 @@ const selectEnvPlugins = (state: State) => {
     case 'development':
       return [];
     case 'production':
-      return [];
+      return [
+        new ShakePlugin({
+          warnings: {
+            global: false,
+            module: false
+          }
+        })
+      ];
     default:
       return [];
   }
