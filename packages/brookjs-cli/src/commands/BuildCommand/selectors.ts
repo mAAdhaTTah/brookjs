@@ -122,7 +122,9 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
   const config: webpack.Configuration = {
     entry: selectWebpackEntry(state),
     output: selectOutput(state),
+    bail: isEnvProduction(state),
     mode: state.env,
+    devtool: isEnvProduction(state) ? 'source-map' : 'cheap-module-source-map',
     module: {
       rules: [...selectDefaultRules(state), ...selectEnvRules(state)]
     },
