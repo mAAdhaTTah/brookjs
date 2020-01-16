@@ -2750,10 +2750,17 @@
     react-textarea-autosize "^7.1.0"
     simplebar-react "^1.0.0-alpha.6"
 
-"@storybook/core-events@5.2.8", "@storybook/core-events@^5.0.0":
+"@storybook/core-events@5.2.8":
   version "5.2.8"
   resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-5.2.8.tgz#93fc458ea0820ff1409d268b0fe51abba200f5a4"
   integrity sha512-NkQKC5doO/YL9gsO61bqaxgveKktkiJWZ3XyyhL1ZebgnO9wTlrU+i9b5aX73Myk1oxbicQw9KcwDGYk0qFuNQ==
+  dependencies:
+    core-js "^3.0.1"
+
+"@storybook/core-events@^5.0.0":
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-5.3.4.tgz#9e91d5f5225701d3216e37f3c570b93c7feca9f5"
+  integrity sha512-Wye2lioyokaGFRs+BY3nEdhofxnCfJyFjrrJ1WrzMepwpmHcH/Sck1aIK/aiJ4B3vwPdUewnTeEsXneDUuh4Dw==
   dependencies:
     core-js "^3.0.1"
 
