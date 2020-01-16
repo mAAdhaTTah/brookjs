@@ -23,7 +23,7 @@
     "@types/prettier": "^1.19.0",
     "@types/react": "^16.8.0",
     "@types/react-dev-utils": "^9.0.2",
-    "@types/react-inspector": "^3.0.0",
+    "@types/react-inspector": "^4.0.0",
     "@types/react-textarea-autosize": "^4.3.4",
     "@types/recompose": "^0.30.5",
     "@types/redux-mock-store": "^1.0.1",

@@ -3426,10 +3426,10 @@
     "@types/webpack" "*"
     "@types/webpack-dev-server" "*"
 
-"@types/react-inspector@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@types/react-inspector/-/react-inspector-3.0.0.tgz#062133a54a6712753a910f10c2eeac849839d80f"
-  integrity sha512-Xr9JERItLXWR20KMh6txdBNyjFDDoDxG8u8Mt1Ny/FN0sd6xUfOR/cy3FKORojJDt9gqdMDiNauVmTO9/yE7Rg==
+"@types/react-inspector@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-inspector/-/react-inspector-4.0.0.tgz#065733a49157adb86ee1395914bc3c5cb0cb17a2"
+  integrity sha512-WPEeEnN8Wl/jBIk1XK+sceqOhHrs0+EcnBAMIt5hNndsZWfYyKnWWtRsNowRCOOuKi6C10TCWmkKFlTZPfMXhw==
   dependencies:
     "@types/react" "*"
     csstype "^2.0.0"
