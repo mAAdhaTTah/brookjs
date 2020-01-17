@@ -9,14 +9,14 @@ Feature: build command
     Given I have a project
     When I run beaver with "build --env development"
     And I wait for the command to finish with code 0
-    Then I see a file called "dist/app.js"
+    Then I see a file called "dist/runtime-app.js"
 
   @production
   Scenario: Developer runs build with env production
     Given I have a project
     When I run beaver with "build --env production"
     And I wait for the command to finish with code 0
-    Then I see a file called "dist/app.js"
+    Then I see a file called "dist/runtime-app.js"
 
   @broken
   Scenario: Developer runs broken build
