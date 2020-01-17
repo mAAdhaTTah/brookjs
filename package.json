@@ -5,6 +5,8 @@
     "@babel/helpers": "^7.4.0",
     "@babel/preset-env": "^7.4.0",
     "@babel/register": "^7.4.0",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "@storybook/react": "^5.0.0",
     "@testing-library/react": "^8.0.0",
     "@testing-library/react-hooks": "^3.2.1",
@@ -19,7 +21,9 @@
     "@types/jest": "^24.0.23",
     "@types/kefir": "^3.8.0",
     "@types/lolex": "^5.1.0",
+    "@types/mini-css-extract-plugin": "^0.9.0",
     "@types/node": "^12.0.0",
+    "@types/optimize-css-assets-webpack-plugin": "^5.0.1",
     "@types/prettier": "^1.19.0",
     "@types/react": "^16.8.0",
     "@types/react-dev-utils": "^9.0.2",
@@ -27,8 +31,10 @@
     "@types/react-textarea-autosize": "^4.3.4",
     "@types/recompose": "^0.30.5",
     "@types/redux-mock-store": "^1.0.1",
+    "@types/terser-webpack-plugin": "^2.2.0",
     "@types/uuid": "^3.4.4",
     "@types/webpack": "^4.4.26",
+    "@types/webpack-manifest-plugin": "^2.1.0",
     "awesome-typescript-loader": "^5.2.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.7.1",
@@ -59,8 +65,6 @@
     "rimraf": "^3.0.0",
     "rollup": "^1.10.1",
     "rollup-plugin-babel": "^4.0.0",
-    "rollup-plugin-commonjs": "^10.0.0",
-    "rollup-plugin-node-resolve": "^5.0.0",
     "typescript": "^3.7.0"
   },
   "scripts": {
@@ -77,6 +81,7 @@
   ],
   "resolutions": {
     "callsites": "^3.0.0",
+    "react-dev-utils": "^10.0.0",
     "typescript": "^3.7.0"
   }
 }
