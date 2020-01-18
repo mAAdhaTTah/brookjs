@@ -37,7 +37,7 @@ const Lint: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
               const added = file.report.errorCount + file.report.warningCount;
 
               return {
-                total: props.total + added,
+                total: props.total + 1,
                 errors: props.errors + file.report.errorCount,
                 warnings: props.warnings + file.report.warningCount,
                 issues:
