@@ -38,14 +38,15 @@ const exec = (
       const config: any = {
         roots: [path.join('<rootDir>', dir)],
         collectCoverageFrom: [
-          `${dir}/**/*.{js,jsx,ts,tsx}`,
+          `${dir}/**/*.{js,jsx,mjs,ts,tsx}`,
+          `!${dir}/index.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/**/*.d.ts`
         ],
         setupFilesAfterEnv: setupTests,
         testMatch: [
           // Anything with `spec/test` is a test file
           // Don't glob `__tests__` because test utils
-          `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,ts,tsx}`
+          `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,mjs,ts,tsx}`
         ],
         testEnvironment: 'jest-environment-jsdom-fourteen',
         transform: {
@@ -68,7 +69,7 @@ const exec = (
           '^react-native$': 'react-native-web',
           '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy'
         },
-        moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'node']
+        moduleFileExtensions: ['js', 'jsx', 'mjs', 'ts', 'tsx', 'node']
       };
 
       for (const [key, value] of Object.entries(jest)) {
