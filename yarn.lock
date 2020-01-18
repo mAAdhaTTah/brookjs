@@ -9818,9 +9818,9 @@ ink-spinner@^3.0.0:
     prop-types "^15.5.10"
 
 ink-testing-library@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ink-testing-library/-/ink-testing-library-1.0.2.tgz#4cc7224659ce97c40c1ee8bb1985196d224a62a1"
-  integrity sha512-VEG4W6j/csZOERsey1ocXRY2LtePHSWNUM2QN2l2ruv9UrwRov//26nNcz4NAFFRoWx4bZQcfaJ/q+QLAZKAyA==
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/ink-testing-library/-/ink-testing-library-1.0.3.tgz#4afddc0ff2c39d810ce24ea2d034ef64aec9a39e"
+  integrity sha512-FKq3urZvJ5aWqhXaf7OeHkXw7LsZu/m0H4an0RlUim3Ar97W1bbRUPY4K/C57/0YkFAOa6RtIbZ/EDiMJSYxXQ==
 
 ink-text-input@^3.0.0:
   version "3.2.1"
