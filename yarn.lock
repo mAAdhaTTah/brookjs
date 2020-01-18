@@ -11086,7 +11086,7 @@ just-curry-it@^3.1.0:
   resolved "https://registry.yarnpkg.com/just-curry-it/-/just-curry-it-3.1.0.tgz#ab59daed308a58b847ada166edd0a2d40766fbc5"
   integrity sha512-mjzgSOFzlrurlURaHVjnQodyPNvrHrf1TbQP2XU9NSqBtHQPuHZ+Eb6TAJP7ASeJN9h9K0KXoRTs8u6ouHBKvg==
 
-kefir-test-utils@^1.1.1:
+kefir-test-utils@^1.0.0, kefir-test-utils@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/kefir-test-utils/-/kefir-test-utils-1.1.1.tgz#23a5fb60a559446077b0ce74e99d8ade1f8e365a"
   integrity sha512-ZaL3Gj59tF0VsooUnDYHz5jKwiN2zq2ryyXP/aYEERU8rtOC9YIbXzVI6b45y6p/A6h54tptu9oVBQQcHyfBDw==

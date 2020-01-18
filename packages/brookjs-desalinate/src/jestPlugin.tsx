@@ -1,7 +1,9 @@
 import React from 'react';
+import { matcherHint, printReceived } from 'jest-matcher-utils';
 import jestKefir, { Helpers } from 'jest-kefir';
 import { render } from '@testing-library/react';
 import { RootJunction } from 'brookjs-silt';
+import { EventWithTime } from 'kefir-test-utils';
 
 const noop = () => {};
 
@@ -30,7 +32,7 @@ export const jestPlugin = ({
         cb: (a: any, b: any, c: any) => void = noop,
         { timeLimit = 10000 } = {}
       ): Result {
-        let log;
+        let log: EventWithTime<unknown, unknown>[] = [];
         const action$ = stream();
         const state$ = prop();
         const delta$ = delta(action$, state$);
@@ -47,7 +49,12 @@ export const jestPlugin = ({
 
         return {
           pass: this.equals(log, expected),
-          message: () => `Expected to emit correct values from delta`
+          message: () =>
+            matcherHint(
+              `${this.isNot ? '.not' : ''}.toEmitFromDelta`,
+              printReceived(log),
+              printReceived(expected)
+            )
         };
       },
 
