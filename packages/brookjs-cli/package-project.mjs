@@ -61,20 +61,30 @@ const packPackages = async packagesRoot => {
 
     const pkgJsonPath = path.join(testAppDir, 'package.json');
     const { stdout: pkgJson } = await execa.command(`cat ${pkgJsonPath}`);
-    const newPkgJson = outputs.reduce(
-      (pkgJson, { pkg, tarball }) =>
-        pkgJson.replace(
-          new RegExp(`("${pkg}":\\s".*")`),
-          `"${pkg}": "${tarball}"`
-        ),
-      pkgJson
-    );
+    const newPkgJson = JSON.parse(pkgJson);
+    newPkgJson.resolutions = {};
 
-    await fs.promises.writeFile(pkgJsonPath, newPkgJson);
+    // Ensure all packages are resolved from our tarballs.
+    for (const { pkg, tarball } of outputs) {
+      newPkgJson.resolutions[pkg] = `file:${tarball}`;
+
+      if (newPkgJson.dependencies[pkg]) {
+        newPkgJson.dependencies[pkg] = `file:${tarball}`;
+      }
+
+      if (newPkgJson.devDependencies[pkg]) {
+        newPkgJson.devDependencies[pkg] = `file:${tarball}`;
+      }
+    }
+
+    await fs.promises.writeFile(
+      pkgJsonPath,
+      JSON.stringify(newPkgJson, null, '  ')
+    );
 
     console.log('Installing the dependencies');
 
-    await execa.command(`npm i`, {
+    await execa.command(`yarn`, {
       cwd: testAppDir
     });
 

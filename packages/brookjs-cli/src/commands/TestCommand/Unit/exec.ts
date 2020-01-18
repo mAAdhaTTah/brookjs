@@ -67,9 +67,13 @@ const exec = (
         ],
         moduleNameMapper: {
           '^react-native$': 'react-native-web',
-          '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy'
+          '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+          'react-test-renderer': 'identity-obj-proxy',
+          // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
+          'react-syntax-highlighter/dist/esm/(.*)':
+            'react-syntax-highlighter/dist/cjs/$1'
         },
-        moduleFileExtensions: ['js', 'jsx', 'mjs', 'ts', 'tsx', 'node']
+        moduleFileExtensions: ['js', 'jsx', 'json', 'mjs', 'ts', 'tsx', 'node']
       };
 
       for (const [key, value] of Object.entries(jest)) {

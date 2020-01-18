@@ -76,7 +76,7 @@ Feature: test command
   @pass
   Scenario: Developer runs test unit with passing tests
     Given I have a project
-    And I create "src/__tests__/App.spec.js" with contents
+    And I create "src/__tests__/add.spec.js" with contents
       """
       describe('passing test', () => {
         it('should pass', () => {
@@ -88,16 +88,16 @@ Feature: test command
     And I wait for the command to finish with code 0
     Then I see this in stdout
       """
-      1 passed
+      7 passed
       """
 
   @unit
   @fail
   Scenario: Developer runs test unit with failing tests
     Given I have a project
-    And I create "src/__tests__/App.spec.js" with contents
+    And I create "src/__tests__/add.spec.js" with contents
       """
-      describe('faling test', () => {
+      describe('failing test', () => {
         it('fails', () => {
           expect(1 + 1).toBe(3);
         });

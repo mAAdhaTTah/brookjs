@@ -1,0 +1,27 @@
+---
+to: <%= name %>/<%= dir %>/components/App.js
+---
+import React from 'react';
+import { toJunction } from 'brookjs-silt';
+import { incrementClick, decrementClick } from '../actions';
+
+const App = ({ count, onIncrementClick, onDecrementClick }) => {
+  return (
+    <div className="<%= name %>">
+      <h1>
+        Welcome to <code>brookjs</code>!<p>Count: {count}</p>
+        <div>
+          <button onClick={onIncrementClick}>+</button>
+          <button onClick={onDecrementClick}>-</button>
+        </div>
+      </h1>
+    </div>
+  );
+};
+
+const events = {
+  onIncrementClick: e$ => e$.map(() => incrementClick()),
+  onDecrementClick: e$ => e$.map(() => decrementClick())
+};
+
+export default toJunction(events)(App);

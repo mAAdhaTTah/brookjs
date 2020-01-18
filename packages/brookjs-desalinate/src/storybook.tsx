@@ -191,11 +191,7 @@ export const withJunction = makeDecorator({
   name: 'withJunction',
   parameterName: 'withJunction',
   wrapper: (Story: Function, context: any) => (
-    <RootJunction
-      root$={root$ => {
-        root$.observe(emit);
-      }}
-    >
+    <RootJunction root$={root$ => root$.observe(emit)}>
       {Story(context)}
     </RootJunction>
   )

@@ -17,20 +17,6 @@ exports[`Developer runs new and accepts the defaults-.babelrc 1`] = `
 
 exports[`Developer runs new and accepts the defaults-.beaverrc.js 1`] = `
 "export const dir = 'src';
-
-/**
- * Webpack build configuration.
- */
-export const webpack = {
-    entry: {
-        app: 'app.js'
-    },
-    output: {
-        path: 'dist/',
-        filename: '[name].js'
-    },
-    modifier: (config, state) => config
-};
 "
 `;
 
@@ -81,10 +67,7 @@ module.exports = {
 
 exports[`Developer runs new and accepts the defaults-.storybook/.babelrc 1`] = `
 "{
-  \\"presets\\": [
-    \\"brookjs\\",
-    \\"@babel/env\\"
-  ]
+  \\"presets\\": [\\"brookjs\\"]
 }
 "
 `;
@@ -110,58 +93,93 @@ configure(loadStories, module);
 "
 `;
 
+exports[`Developer runs new and accepts the defaults-.storybook/main.js 1`] = `
+"module.exports = {
+  stories: ['../src/**/__stories__/*.stories.js'],
+  addons: [
+    '@storybook/addon-actions',
+    '@storybook/addon-links',
+    'brookjs-desalinate/register'
+  ]
+};
+"
+`;
+
 exports[`Developer runs new and accepts the defaults-package.json 1`] = `
 "{
   \\"name\\": \\"test-app\\",
   \\"version\\": \\"0.0.0\\",
   \\"description\\": \\"A brookjs application\\",
-  \\"main\\": \\"src/app.js\\",
+  \\"main\\": \\"src/index.js\\",
   \\"scripts\\": {
-    \\"test\\": \\"npm run test:lint && npm run test:unit\\",
-    \\"test:lint\\": \\"eslint src --fix\\",
+    \\"build\\": \\"beaver build\\",
+    \\"test\\": \\"npm run test:check && npm run test:lint && npm run test:unit\\",
+    \\"test:check\\": \\"beaver test check\\",
+    \\"test:lint\\": \\"beaver test lint\\",
     \\"test:unit\\": \\"beaver test unit --coverage\\",
-    \\"storybook\\": \\"start-storybook -p 6006\\"
+    \\"storybook:start\\": \\"start-storybook -p 6006\\",
+    \\"storybook:build\\": \\"build-storybook\\"
   },
   \\"keywords\\": [],
   \\"author\\": \\"\\",
   \\"license\\": \\"MIT\\",
   \\"devDependencies\\": {
-    \\"@babel/preset-env\\": \\"^7.0.0\\",
-    \\"@babel/plugin-proposal-class-properties\\": \\"^7.0.0\\",
-    \\"@storybook/react\\": \\"^4.0.0\\",
-    \\"babel-loader\\": \\"^8.0.0\\",
-    \\"babel-preset-brookjs\\": \\"^1.0.0-alpha\\",
+    \\"@storybook/addon-actions\\": \\"^5.0.0\\",
+    \\"@storybook/addon-links\\": \\"^5.0.0\\",
+    \\"@storybook/addon-storyshots\\": \\"^5.3.6\\",
+    \\"@storybook/addons\\": \\"^5.0.0\\",
+    \\"@storybook/react\\": \\"^5.0.0\\",
+    \\"@testing-library/react\\": \\"^9.0.0\\",
+    \\"@testing-library/jest-dom\\": \\"^5.0.0\\",
     \\"brookjs-cli\\": \\"^1.0.0-alpha\\",
-    \\"brookjs-desalinate\\": \\"^1.0.0-alpha\\",
-    \\"eslint-config-valtech\\": \\"^1.2.0\\",
-    \\"eslint-config-prettier\\": \\"^6.0.0\\",
-    \\"eslint-plugin-import\\": \\"^2.7.0\\",
-    \\"eslint-plugin-react\\": \\"^7.11.0\\",
-    \\"hygen\\": \\"^1.6.2\\",
-    \\"prettier\\": \\"^1.19.0\\"
+    \\"brookjs-desalinate\\": \\"^1.0.0-alpha\\"
   },
   \\"dependencies\\": {
     \\"@babel/polyfill\\": \\"^7.0.0\\",
     \\"brookjs\\": \\"^1.0.0-alpha\\",
     \\"brookjs-silt\\": \\"^1.0.0-alpha\\",
-    \\"prop-types\\": \\"^15.6.0\\",
-    \\"react\\": \\"^16.3.0\\",
-    \\"react-dom\\": \\"^16.3.0\\",
+    \\"prop-types\\": \\"^15.0.0\\",
+    \\"react\\": \\"^16.0.0\\",
+    \\"react-dom\\": \\"^16.0.0\\",
+    \\"react-redux\\": \\"^7.0.0\\",
     \\"redux\\": \\"^4.0.0\\",
-    \\"redux-actions\\": \\"^2.6.0\\",
-    \\"redux-devtools-extension\\": \\"^2.13.0\\",
+    \\"redux-actions\\": \\"^2.0.0\\",
+    \\"redux-devtools-extension\\": \\"^2.0.0\\",
     \\"reselect\\": \\"^4.0.0\\"
   }
 }
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/actions/app.js 1`] = `
-"export const INIT = 'INIT';
+exports[`Developer runs new and accepts the defaults-src/__tests__/storyshots.spec.js 1`] = `
+"import initStoryshots from '@storybook/addon-storyshots';
+import { render } from '@testing-library/react';
+import { RootJunction } from 'brookjs-silt';
 
-export const init = () => ({
-  type: INIT
+const reactTestingLibrarySerializer = {
+  print: (val, serialize) => serialize(val.container.firstChild),
+  test: val => val && val.hasOwnProperty('container')
+};
+
+initStoryshots({
+  framework: 'react',
+  renderer: element =>
+    render(element, {
+      wrapper: RootJunction
+    }),
+  snapshotSerializers: [reactTestingLibrarySerializer]
 });
+"
+`;
+
+exports[`Developer runs new and accepts the defaults-src/actions/app.js 1`] = `
+"import { createAction } from 'redux-actions';
+
+export const init = createAction('INIT');
+
+export const incrementClick = createAction('INCREMENT_CLICK');
+
+export const decrementClick = createAction('DECREMENT_CLICK');
 "
 `;
 
@@ -211,7 +229,73 @@ store.dispatch(init());
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/components/index.js 1`] = `""`;
+exports[`Developer runs new and accepts the defaults-src/components/__stories__/App.stories.js 1`] = `
+"import React from 'react';
+import App from '../App';
+
+export default {
+  title: 'App'
+};
+
+export const basic = () => <App count={3} />;
+"
+`;
+
+exports[`Developer runs new and accepts the defaults-src/components/__tests__/App.spec.js 1`] = `
+"import React from 'react';
+import { fireEvent } from '@testing-library/react';
+import { incrementClick, decrementClick } from '../../actions';
+import App from '../App';
+
+describe('App', () => {
+  it('should emit actions', () => {
+    expect(<App count={3} />).toEmitFromJunction(
+      [
+        [0, KTU.value(incrementClick())],
+        [0, KTU.value(decrementClick())]
+      ],
+      api => {
+        fireEvent.click(api.getByText('+'));
+        fireEvent.click(api.getByText('-'));
+      }
+    );
+  });
+});
+"
+`;
+
+exports[`Developer runs new and accepts the defaults-src/components/App.js 1`] = `
+"import React from 'react';
+import { toJunction } from 'brookjs-silt';
+import { incrementClick, decrementClick } from '../actions';
+
+const App = ({ count, onIncrementClick, onDecrementClick }) => {
+  return (
+    <div className=\\"test-app\\">
+      <h1>
+        Welcome to <code>brookjs</code>!<p>Count: {count}</p>
+        <div>
+          <button onClick={onIncrementClick}>+</button>
+          <button onClick={onDecrementClick}>-</button>
+        </div>
+      </h1>
+    </div>
+  );
+};
+
+const events = {
+  onIncrementClick: e$ => e$.map(() => incrementClick()),
+  onDecrementClick: e$ => e$.map(() => decrementClick())
+};
+
+export default toJunction(events)(App);
+"
+`;
+
+exports[`Developer runs new and accepts the defaults-src/components/index.js 1`] = `
+"export { default as App } from './App';
+"
+`;
 
 exports[`Developer runs new and accepts the defaults-src/deltas/index.js 1`] = `""`;
 
@@ -238,6 +322,44 @@ export const view = component({
 "
 `;
 
+exports[`Developer runs new and accepts the defaults-src/index.js 1`] = `
+"import '@babel/polyfill';
+import React from 'react';
+import { observeDelta, eddy } from 'brookjs';
+import { RootJunction } from 'brookjs-silt';
+import { applyMiddleware, createStore } from 'redux';
+import { connect } from 'react-redux';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import ReactDOM from 'react-dom';
+import { init } from './actions';
+import { App } from './components';
+import { reducer, mapStateToProps } from './state';
+
+const { __INITIAL_STATE__ = {} } = global;
+
+const compose = composeWithDevTools({
+  name: 'test-app'
+});
+
+const store = createStore(
+  reducer,
+  __INITIAL_STATE__,
+  compose(applyMiddleware(observeDelta()), eddy())
+);
+
+const Root = connect(mapStateToProps)(App);
+
+ReactDOM.render(
+  <RootJunction root$={root$ => root$.observe(store.dispatch)}>
+    <Root />
+  </RootJunction>,
+  document.getElementById('app')
+);
+
+store.dispatch(init());
+"
+`;
+
 exports[`Developer runs new and accepts the defaults-src/reducers/index.js 1`] = `""`;
 
 exports[`Developer runs new and accepts the defaults-src/selectors/index.js 1`] = `
@@ -246,6 +368,62 @@ exports[`Developer runs new and accepts the defaults-src/selectors/index.js 1`] 
 `;
 
 exports[`Developer runs new and accepts the defaults-src/services/index.js 1`] = `""`;
+
+exports[`Developer runs new and accepts the defaults-src/setupTests.js 1`] = `
+"import 'brookjs-desalinate/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
+"
+`;
+
+exports[`Developer runs new and accepts the defaults-src/state/__tests__/state.spec.js 1`] = `
+"import { reducer, mapStateToProps } from '../index';
+import { init, incrementClick, decrementClick } from '../../actions';
+
+describe('state', () => {
+  describe('reducer', () => {
+    it('should return the initial state on init action', () => {
+      expect(reducer({ count: 0 }, init())).toEqual({ count: 0 });
+    });
+
+    it('should increase the count on increment click', () => {
+      expect(reducer({ count: 0 }, incrementClick())).toEqual({ count: 1 });
+    });
+
+    it('should increase the count on decrement click', () => {
+      expect(reducer({ count: 0 }, decrementClick())).toEqual({ count: -1 });
+    });
+  });
+
+  describe('mapStateToProps', () => {
+    it('should select the count', () => {
+      expect(mapStateToProps({ count: 20 })).toEqual({ count: 20 });
+    });
+  });
+});
+"
+`;
+
+exports[`Developer runs new and accepts the defaults-src/state/index.js 1`] = `
+"import { handleActions } from 'redux-actions';
+import { incrementClick, decrementClick } from '../actions';
+
+const initialState = {
+  count: 0
+};
+
+export const reducer = handleActions(
+  {
+    [incrementClick]: state => ({ ...state, count: state.count + 1 }),
+    [decrementClick]: state => ({ ...state, count: state.count - 1 })
+  },
+  initialState
+);
+
+export const mapStateToProps = state => ({
+  count: state.count
+});
+"
+`;
 
 exports[`Developer runs new and accepts the defaults-src/view.hbs 1`] = `
 "<div data-brk-container=\\"app\\">

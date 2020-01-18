@@ -1,0 +1,11 @@
+---
+to: <%= name %>/.storybook/main.js
+---
+module.exports = {
+  stories: ['../<%= dir %>/**/__stories__/*.stories.js'],
+  addons: [
+    '@storybook/addon-actions',
+    '@storybook/addon-links',
+    'brookjs-desalinate/register'
+  ]
+};

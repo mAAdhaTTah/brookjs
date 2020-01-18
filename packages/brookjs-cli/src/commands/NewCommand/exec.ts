@@ -47,7 +47,7 @@ const selectNewProjectContext = (state: ConfiguredState) => ({
   name: state.config.name,
   version: state.config.version,
   description: state.config.description,
-  main: path.join(state.config.dir, 'app.js'),
+  main: path.join(state.config.dir, 'index.js'),
   author: '', // @TODO(mAAdhaTTah) get author,
   license: state.config.license
 });

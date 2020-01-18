@@ -66,9 +66,7 @@ export const jestPlugin = ({
         { timeLimit = 10000 } = {}
       ): Result {
         let log;
-        const root$ = (root$: any) => {
-          log = watchWithTime(root$);
-        };
+        const root$ = (root$: any) => void (log = watchWithTime(root$));
 
         withFakeTime((tick: any, clock: any) => {
           const api = render(
