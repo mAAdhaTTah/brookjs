@@ -92,7 +92,18 @@ When(
   async function(code) {
     await this.ended();
 
-    expect(this.output.code).toBe(code);
+    try {
+      expect(this.output.code).toBe(code);
+    } catch(err) {
+      err.message += `
+
+Stdout:
+
+${this.output.stdout}
+
+cwd: ${this.cwd}`;
+      throw err;
+    }
   }
 );
 
