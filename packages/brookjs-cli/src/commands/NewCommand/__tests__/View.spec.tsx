@@ -252,11 +252,7 @@ describe('NewCommand#View', () => {
     it('should respond to input', () => {
       let r$;
       const { stdin } = render(
-        <RootJunction
-          root$={(root$: any) => {
-            r$ = root$;
-          }}
-        >
+        <RootJunction root$={(root$: any) => void (r$ = root$)}>
           <View
             error={null}
             logs={[]}
@@ -317,11 +313,7 @@ describe('NewCommand#View', () => {
       let r$;
 
       const { stdin } = render(
-        <RootJunction
-          root$={root$ => {
-            r$ = root$;
-          }}
-        >
+        <RootJunction root$={root$ => void (r$ = root$)}>
           <View
             error={null}
             logs={[]}
@@ -351,11 +343,7 @@ describe('NewCommand#View', () => {
     it('should respond to confirm with false if selected', () => {
       let r$;
       const { stdin } = render(
-        <RootJunction
-          root$={(root$: any) => {
-            r$ = root$;
-          }}
-        >
+        <RootJunction root$={root$ => void (r$ = root$)}>
           <View
             error={null}
             logs={[]}

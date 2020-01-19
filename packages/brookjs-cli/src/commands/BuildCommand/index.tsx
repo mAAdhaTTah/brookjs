@@ -15,7 +15,7 @@ const BuildCommand: Command<Args> = {
     return yargs
       .option('env', {
         describe: 'Environment build target. One of: development, production.',
-        default: 'development'
+        default: 'production'
       })
       .option('watch', {
         describe: 'Watch the files and rebuild on changes',

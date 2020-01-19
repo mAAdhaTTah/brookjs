@@ -52,7 +52,7 @@ export const Root: React.FC<{
   errors: React.ReactNode[];
 }> = ({ command, argv, args, cwd, rc, errors }) => (
   <>
-    <Static>{errors}</Static>
+    {errors}
     {command == null ? (
       <Color red>Command not found for {argv.join(' ')}</Color>
     ) : (

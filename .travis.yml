@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - 12
+  - 13
 
 before_install:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -10,6 +10,7 @@ before_install:
 before_script:
   - npx lerna bootstrap
   - yarn build
+  - cd packages/brookjs-cli && node package-project.mjs
 
 script:
   - yarn test

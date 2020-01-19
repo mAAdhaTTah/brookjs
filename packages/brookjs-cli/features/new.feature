@@ -16,45 +16,39 @@ Feature: new command
       | Configuration:                                            | y                  |
     And I wait for the command to finish with code 0
     Then I see a project dir called "test-app" with file snapshots:
-      | package.json               |
-      | .babelrc                   |
-      | .beaverrc.js               |
-      | .eslintrc.js               |
-      | .hygen.js                  |
-      | client/app.js              |
-      | client/dom.js              |
-      | client/view.hbs            |
-      | client/actions/app.js      |
-      | client/actions/index.js    |
-      | client/components/index.js |
-      | client/deltas/index.js     |
-      | client/reducers/index.js   |
-      | client/selectors/index.js  |
-      | client/services/index.js   |
-      | .storybook/.babelrc        |
-      | .storybook/config.js       |
-      | .storybook/addons.js       |
+      | package.json                                 |
+      | .beaverrc.js                                 |
+      | .storybook/.babelrc                          |
+      | .storybook/main.js                           |
+      | client/index.js                              |
+      | client/setupTests.js                         |
+      | client/state/index.js                        |
+      | client/state/__tests__/state.spec.js         |
+      | client/__tests__/storyshots.spec.js          |
+      | client/actions/index.js                      |
+      | client/actions/app.js                        |
+      | client/components/App.js                     |
+      | client/components/index.js                   |
+      | client/components/__stories__/App.stories.js |
+      | client/components/__tests__/App.spec.js      |
 
   @yes
   Scenario: Developer runs new and accepts the defaults
     When I run beaver with "new test-app -y"
     And I wait for the command to finish with code 0
     Then I see a project dir called "test-app" with file snapshots:
-      | package.json            |
-      | .babelrc                |
-      | .beaverrc.js            |
-      | .eslintrc.js            |
-      | .hygen.js               |
-      | src/app.js              |
-      | src/dom.js              |
-      | src/view.hbs            |
-      | src/actions/app.js      |
-      | src/actions/index.js    |
-      | src/components/index.js |
-      | src/deltas/index.js     |
-      | src/reducers/index.js   |
-      | src/selectors/index.js  |
-      | src/services/index.js   |
-      | .storybook/.babelrc     |
-      | .storybook/config.js    |
-      | .storybook/addons.js    |
+      | package.json                              |
+      | .beaverrc.js                              |
+      | .storybook/.babelrc                       |
+      | .storybook/main.js                        |
+      | src/index.js                              |
+      | src/setupTests.js                         |
+      | src/state/index.js                        |
+      | src/state/__tests__/state.spec.js         |
+      | src/__tests__/storyshots.spec.js          |
+      | src/actions/index.js                      |
+      | src/actions/app.js                        |
+      | src/components/App.js                     |
+      | src/components/index.js                   |
+      | src/components/__stories__/App.stories.js |
+      | src/components/__tests__/App.spec.js      |

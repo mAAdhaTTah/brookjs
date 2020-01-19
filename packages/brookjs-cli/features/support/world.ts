@@ -12,8 +12,6 @@ const keypresses = {
 
 declare module 'cucumber' {
   interface World {
-    bin: string;
-
     cwd: string;
 
     snapshot: {
@@ -30,8 +28,6 @@ declare module 'cucumber' {
     defaultRc: File;
 
     spawned?: IPty;
-
-    createProjectWith(files: File[]): Promise<void>;
 
     createProject(): Promise<void>;
 
@@ -66,8 +62,6 @@ export type Question = {
 };
 
 class CliWorld implements World {
-  bin: string = path.join(__dirname, '..', '..', 'bin', 'beaver.js');
-
   cwd: string = fs.mkdtempSync(path.join(os.tmpdir(), 'cli-'));
 
   snapshot: {
@@ -95,19 +89,12 @@ class CliWorld implements World {
 
   spawned?: IPty;
 
-  async createProjectWith(files: File[]) {
-    const create = [this.defaultRc, ...files];
-
-    await Promise.all(create.map(file => this.outputFile(file)));
-  }
-
   async createProject() {
-    this.run('new test-app --yes');
-    this.cwd += '/test-app';
-
-    await this.ended();
-
-    this.spawn('npm', 'install');
+    this.spawn(
+      'tar',
+      `-C ${this.cwd} -zxvf ${path.join(__dirname, 'test-app.tar.gz')}`
+    );
+    this.cwd = path.join(this.cwd, 'test-app');
 
     await this.ended();
   }
@@ -131,7 +118,7 @@ class CliWorld implements World {
   }
 
   run(command: string) {
-    this.spawn(this.bin, command);
+    this.spawn('npx', `beaver ${command}`);
   }
 
   spawn(bin: string, command: string) {

@@ -1,6 +1,7 @@
 import * as path from 'path';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
 import babel from 'rollup-plugin-babel';
 
 process.env.BABEL_ENV = process.env.NODE_ENV = 'production';
@@ -12,7 +13,7 @@ export default {
   external: [
     ...Object.keys(pkg.peerDependencies || {}),
     ...Object.keys(pkg.dependencies || {}),
-    ...(pkg.bin ? ['path', 'util', 'child_process', 'fs', 'crypto'] : [])
+    ...(pkg.bin ? ['path', 'util', 'child_process', 'fs', 'crypto', 'vm'] : [])
   ],
   output: [
     pkg.main && { file: pkg.main, format: 'cjs' },
@@ -42,6 +43,7 @@ export default {
           'forwardRef'
         ]
       }
-    })
+    }),
+    json()
   ]
 };

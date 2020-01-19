@@ -38,14 +38,15 @@ const exec = (
       const config: any = {
         roots: [path.join('<rootDir>', dir)],
         collectCoverageFrom: [
-          `${dir}/**/*.{js,jsx,ts,tsx}`,
+          `${dir}/**/*.{js,jsx,mjs,ts,tsx}`,
+          `!${dir}/index.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/**/*.d.ts`
         ],
         setupFilesAfterEnv: setupTests,
         testMatch: [
           // Anything with `spec/test` is a test file
           // Don't glob `__tests__` because test utils
-          `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,ts,tsx}`
+          `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,mjs,ts,tsx}`
         ],
         testEnvironment: 'jest-environment-jsdom-fourteen',
         transform: {
@@ -66,9 +67,14 @@ const exec = (
         ],
         moduleNameMapper: {
           '^react-native$': 'react-native-web',
-          '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy'
+          '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
+          'react-test-renderer': 'identity-obj-proxy',
+          '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1',
+          // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
+          'react-syntax-highlighter/dist/esm/(.*)':
+            'react-syntax-highlighter/dist/cjs/$1'
         },
-        moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'node']
+        moduleFileExtensions: ['js', 'jsx', 'json', 'mjs', 'ts', 'tsx', 'node']
       };
 
       for (const [key, value] of Object.entries(jest)) {

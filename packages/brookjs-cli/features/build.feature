@@ -9,19 +9,19 @@ Feature: build command
     Given I have a project
     When I run beaver with "build --env development"
     And I wait for the command to finish with code 0
-    Then I see a file called "dist/runtime-app.js"
+    Then I see a file called "dist/runtime-main.js"
 
   @production
   Scenario: Developer runs build with env production
     Given I have a project
     When I run beaver with "build --env production"
     And I wait for the command to finish with code 0
-    Then I see a file called "dist/runtime-app.js"
+    Then I see a file called "dist/runtime-main.js"
 
   @broken
   Scenario: Developer runs broken build
     Given I have a project
-    And I append to "src/app.js" with contents
+    And I append to "src/index.js" with contents
       """
       import './file-does-not-exist';
       """

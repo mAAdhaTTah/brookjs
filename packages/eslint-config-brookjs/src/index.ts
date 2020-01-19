@@ -2,6 +2,9 @@ import { Linter } from 'eslint';
 
 const config: Linter.Config = {
   extends: ['eslint-config-react-app', 'prettier'],
+  globals: {
+    KTU: true
+  },
   rules: {
     'import/named': 2,
     'import/namespace': 2,
