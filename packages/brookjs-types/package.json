@@ -1,6 +1,6 @@
 {
   "name": "brookjs-types",
-  "version": "1.0.0-alpha.29",
+  "version": "1.0.0-alpha.31",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs-types.cjs.js",
   "module": "dist/brookjs-types.esm.js",
