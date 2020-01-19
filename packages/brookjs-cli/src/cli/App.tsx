@@ -1,8 +1,10 @@
+import vm from 'vm';
 import React from 'react';
 import { defaultLoaders, cosmiconfigSync } from 'cosmiconfig';
 import { render, RenderOptions } from 'ink';
-import { TransformOptions } from '@babel/core';
+import { TransformOptions, transformFileSync } from '@babel/core';
 import * as t from 'io-ts';
+import resolve from 'resolve';
 import { babelIO } from '../rc';
 import { Command } from './Command';
 import Commands from './Commands';
@@ -17,27 +19,6 @@ const RC = t.partial({
 });
 
 type RC = t.Type<typeof RC>;
-
-const toBabel: Array<string> = [];
-
-require('@babel/register')({
-  only: [
-    (filename: string) => {
-      for (const target of toBabel) {
-        if (filename.includes(target)) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  ],
-  extensions: ['.js', '.jsx', '.ts', '.tsx'],
-  babelrc: false,
-  // @TODO(mAAdhaTTah) use brookjs preset
-  presets: ['react-app'],
-  plugins: ['@babel/plugin-transform-modules-commonjs']
-});
 
 export class App {
   private rc?: unknown;
@@ -68,23 +49,47 @@ export class App {
     );
   }
 
-  loadCommandsFrom(dir: string) {
+  loadCommandsFrom(target: string) {
     try {
-      return Object.entries(this.load(dir)).reduce<App>(
+      return Object.entries(this.load(target)).reduce<App>(
         (app, [name, cmd]) => app.addCommand(name, cmd),
         this
       );
     } catch (error) {
       return new App(this.name, this.commands, [
         ...this.errors,
-        <LoadDirError key={this.errors.length} error={error} dir={dir} />
+        <LoadDirError key={this.errors.length} error={error} dir={target} />
       ]);
     }
   }
 
   private load(target: string) {
-    toBabel.push(target);
-    return require(target);
+    const filename = resolve.sync(target, {
+      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx']
+    });
+    const oldNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    const result = transformFileSync(filename, {
+      babelrc: false,
+      configFile: false,
+      presets: [require.resolve('babel-preset-brookjs')],
+      plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')]
+    });
+    process.env.NODE_ENV = oldNodeEnv;
+
+    if (result?.code == null) {
+      throw new Error('No code returned from transform');
+    }
+
+    const exports = {};
+    const module = { exports };
+    const context = vm.createContext({ module, exports, require });
+
+    vm.runInNewContext(result.code, context, {
+      filename
+    });
+
+    return module.exports;
   }
 
   getRC(): unknown {
