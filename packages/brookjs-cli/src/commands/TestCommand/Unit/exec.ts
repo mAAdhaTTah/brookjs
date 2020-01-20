@@ -2,7 +2,7 @@ import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
 import { Maybe } from 'brookjs-types';
-import { project } from '../../../services';
+import * as project from '../../../project';
 import { testRun } from './actions';
 import { RC } from './RC';
 import { State, Action } from './types';
