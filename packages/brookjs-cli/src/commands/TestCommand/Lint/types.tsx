@@ -1,7 +1,7 @@
 import { Maybe } from 'brookjs-types';
 import { ActionType } from 'typesafe-actions';
 import * as t from 'io-ts';
-import { globLint } from '../../../deltas';
+import * as glob from '../../../glob';
 import * as actions from './actions';
 import { CLIEngine } from 'eslint';
 
@@ -30,5 +30,5 @@ export type State = {
   status: 'globbing' | 'linting' | 'completed';
   files: FileLint[];
 };
-export type Action = ActionType<typeof actions & typeof globLint>;
+export type Action = ActionType<typeof actions & typeof glob.actions>;
 export type Args = {};

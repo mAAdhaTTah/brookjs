@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDeltas } from 'brookjs-silt';
 import { unreachable } from 'brookjs-types';
 import { Arguments } from 'yargs';
-import { globLint } from '../../../deltas';
+import * as glob from '../../../glob';
 import { Globbing, Running } from '../components';
 import { exec } from './exec';
 import { reducer } from './reducer';
@@ -17,7 +17,7 @@ const Lint: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   const { state, dispatch } = useDeltas(reducer, initialState(cwd, rc), [exec]);
 
   useEffect(() => {
-    dispatch(globLint.request());
+    dispatch(glob.actions.lint.request());
   }, [dispatch]);
 
   switch (state.status) {

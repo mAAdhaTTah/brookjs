@@ -1,7 +1,7 @@
 import * as t from 'io-ts';
 import { Maybe } from 'brookjs-types';
 import { ActionType } from 'typesafe-actions';
-import { globLint } from '../../../deltas';
+import * as glob from '../../../glob';
 import * as actions from './actions';
 
 export const RC = t.partial({
@@ -35,4 +35,4 @@ export type State = {
   files: FileCheck[];
 };
 
-export type Action = ActionType<typeof actions & typeof globLint>;
+export type Action = ActionType<typeof actions & typeof glob.actions>;

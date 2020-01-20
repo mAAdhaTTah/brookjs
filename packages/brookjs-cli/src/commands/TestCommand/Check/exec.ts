@@ -2,13 +2,13 @@ import { Delta } from 'brookjs-types';
 import { sampleStateAtAction, ofType } from 'brookjs-flow';
 import Kefir from 'kefir';
 import { prettier } from '../../../services';
-import { globLintDelta, globLint } from '../../../deltas';
+import * as glob from '../../../glob';
 import { check } from './actions';
 import { State, Action } from './types';
 
 export const exec: Delta<Action, State> = (action$, state$) => {
-  const globLint$ = globLintDelta(
-    action$.thru(ofType(globLint.request)),
+  const globLint$ = glob.delta(
+    action$.thru(ofType(glob.actions.lint.request)),
     state$
   );
 
