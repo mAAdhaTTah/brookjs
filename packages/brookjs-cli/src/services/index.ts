@@ -3,5 +3,4 @@ import * as prettier from './prettier';
 
 export { default as fs } from './fs';
 export { project, prettier };
-export { default as ESLintService } from './eslint';
 export { default as WebpackService } from './webpack';
