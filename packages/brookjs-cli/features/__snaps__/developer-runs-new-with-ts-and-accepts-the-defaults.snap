@@ -258,23 +258,45 @@ describe('state', () => {
 `;
 
 exports[`Developer runs new with ts and accepts the defaults-src/state/index.ts 1`] = `
-"import { handleActions } from 'typesafe-actions';
+"import { createReducer } from 'typesafe-actions';
 import { incrementClick, decrementClick } from '../actions';
 
 const initialState = {
   count: 0
 };
 
-export const reducer = handleActions(
+export const reducer = createReducer(
+  initialState,
   {
     [incrementClick]: state => ({ ...state, count: state.count + 1 }),
     [decrementClick]: state => ({ ...state, count: state.count - 1 })
-  },
-  initialState
+  }
 );
 
 export const mapStateToProps = state => ({
   count: state.count
 });
+"
+`;
+
+exports[`Developer runs new with ts and accepts the defaults-tsconfig.json 1`] = `
+"{
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es5\\",
+    \\"lib\\": [\\"dom\\", \\"dom.iterable\\", \\"esnext\\"],
+    \\"allowJs\\": true,
+    \\"skipLibCheck\\": true,
+    \\"esModuleInterop\\": true,
+    \\"allowSyntheticDefaultImports\\": true,
+    \\"strict\\": true,
+    \\"forceConsistentCasingInFileNames\\": true,
+    \\"module\\": \\"esnext\\",
+    \\"moduleResolution\\": \\"node\\",
+    \\"resolveJsonModule\\": true,
+    \\"isolatedModules\\": true,
+    \\"noEmit\\": true,
+    \\"jsx\\": true
+  }
+}
 "
 `;

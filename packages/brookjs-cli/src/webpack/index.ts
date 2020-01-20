@@ -18,11 +18,17 @@ import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
 // import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
 import { BabelRC } from '../babel';
+import { Ext } from '../project';
+import { sampleStateAtAction } from 'brookjs-flow';
+
+// @TODO(mAAdhaTTah) fix require -> import (missing types)
+const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 
 export type State = {
   cmd: 'build';
   cwd: string;
   env: webpack.Configuration['mode'];
+  extension: Ext;
   watch: boolean;
   rc: Maybe<RC>;
 };
@@ -317,10 +323,22 @@ const selectEnvPlugins = (state: State) => {
     case 'development':
       return [
         ...plugins,
+        state.extension === 'ts' &&
+          // Only typecheck if we're watching.
+          state.watch &&
+          new ForkTsCheckerWebpackPlugin({
+            async: true,
+            useTypescriptIncrementalApi: true,
+            checkSyntacticErrors: true,
+            tsconfig: path.join(state.cwd, 'tsconfig.json'),
+            reportFiles: [path.join(state.cwd, state.rc?.dir ?? 'src', '**')],
+            silent: true,
+            formatter: require('react-dev-utils/typescriptFormatter')
+          }),
         new CaseSensitivePathsPlugin({
           debug: false
         })
-      ];
+      ].filter(Boolean);
     case 'production':
       return [
         ...plugins,
@@ -343,7 +361,7 @@ const selectEnvPlugins = (state: State) => {
 };
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
-  let entry = state.rc?.webpack?.entry ?? 'index.js';
+  let entry = state.rc?.webpack?.entry ?? `index`;
 
   if (typeof entry === 'string') {
     return path.join(selectAppPath(state), entry);
@@ -494,8 +512,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
         'jsx'
       ]
         .map(ext => `.${ext}`)
-        // @TODO(mAAdhaTTah) add
-        .filter(ext => /* useTypeScript || */ !ext.includes('ts')),
+        .filter(ext => state.extension === 'ts' || !ext.includes('ts')),
       alias: {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -582,20 +599,12 @@ export const actions = {
 export type Action = ActionType<typeof actions>;
 
 export const delta: Delta<Action, State> = (action$, state$) =>
-  state$
-    .take(1)
-    .filter(state => state.rc != null)
-    .flatMap(state =>
-      Kefir.concat<Action, never>([
-        Kefir.constant(actions.build.request()),
-        WebpackService.create(selectWebpackConfig(state))
-          .flatMap(compiler =>
-            state.watch ? compiler.watch() : compiler.run()
-          )
-          .map(actions.build.success)
-          .flatMapErrors(error => Kefir.constant(actions.build.failure(error)))
-      ])
-    );
+  sampleStateAtAction(action$, state$, actions.build.request).flatMap(state =>
+    WebpackService.create(selectWebpackConfig(state))
+      .flatMap(compiler => (state.watch ? compiler.watch() : compiler.run()))
+      .map(actions.build.success)
+      .flatMapErrors(error => Kefir.constant(actions.build.failure(error)))
+  );
 
 export class WebpackService {
   static get watch() {

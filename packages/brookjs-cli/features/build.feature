@@ -12,10 +12,26 @@ Feature: build command
     And I wait for the command to finish with code 0
     Then I see a file called "dist/runtime-main.js"
 
+  @development
+  @ts
+  Scenario: Developer runs build with env development in ts project
+    Given I have a "ts" project
+    When I run beaver with "build --env development"
+    And I wait for the command to finish with code 0
+    Then I see a file called "dist/runtime-main.js"
+
   @production
   @js
   Scenario: Developer runs build with env production
     Given I have a "js" project
+    When I run beaver with "build --env production"
+    And I wait for the command to finish with code 0
+    Then I see a file called "dist/runtime-main.js"
+
+  @production
+  @ts
+  Scenario: Developer runs build with env development in ts project
+    Given I have a "ts" project
     When I run beaver with "build --env production"
     And I wait for the command to finish with code 0
     Then I see a file called "dist/runtime-main.js"
@@ -28,5 +44,16 @@ Feature: build command
       """
       import './file-does-not-exist';
       """
-    When I run beaver with "build --env development"
+    When I run beaver with "build"
+    Then I wait for the command to finish with code 1
+
+  @broken
+  @ts
+  Scenario: Developer runs broken build
+    Given I have a "ts" project
+    And I append to "src/index.ts" with contents
+      """
+      import './file-does-not-exist';
+      """
+    When I run beaver with "build"
     Then I wait for the command to finish with code 1

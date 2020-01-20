@@ -62,6 +62,7 @@ Feature: new command
     And I wait for the command to finish with code 0
     Then I see a project dir called "test-app" with file snapshots:
       | package.json                               |
+      | tsconfig.json                              |
       | .beaverrc.ts                               |
       | .storybook/.babelrc                        |
       | .storybook/main.ts                         |

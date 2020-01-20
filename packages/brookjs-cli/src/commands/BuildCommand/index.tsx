@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Argv } from 'yargs';
 import { useDeltas, RootJunction } from 'brookjs-silt';
 import { Command } from '../../cli';
+import * as project from '../../project';
 import exec from './exec';
 import initialState from './initialState';
 import reducer from './reducer';
@@ -24,11 +25,15 @@ const BuildCommand: Command<Args> = {
   },
 
   View: ({ args, rc, cwd }) => {
-    const { state, root$ } = useDeltas(
+    const { state, root$, dispatch } = useDeltas(
       reducer,
       initialState(args, { rc, cwd }),
       [exec]
     );
+
+    useEffect(() => {
+      dispatch(project.actions.extension.request());
+    }, []);
 
     return (
       <RootJunction root$={root$}>

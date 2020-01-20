@@ -8,6 +8,7 @@ describe('BuildCommand#selectors', () => {
       const state: State = {
         watch: false,
         env: 'production',
+        extension: 'js',
         cmd: 'build',
         cwd: '/path/to/cwd',
         rc: {
