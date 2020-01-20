@@ -6,8 +6,9 @@ Feature: test command
 
   @check
   @pass
+  @js
   Scenario: Developer runs test check with formatted files
-    Given I have a project
+    Given I have a "js" project
     And I create "src/formatted.js" with contents
       """
       export const first = { hello: 'world' };
@@ -21,8 +22,9 @@ Feature: test command
 
   @check
   @fail
+  @js
   Scenario: Developer runs test check with unformatted files
-    Given I have a project
+    Given I have a "js" project
     And I create "src/unformatted.js" with contents
       """
       export const first ={hello: 'world' };
@@ -40,8 +42,9 @@ Feature: test command
 
   @lint
   @pass
+  @js
   Scenario: Developer runs test lint with formatted files
-    Given I have a project
+    Given I have a "js" project
     And I create "src/linted.js" with contents
       """
       export const first = { hello: 'world' };
@@ -55,8 +58,9 @@ Feature: test command
 
   @lint
   @fail
+  @js
   Scenario: Developer runs test check with unformatted files
-    Given I have a project
+    Given I have a "js" project
     And I create "src/unlinted.js" with contents
       """
       const first = { hello: 'world' };
@@ -74,8 +78,9 @@ Feature: test command
 
   @unit
   @pass
+  @js
   Scenario: Developer runs test unit with passing tests
-    Given I have a project
+    Given I have a "js" project
     And I create "src/__tests__/add.spec.js" with contents
       """
       describe('passing test', () => {
@@ -93,8 +98,9 @@ Feature: test command
 
   @unit
   @fail
+  @js
   Scenario: Developer runs test unit with failing tests
-    Given I have a project
+    Given I have a "js" project
     And I create "src/__tests__/add.spec.js" with contents
       """
       describe('failing test', () => {

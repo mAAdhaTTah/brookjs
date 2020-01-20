@@ -175,4 +175,4 @@ typings/
 .env
 
 # Test app directory
-test-app
+test-app*

@@ -5,7 +5,7 @@ to: "<%= name %>/<%= dir %>/__tests__/__snapshots__/storyshots.spec.<%= locals.t
 
 exports[`Storyshots App Basic 1`] = `
 <div
-  class="test-app"
+  class="test-app-<%= locals.typescript ? 'ts' : 'js' %>"
 >
   <h1>
     Welcome to 
