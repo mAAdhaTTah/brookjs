@@ -1,7 +1,7 @@
 import { Observable } from 'kefir';
 import prettier from 'prettier';
 import prettierOptions from 'brookjs-prettier-config';
-import fs from './fs';
+import { service as fs } from '../fs';
 
 export type CheckResult = {
   path: string;

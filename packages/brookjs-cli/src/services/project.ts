@@ -1,6 +1,6 @@
 import path from 'path';
 import Kefir, { Observable } from 'kefir';
-import fs from './fs';
+import { service as fs } from '../fs';
 
 export type Ext = 'ts' | 'js';
 

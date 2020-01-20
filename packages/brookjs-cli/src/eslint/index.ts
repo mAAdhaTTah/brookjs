@@ -3,7 +3,7 @@ import Kefir, { Stream } from 'kefir';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { Delta } from 'brookjs-types';
 import { sampleStateAtAction } from 'brookjs-flow';
-import { fs } from '../services';
+import { service as fs } from '../fs';
 
 export const actions = {
   project: createAsyncAction(
