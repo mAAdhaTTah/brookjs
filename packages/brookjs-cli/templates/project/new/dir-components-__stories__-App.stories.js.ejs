@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/<%= dir %>/components/__stories__/App.stories.js
+to: "<%= name %>/<%= dir %>/components/__stories__/App.stories.<%= locals.typescript ? 'tsx' : 'js' %>"
 ---
 import React from 'react';
 import App from '../App';

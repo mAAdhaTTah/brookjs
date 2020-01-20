@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/.storybook/main.js
+to: "<%= name %>/.storybook/main.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
 module.exports = {
   stories: ['../<%= dir %>/**/__stories__/*.stories.js'],

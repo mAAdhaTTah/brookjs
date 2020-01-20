@@ -26,7 +26,8 @@ describe('NewCommand#View', () => {
               version: null,
               description: null,
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -48,7 +49,8 @@ describe('NewCommand#View', () => {
               version: null,
               description: null,
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -72,7 +74,8 @@ describe('NewCommand#View', () => {
               version: null,
               description: null,
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -96,7 +99,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: null,
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -120,7 +124,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: null,
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -144,7 +149,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -168,7 +174,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -192,7 +199,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -216,7 +224,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -240,7 +249,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: 'ISC'
+              license: 'ISC',
+              typescript: false
             }}
           />
         </RootJunction>
@@ -265,7 +275,8 @@ describe('NewCommand#View', () => {
               version: null,
               description: null,
               dir: null,
-              license: null
+              license: null,
+              typescript: false
             }}
           />
         </RootJunction>
@@ -300,7 +311,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: 'ISC'
+              license: 'ISC',
+              typescript: false
             }}
           />
         </RootJunction>
@@ -326,7 +338,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: 'ISC'
+              license: 'ISC',
+              typescript: false
             }}
           />
         </RootJunction>
@@ -356,7 +369,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: 'ISC'
+              license: 'ISC',
+              typescript: false
             }}
           />
         </RootJunction>
@@ -390,7 +404,8 @@ describe('NewCommand#View', () => {
                 version: '1.0.0',
                 description: 'A test application',
                 dir: 'client',
-                license: 'ISC'
+                license: 'ISC',
+                typescript: false
               }}
             />
           </RootJunction>
@@ -422,7 +437,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: 'ISC'
+              license: 'ISC',
+              typescript: false
             }}
           />
         </RootJunction>
@@ -463,7 +479,8 @@ describe('NewCommand#View', () => {
               version: '1.0.0',
               description: 'A test application',
               dir: 'client',
-              license: 'ISC'
+              license: 'ISC',
+              typescript: false
             }}
           />
         </RootJunction>
@@ -492,7 +509,8 @@ describe('NewCommand#View', () => {
                 version: '1.0.0',
                 description: 'A test application',
                 dir: 'client',
-                license: 'ISC'
+                license: 'ISC',
+                typescript: false
               }}
             />
           </RootJunction>
@@ -527,7 +545,8 @@ describe('NewCommand#View', () => {
                 version: '1.0.0',
                 description: 'A test application',
                 dir: 'client',
-                license: 'ISC'
+                license: 'ISC',
+                typescript: false
               }}
             />
           </RootJunction>

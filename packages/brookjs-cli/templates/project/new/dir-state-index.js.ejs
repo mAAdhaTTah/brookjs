@@ -1,7 +1,7 @@
 ---
-to: <%= name %>/<%= dir %>/state/index.js
+to: "<%= name %>/<%= dir %>/state/index.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
-import { handleActions } from 'redux-actions';
+import { handleActions } from '<%= locals.typescript ? 'typesafe-actions' : 'redux-actions' %>';
 import { incrementClick, decrementClick } from '../actions';
 
 const initialState = {

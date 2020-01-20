@@ -1,11 +1,21 @@
 ---
-to: <%= name %>/<%= dir %>/components/App.js
+to: "<%= name %>/<%= dir %>/components/App.<%= locals.typescript ? 'tsx' : 'js' %>"
 ---
 import React from 'react';
 import { toJunction } from 'brookjs-silt';
 import { incrementClick, decrementClick } from '../actions';
-
-const App = ({ count, onIncrementClick, onDecrementClick }) => {
+<% if(locals.typescript) { %>
+type Props = {
+  count: number;
+  onIncrementClick: () => void;
+  onDecrementClick: () => void;
+};
+<% } %>
+const App<% if(locals.typescript) { %>: React.FC<Props> = ({
+  count,
+  onIncrementClick,
+  onDecrementClick
+})<% } else { %> = ({ count, onIncrementClick, onDecrementClick })<% } %> => {
   return (
     <div className="<%= name %>">
       <h1>

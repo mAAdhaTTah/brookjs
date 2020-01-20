@@ -63,10 +63,7 @@ export class App {
     }
   }
 
-  private load(target: string) {
-    const filename = resolve.sync(target, {
-      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx']
-    });
+  private load(filename: string) {
     const oldNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'production';
     const result = transformFileSync(filename, {

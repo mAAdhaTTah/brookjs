@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/<%= dir %>/setupTests.js
+to: "<%= name %>/<%= dir %>/setupTests.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
 import 'brookjs-desalinate/extend-expect';
 import '@testing-library/jest-dom/extend-expect';

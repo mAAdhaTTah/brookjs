@@ -5,6 +5,7 @@ Feature: new command
   I want to bootstrap a new application with configuration
 
   @prompts
+  @js
   Scenario: Developer runs new and answers the prompts
     When I run beaver with "new test-app"
     And I respond to the prompts with:
@@ -33,6 +34,7 @@ Feature: new command
       | client/components/__tests__/App.spec.js      |
 
   @yes
+  @js
   Scenario: Developer runs new and accepts the defaults
     When I run beaver with "new test-app -y"
     And I wait for the command to finish with code 0
@@ -52,3 +54,25 @@ Feature: new command
       | src/components/index.js                   |
       | src/components/__stories__/App.stories.js |
       | src/components/__tests__/App.spec.js      |
+
+  @yes
+  @ts
+  Scenario: Developer runs new with ts and accepts the defaults
+    When I run beaver with "new test-app -y --ts"
+    And I wait for the command to finish with code 0
+    Then I see a project dir called "test-app" with file snapshots:
+      | package.json                               |
+      | .beaverrc.ts                               |
+      | .storybook/.babelrc                        |
+      | .storybook/main.ts                         |
+      | src/index.tsx                              |
+      | src/setupTests.ts                          |
+      | src/state/index.ts                         |
+      | src/state/__tests__/state.spec.ts          |
+      | src/__tests__/storyshots.spec.ts           |
+      | src/actions/index.ts                       |
+      | src/actions/app.ts                         |
+      | src/components/App.tsx                     |
+      | src/components/index.ts                    |
+      | src/components/__stories__/App.stories.tsx |
+      | src/components/__tests__/App.spec.tsx      |

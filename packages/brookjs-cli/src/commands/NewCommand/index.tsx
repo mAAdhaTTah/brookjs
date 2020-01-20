@@ -6,6 +6,7 @@ import View from './View';
 import { Args } from './types';
 import reducer from './reducer';
 import initialState from './initialState';
+import { defaultSteps } from './constants';
 
 const NewCommand: Command<Args> = {
   cmd: 'new [name]',
@@ -21,6 +22,11 @@ const NewCommand: Command<Args> = {
         alias: 'y',
         describe: 'Create the application with defaults answers to the prompts',
         default: false
+      },
+      typescript: {
+        alias: 'ts',
+        describe: 'Use typescript.',
+        default: defaultSteps.typescript
       }
     });
   },

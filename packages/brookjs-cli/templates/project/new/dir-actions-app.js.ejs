@@ -1,7 +1,7 @@
 ---
-to: <%= name %>/<%= dir %>/actions/app.js
+to: "<%= name %>/<%= dir %>/actions/app.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
-import { createAction } from 'redux-actions';
+import { createAction } from '<%= locals.typescript ? 'typesafe-actions' : 'redux-actions' %>';
 
 export const init = createAction('INIT');
 

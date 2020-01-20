@@ -1,104 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Developer runs new and accepts the defaults-.babelrc 1`] = `
-"{
-  \\"presets\\": [
-    \\"brookjs\\",
-    [\\"@babel/env\\", {
-         modules: false
-    }]
-  ],
-  \\"plugins\\": [
-    \\"@babel/plugin-proposal-class-properties\\"
-  ]
-}
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-.beaverrc.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-.beaverrc.ts 1`] = `
 "export const dir = 'src';
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.beaverrc.ts 1`] = `
-"export const dir = 'src';
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-.eslintrc.js 1`] = `
-"module.exports = {
-  root: true,
-  parserOptions: {
-    ecmaVersion: 8,
-    sourceType: 'module',
-    ecmaFeatures: {
-      impliedStrict: true,
-      jsx: true
-    }
-  },
-  plugins: ['react'],
-  env: {
-    es6: true,
-    node: true,
-    browser: true
-  },
-  extends: ['valtech', 'prettier'],
-  settings: {
-    react: {
-      pragma: 'h'
-    }
-  },
-  rules: {
-    'react/jsx-uses-react': 2,
-    'react/jsx-uses-vars': 2
-  }
-};
-
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-.hygen.js 1`] = `
-"const loader = require('esm');
-
-require = loader(module, { mode: 'auto', cjs: true });
-
-module.exports = {
-    helpers: {
-        dir: () => require('./.beaver.js').dir
-    }
-};
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-.storybook/.babelrc 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-.storybook/.babelrc 1`] = `
 "{
   \\"presets\\": [\\"brookjs\\"]
 }
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-.storybook/addons.js 1`] = `
-"import 'brookjs-desalinate/register';
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-.storybook/config.js 1`] = `
-"import { configure, addDecorator } from '@storybook/react';
-import { withJunction } from 'brookjs-desalinate';
-
-// automatically import all files ending in *.stories.js
-const req = require.context('../src', true, /.stories.js$/);
-function loadStories() {
-  req.keys().forEach(filename => req(filename));
-}
-
-addDecorator(withJunction);
-
-configure(loadStories, module);
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-.storybook/main.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-.storybook/main.ts 1`] = `
 "module.exports = {
   stories: ['../src/**/__stories__/*.stories.js'],
   addons: [
@@ -110,7 +24,7 @@ exports[`Developer runs new and accepts the defaults-.storybook/main.js 1`] = `
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-package.json 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-package.json 1`] = `
 "{
   \\"name\\": \\"test-app\\",
   \\"version\\": \\"0.0.0\\",
@@ -148,15 +62,15 @@ exports[`Developer runs new and accepts the defaults-package.json 1`] = `
     \\"react-dom\\": \\"^16.0.0\\",
     \\"react-redux\\": \\"^7.0.0\\",
     \\"redux\\": \\"^4.0.0\\",
-    \\"redux-actions\\": \\"^2.0.0\\",
     \\"redux-devtools-extension\\": \\"^2.0.0\\",
-    \\"reselect\\": \\"^4.0.0\\"
+    \\"reselect\\": \\"^4.0.0\\",
+    \\"typesafe-actions\\": \\"^5.0.0\\"
   }
 }
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/__tests__/storyshots.spec.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/__tests__/storyshots.spec.ts 1`] = `
 "import initStoryshots from '@storybook/addon-storyshots';
 import { render } from '@testing-library/react';
 import { RootJunction } from 'brookjs-silt';
@@ -177,8 +91,8 @@ initStoryshots({
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/actions/app.js 1`] = `
-"import { createAction } from 'redux-actions';
+exports[`Developer runs new with ts and accepts the defaults-src/actions/app.ts 1`] = `
+"import { createAction } from 'typesafe-actions';
 
 export const init = createAction('INIT');
 
@@ -188,53 +102,12 @@ export const decrementClick = createAction('DECREMENT_CLICK');
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/actions/index.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/actions/index.ts 1`] = `
 "export * from './app';
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/app.js 1`] = `
-"import '@babel/polyfill';
-import React from 'react';
-import { observeDelta, eddy, combineReducers, fromReduxStore } from 'brookjs';
-import { RootJunction } from 'brookjs-silt';
-import { applyMiddleware, createStore } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
-import ReactDOM from 'react-dom';
-import { init } from './actions';
-import {} from './deltas';
-import {} from './reducers';
-import {} from './selectors';
-
-const { __INITIAL_STATE__ } = global;
-
-const compose = composeWithDevTools({
-  name: 'test-app'
-});
-
-const enhancer = compose(applyMiddleware(observeDelta()), eddy());
-
-const reducer = combineReducers({});
-
-const store = createStore(reducer, __INITIAL_STATE__, enhancer);
-const state$ = fromReduxStore(store);
-
-ReactDOM.render(
-  <RootJunction silt-embeddable root$={root$ => root$.observe(store.dispatch)}>
-    {state$.map(state => (
-      <pre>
-        <code>{JSON.stringify(state)}</code>
-      </pre>
-    ))}
-  </RootJunction>,
-  document.getElementById('app')
-);
-
-store.dispatch(init());
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-src/components/__stories__/App.stories.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/components/__stories__/App.stories.tsx 1`] = `
 "import React from 'react';
 import App from '../App';
 
@@ -246,7 +119,7 @@ export const basic = () => <App count={3} />;
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/components/__tests__/App.spec.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/components/__tests__/App.spec.tsx 1`] = `
 "import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { incrementClick, decrementClick } from '../../actions';
@@ -269,12 +142,22 @@ describe('App', () => {
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/components/App.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/components/App.tsx 1`] = `
 "import React from 'react';
 import { toJunction } from 'brookjs-silt';
 import { incrementClick, decrementClick } from '../actions';
 
-const App = ({ count, onIncrementClick, onDecrementClick }) => {
+type Props = {
+  count: number;
+  onIncrementClick: () => void;
+  onDecrementClick: () => void;
+};
+
+const App: React.FC<Props> = ({
+  count,
+  onIncrementClick,
+  onDecrementClick
+}) => {
   return (
     <div className=\\"test-app\\">
       <h1>
@@ -297,37 +180,12 @@ export default toJunction(events)(App);
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/components/index.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/components/index.ts 1`] = `
 "export { default as App } from './App';
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/deltas/index.js 1`] = `""`;
-
-exports[`Developer runs new and accepts the defaults-src/dom.js 1`] = `
-"import {
-  children,
-  component,
-  Kefir,
-  render,
-  containerAttribute
-} from 'brookjs';
-import {} from './components';
-import template from './view.hbs';
-
-export const el = doc =>
-  Kefir.fromCallback(callback => {
-    callback(doc.querySelector(\`[\${containerAttribute('app')}]\`));
-  });
-
-export const view = component({
-  children: children({}),
-  render: render(template)
-});
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-src/index.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/index.tsx 1`] = `
 "import '@babel/polyfill';
 import React from 'react';
 import { observeDelta, eddy } from 'brookjs';
@@ -365,22 +223,13 @@ store.dispatch(init());
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/reducers/index.js 1`] = `""`;
-
-exports[`Developer runs new and accepts the defaults-src/selectors/index.js 1`] = `
-"export const selectProps = props$ => props$;
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-src/services/index.js 1`] = `""`;
-
-exports[`Developer runs new and accepts the defaults-src/setupTests.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/setupTests.ts 1`] = `
 "import 'brookjs-desalinate/extend-expect';
 import '@testing-library/jest-dom/extend-expect';
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/state/__tests__/state.spec.js 1`] = `
+exports[`Developer runs new with ts and accepts the defaults-src/state/__tests__/state.spec.ts 1`] = `
 "import { reducer, mapStateToProps } from '../index';
 import { init, incrementClick, decrementClick } from '../../actions';
 
@@ -408,8 +257,8 @@ describe('state', () => {
 "
 `;
 
-exports[`Developer runs new and accepts the defaults-src/state/index.js 1`] = `
-"import { handleActions } from 'redux-actions';
+exports[`Developer runs new with ts and accepts the defaults-src/state/index.ts 1`] = `
+"import { handleActions } from 'typesafe-actions';
 import { incrementClick, decrementClick } from '../actions';
 
 const initialState = {
@@ -427,12 +276,5 @@ export const reducer = handleActions(
 export const mapStateToProps = state => ({
   count: state.count
 });
-"
-`;
-
-exports[`Developer runs new and accepts the defaults-src/view.hbs 1`] = `
-"<div data-brk-container=\\"app\\">
-
-</div>
 "
 `;
