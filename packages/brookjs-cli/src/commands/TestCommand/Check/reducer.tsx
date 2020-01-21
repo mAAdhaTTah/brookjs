@@ -1,9 +1,9 @@
 import { getType } from 'typesafe-actions';
 import { EddyReducer, loop } from 'brookjs';
 import * as glob from '../../../glob';
+import * as prettier from '../../../prettier';
 import { State, Action } from './types';
 import { initialState } from './initialState';
-import { check } from './actions';
 
 export const reducer: EddyReducer<State, Action> = (
   state = initialState('/', null),
@@ -16,19 +16,19 @@ export const reducer: EddyReducer<State, Action> = (
           ...state,
           files: action.payload.map(path => ({ path, status: 'unchecked' }))
         },
-        [check.project.request()]
+        [prettier.actions.project.request()]
       );
-    case getType(check.project.request):
+    case getType(prettier.actions.project.request):
       return {
         ...state,
         status: 'checking'
       };
-    case getType(check.project.success):
+    case getType(prettier.actions.project.success):
       return {
         ...state,
         status: 'completed'
       };
-    case getType(check.file.success):
+    case getType(prettier.actions.file.success):
       return {
         ...state,
         files: state.files.map(file =>
@@ -37,7 +37,7 @@ export const reducer: EddyReducer<State, Action> = (
             : file
         )
       };
-    case getType(check.file.failure):
+    case getType(prettier.actions.file.failure):
       return {
         ...state,
         files: state.files.map(file =>
