@@ -12,9 +12,32 @@ exports[`Developer runs new with ts and accepts the defaults-.storybook/.babelrc
 "
 `;
 
+exports[`Developer runs new with ts and accepts the defaults-.storybook/main.js 1`] = `
+"module.exports = {
+  stories: ['../src/**/__stories__/*.stories.tsx'],
+  addons: [
+    '@storybook/addon-actions',
+    '@storybook/addon-links',
+    'brookjs-desalinate/register'
+  ],
+  webpack: async config => {
+    config.module.rules.push({
+      test: /\\\\.(ts|tsx)$/,
+      loader: require.resolve('babel-loader'),
+      options: {
+        presets: [['brookjs', { flow: false, typescript: true }]],
+      },
+    });
+    config.resolve.extensions.push('.ts', '.tsx');
+    return config;
+  }
+};
+"
+`;
+
 exports[`Developer runs new with ts and accepts the defaults-.storybook/main.ts 1`] = `
 "module.exports = {
-  stories: ['../src/**/__stories__/*.stories.js'],
+  stories: ['../src/**/__stories__/*.stories.tsx'],
   addons: [
     '@storybook/addon-actions',
     '@storybook/addon-links',
@@ -64,7 +87,8 @@ exports[`Developer runs new with ts and accepts the defaults-package.json 1`] = 
     \\"redux\\": \\"^4.0.0\\",
     \\"redux-devtools-extension\\": \\"^2.0.0\\",
     \\"reselect\\": \\"^4.0.0\\",
-    \\"typesafe-actions\\": \\"^5.0.0\\"
+    \\"typesafe-actions\\": \\"^5.0.0\\",
+    \\"typescript\\": \\"^3.7.0\\"
   }
 }
 "
@@ -94,11 +118,11 @@ initStoryshots({
 exports[`Developer runs new with ts and accepts the defaults-src/actions/app.ts 1`] = `
 "import { createAction } from 'typesafe-actions';
 
-export const init = createAction('INIT');
+export const init = createAction('INIT')();
 
-export const incrementClick = createAction('INCREMENT_CLICK');
+export const incrementClick = createAction('INCREMENT_CLICK')();
 
-export const decrementClick = createAction('DECREMENT_CLICK');
+export const decrementClick = createAction('DECREMENT_CLICK')();
 "
 `;
 
@@ -258,20 +282,17 @@ describe('state', () => {
 `;
 
 exports[`Developer runs new with ts and accepts the defaults-src/state/index.ts 1`] = `
-"import { createReducer } from 'typesafe-actions';
+"import { createReducer, getType } from 'typesafe-actions';
 import { incrementClick, decrementClick } from '../actions';
 
 const initialState = {
   count: 0
 };
 
-export const reducer = createReducer(
-  initialState,
-  {
-    [incrementClick]: state => ({ ...state, count: state.count + 1 }),
-    [decrementClick]: state => ({ ...state, count: state.count - 1 })
-  }
-);
+export const reducer = createReducer(initialState, {
+  [getType(incrementClick)]: state => ({ ...state, count: state.count + 1 }),
+  [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 })
+});
 
 export const mapStateToProps = state => ({
   count: state.count

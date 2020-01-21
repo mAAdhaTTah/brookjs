@@ -65,7 +65,7 @@ Feature: new command
       | tsconfig.json                              |
       | .beaverrc.ts                               |
       | .storybook/.babelrc                        |
-      | .storybook/main.ts                         |
+      | .storybook/main.js                         |
       | src/index.tsx                              |
       | src/setupTests.ts                          |
       | src/state/index.ts                         |
