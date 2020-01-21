@@ -4,8 +4,7 @@ import { defaultLoaders, cosmiconfigSync } from 'cosmiconfig';
 import { render, RenderOptions } from 'ink';
 import { TransformOptions, transformFileSync } from '@babel/core';
 import * as t from 'io-ts';
-import resolve from 'resolve';
-import { babelIO } from '../rc';
+import { BabelRC } from '../babel';
 import { Command } from './Command';
 import Commands from './Commands';
 import ErrorBoundary, {
@@ -15,7 +14,7 @@ import ErrorBoundary, {
 } from './components';
 
 const RC = t.partial({
-  babel: babelIO
+  babel: BabelRC
 });
 
 type RC = t.Type<typeof RC>;

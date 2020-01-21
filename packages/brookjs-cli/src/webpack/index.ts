@@ -17,7 +17,7 @@ import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
 // import ModuleNotFoundPlugin from 'react-dev-utils/ModuleNotFoundPlugin';
 // import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
-import { babelIO } from '../rc';
+import { BabelRC } from '../babel';
 
 export type State = {
   cmd: 'build';
@@ -49,11 +49,13 @@ export type WebpackRC = Omit<t.TypeOf<typeof WebpackRC>, 'modifier'> & {
 
 const RC = t.partial({
   dir: t.string,
-  babel: babelIO,
+  babel: BabelRC,
   webpack: WebpackRC
 });
 
-type RC = t.TypeOf<typeof RC>;
+type RC = Omit<t.TypeOf<typeof RC>, 'babel'> & {
+  babel?: BabelRC;
+};
 
 // file regexes
 const jsRegex = /\.(js|mjs|jsx|ts|tsx)$/;
