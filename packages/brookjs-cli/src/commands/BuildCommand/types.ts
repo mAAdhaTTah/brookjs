@@ -1,11 +1,11 @@
 import { ActionType } from 'typesafe-actions';
-import webpack from 'webpack';
+import { Stats, Configuration } from 'webpack';
 import { Maybe } from 'brookjs-types';
 import { RC } from './RC';
-import * as actions from './actions';
+import * as webpack from '../../webpack';
 
 interface BaseState {
-  env: Required<webpack.Configuration>['mode'];
+  env: Required<Configuration>['mode'];
   cwd: string;
   rc: Maybe<RC>;
   watch: boolean;
@@ -18,7 +18,7 @@ interface BuildingState extends BaseState {
 
 interface BuildSuccessState extends BaseState {
   building: false;
-  results: webpack.Stats;
+  results: Stats;
 }
 
 interface BuildErrorState extends BaseState {
@@ -27,5 +27,5 @@ interface BuildErrorState extends BaseState {
 }
 
 export type State = BuildingState | BuildSuccessState | BuildErrorState;
-export type Action = ActionType<typeof actions>;
+export type Action = ActionType<typeof webpack.actions>;
 export type Args = {};

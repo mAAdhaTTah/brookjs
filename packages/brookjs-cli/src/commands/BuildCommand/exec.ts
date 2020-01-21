@@ -1,26 +1,21 @@
-import Kefir, { Stream, Property } from 'kefir';
-import { WebpackService } from '../../services';
-import { webpackBuild } from './actions';
-import { selectWebpackConfig } from './selectors';
+import Kefir, { Stream } from 'kefir';
+import * as webpack from '../../webpack';
 import { State, Action } from './types';
+import { Delta } from 'brookjs-types';
 
-const exec = (
-  action$: Stream<Action, never>,
-  state$: Property<State, never>
-): Stream<Action, never> =>
-  state$
-    .take(1)
-    .filter(state => state.rc != null)
-    .flatMap(state =>
-      Kefir.concat<Action, never>([
-        Kefir.constant(webpackBuild.request()),
-        WebpackService.create(selectWebpackConfig(state))
-          .flatMap(compiler =>
-            state.watch ? compiler.watch() : compiler.run()
-          )
-          .map(webpackBuild.success)
-          .flatMapErrors(error => Kefir.constant(webpackBuild.failure(error)))
-      ])
-    );
+const exec: Delta<Action, State> = (action$, state$): Stream<Action, never> => {
+  const webpack$ = webpack.delta(
+    action$,
+    state$.map(state => ({
+      cwd: state.cwd,
+      cmd: 'build',
+      env: state.env,
+      watch: state.watch,
+      rc: state.rc
+    }))
+  );
+
+  return Kefir.merge([webpack$]);
+};
 
 export default exec;
