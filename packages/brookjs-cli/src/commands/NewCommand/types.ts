@@ -13,6 +13,15 @@ export type Log = {
   msg: string;
 };
 
+export type NewProjectConfig = {
+  name: string;
+  version: string;
+  description: string;
+  dir: string;
+  license: string;
+  typescript: boolean;
+};
+
 export type ConfiguringState = {
   logs: Log[];
   result: null;
@@ -20,11 +29,7 @@ export type ConfiguringState = {
   cwd: string;
   configuring: Configurable;
   config: {
-    name: Maybe<string>;
-    version: Maybe<string>;
-    description: Maybe<string>;
-    dir: Maybe<string>;
-    license: Maybe<string>;
+    [K in keyof NewProjectConfig]: Maybe<NewProjectConfig[K]>;
   };
   step: 'configure';
 };
@@ -37,13 +42,7 @@ export type ErrorState = {
   error: Error;
   cwd: string;
   configuring: null;
-  config: {
-    name: string;
-    version: string;
-    description: string;
-    dir: string;
-    license: string;
-  };
+  config: NewProjectConfig;
   step: 'error';
 };
 
@@ -53,13 +52,7 @@ export type CompleteState = {
   error: null;
   cwd: string;
   configuring: null;
-  config: {
-    name: string;
-    version: string;
-    description: string;
-    dir: string;
-    license: string;
-  };
+  config: NewProjectConfig;
   step: 'complete';
 };
 
@@ -69,13 +62,7 @@ export type InteractingState = {
   error: null;
   cwd: string;
   configuring: null;
-  config: {
-    name: string;
-    version: string;
-    description: string;
-    dir: string;
-    license: string;
-  };
+  config: NewProjectConfig;
   step: ConfiguredStep;
 };
 
@@ -85,7 +72,10 @@ export type State = ConfiguringState | ConfiguredState;
 
 export type Step = State['step'];
 
-export type Configurable = Exclude<keyof State['config'], 'name'>;
+export type Configurable = Exclude<
+  keyof State['config'],
+  'name' | 'typescript'
+>;
 
 export type LogAction = { type: 'LOG'; payload: Log };
 
@@ -100,6 +90,7 @@ export type Action =
 export type Args = {
   name: string;
   yes: boolean;
+  typescript: boolean;
 };
 
 export const unreachable = (x: never): never => {

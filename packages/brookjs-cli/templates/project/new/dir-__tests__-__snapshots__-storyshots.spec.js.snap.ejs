@@ -1,11 +1,11 @@
 ---
-to: <%= name %>/<%= dir %>/__tests__/__snapshots__/storyshots.spec.js.snap
+to: "<%= name %>/<%= dir %>/__tests__/__snapshots__/storyshots.spec.<%= locals.typescript ? 'ts' : 'js' %>.snap"
 ---
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Storyshots App Basic 1`] = `
 <div
-  class="test-app"
+  class="test-app-<%= locals.typescript ? 'ts' : 'js' %>"
 >
   <h1>
     Welcome to 

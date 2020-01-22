@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/<%= dir %>/__tests__/storyshots.spec.js
+to: "<%= name %>/<%= dir %>/__tests__/storyshots.spec.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
 import initStoryshots from '@storybook/addon-storyshots';
 import { render } from '@testing-library/react';

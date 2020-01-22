@@ -1,11 +1,6 @@
 /* eslint-env jest */
 import exec from '../exec';
 
-jest.mock('../../../services', () => ({
-  WebpackService: {} as any,
-  glob: jest.fn()
-}));
-
 describe('NewCommand#exec', () => {
   it('should not do anything before creating', () => {
     expect(exec).toEmitFromDelta([], sendToDelta => {

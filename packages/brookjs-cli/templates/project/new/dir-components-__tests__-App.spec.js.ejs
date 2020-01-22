@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/<%= dir %>/components/__tests__/App.spec.js
+to: "<%= name %>/<%= dir %>/components/__tests__/App.spec.<%= locals.typescript ? 'tsx' : 'js' %>"
 ---
 import React from 'react';
 import { fireEvent } from '@testing-library/react';

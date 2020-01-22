@@ -1,4 +1,4 @@
 ---
-to: <%= name %>/<%= dir %>/components/index.js
+to: "<%= name %>/<%= dir %>/components/index.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
 export { default as App } from './App';

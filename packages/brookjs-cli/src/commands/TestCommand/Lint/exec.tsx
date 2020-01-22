@@ -1,38 +1,23 @@
 import { Delta } from 'brookjs-types';
 import Kefir from 'kefir';
-import { globLintDelta, globLint } from '../../../deltas';
+import * as glob from '../../../glob';
+import * as eslint from '../../../eslint';
 import { Action, State } from './types';
-import { ofType, sampleStateAtAction } from 'brookjs-flow';
-import { lint } from './actions';
-import { ESLintService } from '../../../services';
+import { ofType } from 'brookjs-flow';
 
 export const exec: Delta<Action, State> = (action$, state$) => {
-  const globLint$ = globLintDelta(
-    action$.thru(ofType(globLint.request)),
+  const glob$ = glob.delta(
+    action$.thru(ofType(glob.actions.lint.request)),
     state$
   );
 
-  const lint$ = sampleStateAtAction(
-    action$,
-    state$,
-    lint.project.request
-  ).flatMap(state => {
-    const eslint = ESLintService.create({ cwd: state.cwd, fix: false });
+  const eslint$ = eslint.delta(
+    action$.thru(ofType(eslint.actions.project.request)),
+    state$.map(state => ({
+      cwd: state.cwd,
+      paths: state.files.map(file => file.path)
+    }))
+  );
 
-    return Kefir.concat<Action, never>([
-      Kefir.merge(
-        state.files.map(({ path }) =>
-          eslint
-            .check(path)
-            .map(report => lint.file.success({ path, report }))
-            .flatMapErrors(error =>
-              Kefir.constant(lint.file.failure({ path, error }))
-            )
-        )
-      ),
-      Kefir.constant(lint.project.success())
-    ]);
-  });
-
-  return Kefir.merge([globLint$, lint$]);
+  return Kefir.merge<Action, never>([glob$, eslint$]);
 };

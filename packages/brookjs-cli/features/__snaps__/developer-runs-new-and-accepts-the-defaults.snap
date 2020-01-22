@@ -20,6 +20,11 @@ exports[`Developer runs new and accepts the defaults-.beaverrc.js 1`] = `
 "
 `;
 
+exports[`Developer runs new and accepts the defaults-.beaverrc.ts 1`] = `
+"export const dir = 'src';
+"
+`;
+
 exports[`Developer runs new and accepts the defaults-.eslintrc.js 1`] = `
 "module.exports = {
   root: true,

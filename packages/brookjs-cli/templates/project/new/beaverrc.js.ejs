@@ -1,4 +1,4 @@
 ---
-to: <%= name %>/.beaverrc.js
+to: "<%= name %>/.beaverrc.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
 export const dir = '<%= dir %>';

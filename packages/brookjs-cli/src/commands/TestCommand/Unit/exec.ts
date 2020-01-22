@@ -2,7 +2,7 @@ import path from 'path';
 import Kefir, { Stream, Property } from 'kefir';
 import jest from 'jest';
 import { Maybe } from 'brookjs-types';
-import { project } from '../../../services';
+import * as project from '../../../project';
 import { testRun } from './actions';
 import { RC } from './RC';
 import { State, Action } from './types';
@@ -68,7 +68,6 @@ const exec = (
         moduleNameMapper: {
           '^react-native$': 'react-native-web',
           '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-          'react-test-renderer': 'identity-obj-proxy',
           '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1',
           // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
           'react-syntax-highlighter/dist/esm/(.*)':

@@ -1,8 +1,8 @@
 import * as t from 'io-ts';
 import { Maybe } from 'brookjs-types';
 import { ActionType } from 'typesafe-actions';
-import { globLint } from '../../../deltas';
-import * as actions from './actions';
+import * as glob from '../../../glob';
+import * as prettier from '../../../prettier';
 
 export const RC = t.partial({
   dir: t.string
@@ -35,4 +35,4 @@ export type State = {
   files: FileCheck[];
 };
 
-export type Action = ActionType<typeof actions & typeof globLint>;
+export type Action = ActionType<typeof prettier.actions & typeof glob.actions>;

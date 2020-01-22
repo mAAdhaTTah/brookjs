@@ -1,6 +1,4 @@
-/* eslint-env jest */
-import { selectWebpackConfig } from '../selectors';
-import { State } from '../types';
+import { selectWebpackConfig, State } from '../index';
 
 describe('BuildCommand#selectors', () => {
   describe('selectWebpackConfig', () => {
@@ -8,10 +6,10 @@ describe('BuildCommand#selectors', () => {
       const config = {};
       const modifier = jest.fn().mockReturnValue(config);
       const state: State = {
-        building: true,
         watch: false,
         env: 'production',
-        results: null,
+        extension: 'js',
+        cmd: 'build',
         cwd: '/path/to/cwd',
         rc: {
           webpack: {

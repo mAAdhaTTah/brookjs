@@ -1,34 +1,34 @@
 import { EddyReducer, loop } from 'brookjs';
 import { getType } from 'typesafe-actions';
-import { globLint } from '../../../deltas';
+import * as glob from '../../../glob';
+import * as eslint from '../../../eslint';
 import { State, Action } from './types';
 import { initialState } from './initialState';
-import { lint } from './actions';
 
 export const reducer: EddyReducer<State, Action> = (
   state = initialState('/', null),
   action
 ) => {
   switch (action.type) {
-    case getType(globLint.success):
+    case getType(glob.actions.lint.success):
       return loop(
         {
           ...state,
           files: action.payload.map(path => ({ path, status: 'unlinted' }))
         },
-        [lint.project.request()]
+        [eslint.actions.project.request()]
       );
-    case getType(lint.project.request):
+    case getType(eslint.actions.project.request):
       return {
         ...state,
         status: 'linting'
       };
-    case getType(lint.project.success):
+    case getType(eslint.actions.project.success):
       return {
         ...state,
         status: 'completed'
       };
-    case getType(lint.file.success):
+    case getType(eslint.actions.file.success):
       return {
         ...state,
         files: state.files.map(file =>
@@ -37,7 +37,7 @@ export const reducer: EddyReducer<State, Action> = (
             : file
         )
       };
-    case getType(lint.file.failure):
+    case getType(eslint.actions.file.failure):
       return {
         ...state,
         files: state.files.map(file =>

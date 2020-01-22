@@ -1,11 +1,22 @@
 ---
-to: <%= name %>/.storybook/main.js
+to: "<%= name %>/.storybook/main.js"
 ---
 module.exports = {
-  stories: ['../<%= dir %>/**/__stories__/*.stories.js'],
+  stories: ['../<%= dir %>/**/__stories__/*.stories.<%= locals.typescript ? 'tsx' : 'js' %>'],
   addons: [
     '@storybook/addon-actions',
     '@storybook/addon-links',
     'brookjs-desalinate/register'
-  ]
+  ]<% if(locals.typescript) { %>,
+  webpack: async config => {
+    config.module.rules.push({
+      test: /\.(ts|tsx)$/,
+      loader: require.resolve('babel-loader'),
+      options: {
+        presets: [['brookjs', { flow: false, typescript: true }]],
+      },
+    });
+    config.resolve.extensions.push('.ts', '.tsx');
+    return config;
+  }<% } %>
 };

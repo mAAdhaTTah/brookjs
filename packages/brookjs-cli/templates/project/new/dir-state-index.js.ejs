@@ -1,20 +1,24 @@
 ---
-to: <%= name %>/<%= dir %>/state/index.js
+to: "<%= name %>/<%= dir %>/state/index.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
-import { handleActions } from 'redux-actions';
+<% reducerCreator = locals.typescript ? 'createReducer' : 'handleActions' -%>
+import { <%= reducerCreator %><%= locals.typescript ? ', getType' : '' %> } from '<%= locals.typescript ? 'typesafe-actions' : 'redux-actions' %>';
 import { incrementClick, decrementClick } from '../actions';
 
 const initialState = {
   count: 0
 };
 
-export const reducer = handleActions(
+export const reducer = <%= reducerCreator %>(<% if(locals.typescript) { %>initialState, {
+  [getType(incrementClick)]: state => ({ ...state, count: state.count + 1 }),
+  [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 })
+})<% } else { %>
   {
     [incrementClick]: state => ({ ...state, count: state.count + 1 }),
     [decrementClick]: state => ({ ...state, count: state.count - 1 })
   },
   initialState
-);
+)<% } %>;
 
 export const mapStateToProps = state => ({
   count: state.count

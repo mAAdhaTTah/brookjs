@@ -1,28 +1,21 @@
 import { Delta } from 'brookjs-types';
-import { sampleStateAtAction, ofType } from 'brookjs-flow';
+import { ofType } from 'brookjs-flow';
 import Kefir from 'kefir';
-import { prettier } from '../../../services';
-import { globLintDelta, globLint } from '../../../deltas';
-import { check } from './actions';
+import * as prettier from '../../../prettier';
+import * as glob from '../../../glob';
 import { State, Action } from './types';
 
 export const exec: Delta<Action, State> = (action$, state$) => {
-  const globLint$ = globLintDelta(
-    action$.thru(ofType(globLint.request)),
+  const globLint$ = glob.delta(
+    action$.thru(ofType(glob.actions.lint.request)),
     state$
   );
 
-  const check$ = sampleStateAtAction(
-    action$,
-    state$,
-    check.project.request
-  ).flatMap(state =>
-    Kefir.concat<Action, never>([
-      Kefir.merge(state.files.map(file => prettier.check(file.path)))
-        .map(result => check.file.success(result))
-        .flatMapErrors(error => Kefir.constant(check.file.failure(error))),
-      Kefir.constant(check.project.success())
-    ])
+  const check$ = prettier.delta(
+    action$.thru(ofType(prettier.actions.project.request)),
+    state$.map(state => ({
+      paths: state.files.map(file => file.path)
+    }))
   );
 
   return Kefir.merge<Action, never>([globLint$, check$]);

@@ -2,10 +2,17 @@ import path from 'path';
 import fs from 'fs';
 import execa from 'execa';
 
-const setUpProject = async (cwd, testAppDir) => {
+const projectName = type => `test-app-${type}`;
+
+const setUpProject = async (cwd, type) => {
   console.log('Creating a new project');
 
-  await execa.command(`${path.join(cwd, 'bin', 'beaver.js')} new test-app -y`);
+  await execa.command(
+    `${path.join('./', 'bin', 'beaver.js')} new ${projectName(type)} -y${
+      type === 'ts' ? ' --ts' : ''
+    }`,
+    { cwd }
+  );
 };
 
 const packPackages = async packagesRoot => {
@@ -34,19 +41,77 @@ const packPackages = async packagesRoot => {
   );
 };
 
+const tarballPath = type =>
+  path.join('features', 'support', `${projectName(type)}.tar.gz`);
+const projectPath = (cwd, type) => path.join(cwd, projectName(type));
+
+const cleanupOld = (cwd, type) =>
+  Promise.all([
+    execa.command(`rm -rf ${projectName(type)}`, { cwd }),
+    execa.command(`rm ${tarballPath(type)}`, { cwd })
+  ]);
+
+const updatePkgJson = async (cwd, outputs, type) => {
+  console.log('Updating package.json to install from tarballs');
+
+  const pkgJsonPath = path.join(projectPath(cwd, type), 'package.json');
+  const { stdout: pkgJson } = await execa.command(`cat ${pkgJsonPath}`);
+  const newPkgJson = JSON.parse(pkgJson);
+  newPkgJson.resolutions = {};
+
+  // Ensure all packages are resolved from our tarballs.
+  for (const { pkg, tarball } of outputs) {
+    newPkgJson.resolutions[pkg] = `file:${tarball}`;
+
+    if (newPkgJson.dependencies[pkg]) {
+      newPkgJson.dependencies[pkg] = `file:${tarball}`;
+    }
+
+    if (newPkgJson.devDependencies[pkg]) {
+      newPkgJson.devDependencies[pkg] = `file:${tarball}`;
+    }
+  }
+
+  await fs.promises.writeFile(
+    pkgJsonPath,
+    JSON.stringify(newPkgJson, null, '  ')
+  );
+};
+
+const installDeps = async (cwd, type) => {
+  console.log('Installing the dependencies');
+
+  await execa.command(`yarn`, {
+    cwd: projectPath(cwd, type)
+  });
+};
+
+const tarballPackage = async (cwd, type) => {
+  console.log(`Tarballing ${projectName(type)}`);
+  await execa.command(`tar -cvzf ${tarballPath(type)} ${projectName(type)}`, {
+    cwd
+  });
+};
+
 (async () => {
   try {
+    let makeJs = process.argv.includes('--js');
+    let makeTs = process.argv.includes('--ts');
+
+    // If neither set, build both.
+    if (!makeJs && !makeTs) {
+      makeJs = makeTs = true;
+    }
+
     const cwd = process.cwd();
-    const testAppDir = path.join('test-app');
     const packagesRoot = path.join(cwd, '..');
-    const tarballPath = path.join('features', 'support', 'test-app.tar.gz');
 
     console.log('Cleaning up old tarball & project');
 
     try {
       await Promise.all([
-        execa.command(`rm -rf test-app`, { cwd }),
-        execa.command(`rm ${tarballPath}`, { cwd })
+        makeJs && cleanupOld(cwd, 'js'),
+        makeTs && cleanupOld(cwd, 'ts')
       ]);
     } catch (err) {
       console.log('Tarball or project does not exist');
@@ -54,43 +119,22 @@ const packPackages = async packagesRoot => {
 
     const [outputs] = await Promise.all([
       packPackages(packagesRoot),
-      setUpProject(cwd, testAppDir)
+      makeJs && setUpProject(cwd, 'js'),
+      makeTs && setUpProject(cwd, 'ts')
     ]);
 
-    console.log('Updating package.json to install from tarballs');
+    await Promise.all([
+      makeJs && updatePkgJson(cwd, outputs, 'js'),
+      makeTs && updatePkgJson(cwd, outputs, 'ts')
+    ]);
 
-    const pkgJsonPath = path.join(testAppDir, 'package.json');
-    const { stdout: pkgJson } = await execa.command(`cat ${pkgJsonPath}`);
-    const newPkgJson = JSON.parse(pkgJson);
-    newPkgJson.resolutions = {};
+    await (makeJs && installDeps(cwd, 'js'));
+    await (makeTs && installDeps(cwd, 'ts'));
 
-    // Ensure all packages are resolved from our tarballs.
-    for (const { pkg, tarball } of outputs) {
-      newPkgJson.resolutions[pkg] = `file:${tarball}`;
-
-      if (newPkgJson.dependencies[pkg]) {
-        newPkgJson.dependencies[pkg] = `file:${tarball}`;
-      }
-
-      if (newPkgJson.devDependencies[pkg]) {
-        newPkgJson.devDependencies[pkg] = `file:${tarball}`;
-      }
-    }
-
-    await fs.promises.writeFile(
-      pkgJsonPath,
-      JSON.stringify(newPkgJson, null, '  ')
-    );
-
-    console.log('Installing the dependencies');
-
-    await execa.command(`yarn`, {
-      cwd: testAppDir
-    });
-
-    console.log('Tarballing test-app');
-
-    await execa.command(`tar -cvzf ${tarballPath} test-app`, { cwd });
+    await Promise.all([
+      makeJs && tarballPackage(cwd, 'js'),
+      makeTs && tarballPackage(cwd, 'ts')
+    ]);
 
     console.log('Success!');
   } catch (err) {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Kefir from 'kefir';
 
-export default {
+export const service = {
   access(path: string) {
     return Kefir.fromNodeCallback<void, NodeJS.ErrnoException>(callback =>
       fs.access(path, err => callback(err))

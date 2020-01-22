@@ -29,7 +29,7 @@ declare module 'cucumber' {
 
     spawned?: IPty;
 
-    createProject(): Promise<void>;
+    createProject(type: 'js' | 'ts'): Promise<void>;
 
     outputFile(file: File): Promise<void>;
 
@@ -89,12 +89,12 @@ class CliWorld implements World {
 
   spawned?: IPty;
 
-  async createProject() {
+  async createProject(type: 'js' | 'ts') {
     this.spawn(
       'tar',
-      `-C ${this.cwd} -zxvf ${path.join(__dirname, 'test-app.tar.gz')}`
+      `-C ${this.cwd} -zxvf ${path.join(__dirname, `test-app-${type}.tar.gz`)}`
     );
-    this.cwd = path.join(this.cwd, 'test-app');
+    this.cwd = path.join(this.cwd, `test-app-${type}`);
 
     await this.ended();
   }

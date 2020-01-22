@@ -7,7 +7,7 @@ Feature: cli commands
   @valid
   @js
   Scenario: Developer adds a valid js command
-    Given I have a project
+    Given I have a "js" project
     And I create "commands.js" with contents
       """
       import React from 'react';
@@ -33,7 +33,7 @@ Feature: cli commands
     @invalid
     @js
     Scenario: Developer adds an invalid js command
-      Given I have a project
+      Given I have a "js" project
       And I create "commands.js" with contents
         """
         import React from 'react';
@@ -58,7 +58,7 @@ Feature: cli commands
     @valid
     @ts
     Scenario: Developer adds a valid ts command
-      Given I have a project
+      Given I have a "ts" project
       And I create "commands.tsx" with contents
         """
         import React from 'react';
@@ -85,7 +85,7 @@ Feature: cli commands
       @invalid
       @ts
       Scenario: Developer adds an invalid ts command
-        Given I have a project
+        Given I have a "ts" project
         And I create "commands.tsx" with contents
           """
           import React from 'react';

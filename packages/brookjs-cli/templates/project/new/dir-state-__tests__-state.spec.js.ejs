@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/<%= dir %>/state/__tests__/state.spec.js
+to: "<%= name %>/<%= dir %>/state/__tests__/state.spec.<%= locals.typescript ? 'ts' : 'js' %>"
 ---
 import { reducer, mapStateToProps } from '../index';
 import { init, incrementClick, decrementClick } from '../../actions';

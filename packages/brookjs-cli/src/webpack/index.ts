@@ -1,3 +1,7 @@
+import Kefir, { Property, Stream } from 'kefir';
+import { createAsyncAction, ActionType } from 'typesafe-actions';
+import { Delta, Maybe } from 'brookjs-types';
+import * as t from 'io-ts';
 // @todo: readd NpmInstallPlugin
 // @todo: clean up this file (extra functions, commented out code, etc.)
 import path from 'path';
@@ -13,7 +17,51 @@ import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
 // import ModuleNotFoundPlugin from 'react-dev-utils/ModuleNotFoundPlugin';
 // import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
-import { State } from './types';
+import { BabelRC } from '../babel';
+import { Ext } from '../project';
+import { sampleStateAtAction } from 'brookjs-flow';
+
+// @TODO(mAAdhaTTah) fix require -> import (missing types)
+const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+
+export type State = {
+  cmd: 'build';
+  cwd: string;
+  env: webpack.Configuration['mode'];
+  extension: Ext;
+  watch: boolean;
+  rc: Maybe<RC>;
+};
+
+export const WebpackRC = t.partial({
+  modifier: t.Function,
+  entry: t.union([
+    t.string,
+    t.dictionary(t.string, t.string),
+    t.array(t.string)
+  ]),
+  output: t.type({
+    path: t.string,
+    filename: t.union([t.Function, t.string])
+  })
+});
+
+export type WebpackRC = Omit<t.TypeOf<typeof WebpackRC>, 'modifier'> & {
+  modifier?: (
+    config: webpack.Configuration,
+    state: State
+  ) => webpack.Configuration;
+};
+
+const RC = t.partial({
+  dir: t.string,
+  babel: BabelRC,
+  webpack: WebpackRC
+});
+
+type RC = Omit<t.TypeOf<typeof RC>, 'babel'> & {
+  babel?: BabelRC;
+};
 
 // file regexes
 const jsRegex = /\.(js|mjs|jsx|ts|tsx)$/;
@@ -275,10 +323,22 @@ const selectEnvPlugins = (state: State) => {
     case 'development':
       return [
         ...plugins,
+        state.extension === 'ts' &&
+          // Only typecheck if we're watching.
+          state.watch &&
+          new ForkTsCheckerWebpackPlugin({
+            async: true,
+            useTypescriptIncrementalApi: true,
+            checkSyntacticErrors: true,
+            tsconfig: path.join(state.cwd, 'tsconfig.json'),
+            reportFiles: [path.join(state.cwd, state.rc?.dir ?? 'src', '**')],
+            silent: true,
+            formatter: require('react-dev-utils/typescriptFormatter')
+          }),
         new CaseSensitivePathsPlugin({
           debug: false
         })
-      ];
+      ].filter(Boolean);
     case 'production':
       return [
         ...plugins,
@@ -301,7 +361,7 @@ const selectEnvPlugins = (state: State) => {
 };
 
 const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
-  let entry = state.rc?.webpack?.entry ?? 'index.js';
+  let entry = state.rc?.webpack?.entry ?? `index`;
 
   if (typeof entry === 'string') {
     return path.join(selectAppPath(state), entry);
@@ -452,8 +512,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
         'jsx'
       ]
         .map(ext => `.${ext}`)
-        // @TODO(mAAdhaTTah) add
-        .filter(ext => /* useTypeScript || */ !ext.includes('ts')),
+        .filter(ext => state.extension === 'ts' || !ext.includes('ts')),
       alias: {
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
@@ -528,3 +587,61 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     config
   );
 };
+
+export const actions = {
+  build: createAsyncAction(
+    'WEBPACK_BUILD_STARTED',
+    'WEBPACK_BUILD_COMPLETED',
+    'WEBPACK_BUILD_FAILED'
+  )<void, webpack.Stats, Error>()
+};
+
+export type Action = ActionType<typeof actions>;
+
+export const delta: Delta<Action, State> = (action$, state$) =>
+  sampleStateAtAction(action$, state$, actions.build.request).flatMap(state =>
+    WebpackService.create(selectWebpackConfig(state))
+      .flatMap(compiler => (state.watch ? compiler.watch() : compiler.run()))
+      .map(actions.build.success)
+      .flatMapErrors(error => Kefir.constant(actions.build.failure(error)))
+  );
+
+export class WebpackService {
+  static get watch() {
+    return {};
+  }
+
+  static create(config: webpack.Configuration) {
+    return Kefir.constant(new WebpackService(config));
+  }
+
+  private constructor(private config: webpack.Configuration) {}
+
+  private compiler(): Property<webpack.Compiler, Error> {
+    try {
+      return Kefir.constant(webpack(this.config));
+    } catch (e) {
+      return Kefir.constantError(e);
+    }
+  }
+
+  run(): Stream<webpack.Stats, Error> {
+    return this.compiler().flatMap(compiler =>
+      Kefir.fromNodeCallback(callback => compiler.run(callback))
+    );
+  }
+
+  watch(): Stream<webpack.Stats, Error> {
+    return this.compiler().flatMap(compiler =>
+      Kefir.stream(emitter => {
+        compiler.watch(WebpackService.watch, (err, stats) => {
+          if (err) {
+            emitter.error(err);
+          } else {
+            emitter.value(stats);
+          }
+        });
+      })
+    );
+  }
+}

@@ -9,14 +9,11 @@ export const Command = t.type({
   View: t.Function
 });
 
-type CommandBase = Omit<t.TypeOf<typeof Command>, 'builder' | 'View'>;
-type Builder<A> = (yargs: Argv<A>) => Argv<A>;
-
-export interface Command<A> extends CommandBase {
-  builder: Builder<A>;
+export type Command<A> = Omit<t.TypeOf<typeof Command>, 'builder' | 'View'> & {
+  builder: (yargs: Argv<A>) => Argv<A>;
   View: React.ComponentType<{
     args: Arguments<A>;
     rc: unknown;
     cwd: string;
   }>;
-}
+};

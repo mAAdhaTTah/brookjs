@@ -55,8 +55,8 @@ Before(function(testCase) {
 /**
  * Given I Have
  */
-Given('I have a project', { timeout: -1 }, async function() {
-  await this.createProject();
+Given('I have a {string} project', { timeout: -1 }, async function(type: 'js' | 'ts') {
+  await this.createProject(type);
 });
 
 Given('I create {string} with contents', async function(

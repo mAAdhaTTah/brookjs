@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/<%= dir %>/index.js
+to: "<%= name %>/<%= dir %>/index.<%= locals.typescript ? 'tsx' : 'js' %>"
 ---
 import '@babel/polyfill';
 import React from 'react';

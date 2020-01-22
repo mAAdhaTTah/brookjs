@@ -1,5 +1,5 @@
 ---
-to: <%= name %>/package.json
+to: "<%= name %>/package.json"
 ---
 {
   "name": "<%= name %>",
@@ -37,9 +37,11 @@ to: <%= name %>/package.json
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^7.0.0",
-    "redux": "^4.0.0",
-    "redux-actions": "^2.0.0",
+    "redux": "^4.0.0",<% if(!locals.typescript) { %>
+    "redux-actions": "^2.0.0",<% } %>
     "redux-devtools-extension": "^2.0.0",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0"<% if(locals.typescript) { %>,
+    "typesafe-actions": "^5.0.0",
+    "typescript": "^3.7.0"<% } %>
   }
 }

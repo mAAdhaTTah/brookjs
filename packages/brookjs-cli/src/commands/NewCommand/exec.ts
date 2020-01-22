@@ -49,8 +49,22 @@ const selectNewProjectContext = (state: ConfiguredState) => ({
   description: state.config.description,
   main: path.join(state.config.dir, 'index.js'),
   author: '', // @TODO(mAAdhaTTah) get author,
-  license: state.config.license
+  license: state.config.license,
+  typescript: state.config.typescript
 });
+
+const createHygenArgv = (state: ConfiguredState) => {
+  const argv = ['project', 'new'];
+  for (const [key, value] of Object.entries(selectNewProjectContext(state))) {
+    if (typeof value === 'boolean' && value === true) {
+      argv.push(`--${key}`);
+    } else if (typeof value === 'string') {
+      argv.push(`--${key}`);
+      argv.push(value);
+    }
+  }
+  return argv;
+};
 
 const exec = (
   action$: Stream<Action, never>,
@@ -61,20 +75,12 @@ const exec = (
       (state: State): state is ConfiguredState => state.step === 'creating'
     )
     .take(1)
-    .flatMapFirst(state => {
-      const argv = ['project', 'new'];
-
-      for (const [key, value] of Object.entries(
-        selectNewProjectContext(state)
-      )) {
-        argv.push(`--${key}`);
-        argv.push(value);
-      }
-
-      // @TODO(mAAdhaTTah) check if dir exists and confirm overwrite
-      // hygen expects to handle interactivity
-      return Kefir.stream(emitter => {
-        runner(argv, {
+    .flatMapFirst(state =>
+      Kefir.stream(emitter => {
+        // @TODO(mAAdhaTTah) check if dir exists and confirm overwrite
+        // hygen will overwrite for now
+        process.env.HYGEN_OVERWRITE = '1';
+        runner(createHygenArgv(state), {
           // NOTE: This is relative to dist, where the build result is.
           templates: path.join(__dirname, '..', 'templates'),
           cwd: state.cwd,
@@ -92,7 +98,7 @@ const exec = (
           .catch(error => {
             emitter.value({ type: 'FAILED', error: true, payload: { error } });
           });
-      });
-    });
+      })
+    );
 
 export default exec;
