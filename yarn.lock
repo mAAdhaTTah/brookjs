@@ -2632,9 +2632,9 @@
     core-js "^3.0.1"
 
 "@storybook/core-events@^5.0.0":
-  version "5.3.4"
-  resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-5.3.4.tgz#9e91d5f5225701d3216e37f3c570b93c7feca9f5"
-  integrity sha512-Wye2lioyokaGFRs+BY3nEdhofxnCfJyFjrrJ1WrzMepwpmHcH/Sck1aIK/aiJ4B3vwPdUewnTeEsXneDUuh4Dw==
+  version "5.3.8"
+  resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-5.3.8.tgz#2cc85c8109e4734298b3e1f5919c764d6abbf2f4"
+  integrity sha512-2GGjZj+AM4OpxU7qI2ixBeek3eigMzlyvQnDpe7cZlWDzNPNvWTspiSyQScFrtD1XV/vJTHdgDBpGb3uNHz7Eg==
   dependencies:
     core-js "^3.0.1"
 
