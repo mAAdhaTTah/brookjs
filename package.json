@@ -73,6 +73,9 @@
     "docs:deploy": "yarn docs:build && gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
     "format": "lerna run format",
     "test": "lerna run test",
+    "unit": "lerna run test:lint && lerna run test:unit",
+    "js": "lerna run test:feature -- --tags \"@js\"",
+    "ts": "lerna run test:feature -- --tags \"@ts\"",
     "pub": "lerna publish --dist-tag beta"
   },
   "workspaces": [

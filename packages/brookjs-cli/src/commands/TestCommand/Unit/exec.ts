@@ -68,7 +68,6 @@ const exec = (
         moduleNameMapper: {
           '^react-native$': 'react-native-web',
           '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-          'react-test-renderer': 'identity-obj-proxy',
           '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1',
           // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
           'react-syntax-highlighter/dist/esm/(.*)':

@@ -95,32 +95,46 @@ const tarballPackage = async (cwd, type) => {
 
 (async () => {
   try {
+    let makeJs = process.argv.includes('--js');
+    let makeTs = process.argv.includes('--ts');
+
+    // If neither set, build both.
+    if (!makeJs && !makeTs) {
+      makeJs = makeTs = true;
+    }
+
     const cwd = process.cwd();
     const packagesRoot = path.join(cwd, '..');
 
     console.log('Cleaning up old tarball & project');
 
     try {
-      await Promise.all([cleanupOld(cwd, 'js'), cleanupOld(cwd, 'ts')]);
+      await Promise.all([
+        makeJs && cleanupOld(cwd, 'js'),
+        makeTs && cleanupOld(cwd, 'ts')
+      ]);
     } catch (err) {
       console.log('Tarball or project does not exist');
     }
 
     const [outputs] = await Promise.all([
       packPackages(packagesRoot),
-      setUpProject(cwd, 'js'),
-      setUpProject(cwd, 'ts')
+      makeJs && setUpProject(cwd, 'js'),
+      makeTs && setUpProject(cwd, 'ts')
     ]);
 
     await Promise.all([
-      updatePkgJson(cwd, outputs, 'js'),
-      updatePkgJson(cwd, outputs, 'ts')
+      makeJs && updatePkgJson(cwd, outputs, 'js'),
+      makeTs && updatePkgJson(cwd, outputs, 'ts')
     ]);
 
-    await installDeps(cwd, 'js');
-    await installDeps(cwd, 'ts');
+    await (makeJs && installDeps(cwd, 'js'));
+    await (makeTs && installDeps(cwd, 'ts'));
 
-    await Promise.all([tarballPackage(cwd, 'js'), tarballPackage(cwd, 'ts')]);
+    await Promise.all([
+      makeJs && tarballPackage(cwd, 'js'),
+      makeTs && tarballPackage(cwd, 'ts')
+    ]);
 
     console.log('Success!');
   } catch (err) {
