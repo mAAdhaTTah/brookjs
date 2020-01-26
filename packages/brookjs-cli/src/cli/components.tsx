@@ -1,5 +1,5 @@
 import React, { ErrorInfo } from 'react';
-import { Color, Static, Box, AppContext, AppProps } from 'ink';
+import { Color, Box, AppContext, AppProps } from 'ink';
 import * as t from 'io-ts';
 import { Maybe } from 'brookjs-types';
 import { Command } from './Command';

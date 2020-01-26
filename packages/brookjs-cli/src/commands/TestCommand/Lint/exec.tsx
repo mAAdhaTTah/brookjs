@@ -1,9 +1,9 @@
 import { Delta } from 'brookjs-types';
 import Kefir from 'kefir';
+import { ofType } from 'brookjs-flow';
 import * as glob from '../../../glob';
 import * as eslint from '../../../eslint';
 import { Action, State } from './types';
-import { ofType } from 'brookjs-flow';
 
 export const exec: Delta<Action, State> = (action$, state$) => {
   const glob$ = glob.delta(

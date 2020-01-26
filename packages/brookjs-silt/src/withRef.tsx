@@ -1,5 +1,4 @@
 import React, { forwardRef } from 'react';
-// eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import Kefir, { Pool, Observable, Property } from 'kefir';
 import { Action } from 'redux';
@@ -87,7 +86,6 @@ export const withRef$ = <P, E extends Element, R extends { type: string }>(
                 );
               }
             } else {
-              // eslint-disable-next-line no-console
               console.error(
                 'Used `withRef$` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
               );

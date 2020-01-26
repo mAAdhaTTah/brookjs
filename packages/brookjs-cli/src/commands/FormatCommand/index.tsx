@@ -1,4 +1,3 @@
-import path from 'path';
 import React, { useEffect } from 'react';
 import { Argv } from 'yargs';
 import { useDelta, RootJunction } from 'brookjs-silt';
@@ -13,12 +12,12 @@ import Kefir from 'kefir';
 import { Delta, Maybe, unreachable } from 'brookjs-types';
 import * as t from 'io-ts';
 import { ofType, sampleStateAtAction } from 'brookjs-flow';
+import { Box, Color } from 'ink';
 import { Command, useExit, ExitError } from '../../cli';
 import * as glob from '../../glob';
 import { service as fs } from '../../fs';
 import { ESLintService } from '../../eslint';
 import * as prettier from '../../prettier';
-import { Box, Color } from 'ink';
 
 type Args = {};
 
@@ -209,7 +208,7 @@ const FormatCommand: Command<Args> = {
 
     useEffect(() => {
       dispatch(glob.actions.format.request());
-    }, []);
+    }, [dispatch]);
 
     return (
       <RootJunction root$={root$}>

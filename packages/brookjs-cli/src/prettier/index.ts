@@ -2,9 +2,9 @@ import Kefir, { Observable } from 'kefir';
 import prettier from 'prettier';
 import prettierOptions from 'brookjs-prettier-config';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
-import { service as fs } from '../fs';
 import { sampleStateAtAction } from 'brookjs-flow';
 import { Delta } from 'brookjs-types';
+import { service as fs } from '../fs';
 
 export type CheckResult = {
   path: string;
