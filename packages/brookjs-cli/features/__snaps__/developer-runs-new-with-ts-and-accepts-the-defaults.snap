@@ -80,7 +80,7 @@ exports[`Developer runs new with ts and accepts the defaults-package.json 1`] = 
     \\"@babel/polyfill\\": \\"^7.0.0\\",
     \\"brookjs\\": \\"^1.0.0-alpha\\",
     \\"brookjs-silt\\": \\"^1.0.0-alpha\\",
-    \\"prop-types\\": \\"^15.0.0\\",
+    \\"kefir\\": \\"^3.8.0\\",
     \\"react\\": \\"^16.0.0\\",
     \\"react-dom\\": \\"^16.0.0\\",
     \\"react-redux\\": \\"^7.0.0\\",

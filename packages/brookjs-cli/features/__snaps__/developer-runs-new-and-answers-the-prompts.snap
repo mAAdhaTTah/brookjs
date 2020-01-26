@@ -419,6 +419,7 @@ exports[`Developer runs new and answers the prompts-package.json 1`] = `
     \\"@babel/polyfill\\": \\"^7.0.0\\",
     \\"brookjs\\": \\"^1.0.0-alpha\\",
     \\"brookjs-silt\\": \\"^1.0.0-alpha\\",
+    \\"kefir\\": \\"^3.8.0\\",
     \\"prop-types\\": \\"^15.0.0\\",
     \\"react\\": \\"^16.0.0\\",
     \\"react-dom\\": \\"^16.0.0\\",
