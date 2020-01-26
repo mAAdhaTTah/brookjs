@@ -1,34 +1,33 @@
 {
-  "name": "brookjs-silt",
+  "name": "brookjs-eddy",
   "version": "1.0.0-alpha.31",
-  "description": "reactive programming with reactjs",
-  "main": "dist/brookjs-silt.cjs.js",
-  "module": "dist/brookjs-silt.esm.js",
-  "unpkg": "dist/brookjs-silt.umd.js",
+  "description": "reactive programming tools for well-structured, testable applications",
+  "main": "dist/brookjs-eddy.cjs.js",
+  "module": "dist/brookjs-eddy.esm.js",
+  "unpkg": "dist/brookjs-eddy.umd.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "sideEffects": false,
   "scripts": {
     "test": "yarn test:lint && yarn test:unit",
     "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
     "test:unit": "beaver test unit --coverage",
+    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
     "clean": "rimraf dist coverage",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
-    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
     "prepublishOnly": "yarn clean && yarn build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
-  "files": [
-    "dist"
-  ],
-  "peerDependencies": {
-    "kefir": "^3.8.0",
-    "react": "^16.8.0"
-  },
   "dependencies": {
-    "brookjs-eddy": "^1.0.0-alpha.31",
     "brookjs-types": "^1.0.0-alpha.31",
-    "recompose": "^0.30.0"
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.8"
+  },
+  "peerDependencies": {
+    "kefir": "^3.8.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
 }

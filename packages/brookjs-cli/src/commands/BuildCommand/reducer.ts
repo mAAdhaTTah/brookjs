@@ -1,5 +1,5 @@
 import { getType } from 'typesafe-actions';
-import { loop, EddyReducer } from 'brookjs';
+import { loop, EddyReducer } from 'brookjs-eddy';
 import * as webpack from '../../webpack';
 import * as project from '../../project';
 import { State, Action } from './types';

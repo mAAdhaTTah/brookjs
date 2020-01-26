@@ -1,4 +1,4 @@
-import { EddyReducer, loop } from 'brookjs';
+import { EddyReducer, loop } from 'brookjs-eddy';
 import { getType } from 'typesafe-actions';
 import * as glob from '../../../glob';
 import * as eslint from '../../../eslint';

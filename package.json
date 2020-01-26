@@ -39,6 +39,7 @@
     "awesome-typescript-loader": "^5.2.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^8.0.4",
+    "builtins": "^3.0.0",
     "cli-spinners": "^2.0.0",
     "cucumber": "^6.0.3",
     "docz": "^1.0.0",
