@@ -55,7 +55,9 @@ Before(function(testCase) {
 /**
  * Given I Have
  */
-Given('I have a {string} project', { timeout: -1 }, async function(type: 'js' | 'ts') {
+Given('I have a {string} project', { timeout: -1 }, async function(
+  type: 'js' | 'ts'
+) {
   await this.createProject(type);
 });
 
@@ -94,7 +96,7 @@ When(
 
     try {
       expect(this.output.code).toBe(code);
-    } catch(err) {
+    } catch (err) {
       err.message += `
 
 Stdout:
@@ -132,6 +134,18 @@ Then('I see a project dir called {string} with file snapshots:', async function(
 Then('I see a file called {string}', function(filename: string) {
   const file = path.join(this.cwd, filename);
   expect(fs.statSync(file).isFile()).toBe(true);
+});
+
+Then('I see file {string} with contents:', function(
+  filename: string,
+  contents: string
+) {
+  expect(
+    fs
+      .readFileSync(path.join(this.cwd, filename))
+      .toString()
+      .trim()
+  ).toEqual(contents.trim());
 });
 
 Then('I see this in stdout', function(output: string) {

@@ -16,6 +16,17 @@ export type CheckError = {
   error: Error;
 };
 
+export type FormatResult = {
+  path: string;
+  contents: string;
+  changed: boolean;
+};
+
+export type FormatError = {
+  path: string;
+  error: Error;
+};
+
 export const actions = {
   project: createAsyncAction(
     'CHECK_PROJECT_REQUESTED',
@@ -48,6 +59,44 @@ export const check = (path: string): Observable<CheckResult, CheckError> =>
       path,
       error
     }));
+
+export const format = (
+  path: string,
+  buffer?: Buffer
+): Observable<FormatResult, FormatError> => {
+  const buffer$: Observable<Buffer, NodeJS.ErrnoException> = buffer
+    ? Kefir.constant(buffer)
+    : fs.readFile(path);
+
+  return buffer$
+    .map(buffer => buffer.toString('utf-8'))
+    .flatMap(contents => {
+      const formatted = prettier.format(contents, {
+        ...prettierOptions,
+        filepath: path
+      });
+
+      if (contents === formatted) {
+        return Kefir.constant({
+          path,
+          contents,
+          changed: false
+        });
+      }
+
+      const result = { path, contents: formatted, changed: true };
+
+      if (buffer) {
+        return Kefir.constant(result);
+      }
+
+      return fs.writeFile(path, contents).map(() => result);
+    })
+    .mapErrors(error => ({
+      path,
+      error
+    }));
+};
 
 export const delta: Delta<Action, State> = (action$, state$) =>
   sampleStateAtAction(action$, state$, actions.project.request).flatMap(state =>
