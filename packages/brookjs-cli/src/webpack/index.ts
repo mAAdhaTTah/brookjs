@@ -590,7 +590,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
 
 export const actions = {
   build: createAsyncAction(
-    'WEBPACK_BUILD_STARTED',
+    'WEBPACK_BUILD_REQUESTED',
     'WEBPACK_BUILD_COMPLETED',
     'WEBPACK_BUILD_FAILED'
   )<void, webpack.Stats, Error>()
