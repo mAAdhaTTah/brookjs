@@ -1,6 +1,6 @@
 {
   "name": "brookjs-flow",
-  "version": "1.0.0-alpha.31",
+  "version": "1.0.0-alpha.32",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs-flow.cjs.js",
   "module": "dist/brookjs-flow.esm.js",

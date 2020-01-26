@@ -1,6 +1,6 @@
 {
   "name": "brookjs-eddy",
-  "version": "1.0.0-alpha.31",
+  "version": "1.0.0-alpha.32",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs-eddy.cjs.js",
   "module": "dist/brookjs-eddy.esm.js",
@@ -20,7 +20,7 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "brookjs-types": "^1.0.0-alpha.31",
+    "brookjs-types": "^1.0.0-alpha.32",
     "redux": "^4.0.0",
     "redux-devtools-extension": "^2.13.8"
   },

@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-brookjs",
-  "version": "1.0.0-alpha.31",
+  "version": "1.0.0-alpha.32",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/eslint-config-brookjs.cjs.js",
   "module": "dist/eslint-config-brookjs.esm.js",
