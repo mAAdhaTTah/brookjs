@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Argv } from 'yargs';
-import { useDeltas, RootJunction } from 'brookjs-silt';
+import { useDelta, RootJunction } from 'brookjs-silt';
 import { Command } from '../../cli';
 import * as project from '../../project';
 import exec from './exec';
@@ -25,10 +25,10 @@ const BuildCommand: Command<Args> = {
   },
 
   View: ({ args, rc, cwd }) => {
-    const { state, root$, dispatch } = useDeltas(
+    const { state, root$, dispatch } = useDelta(
       reducer,
       initialState(args, { rc, cwd }),
-      [exec]
+      exec
     );
 
     useEffect(() => {
