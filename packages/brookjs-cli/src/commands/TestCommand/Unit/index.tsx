@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDeltas, RootJunction } from 'brookjs-silt';
+import { useDelta, RootJunction } from 'brookjs-silt';
 import { Arguments } from 'yargs';
 import exec from './exec';
 import initialState from './initialState';
@@ -12,9 +12,11 @@ const Unit: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   rc,
   cwd
 }) => {
-  const { state, root$ } = useDeltas(reducer, initialState(args, { rc, cwd }), [
+  const { state, root$ } = useDelta(
+    reducer,
+    initialState(args, { rc, cwd }),
     exec
-  ]);
+  );
 
   return (
     <RootJunction root$={root$}>

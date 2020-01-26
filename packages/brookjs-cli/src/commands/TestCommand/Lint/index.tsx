@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDeltas } from 'brookjs-silt';
+import { useDelta } from 'brookjs-silt';
 import { unreachable } from 'brookjs-types';
 import { Arguments } from 'yargs';
 import * as glob from '../../../glob';
@@ -14,7 +14,7 @@ const Lint: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   rc,
   cwd
 }) => {
-  const { state, dispatch } = useDeltas(reducer, initialState(cwd, rc), [exec]);
+  const { state, dispatch } = useDelta(reducer, initialState(cwd, rc), exec);
 
   useEffect(() => {
     dispatch(glob.actions.lint.request());

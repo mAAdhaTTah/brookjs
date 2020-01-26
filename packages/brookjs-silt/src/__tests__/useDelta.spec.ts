@@ -3,7 +3,7 @@ import Kefir from 'kefir';
 import { ofType } from 'brookjs-flow';
 import { loop } from 'brookjs-eddy';
 import { renderHook, act } from '@testing-library/react-hooks';
-import useDeltas from '../useDeltas';
+import { useDelta } from '../useDelta';
 
 const { stream, send, value } = KTU;
 
@@ -11,7 +11,7 @@ type State = { counter: number };
 
 type Action = { type: string };
 
-describe('useDeltas', () => {
+describe('useDelta', () => {
   const initialState: State = {
     counter: 0
   };
@@ -28,7 +28,7 @@ describe('useDeltas', () => {
   };
 
   it('should return state, dispatch, and root$', () => {
-    const { result } = renderHook(() => useDeltas(reducer, initialState));
+    const { result } = renderHook(() => useDelta(reducer, initialState));
 
     expect(result.current).toEqual({
       state: initialState,
@@ -38,7 +38,7 @@ describe('useDeltas', () => {
   });
 
   it('should dispatch actions and update the state', () => {
-    const { result } = renderHook(() => useDeltas(reducer, initialState));
+    const { result } = renderHook(() => useDelta(reducer, initialState));
 
     act(() => {
       result.current.dispatch({ type: 'INCREMENT' });
@@ -50,7 +50,7 @@ describe('useDeltas', () => {
   });
 
   it('should dispatch actions from the root$ and unsubscribe as needed', () => {
-    const { result } = renderHook(() => useDeltas(reducer, initialState));
+    const { result } = renderHook(() => useDelta(reducer, initialState));
     const root$ = stream<any, any>();
     const sub = result.current.root$(root$);
 
@@ -76,9 +76,7 @@ describe('useDeltas', () => {
 
   it('should dispatch action & state to the provided delta', () => {
     const delta = jest.fn(() => Kefir.never());
-    const { result } = renderHook(() =>
-      useDeltas(reducer, initialState, [delta])
-    );
+    const { result } = renderHook(() => useDelta(reducer, initialState, delta));
 
     const [action$, state$] = delta.mock.calls[0] as any;
 
@@ -108,9 +106,7 @@ describe('useDeltas', () => {
     const delta: any = jest.fn(function() {
       return (delta$ = Kefir.pool());
     });
-    const { result } = renderHook(() =>
-      useDeltas(reducer, initialState, [delta])
-    );
+    const { result } = renderHook(() => useDelta(reducer, initialState, delta));
 
     act(() => {
       send(delta$, [value({ type: 'INCREMENT' })]);
@@ -123,9 +119,7 @@ describe('useDeltas', () => {
 
   it('should dispatch sync action from delta', () => {
     const delta = jest.fn(() => Kefir.constant({ type: 'INCREMENT' }));
-    const { result } = renderHook(() =>
-      useDeltas(reducer, initialState, [delta])
-    );
+    const { result } = renderHook(() => useDelta(reducer, initialState, delta));
 
     expect(result.current.state).toEqual({
       counter: 1
@@ -134,9 +128,7 @@ describe('useDeltas', () => {
 
   it('should dispatch action into delta if state does not change', () => {
     const delta = jest.fn(() => Kefir.never());
-    const { result } = renderHook(() =>
-      useDeltas(reducer, initialState, [delta])
-    );
+    const { result } = renderHook(() => useDelta(reducer, initialState, delta));
 
     const [action$, state$]: any = delta.mock.calls[0];
 
@@ -177,7 +169,7 @@ describe('useDeltas', () => {
           return { ...state, actions: [...state.actions, action.type] };
       }
     };
-    const { result } = renderHook(() => useDeltas(eddyReducer, initialState));
+    const { result } = renderHook(() => useDelta(eddyReducer, initialState));
 
     act(() => {
       result.current.dispatch({ type: 'INCREMENT' });
@@ -215,7 +207,7 @@ describe('useDeltas', () => {
     const delta = (action$: any) =>
       action$.thru(ofType('SQR_ROOT')).map(() => ({ type: 'THIRD' }));
     const { result } = renderHook(() =>
-      useDeltas(eddyReducer, initialState, [delta])
+      useDelta(eddyReducer, initialState, delta)
     );
 
     act(() => {

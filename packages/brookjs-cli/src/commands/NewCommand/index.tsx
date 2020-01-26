@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDeltas, RootJunction } from 'brookjs-silt';
+import { useDelta, RootJunction } from 'brookjs-silt';
 import { Command } from '../../cli';
 import exec from './exec';
 import View from './View';
@@ -31,9 +31,11 @@ const NewCommand: Command<Args> = {
     });
   },
   View: ({ args, cwd }) => {
-    const { state, root$ } = useDeltas(reducer, initialState(args, { cwd }), [
+    const { state, root$ } = useDelta(
+      reducer,
+      initialState(args, { cwd }),
       exec
-    ]);
+    );
 
     return (
       <RootJunction root$={root$}>

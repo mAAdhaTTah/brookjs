@@ -8,6 +8,10 @@ class Queue<T> extends Kefir.Stream<T, never> {
   private draining = false;
   private list: T[] = [];
 
+  static create<A>() {
+    return new Queue<A>();
+  }
+
   emit = (value: T) => {
     this.list.push(value);
 
@@ -53,15 +57,14 @@ const useSubscribe = <V>(
   }, [obs$, listener]);
 };
 
-// Reuse this array to avoid React triggering rerenders.
-const defaultDeltas: any[] = [];
+const defaultDelta: Delta<any, any> = () => Kefir.never();
 
-const useDeltas = <S, A extends Action<string>>(
+export const useDelta = <S, A extends Action<string>>(
   reducer: Reducer<S, A> | EddyReducer<S, A>,
   initialState: S,
-  deltas: Delta<A, S>[] = defaultDeltas
+  delta: Delta<A, S> = defaultDelta
 ) => {
-  const action$: Queue<A> = useSingleton(() => new Queue());
+  const action$ = useSingleton(Queue.create as () => Queue<A>);
   const state$: Property<S, never> = useMemo(
     () => action$.scan(upgradeReducer(reducer, action$.emit), initialState),
     // leaving out `initialState` cuz that only matters the first time.
@@ -72,13 +75,11 @@ const useDeltas = <S, A extends Action<string>>(
 
   useSubscribe(state$, setState);
 
-  const delta$: Observable<A, never> = useMemo(
-    () => Kefir.merge(deltas.map(delta => delta(action$, state$))),
-    // leaving out `deltas` cuz we're spreading it instead.
-    // we're doing this so people can pass in the `delta` as an array.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [...deltas, action$, state$]
-  );
+  const delta$: Observable<A, never> = useMemo(() => delta(action$, state$), [
+    delta,
+    action$,
+    state$
+  ]);
 
   useSubscribe(delta$, action$.emit);
 
@@ -89,5 +90,3 @@ const useDeltas = <S, A extends Action<string>>(
 
   return { state, root$, dispatch: action$.emit };
 };
-
-export default useDeltas;
