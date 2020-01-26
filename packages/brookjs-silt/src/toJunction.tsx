@@ -1,6 +1,5 @@
 import React from 'react';
 import Kefir, { Observable, Pool, Stream } from 'kefir';
-// eslint-disable-next-line import/no-internal-modules
 import wrapDisplayName from 'recompose/wrapDisplayName';
 import { Action } from 'redux';
 import { Consumer, Provider } from './context';
@@ -136,7 +135,6 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
                   this.root$ = root$.plug(this.source$);
                 }
               } else {
-                // eslint-disable-next-line no-console
                 console.error(
                   'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
                 );

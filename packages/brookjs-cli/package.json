@@ -17,11 +17,9 @@
   "scripts": {
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "clean": "rimraf dist coverage",
-    "test": "yarn test:lint && yarn test:unit && yarn test:feature",
-    "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
-    "test:unit": "beaver test unit --coverage",
+    "test": "beaver test check && beaver test lint && beaver test unit --coverage",
     "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require './features/setupTests.ts' --require 'features/support/*.ts'",
-    "format": "prettier --write \"src/**/*.{js,ts,tsx}\""
+    "format": "beaver format"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",

@@ -33,7 +33,7 @@ const BuildCommand: Command<Args> = {
 
     useEffect(() => {
       dispatch(project.actions.extension.request());
-    }, []);
+    }, [dispatch]);
 
     return (
       <RootJunction root$={root$}>

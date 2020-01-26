@@ -19,6 +19,7 @@ coverage
 .grunt
 *.tgz
 *.tar.gz
+test-app*
 
 # node-waf configuration
 .lock-wscript

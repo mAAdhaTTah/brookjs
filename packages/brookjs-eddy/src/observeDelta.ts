@@ -43,7 +43,6 @@ export function observeDelta<A extends { type: string }, S>(
       sources.map(source => source(action$, state$))
     ).observe({
       error(err) {
-        // eslint-disable-next-line no-console
         console.error('Error emitted into delta', err);
       },
       value(value) {

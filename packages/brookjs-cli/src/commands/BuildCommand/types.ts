@@ -3,8 +3,8 @@ import { Stats, Configuration } from 'webpack';
 import { Maybe } from 'brookjs-types';
 import * as webpack from '../../webpack';
 import { Ext } from '../../project';
-import { RC } from './RC';
 import { project } from '../..';
+import { RC } from './RC';
 
 interface BaseState {
   env: Required<Configuration>['mode'];

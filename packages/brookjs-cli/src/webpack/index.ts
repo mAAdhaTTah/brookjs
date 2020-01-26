@@ -1,10 +1,10 @@
+// @todo: readd NpmInstallPlugin
+// @todo: clean up this file (extra functions, commented out code, etc.)
+import path from 'path';
 import Kefir, { Property, Stream } from 'kefir';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { Delta, Maybe } from 'brookjs-types';
 import * as t from 'io-ts';
-// @todo: readd NpmInstallPlugin
-// @todo: clean up this file (extra functions, commented out code, etc.)
-import path from 'path';
 import webpack, { Loader } from 'webpack';
 import CaseSensitivePathsPlugin from 'case-sensitive-paths-webpack-plugin';
 import { Plugin as ShakePlugin } from 'webpack-common-shake';
@@ -17,10 +17,9 @@ import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
 // import ModuleNotFoundPlugin from 'react-dev-utils/ModuleNotFoundPlugin';
 // import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
+import { sampleStateAtAction } from 'brookjs-flow';
 import { BabelRC } from '../babel';
 import { Ext } from '../project';
-import { sampleStateAtAction } from 'brookjs-flow';
-
 // @TODO(mAAdhaTTah) fix require -> import (missing types)
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 

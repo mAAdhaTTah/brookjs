@@ -3,10 +3,10 @@ import { useDelta } from 'brookjs-silt';
 import { unreachable } from 'brookjs-types';
 import { Arguments } from 'yargs';
 import * as glob from '../../../glob';
+import { Globbing, Running } from '../components';
 import { Args } from './types';
 import { reducer } from './reducer';
 import { initialState } from './initialState';
-import { Globbing, Running } from '../components';
 import { exec } from './exec';
 import { Completed } from './Completed';
 

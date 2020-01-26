@@ -1,5 +1,5 @@
 import { CLIEngine } from 'eslint';
-import Kefir, { Stream } from 'kefir';
+import Kefir, { Stream, Observable } from 'kefir';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { Delta } from 'brookjs-types';
 import { sampleStateAtAction } from 'brookjs-flow';
@@ -64,16 +64,24 @@ export class ESLintService {
         extends: 'brookjs'
       },
       cwd,
-      extensions: ['js', 'jsx', 'ts', 'tsx'],
+      extensions: ['js', 'jsx', 'mjs', 'ts', 'tsx'],
       fix,
       reportUnusedDisableDirectives: true,
       useEslintrc: false
     });
   }
 
-  check(path: string): Stream<CLIEngine.LintReport, Error> {
-    return fs
-      .readFile(path)
-      .map(buffer => this.engine.executeOnText(buffer.toString('utf-8'), path));
+  check(
+    path: string,
+    buffer?: Buffer | string
+  ): Stream<CLIEngine.LintReport, Error> {
+    const buffer$: Observable<string, NodeJS.ErrnoException> =
+      buffer != null
+        ? Kefir.constant(
+            typeof buffer === 'string' ? buffer : buffer.toString('utf-8')
+          )
+        : fs.readFile(path).map(buffer => buffer.toString('utf-8'));
+
+    return buffer$.map(contents => this.engine.executeOnText(contents, path));
   }
 }

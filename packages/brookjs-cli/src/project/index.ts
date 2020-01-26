@@ -1,9 +1,9 @@
 import path from 'path';
 import Kefir, { Observable } from 'kefir';
-import { createAsyncAction, ActionType, isActionOf } from 'typesafe-actions';
-import { service as fs } from '../fs';
+import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { Delta } from 'brookjs-types';
 import { sampleStateAtAction } from 'brookjs-flow';
+import { service as fs } from '../fs';
 
 export type Ext = 'ts' | 'js';
 

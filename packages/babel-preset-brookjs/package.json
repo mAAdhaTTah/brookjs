@@ -2,11 +2,11 @@
   "name": "babel-preset-brookjs",
   "version": "1.0.0-alpha.30",
   "description": "recommended plugins for developing brookjs applications.",
-  "main": "index.js",
+  "main": "src/index.js",
   "sideEffects": false,
   "scripts": {
-    "format": "prettier --write index.js",
-    "test": "prettier --check index.js"
+    "format": "beaver format",
+    "test": "beaver test check && beaver test lint"
   },
   "keywords": [
     "babel",

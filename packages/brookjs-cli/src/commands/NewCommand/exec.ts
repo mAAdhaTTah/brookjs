@@ -2,7 +2,7 @@ import path from 'path';
 import Kefir, { Stream, Property, Observable, Emitter } from 'kefir';
 import { runner } from 'hygen';
 import inquirer from 'inquirer';
-import execa from 'execa'; // eslint-disable-line import/default
+import execa from 'execa';
 import { Action, State, ConfiguredState, Level, LogAction } from './types';
 
 /**

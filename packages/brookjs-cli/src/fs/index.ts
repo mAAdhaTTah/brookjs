@@ -12,5 +12,11 @@ export const service = {
     return Kefir.fromNodeCallback<Buffer, NodeJS.ErrnoException>(callback =>
       fs.readFile(path, callback)
     );
+  },
+
+  writeFile(path: string, contents: string) {
+    return Kefir.fromNodeCallback<void, NodeJS.ErrnoException>(callback =>
+      fs.writeFile(path, contents, err => callback(err))
+    );
   }
 };

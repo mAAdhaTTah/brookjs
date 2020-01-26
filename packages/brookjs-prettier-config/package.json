@@ -11,11 +11,10 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "test": "yarn test:lint",
-    "test:lint": "prettier --check \"src/**/*.{js,ts,tsx}\" && eslint \"src/**/*.{ts,tsx}\"",
+    "test": "beaver test check && beaver test lint",
+    "format": "beaver format",
     "clean": "rimraf dist",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
-    "format": "prettier --write \"src/**/*.{js,ts,tsx}\"",
     "prepublishOnly": "yarn clean && yarn build"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
