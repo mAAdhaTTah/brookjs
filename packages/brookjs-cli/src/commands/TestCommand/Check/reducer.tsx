@@ -1,5 +1,5 @@
 import { getType } from 'typesafe-actions';
-import { EddyReducer, loop } from 'brookjs';
+import { EddyReducer, loop } from 'brookjs-eddy';
 import * as glob from '../../../glob';
 import * as prettier from '../../../prettier';
 import { State, Action } from './types';

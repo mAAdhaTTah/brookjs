@@ -3,34 +3,25 @@ to: "<%= name %>/<%= dir %>/index.<%= locals.typescript ? 'tsx' : 'js' %>"
 ---
 import '@babel/polyfill';
 import React from 'react';
-import { observeDelta, eddy } from 'brookjs';
+import { createStore } from 'brookjs';
 import { RootJunction } from 'brookjs-silt';
-import { applyMiddleware, createStore } from 'redux';
-import { connect } from 'react-redux';
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import { connect, Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { init } from './actions';
 import { App } from './components';
+import { rootDelta } from './deltas';
 import { reducer, mapStateToProps } from './state';
 
 const { __INITIAL_STATE__ = {} } = global;
-
-const compose = composeWithDevTools({
-  name: 'test-app'
-});
-
-const store = createStore(
-  reducer,
-  __INITIAL_STATE__,
-  compose(applyMiddleware(observeDelta()), eddy())
-);
-
+const store = createStore(reducer, __INITIAL_STATE__, rootDelta);
 const Root = connect(mapStateToProps)(App);
 
 ReactDOM.render(
-  <RootJunction root$={root$ => root$.observe(store.dispatch)}>
-    <Root />
-  </RootJunction>,
+  <Provider store={store}>
+    <RootJunction root$={root$ => root$.observe(store.dispatch)}>
+      <Root />
+    </RootJunction>
+  </Provider>,
   document.getElementById('app')
 );
 

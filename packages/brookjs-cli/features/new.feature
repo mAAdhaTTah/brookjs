@@ -32,6 +32,7 @@ Feature: new command
       | client/components/index.js                   |
       | client/components/__stories__/App.stories.js |
       | client/components/__tests__/App.spec.js      |
+      | client/deltas/index.js                       |
 
   @yes
   @js
@@ -54,6 +55,7 @@ Feature: new command
       | src/components/index.js                   |
       | src/components/__stories__/App.stories.js |
       | src/components/__tests__/App.spec.js      |
+      | src/deltas/index.js                       |
 
   @yes
   @ts
@@ -77,3 +79,4 @@ Feature: new command
       | src/components/index.ts                    |
       | src/components/__stories__/App.stories.tsx |
       | src/components/__tests__/App.spec.tsx      |
+      | src/deltas/index.tsx                       |

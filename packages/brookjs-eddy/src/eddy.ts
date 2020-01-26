@@ -1,11 +1,16 @@
 import {
-  StoreCreator,
+  StoreCreator as ReduxStoreCreator,
   Reducer,
   StoreEnhancer,
   Store,
   Action,
-  DeepPartial
+  DeepPartial,
+  createStore as reduxCreateStore,
+  applyMiddleware
 } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import { Delta } from 'brookjs-types';
+import { observeDelta } from './observeDelta';
 
 const $$loop = Symbol('@brookjs/loop');
 const NONE = Symbol('@brookjs/none');
@@ -67,8 +72,25 @@ export const upgradeReducer = <
   return nextState;
 };
 
-export const eddy = () => (createStore: StoreCreator) => <
-  S extends object,
+const runCommands = <A extends Action>(
+  run: ResultRight<A>[],
+  dispatch: (action: A) => A
+) => {
+  for (const cmd of run) {
+    if (cmd === NONE) {
+      continue;
+    }
+
+    if (Array.isArray(cmd)) {
+      runCommands(cmd, dispatch);
+    } else {
+      dispatch(cmd);
+    }
+  }
+};
+
+export const eddy = () => (createStore: ReduxStoreCreator) => <
+  S,
   A extends Action,
   Ext,
   StateExt
@@ -91,26 +113,12 @@ export const eddy = () => (createStore: StoreCreator) => <
     enhancer
   );
 
-  const runCommands = (run: ResultRight<A>[]) => {
-    for (const cmd of run) {
-      if (cmd !== NONE) {
-        if (Array.isArray(cmd)) {
-          runCommands(cmd);
-        } else {
-          // mutually recursive
-          // eslint-disable-next-line no-use-before-define
-          dispatch(cmd);
-        }
-      }
-    }
-  };
-
   const dispatch = (action: A) => {
     store.dispatch(action);
     const run = queue;
     queue = [];
 
-    runCommands(run);
+    runCommands(run, dispatch);
 
     return action;
   };
@@ -161,4 +169,22 @@ export const combineReducers = <S, A extends Action>(
 
     return loop(hasChanged ? nextState : state, cmds);
   };
+};
+
+export const createStore = <S, A extends Action<string>>(
+  reducer: EddyReducer<S, A>,
+  initialState: S,
+  delta: Delta<A, S>
+): Store<S, A> => {
+  const compose = composeWithDevTools({
+    name: 'test-app'
+  });
+
+  const store = reduxCreateStore(
+    reducer as Reducer<S, A>,
+    initialState,
+    compose(applyMiddleware(observeDelta(delta)), eddy())
+  );
+
+  return store;
 };

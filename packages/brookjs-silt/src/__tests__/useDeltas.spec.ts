@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import Kefir from 'kefir';
 import { ofType } from 'brookjs-flow';
-import { loop } from 'brookjs';
+import { loop } from 'brookjs-eddy';
 import { renderHook, act } from '@testing-library/react-hooks';
 import useDeltas from '../useDeltas';
 

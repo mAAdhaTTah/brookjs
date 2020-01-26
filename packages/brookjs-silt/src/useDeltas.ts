@@ -1,7 +1,7 @@
 import { Action, Reducer } from 'redux';
 import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import Kefir, { Observable, Property } from 'kefir';
-import { upgradeReducer, EddyReducer } from 'brookjs';
+import { upgradeReducer, EddyReducer } from 'brookjs-eddy';
 import { Delta } from 'brookjs-types';
 
 class Queue<T> extends Kefir.Stream<T, never> {

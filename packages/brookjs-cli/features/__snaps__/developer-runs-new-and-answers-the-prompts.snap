@@ -251,7 +251,22 @@ exports[`Developer runs new and answers the prompts-client/components/index.js 1
 "
 `;
 
-exports[`Developer runs new and answers the prompts-client/deltas/index.js 1`] = `""`;
+exports[`Developer runs new and answers the prompts-client/deltas/index.js 1`] = `
+"import Kefir from 'kefir';
+import { sampleStateAtAction } from 'brookjs';
+import { init } from '../actions';
+
+export const rootDelta = (action$, state$) => {
+  const init$ = sampleStateAtAction(action$, state$, init).flatMap(() => {
+    console.log('App initialized');
+
+    return Kefir.never();
+  });
+
+  return Kefir.merge([init$]);
+};
+"
+`;
 
 exports[`Developer runs new and answers the prompts-client/dom.js 1`] = `
 "import {
@@ -279,34 +294,25 @@ export const view = component({
 exports[`Developer runs new and answers the prompts-client/index.js 1`] = `
 "import '@babel/polyfill';
 import React from 'react';
-import { observeDelta, eddy } from 'brookjs';
+import { createStore } from 'brookjs';
 import { RootJunction } from 'brookjs-silt';
-import { applyMiddleware, createStore } from 'redux';
-import { connect } from 'react-redux';
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import { connect, Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { init } from './actions';
 import { App } from './components';
+import { rootDelta } from './deltas';
 import { reducer, mapStateToProps } from './state';
 
 const { __INITIAL_STATE__ = {} } = global;
-
-const compose = composeWithDevTools({
-  name: 'test-app'
-});
-
-const store = createStore(
-  reducer,
-  __INITIAL_STATE__,
-  compose(applyMiddleware(observeDelta()), eddy())
-);
-
+const store = createStore(reducer, __INITIAL_STATE__, rootDelta);
 const Root = connect(mapStateToProps)(App);
 
 ReactDOM.render(
-  <RootJunction root$={root$ => root$.observe(store.dispatch)}>
-    <Root />
-  </RootJunction>,
+  <Provider store={store}>
+    <RootJunction root$={root$ => root$.observe(store.dispatch)}>
+      <Root />
+    </RootJunction>
+  </Provider>,
   document.getElementById('app')
 );
 
@@ -418,7 +424,6 @@ exports[`Developer runs new and answers the prompts-package.json 1`] = `
   \\"dependencies\\": {
     \\"@babel/polyfill\\": \\"^7.0.0\\",
     \\"brookjs\\": \\"^1.0.0-alpha\\",
-    \\"brookjs-silt\\": \\"^1.0.0-alpha\\",
     \\"kefir\\": \\"^3.8.0\\",
     \\"prop-types\\": \\"^15.0.0\\",
     \\"react\\": \\"^16.0.0\\",
@@ -426,7 +431,6 @@ exports[`Developer runs new and answers the prompts-package.json 1`] = `
     \\"react-redux\\": \\"^7.0.0\\",
     \\"redux\\": \\"^4.0.0\\",
     \\"redux-actions\\": \\"^2.0.0\\",
-    \\"redux-devtools-extension\\": \\"^2.0.0\\",
     \\"reselect\\": \\"^4.0.0\\"
   }
 }
