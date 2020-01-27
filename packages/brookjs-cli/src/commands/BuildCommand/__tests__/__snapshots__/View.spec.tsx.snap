@@ -1,9 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BuildCommand#View should render building view 1`] = `"▹▹▹▹▹ Building application..."`;
+exports[`BuildCommand#View should render building view 1`] = `"[32m▹▹▹▹▹[39m [39mBuilding application...[39m"`;
 
-exports[`BuildCommand#View should render built view 1`] = `"Compilation results!"`;
+exports[`BuildCommand#View should render built view 1`] = `
+"[36mFinished compiling at 07:58:40[39m
+[96mGenerated 1 asset from entrypoints:[39m
+"
+`;
 
-exports[`BuildCommand#View should render error view 1`] = `"Compilation error"`;
+exports[`BuildCommand#View should render error view 1`] = `
+"[91mCompilation errors:[39m
+
+[91mCannot compile.[39m
+"
+`;
 
 exports[`BuildCommand#View should render missing rc view 1`] = `"[31mRC file not loaded. Cannot build.[39m"`;
