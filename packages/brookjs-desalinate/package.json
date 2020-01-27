@@ -21,7 +21,7 @@
   "sideEffects": false,
   "scripts": {
     "test": "beaver test check && beaver check lint && beaver test unit --coverage",
-    "clean": "rimraf dist coverage",
+    "clean": "rimraf dist coverage *.tgz",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "storybook": "start-storybook -p 6006",
     "format": "beaver format",

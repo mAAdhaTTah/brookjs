@@ -16,7 +16,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
-    "clean": "rimraf dist coverage",
+    "clean": "rimraf dist coverage *.tgz",
     "test": "beaver test check && beaver test lint && beaver test unit --coverage",
     "test:feature": "cross-env NODE_ENV=test cucumber-js  features/**/*.feature --require './features/setupTests.ts' --require 'features/support/*.ts'",
     "format": "beaver format"

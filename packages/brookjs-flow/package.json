@@ -13,7 +13,7 @@
   "scripts": {
     "test": "beaver test check && beaver test lint && beaver test unit --coverage",
     "format": "beaver format",
-    "clean": "rimraf dist coverage",
+    "clean": "rimraf dist coverage *.tgz",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "prepublishOnly": "yarn clean && yarn build"
   },
