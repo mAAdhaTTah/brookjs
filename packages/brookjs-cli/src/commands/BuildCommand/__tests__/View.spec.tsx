@@ -4,6 +4,11 @@ import { render, cleanup } from 'ink-testing-library';
 import webpack from 'webpack';
 import View from '../View';
 
+jest.mock('date-fns', () => ({
+  format: (_builtAt: number, formatString: string) =>
+    formatString.replace('HH:mm:ss', '07:58:40').replace(/'/g, '')
+}));
+
 describe('BuildCommand#View', () => {
   afterEach(cleanup);
 
