@@ -37,7 +37,7 @@ export const CommandValidationError: React.FC<{
         Command {name} was not loaded due to validation errors:
       </Color>
       {errors.map((error, i) => (
-        <ExplosiveBullet key={i} message={getMessage(error)} />
+        <ExplosiveBullet key={i} message={getMessage(name, error)} />
       ))}
     </Box>
   );

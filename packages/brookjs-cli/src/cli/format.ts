@@ -15,19 +15,20 @@ export const stringify = (v: any): string => {
   return JSON.stringify(v, null, '  ');
 };
 
-export const getContextPath = (context: t.Context): string =>
-  context.map(({ key }) => (key === '' ? '$' : key)).join('.');
+export const getContextPath = (root: string, context: t.Context): string =>
+  context.map(({ key }) => (key === '' ? root : key)).join('.');
 
-export const getMessage = (e: t.ValidationError): string => {
+export const getMessage = (name: string, e: t.ValidationError): string => {
   if (e.message !== undefined) {
     return e.message;
   }
 
   if (e.value === undefined) {
-    return `Required property ${getContextPath(e.context)} missing.`;
+    return `Required property ${getContextPath(name, e.context)} missing.`;
   }
 
   return `Invalid value ${stringify(e.value)} was provided for ${getContextPath(
+    name,
     e.context
   )}`;
 };

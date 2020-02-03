@@ -4,6 +4,11 @@ import { render, cleanup } from 'ink-testing-library';
 import webpack from 'webpack';
 import View from '../View';
 
+jest.mock('date-fns', () => ({
+  format: (_builtAt: number, formatString: string) =>
+    formatString.replace('HH:mm:ss', '07:58:40').replace(/'/g, '')
+}));
+
 describe('BuildCommand#View', () => {
   afterEach(cleanup);
 
@@ -47,7 +52,7 @@ describe('BuildCommand#View', () => {
   });
 
   it('should render error view', () => {
-    const results = new Error('Compilation error');
+    const results = new Error('Cannot compile.');
 
     const { lastFrame } = render(
       <View
@@ -82,7 +87,14 @@ describe('BuildCommand#View', () => {
         return false;
       },
       toJson() {
-        return {};
+        return {
+          _showErrors: true,
+          _showWarnings: true,
+          assets: [{} as any],
+          builtAt: 1580129920074,
+          warnings: [],
+          errors: []
+        };
       },
       toString() {
         return 'Compilation results!';
