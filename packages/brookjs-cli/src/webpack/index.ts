@@ -216,7 +216,7 @@ const selectDefaultRules = (state: State) => [
     use: selectStyleLoaders(
       state,
       {
-        importLoaders: 2,
+        importLoaders: 3,
         sourceMap: isEnvProduction && shouldUseSourceMap
       },
       'sass-loader'
@@ -234,7 +234,7 @@ const selectDefaultRules = (state: State) => [
     use: selectStyleLoaders(
       state,
       {
-        importLoaders: 2,
+        importLoaders: 3,
         sourceMap: isEnvProduction && shouldUseSourceMap,
         modules: {
           getLocalIdent: getCSSModuleLocalIdent
