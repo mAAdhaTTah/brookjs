@@ -1,4 +1,5 @@
-import { selectWebpackConfig, State } from '../index';
+import { selectWebpackConfig } from '../selectors';
+import { State } from '../types';
 
 describe('BuildCommand#selectors', () => {
   describe('selectWebpackConfig', () => {
