@@ -173,7 +173,7 @@ export const combineReducers = <S, A extends Action>(
 
 export const createStore = <S, A extends Action<string>>(
   reducer: EddyReducer<S, A>,
-  initialState: S,
+  initialState: S | undefined,
   delta: Delta<A, S>
 ): Store<S, A> => {
   const compose = composeWithDevTools({
