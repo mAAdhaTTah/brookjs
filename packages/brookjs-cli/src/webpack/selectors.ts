@@ -10,9 +10,12 @@ import safePostCssParser from 'postcss-safe-parser';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import postcssNormalize from 'postcss-normalize';
 import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
+// import InlineChunkHtmlPlugin from 'react-dev-utils/InlineChunkHtmlPlugin';
+// import InterpolateHtmlPlugin from 'react-dev-utils/InterpolateHtmlPlugin';
 // import ModuleNotFoundPlugin from 'react-dev-utils/ModuleNotFoundPlugin';
 // import WatchMissingNodeModulesPlugin from 'react-dev-utils/WatchMissingNodeModulesPlugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { State } from './types';
 // @TODO(mAAdhaTTah) fix require -> import (missing types)
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
@@ -34,6 +37,8 @@ const selectPublicPath = (/* state: State */) => '/';
 
 const selectAppPath = (state: State): string =>
   path.join(state.cwd, state.rc?.dir ?? 'src');
+const selectAppHtml = (state: State) =>
+  path.join(state.cwd, 'public', 'index.html');
 
 // const selectAppNodeModulesPath = (state: State) =>
 //   path.join(state.cwd, 'node_modules');
@@ -259,7 +264,43 @@ const selectDefaultPlugins = (state: State) => [
   // solution that requires the user to opt into importing specific locales.
   // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
   // You can remove this if you don't use Moment.js:
-  new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+  new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+  // Generates an `index.html` file with the <script> injected.
+  new HtmlWebpackPlugin(
+    Object.assign(
+      {},
+      {
+        inject: true,
+        template: selectAppHtml(state)
+      },
+      isEnvProduction(state)
+        ? {
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeRedundantAttributes: true,
+              useShortDoctype: true,
+              removeEmptyAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              keepClosingSlash: true,
+              minifyJS: true,
+              minifyCSS: true,
+              minifyURLs: true
+            }
+          }
+        : undefined
+    )
+  )
+  // new InterpolateHtmlPlugin(HtmlWebpackPlugin, {
+  //   // Useful for determining whether we’re running in production mode.
+  //   // Most importantly, it switches React into the correct mode.
+  //   NODE_ENV: process.env.NODE_ENV || 'development',
+  //   // Useful for resolving the correct path to static assets in `public`.
+  //   // For example, <img src={process.env.PUBLIC_URL + '/img/logo.png'} />.
+  //   // This should only be used as an escape hatch. Normally you would put
+  //   // images into the `src` and `import` them in code to get their paths.
+  //   PUBLIC_URL: selectPublicUrl(state)
+  // })
 ];
 
 const selectEnvPlugins = (state: State) => {
