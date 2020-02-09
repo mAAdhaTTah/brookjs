@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "1.0.0-alpha.32",
+  "version": "1.0.0-beta.0",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs.cjs.js",
   "module": "dist/brookjs.esm.js",
@@ -20,10 +20,10 @@
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
   "dependencies": {
-    "brookjs-eddy": "^1.0.0-alpha.32",
-    "brookjs-flow": "^1.0.0-alpha.32",
-    "brookjs-silt": "^1.0.0-alpha.32",
-    "brookjs-types": "^1.0.0-alpha.32"
+    "brookjs-eddy": "^1.0.0-beta.0",
+    "brookjs-flow": "^1.0.0-beta.0",
+    "brookjs-silt": "^1.0.0-beta.0",
+    "brookjs-types": "^1.0.0-beta.0"
   },
   "peerDependencies": {
     "kefir": "^3.8.0"
