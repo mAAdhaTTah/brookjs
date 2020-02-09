@@ -77,7 +77,7 @@
     "unit": "lerna run test",
     "js": "lerna run test:feature -- --tags \"@js\"",
     "ts": "lerna run test:feature -- --tags \"@ts\"",
-    "pub": "lerna publish --dist-tag beta"
+    "pub": "lerna publish"
   },
   "workspaces": [
     "packages/*"

@@ -1,8 +1,6 @@
 {
   "lerna": "3.0.0-rc.0",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "1.0.0-alpha.32",
@@ -10,7 +8,7 @@
     "publish": {
       "allowBranch": "master",
       "bump": "prerelease",
-      "preid": "alpha"
+      "preid": "beta"
     }
   }
 }
