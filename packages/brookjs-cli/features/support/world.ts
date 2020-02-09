@@ -19,7 +19,7 @@ declare module 'cucumber' {
       filename: string;
     };
 
-    output: {
+    process: {
       stdout: string;
       closed: boolean;
       code: number | null;
@@ -43,9 +43,11 @@ declare module 'cucumber' {
 
     respondTo(questions: Question[]): Promise<void>;
 
-    outputMatches(matches: string): Promise<void>;
+    untilOutputContains(matches: string): Promise<void>;
 
-    ended(): Promise<void>;
+    outputContains(contains: string): boolean;
+
+    untilEnded(): Promise<void>;
 
     wait(time: number): Promise<void>;
   }
@@ -72,7 +74,7 @@ class CliWorld implements World {
     filename: ''
   };
 
-  output: {
+  process: {
     stdout: string;
     closed: boolean;
     code: number | null;
@@ -96,7 +98,7 @@ class CliWorld implements World {
     );
     this.cwd = path.join(this.cwd, `test-app-${type}`);
 
-    await this.ended();
+    await this.untilEnded();
   }
 
   outputFile(file: File) {
@@ -122,7 +124,7 @@ class CliWorld implements World {
   }
 
   spawn(bin: string, command: string) {
-    this.output = {
+    this.process = {
       stdout: '',
       closed: false,
       code: null
@@ -150,12 +152,12 @@ class CliWorld implements World {
     }));
 
     spawned.on('data', data => {
-      this.output.stdout += data;
+      this.process.stdout += data;
     });
 
     spawned.on('exit', code => {
-      this.output.closed = true;
-      this.output.code = code;
+      this.process.closed = true;
+      this.process.code = code;
     });
   }
 
@@ -165,7 +167,7 @@ class CliWorld implements World {
     }
 
     for (const { text, response } of questions) {
-      await this.outputMatches(text);
+      await this.untilOutputContains(text);
       const keys = response.replace(
         /KEY:(.*)/,
         val => keypresses[val.split(':')[1] as keyof typeof keypresses]
@@ -180,14 +182,22 @@ class CliWorld implements World {
     }
   }
 
-  async outputMatches(matches: string) {
-    while (!this.output.stdout.trim().includes(matches)) {
+  async untilOutputContains(matches: string) {
+    while (!this.outputContains(matches) && !this.process.closed) {
       await this.wait(200);
+    }
+
+    if (!this.outputContains(matches)) {
+      throw new Error(`Output closed before match found.`);
     }
   }
 
-  async ended() {
-    while (this.output.closed !== true) {
+  outputContains(contains: string) {
+    return this.process.stdout.trim().includes(contains);
+  }
+
+  async untilEnded() {
+    while (this.process.closed !== true) {
       await this.wait(200);
     }
   }

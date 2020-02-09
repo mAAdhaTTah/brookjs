@@ -4,24 +4,43 @@ to: "<%= name %>/<%= dir %>/index.<%= locals.typescript ? 'tsx' : 'js' %>"
 import React from 'react';
 import { createStore } from 'brookjs';
 import { RootJunction } from 'brookjs-silt';
-import { connect, Provider } from 'react-redux';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom';<% if(locals.typescript) { %>
+import { Store, Unsubscribe } from 'redux';<% } %>
 import { init } from './actions';
 import { App } from './components';
 import { rootDelta } from './deltas';
-import { reducer, mapStateToProps } from './state';
+import { reducer, mapStateToProps<% if(locals.typescript) { %>, State<% } %> } from './state';
 
-const { __INITIAL_STATE__ = {} } = global;
-const store = createStore(reducer, __INITIAL_STATE__, rootDelta);
-const Root = connect(mapStateToProps)(App);
+let store<% if(locals.typescript) { %>: Store<State><% } %>;
+let root$<% if(locals.typescript) { %>: React.ComponentProps<typeof RootJunction>['root$']<% } %>;
+let unsub<% if(locals.typescript) { %>: Unsubscribe<% } %>;
 
-ReactDOM.render(
-  <Provider store={store}>
-    <RootJunction root$={root$ => root$.observe(store.dispatch)}>
-      <Root />
-    </RootJunction>
-  </Provider>,
-  document.getElementById('app')
-);
+const render = () => {
+  ReactDOM.render(
+    <RootJunction root$={root$}>
+      <App {...mapStateToProps(store.getState())} />
+    </RootJunction>,
+    document.getElementById('root')
+  );
+};
 
-store.dispatch(init());
+const bootstrap = <% if(locals.typescript) { %>(initialState?: State)<% } else {%>initialState<% } %> => {
+  unsub && unsub();
+  store = createStore(reducer, initialState, rootDelta);
+  root$ = root$ => root$.observe(store.dispatch);
+  unsub = store.subscribe(render);
+  store.dispatch(init());
+};
+
+bootstrap();
+
+if (module.hot) {
+  // Nothing needs to be done when the actions change.
+  module.hot.accept('./actions');
+
+  // Rerender if the  components change.
+  module.hot.accept('./components', render);
+
+  // Update the store
+  module.hot.accept(['./deltas', './state'], () => bootstrap(store.getState()));
+}

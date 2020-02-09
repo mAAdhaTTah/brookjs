@@ -118,6 +118,7 @@ exports[`Developer runs new and accepts the defaults-package.json 1`] = `
   \\"main\\": \\"src/index.js\\",
   \\"scripts\\": {
     \\"build\\": \\"beaver build\\",
+    \\"start\\": \\"beaver start\\",
     \\"test\\": \\"npm run test:check && npm run test:lint && npm run test:unit\\",
     \\"test:check\\": \\"beaver test check\\",
     \\"test:lint\\": \\"beaver test lint\\",
@@ -415,27 +416,45 @@ exports[`Developer runs new and accepts the defaults-src/index.js 1`] = `
 "import React from 'react';
 import { createStore } from 'brookjs';
 import { RootJunction } from 'brookjs-silt';
-import { connect, Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { init } from './actions';
 import { App } from './components';
 import { rootDelta } from './deltas';
 import { reducer, mapStateToProps } from './state';
 
-const { __INITIAL_STATE__ = {} } = global;
-const store = createStore(reducer, __INITIAL_STATE__, rootDelta);
-const Root = connect(mapStateToProps)(App);
+let store;
+let root$;
+let unsub;
 
-ReactDOM.render(
-  <Provider store={store}>
-    <RootJunction root$={root$ => root$.observe(store.dispatch)}>
-      <Root />
-    </RootJunction>
-  </Provider>,
-  document.getElementById('app')
-);
+const render = () => {
+  ReactDOM.render(
+    <RootJunction root$={root$}>
+      <App {...mapStateToProps(store.getState())} />
+    </RootJunction>,
+    document.getElementById('root')
+  );
+};
 
-store.dispatch(init());
+const bootstrap = initialState => {
+  unsub && unsub();
+  store = createStore(reducer, initialState, rootDelta);
+  root$ = root$ => root$.observe(store.dispatch);
+  unsub = store.subscribe(render);
+  store.dispatch(init());
+};
+
+bootstrap();
+
+if (module.hot) {
+  // Nothing needs to be done when the actions change.
+  module.hot.accept('./actions');
+
+  // Rerender if the  components change.
+  module.hot.accept('./components', render);
+
+  // Update the store
+  module.hot.accept(['./deltas', './state'], () => bootstrap(store.getState()));
+}
 "
 `;
 

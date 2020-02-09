@@ -1,4 +1,5 @@
 import * as path from 'path';
+import net from 'net';
 import * as fs from 'fs-extra';
 import {
   Before,
@@ -38,8 +39,8 @@ BeforeAll(function() {
 });
 
 After(function() {
-  if (this.spawned && !this.output.closed) {
-    this.spawned.kill();
+  if (!this.process.closed) {
+    this.spawned?.kill();
   }
 });
 
@@ -88,20 +89,24 @@ When('I respond to the prompts with:', async function(
   await this.respondTo(questions.hashes() as Question[]);
 });
 
+When('I wait to see in stdout:', async function(stdout: string) {
+  await this.untilOutputContains(stdout);
+});
+
 When(
   'I wait for the command to finish with code {int}',
   { timeout: -1 },
   async function(code) {
-    await this.ended();
+    await this.untilEnded();
 
     try {
-      expect(this.output.code).toBe(code);
+      expect(this.process.code).toBe(code);
     } catch (err) {
       err.message += `
 
 Stdout:
 
-${this.output.stdout}
+${this.process.stdout}
 
 cwd: ${this.cwd}`;
       throw err;
@@ -149,5 +154,23 @@ Then('I see file {string} with contents:', function(
 });
 
 Then('I see this in stdout', function(output: string) {
-  expect(this.output.stdout).toMatch(output);
+  expect(this.process.stdout).toMatch(output);
+});
+
+Then('I see the server running on port {int}', function(port: number) {
+  return new Promise(function(resolve, reject) {
+    const timer = setTimeout(function() {
+      reject('timeout');
+      socket.end();
+    }, 5000);
+    const socket = net.createConnection(port, 'localhost', function() {
+      clearTimeout(timer);
+      resolve();
+      socket.end();
+    });
+    socket.on('error', function(err) {
+      clearTimeout(timer);
+      reject(err);
+    });
+  });
 });

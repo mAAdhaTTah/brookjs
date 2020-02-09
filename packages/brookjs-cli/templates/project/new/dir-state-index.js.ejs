@@ -4,12 +4,16 @@ to: "<%= name %>/<%= dir %>/state/index.<%= locals.typescript ? 'ts' : 'js' %>"
 <% reducerCreator = locals.typescript ? 'createReducer' : 'handleActions' -%>
 import { <%= reducerCreator %><%= locals.typescript ? ', getType' : '' %> } from '<%= locals.typescript ? 'typesafe-actions' : 'redux-actions' %>';
 import { incrementClick, decrementClick } from '../actions';
-
+<% if(locals.typescript) { %>
+export type State = {
+  count: number;
+};
+<% } %>
 const initialState = {
   count: 0
 };
 
-export const reducer = <%= reducerCreator %>(<% if(locals.typescript) { %>initialState, {
+export const reducer = <%= reducerCreator %><% if(locals.typescript) { %><State><% } %>(<% if(locals.typescript) { %>initialState, {
   [getType(incrementClick)]: state => ({ ...state, count: state.count + 1 }),
   [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 })
 })<% } else { %>
