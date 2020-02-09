@@ -294,27 +294,45 @@ exports[`Developer runs new and answers the prompts-client/index.js 1`] = `
 "import React from 'react';
 import { createStore } from 'brookjs';
 import { RootJunction } from 'brookjs-silt';
-import { connect, Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { init } from './actions';
 import { App } from './components';
 import { rootDelta } from './deltas';
 import { reducer, mapStateToProps } from './state';
 
-const { __INITIAL_STATE__ = {} } = global;
-const store = createStore(reducer, __INITIAL_STATE__, rootDelta);
-const Root = connect(mapStateToProps)(App);
+let store;
+let root$;
+let unsub;
 
-ReactDOM.render(
-  <Provider store={store}>
-    <RootJunction root$={root$ => root$.observe(store.dispatch)}>
-      <Root />
-    </RootJunction>
-  </Provider>,
-  document.getElementById('app')
-);
+const render = () => {
+  ReactDOM.render(
+    <RootJunction root$={root$}>
+      <App {...mapStateToProps(store.getState())} />
+    </RootJunction>,
+    document.getElementById('root')
+  );
+};
 
-store.dispatch(init());
+const bootstrap = initialState => {
+  unsub && unsub();
+  store = createStore(reducer, initialState, rootDelta);
+  root$ = root$ => root$.observe(store.dispatch);
+  unsub = store.subscribe(render);
+  store.dispatch(init());
+};
+
+bootstrap();
+
+if (module.hot) {
+  // Nothing needs to be done when the actions change.
+  module.hot.accept('./actions');
+
+  // Rerender if the  components change.
+  module.hot.accept('./components', render);
+
+  // Update the store
+  module.hot.accept(['./deltas', './state'], () => bootstrap(store.getState()));
+}
 "
 `;
 
@@ -398,6 +416,7 @@ exports[`Developer runs new and answers the prompts-package.json 1`] = `
   \\"main\\": \\"client/index.js\\",
   \\"scripts\\": {
     \\"build\\": \\"beaver build\\",
+    \\"start\\": \\"beaver start\\",
     \\"test\\": \\"npm run test:check && npm run test:lint && npm run test:unit\\",
     \\"test:check\\": \\"beaver test check\\",
     \\"test:lint\\": \\"beaver test lint\\",
@@ -430,6 +449,78 @@ exports[`Developer runs new and answers the prompts-package.json 1`] = `
     \\"redux-actions\\": \\"^2.0.0\\",
     \\"reselect\\": \\"^4.0.0\\"
   }
+}
+"
+`;
+
+exports[`Developer runs new and answers the prompts-public/index.html 1`] = `
+"<!DOCTYPE html>
+<html lang=\\"en\\">
+  <head>
+    <meta charset=\\"utf-8\\" />
+    <link rel=\\"icon\\" href=\\"%PUBLIC_URL%/favicon.ico\\" />
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
+    <meta name=\\"theme-color\\" content=\\"#000000\\" />
+    <meta name=\\"description\\" content=\\"Web site created using brookjs\\" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel=\\"manifest\\" href=\\"%PUBLIC_URL%/manifest.json\\" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the \`public\` folder during the build.
+      Only files inside the \`public\` folder can be referenced from the HTML.
+
+      Unlike \\"/favicon.ico\\" or \\"favicon.ico\\", \\"%PUBLIC_URL%/favicon.ico\\" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running \`npm run build\`.
+    -->
+    <title>brookjs App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id=\\"root\\"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run \`npm start\` or \`yarn start\`.
+      To create a production bundle, use \`npm run build\` or \`yarn build\`.
+    -->
+  </body>
+</html>
+"
+`;
+
+exports[`Developer runs new and answers the prompts-public/manifest.json 1`] = `
+"{
+  \\"short_name\\": \\"test-app\\",
+  \\"name\\": \\"A test application\\",
+  \\"icons\\": [
+    {
+      \\"src\\": \\"favicon.ico\\",
+      \\"sizes\\": \\"64x64 32x32 24x24 16x16\\",
+      \\"type\\": \\"image/x-icon\\"
+    },
+    {
+      \\"src\\": \\"logo192.png\\",
+      \\"type\\": \\"image/png\\",
+      \\"sizes\\": \\"192x192\\"
+    },
+    {
+      \\"src\\": \\"logo512.png\\",
+      \\"type\\": \\"image/png\\",
+      \\"sizes\\": \\"512x512\\"
+    }
+  ],
+  \\"start_url\\": \\".\\",
+  \\"display\\": \\"standalone\\",
+  \\"theme_color\\": \\"#000000\\",
+  \\"background_color\\": \\"#ffffff\\"
 }
 "
 `;

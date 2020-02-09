@@ -21,6 +21,8 @@ Feature: new command
       | .beaverrc.js                                 |
       | .storybook/.babelrc                          |
       | .storybook/main.js                           |
+      | public/index.html                            |
+      | public/manifest.json                         |
       | client/index.js                              |
       | client/setupTests.js                         |
       | client/state/index.js                        |
@@ -44,6 +46,8 @@ Feature: new command
       | .beaverrc.js                              |
       | .storybook/.babelrc                       |
       | .storybook/main.js                        |
+      | public/index.html                         |
+      | public/manifest.json                      |
       | src/index.js                              |
       | src/setupTests.js                         |
       | src/state/index.js                        |
@@ -68,6 +72,8 @@ Feature: new command
       | .beaverrc.ts                               |
       | .storybook/.babelrc                        |
       | .storybook/main.js                         |
+      | public/index.html                          |
+      | public/manifest.json                       |
       | src/index.tsx                              |
       | src/setupTests.ts                          |
       | src/state/index.ts                         |

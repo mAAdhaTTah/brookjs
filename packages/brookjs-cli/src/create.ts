@@ -1,16 +1,18 @@
 import { App } from './cli';
 import {
   BuildCommand,
+  FormatCommand,
   NewCommand,
-  TestCommand,
-  FormatCommand
+  StartCommand,
+  TestCommand
 } from './commands';
 
 const create = () =>
   App.create('beaver')
-    .addCommand('NewCommand', NewCommand)
     .addCommand('BuildCommand', BuildCommand)
-    .addCommand('TestCommand', TestCommand)
-    .addCommand('FormatCommand', FormatCommand);
+    .addCommand('FormatCommand', FormatCommand)
+    .addCommand('NewCommand', NewCommand)
+    .addCommand('StartCommand', StartCommand)
+    .addCommand('TestCommand', TestCommand);
 
 export default create;
