@@ -4,9 +4,9 @@ import {
   StoreEnhancer,
   Store,
   Action,
-  DeepPartial,
   createStore as reduxCreateStore,
-  applyMiddleware
+  applyMiddleware,
+  PreloadedState
 } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { Delta } from 'brookjs-types';
@@ -57,14 +57,10 @@ const iterateCmd = <A extends Action>(
   }
 };
 
-export const upgradeReducer = <
-  L,
-  A extends Action,
-  R extends (...args: any[]) => L | Result<L, A>
->(
-  reducer: R,
+export const upgradeReducer = <L, A extends Action>(
+  reducer: (...args: any[]) => L | Result<L, A>,
   handleCmd: HandleCmd<A>
-): ((...args: Parameters<R>) => L) => (...args) => {
+): ((...args: Parameters<typeof reducer>) => L) => (...args) => {
   const [nextState, cmd] = normalizeResults(reducer(...args));
 
   iterateCmd(cmd, handleCmd);
@@ -96,7 +92,7 @@ export const eddy = () => (createStore: ReduxStoreCreator) => <
   StateExt
 >(
   reducer: Reducer<S, A> | EddyReducer<S, A>,
-  state?: DeepPartial<S> | StoreEnhancer<Ext, StateExt>,
+  state?: PreloadedState<S> | StoreEnhancer<Ext, StateExt>,
   enhancer?: StoreEnhancer<Ext, StateExt>
 ): Store<S & StateExt, A> & Ext => {
   let queue: ResultRight<A>[] = [];
@@ -173,7 +169,7 @@ export const combineReducers = <S, A extends Action>(
 
 export const createStore = <S, A extends Action<string>>(
   reducer: EddyReducer<S, A>,
-  initialState: S | undefined,
+  initialState: PreloadedState<S> | undefined,
   delta: Delta<A, S>
 ): Store<S, A> => {
   const compose = composeWithDevTools({

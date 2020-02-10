@@ -42,7 +42,8 @@
     "builtins": "^3.0.0",
     "cli-spinners": "^2.0.0",
     "cucumber": "^6.0.3",
-    "docz": "^1.0.0",
+    "docz": "^2.0.0",
+    "docz-theme-default": "^1.2.0",
     "eslint": "^5.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-import-resolver-node": "^0.3.1",
@@ -50,7 +51,9 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-react": "^7.10.0",
     "expect": "^24.9.0",
-    "gh-pages": "^2.0.0",
+    "gatsby-link": "^2.2.30",
+    "gatsby-react-router-scroll": "^2.1.23",
+    "gatsby-theme-docz": "^2.2.0",
     "ink-testing-library": "^1.0.1",
     "jest": "^24.0.0",
     "jest-snapshot": "^24.9.0",
@@ -70,9 +73,6 @@
   "scripts": {
     "build": "lerna run build",
     "clean": "lerna run clean",
-    "docs:dev": "docz dev",
-    "docs:build": "docz build",
-    "docs:deploy": "yarn docs:build && gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
     "format": "lerna run format",
     "unit": "lerna run test",
     "js": "lerna run test:feature -- --tags \"@js\"",
@@ -84,6 +84,7 @@
   ],
   "resolutions": {
     "callsites": "^3.0.0",
+    "chalk": "^3.0.0",
     "react-dev-utils": "^10.0.0",
     "typescript": "^3.7.0"
   }

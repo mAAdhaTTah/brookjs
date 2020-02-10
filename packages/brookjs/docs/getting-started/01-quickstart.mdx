@@ -1,0 +1,43 @@
+---
+name: Quickstart
+route: /getting-started/quickstart/
+menu: Getting Started
+---
+
+# Quickstart
+
+Bootstrap a new application:
+
+```shell
+npx brookjs-cli new myapp
+```
+
+You'll see a new folder structured like this:
+
+```tree
+myapp
+|____.babelrc
+|____.beaverrc.js
+|____.eslintrc.js
+|____package-lock.json
+|____package.json
+|____src
+  |____actions
+  | |____app.js
+  | |____index.js
+  |____app.js
+  |____components
+  | |____index.js
+  |____deltas
+  | |____index.js
+  |____dom.js
+  |____reducers
+  | |____index.js
+  |____selectors
+  | |____index.js
+  |____services
+  | |____index.js
+  |____view.hbs
+```
+
+The CLI expects the application to be structured this way, in order for the commands to function as expected. In order to understand what each of the parts do, take a look through the [walkthrough](http://localhost:3000/walkthrough/introduction).

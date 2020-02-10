@@ -71,7 +71,8 @@ const exec = (
           '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
           // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
           'react-syntax-highlighter/dist/esm/(.*)':
-            'react-syntax-highlighter/dist/cjs/$1'
+            'react-syntax-highlighter/dist/cjs/$1',
+          '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1'
         },
         moduleFileExtensions: ['js', 'jsx', 'json', 'mjs', 'ts', 'tsx', 'node']
       };

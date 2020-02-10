@@ -11,11 +11,15 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "test": "beaver test check && beaver test lint",
-    "format": "beaver format",
-    "clean": "rimraf dist coverage *.tgz",
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
-    "prepublishOnly": "yarn clean && yarn build"
+    "clean": "rimraf .docz dist coverage *.tgz",
+    "docs:build": "docz build",
+    "docs:deploy": "gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
+    "docs:dev": "docz dev",
+    "docs:serve": "docz serve",
+    "format": "beaver format",
+    "prepublishOnly": "yarn clean && yarn build",
+    "test": "beaver test check && beaver test lint"
   },
   "author": "James DiGioia <jamesorodig@gmail.com> (https://jamesdigioia.com)",
   "license": "MIT",
