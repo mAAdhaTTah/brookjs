@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[7],{"./docs/advanced-concepts/03-fractalizing-your-application.mdx":function(n,e,a){"use strict";a.r(e);var o=a("./node_modules/react/index.js"),t=a.n(o),c=a("./node_modules/@mdx-js/tag/dist/index.js");e.default=function(n){var e=n.components;return t.a.createElement(c.MDXTag,{name:"wrapper",components:e})}}}]);
