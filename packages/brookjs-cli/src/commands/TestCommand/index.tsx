@@ -10,6 +10,7 @@ const types = ['check', 'lint', 'unit'] as const;
 type Args = {
   coverage: boolean;
   watch: boolean;
+  updateSnapshot: boolean;
   type: typeof types extends ReadonlyArray<infer T> ? T : never;
 };
 
@@ -27,6 +28,11 @@ const TestCommand: Command<Args> = {
       },
       watch: {
         describe: 'Watch files & rerun the tests on changes.',
+        default: false
+      },
+      updateSnapshot: {
+        describe: 'Updates any changed snapshots on test run.',
+        alias: 'u',
         default: false
       }
     });
