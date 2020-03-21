@@ -1,0 +1,73 @@
+---
+name: Commands, Deltas, & Side Effects
+route: /walkthrough/commands-deltas-and-side-effects/
+menu: Walkthrough
+---
+
+# Commands, Deltas, & Side Effects
+
+Now that we've got todos saved in the store, we need to introduce a mechanism for directing & handling side effects. First, we'll take a look at how we kick off side effects, and then we'll take a look at how we respond to them.
+
+## What is a Delta?
+
+TODO
+
+## Directing Side Effects with Commands
+
+Looking back at our reducer, whenever we get a new todo added, we want to save it, so let's update the reducer to do that.
+
+```js
+// state/index.js
+
+// ... snip
+import { loop } from 'brookjs';
+import { addTodo, saveTodoRequest } from '../actions';
+
+const todosReducer = handleActions(
+  {
+    [addTodo]: (state, action) => {
+      const todo = {
+        name: action.payload.name,
+        completed: false
+      };
+      return loop([...state, todo], saveTodoRequest(todo));
+    }
+  },
+  []
+);
+
+// ... snip
+```
+
+Because we used `brookjs`' `combineReducers`, we can use `loop` to return commands from our reducers. These commands are dispatched back into the store as well as out to the rest of the application. We can listen to and respond to them with a delta.
+
+## Handle Commands with Deltas
+
+Those commands are dispatched into the entire application, and we can listen to all of the actions dispatched into the store through the delta. Let's take a look at our deltas:
+
+```js
+// deltas/index.js
+import { saveTodoRequest, saveTodoSucceeded, saveTodoFailed } from '../actions';
+
+export const rootDelta = (state$, action$) => {
+  const save$ = action.thru(ofType(saveTodoRequest)).flatMap(action =>
+    ajax$(`/api/todos`, {
+      method: 'POST',
+      body: JSON.stringify(action.payload.todo)
+    })
+      .flatMap(res => res.json())
+      .map(todo => saveTodoSucceeded(todo))
+      .flatMapErrors(err => Kefir.constant(saveTodoFailed(err)))
+  );
+
+  return Kefir.merge([save$]);
+};
+```
+
+This is a simple delta that maps the API response to a success or failure event, which gets emitted back into the store where the reducer can respond. We could update this delta to retry saving on a regular internal, or a certain number of times, or whatever strategy strategy we want to handle the error.
+
+## Note About Immediate Actions
+
+If you need to emit an action immediately, ensure you're not doing so on the synchronous generation of the delta stream, e.g. route parsing or cookie reading usually handled on application startup. If you do, you may run into odd behavior, as the delta has not yet been fully plugged together and may result in actions either not getting dispatched properly to other deltas or even the store itself. Use an `INIT` action and respond to that to handle these initial reads.
+
+[red-obs]: https://redux-observable.js.org/docs/basics/Epics.html

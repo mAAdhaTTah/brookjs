@@ -22,14 +22,10 @@ export default {
       menu: [
         { name: 'Introduction' },
         { name: 'What are Observables?' },
-        { name: 'Props to Observables' },
-        { name: 'Expressing Change Through Observables' },
-        { name: 'Data In–Data Out' },
-        { name: 'Todo List' },
-        { name: 'Commands & Side Effects' },
-        { name: 'Using the CLI' },
-        { name: 'Testing: Unit & Integration' },
-        { name: 'Static Typing with TypeScript' }
+        { name: 'Emitting Component Events Through Observables' },
+        { name: 'Making a Todo List' },
+        { name: 'Commands, Deltas, & Side Effects' },
+        { name: 'Testing: Format, Lint, & Unit' }
       ]
     },
     {
