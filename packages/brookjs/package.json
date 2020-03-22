@@ -13,10 +13,6 @@
   "scripts": {
     "build": "tsc --emitDeclarationOnly && rollup -c ../../rollup.config.ts",
     "clean": "rimraf .docz dist coverage *.tgz",
-    "docs:build": "docz build",
-    "docs:deploy": "gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
-    "docs:dev": "docz dev",
-    "docs:serve": "docz serve",
     "format": "beaver format",
     "prepublishOnly": "yarn clean && yarn build",
     "test": "beaver test check && beaver test lint"

@@ -1,0 +1,54 @@
+---
+name: Emitting Component Events Through Observables
+route: /walkthrough/emitting-component-events-through-observables/
+menu: Walkthrough
+---
+
+# Emitting Component Events Through Observables
+
+Let's start by building a `Button` and `Input` component. We'll use `brookjs`' `toJunction` to create components that emit those events into a Central Observable, and `RootJunction` to hook into that Central Observable.
+
+## What is a "Junction"?
+
+A Junction, in `brookjs` terms, is a component that emits its events into the Central Observable, which is responsible for aggregating up all of the emitted events from the various Junctions. We can compose up these Junctions without needing to thread down callbacks to dispatch events into the the Central Observable. The Central Observable can be tapped into to stream events into a reducer at any level of the application.
+
+## Create a `Button` Component
+
+We're going to start by creating a basic Button element that emits a `CLICK` event through the Central Observable. For all our components, we're going to emit a [Flux Standard Action][fsa]. This ensures some consistency across the events & commands emitted by the application. `brookjs` recommends using [`redux-actions`][redux-actions], or [`typesafe-actions`][typesafe-actions] if using TypeScript, to generate the action creators, as these utilities help ensure the consistency of the event shape.
+
+For generic components like this, we want the event emitted to be as generic as the component. The parent, knowing the context, will be able to map these events to more specific events needed by the larger application. This helps keep components decoupled from what's outside of them and enables them to be easily embedded in other components.
+
+Given those constraints, the `Button` component would look like this:
+
+[Button.js](embedded-codesandbox://emitting-component-events-through-observables?module=/src/components/Button.js&view=editor)
+
+This component emits a `click` into the Central Observable every time the `Button` is clicked. `events` maps the callback to the Observable of events, with each callback pushing a new value into the Observable. We can then modify the Observable and map its values to new ones.
+
+## Create an `Input` Component
+
+We'll also create an `Input` component with `toJunction`, giving it an `onChange` callback.
+
+[Input.js](embedded-codesandbox://emitting-component-events-through-observables?module=/src/components/Input.js&view=editor)
+
+Answer for yourself: What does this component emit into the Central Observable?
+
+## Combining the Two Components
+
+Now that we have our two components, let's combine them into a single component that emits the `SUBMIT` event described by the [previous tutorial][previous]. We'll pull in `useDelta`, a `useReducer`-like hook that gives us some extra functionality, and `RootJunction`, a component we can use to hook into the Central Observable, and combine the two to manage the state of the component. Lastly, we'll use `combine` in `toJunction` along with `ofType` to combine the Observables into a `SUBMIT` emitting Observable.
+
+Let's take a look:
+
+[Submit.js](embedded-codesandbox://emitting-component-events-through-observables?module=/src/components/Submit.js&view=editor)
+
+`root$` takes the Central Observable and dispatches it into `useDelta`. Those events flow through the reducer to produce the returned state, which we can use to render the view.
+
+We also `combine` to emit a single `submitAction` event when the submit button is clicked. The key thing to note is the Observable returned from `combine` is what is exposed to the parent's Central Observable. The `click$` & `change$` Observables aren't separately available to the parent.
+
+In this way, the API of a `brookjs` component is a combination of the props it takes in and the events it emits.
+
+[Current App](embedded-codesandbox://emitting-component-events-through-observables)
+
+[fsa]: https://github.com/redux-utilities/flux-standard-action
+[redux-actions]: https://redux-actions.js.org/
+[typesafe-actions]: https://github.com/piotrwitek/typesafe-actions/
+[previous]: /walkthrough/emitting-component-events-through-observables/

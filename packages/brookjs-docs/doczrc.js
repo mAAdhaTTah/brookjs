@@ -2,6 +2,19 @@ export default {
   base: '/brookjs/',
   src: 'docs',
   typescript: true,
+  gatsbyRemarkPlugins: [
+    {
+      resolve: 'gatsby-remark-embedded-codesandbox',
+      options: {
+        directory: `${__dirname}/examples/`,
+        getIframe: url =>
+          `<iframe src="${url}" width="600px" height="500px" class="embedded-codesandbox" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>`
+      }
+    },
+    {
+      resolve:  'gatsby-remark-responsive-iframe'
+    }
+  ],
   menu: [
     {
       name: 'Home'
