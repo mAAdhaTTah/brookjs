@@ -1,6 +1,6 @@
 {
   "name": "brookjs-cli",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "command line tool for building brookjs applications",
   "main": "dist/brookjs-cli.js",
   "types": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     "brookjs-eddy": "^1.0.0-beta.0",
     "brookjs-flow": "^1.0.0-beta.0",
     "brookjs-prettier-config": "^1.0.0-beta.0",
-    "brookjs-silt": "^1.0.0-beta.0",
+    "brookjs-silt": "^1.0.0-beta.1",
     "camelcase": "^5.3.1",
     "case-sensitive-paths-webpack-plugin": "^2.1.2",
     "chalk": "^2.1.0",
