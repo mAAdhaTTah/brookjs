@@ -45,10 +45,6 @@ export default class RootJunction<A extends Action> extends React.Component<
               // @TODO(mAAdhaTTah) Constraint subtype issue
               this.parentRoot$ = parentRoot$.plug(this.childRoot$) as any;
             }
-          } else {
-            console.error(
-              'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
-            );
           }
 
           return (
