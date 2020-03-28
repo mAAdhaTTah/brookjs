@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots App Empty List 1`] = `
+<main>
+  <div
+    class="add-todo"
+  >
+    <label
+      class="input"
+      for="input"
+    >
+      Todo: 
+      <input
+        id="input"
+        name="input"
+        value=""
+      />
+    </label>
+    <button
+      class="btn"
+    >
+      Add Todo
+    </button>
+  </div>
+  <ul />
+</main>
+`;
+
+exports[`Storyshots App With Todos 1`] = `
+<main>
+  <div
+    class="add-todo"
+  >
+    <label
+      class="input"
+      for="input"
+    >
+      Todo: 
+      <input
+        id="input"
+        name="input"
+        value=""
+      />
+    </label>
+    <button
+      class="btn"
+    >
+      Add Todo
+    </button>
+  </div>
+  <ul>
+    <li>
+      First
+    </li>
+    <li>
+      Second
+    </li>
+    <li>
+      Third
+    </li>
+  </ul>
+</main>
+`;
+
+exports[`Storyshots Button Basic 1`] = `
+<button
+  class="btn"
+>
+  Click me
+</button>
+`;
+
+exports[`Storyshots Input Basic 1`] = `
+<label
+  class="input"
+  for="input"
+>
+  Input
+  <input
+    id="input"
+    name="input"
+    value=""
+  />
+</label>
+`;

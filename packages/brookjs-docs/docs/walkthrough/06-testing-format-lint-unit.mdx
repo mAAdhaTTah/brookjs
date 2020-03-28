@@ -33,6 +33,13 @@ The above set of tools, combined with Jest, provide everything you need to fully
 
 While we're developing our components, we should also be creating them as stories in Storybook so we can develop each component in isolation. During this process, we should use various stories to put the component into all of the states combos it can be in given the props provided. If you bootstrapped with `brookjs-cli`, Storyshots will already be configured to take snapshots of all your stories. If not, see the [Storyshots][sshts] documentation to set it up.
 
+[Button.stories.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__stories__/Button.stories.js&view=editor)
+
+
+[Input.stories.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__stories__/Input.stories.js&view=editor)
+
+[AddTodo.stories.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__stories__/AddTodo.stories.js&view=editor)
+
 ### Interaction Testing with `@testing-library/react` and `brookjs-desalinate`
 
 In addition to testing the various states depending on what went _in_ to the component, we need to test the various events that come _out_. We do this with a Jest matcher provided by `brookjs-desalinate` called `toEmitFromJunction`. This matcher uses `@testing-library/react` under the hood to render the provided element wrapped in a `RootJunction`, which is then provided to a callback for the user to interact with.
@@ -43,39 +50,13 @@ Let's write some tests and see what this looks like.
 
 For the `Button` component, we have to ensure that it emits the expected action when we click it.
 
-```js
-// Button.spec.js
-describe('Button', () => {
-  it('should emit a click event', () => {
-    expect(<Button />).toEmitFromJunction(
-      [KTU.value(click())],
-      ({ container }) => {
-        fireEvent.click(container.querySelector('button'));
-      }
-    );
-  });
-});
-```
+[Button.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__tests__/Button.spec.js&view=editor)
 
 That's it! Between Storyshots and this simple test, te've fully tested the behavior of the component.
 
 We can do the same thing with the `Input` component.
 
-```js
-// Input.spec.js
-describe('Input', () => {
-  it('should emit a change event', () => {
-    expect(<Input />).toEmitFromJunction(
-      [KTU.value(change('new value'))],
-      ({ container }) => {
-        fireEvent.change(container.querySelector('input'), {
-          target: { value: 'new value' }
-        });
-      }
-    );
-  });
-});
-```
+[Input.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__tests__/Input.spec.js&view=editor)
 
 And again, we're done! This are simple tests for simple components, but demonstrate how testing with `brookjs` components is about testing the component's input & output.
 
@@ -85,82 +66,39 @@ The `AddTodo` component is slightly more complicated than the other two, with it
 
 Let's take a look at how we could do that.
 
-```js
-describe('AddTodo', () => {
-  it('should emit ADD_TODO event on submit', () => {
-    expect(<AddTodo />).toEmitFromJunction(
-      [addTodo('do a thing')],
-      ({ container }) => {
-        const input = container.querySelector('input');
-        const button = container.querySelector('button');
-
-        fireEvent.change(input, { target: { value: 'do a thing' } });
-
-        expect(input).toHaveValue('do a thing');
-
-        fireEvent.click(button);
-
-        expect(input).toHaveValue('');
-      }
-    );
-  });
-});
-```
+[AddTodo.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__tests__/Input.spec.js&view=editor)
 
 Here we reproduce the steps the user would go through to add a new todo: type it into the input, and click the submit button. After each event, we verify the state of the DOM, ensuring that the state is managed correctly. After this function has run, `toEmitFromJunction` asserts that the only the single event has been emitted.
 
 ##### A Note on Coverage
 
-As you may have noticed, the `AddTodo` tests overlap with the `Input` & `Button` tests, as they both end up exercising the underlying elements. It's up to you whether you feel the need to test both. If something like `AddTodo` is foundational, then you can test the other two through it, but you don't want to end up deleting the parent component and be left with no tests on the underlying components, which wouldn't happen if you tested them directly.
+As you may have noticed, the `AddTodo` tests overlap with the `Input` & `Button` tests, as they both end up exercising the underlying elements. It's up to you whether you feel the need to test both. If something like `AddTodo` is foundational, then you can test the other two through it. However, you also don't want to delete the parent component and be left with no tests on the underlying components, which wouldn't happen if you tested them directly.
 
 ### Testing a Command-Returning Reducer
 
-Reducers are straightfoward to test because they're pure functions that return new values. Testing them is a matter of passing in the current state and asserting against the return value.
+Reducers are they're pure functions that return new values. Testing them is a matter of passing in the current state and asserting against the return value.
 
 Let's take a look.
 
-```js
-// reducer.spec.js
-describe('reducer', () => {
-  it('should handle ADD_TODO', () => {
-    expect(reducer([], addTodo('New todo'))).toEqual(
-      loop(
-        [{ name: 'New todo', completed: false }],
-        saveTodoRequest({
-          name: 'New todo',
-          completed: false
-        })
-      )
-    );
-  });
-});
-```
+[reducers.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/state/__tests__/reducers.spec.js&view=editor)
+
+### Testing `mapStateToProps`
+
+Similarly, `mapStateToProps` is a pure function, so we call it with a state value and assert against the results.
+
+[mapStateToProps.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/state/__tests__/mapStateToProps.spec.js&view=editor)
 
 ### Testing Deltas
 
 Testing deltas is a lot less straightfoward than the previous test flows. Fortunately, `brookjs-desalinate` provides some helpers to make testing them easier. Let's try out a new expectation, `toEmitFromDelta`, to test our `rootDelta`.
 
-```js
-// delta.spec.js
-jest.mock('../ajax', () => { ... })
+[deltas.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/deltas/__tests__/deltas.spec.js&view=editor)
 
-describe('rootDelta', () => {
-  it('should emit success when making a successful API request', () => {
-    const todo = { name: 'New Todo', completed: false };
+This test is slightly more complicated, because how you handle side effects will determine how you write these tests. In this case, we use a library called `kefir-ajax` to handle our API calls, so we can use Jest's [module mocking][jest-mock] to mock that module and provide the return values to make sure our delta responds correctly without actually making the API call.
 
-    expect(rootDelta).toEmitFromDelta(
-      [KTU.value(saveTodoSucceeded(todo))],
-      send => {
-        send(saveTodoRequest(todo), { todos: [todo] });
-      }
-    );
-  });
-});
-```
+Depending on how complicated your application is, you might want to segregate all of the side-effect-producing functions to separate modules (e.g. `api` or `localStorage`) and mock _that_. Or mock at a lower level by using [`nise`][nise] to mock the XHR request.
 
-This test is slightly more complicated, because how you handle side effects will determine how you write these tests. One option is to segregate all of the side-effect-producing functions to a separate module (e.g. `api` or `localStorage`), then use Jest's [module mocking][jest-mock] capabilities to replace the functions with mocks. Using that, you can control the API calls and their responses.
-
-Alternatively, you can use a module like [`axios`][axios] and [`axios-mock-adapter`][axios-mock] to control the API calls and their responses, or use [`fetch`][fetch] alongside [`jest-fetch-mock`][jest-fetch-mock] to control those API responses. Whatever path you choose, the idea is to mock at the side-effect boundary and test the delta emits the actions expected. Since any external source of data to the application could potentially emit errors, we should wrap them in deltas and thus control the data emitted into the reducer.
+Whatever path you choose, the idea is to mock at the side-effect boundary and test that the delta emits the actions expected. Since any external source of data to the application could potentially emit errors, we can test that the delta behaves correctly in both success and error scenarios.
 
 [jest]: https://jestjs.io/
 [sb]: https://storybook.js.org/
@@ -170,7 +108,4 @@ Alternatively, you can use a module like [`axios`][axios] and [`axios-mock-adapt
 [jest-kefir]: https://github.com/kefirjs/jest-kefir
 [desal]: /api/brookjs-desalinate/
 [jest-mock]: https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options
-[axios]: https://github.com/axios/axios
-[axios-mock]: https://github.com/ctimmerm/axios-mock-adapter
-[fetch]: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-[jest-fetch-mock]: https://www.npmjs.com/package/jest-fetch-mock
+[nise]: https://github.com/sinonjs/nise
