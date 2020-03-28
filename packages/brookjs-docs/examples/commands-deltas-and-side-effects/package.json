@@ -1,5 +1,5 @@
 {
-  "name": "04-making-a-todo-list",
+  "name": "05-commands-deltas-and-side-effects",
   "version": "0.0.0",
   "description": "A brookjs application",
   "main": "src/index.js",
@@ -30,6 +30,7 @@
   "dependencies": {
     "brookjs": "^1.0.0-alpha",
     "kefir": "^3.8.0",
+    "kefir-ajax": "^1.0.0",
     "prop-types": "^15.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
