@@ -15,6 +15,7 @@ describe('BuildCommand#View', () => {
         env="test"
         coverage={false}
         watch={false}
+        updateSnapshot={false}
       />
     );
 

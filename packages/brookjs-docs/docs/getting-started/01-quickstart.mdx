@@ -1,0 +1,64 @@
+---
+name: Quickstart
+route: /getting-started/quickstart/
+menu: Getting Started
+---
+
+# Quickstart
+
+Bootstrap a new application:
+
+```shell
+npx brookjs-cli new myapp
+```
+
+You'll see a new folder structured like this:
+
+```tree
+myapp
+|____.storybook
+| |____.babelrc
+| |____main.js
+|____.beaverrc.js
+|____public
+| |____index.html
+| |____manifest.json
+|____package.json
+|____src
+| |____index.js
+| |____state
+| | |____index.js
+| | |______tests__
+| | | |____state.spec.js
+| |____components
+| | |______stories__
+| | | |____App.stories.js
+| | |____index.js
+| | |______tests__
+| | | |____App.spec.js
+| | |____App.js
+| |____deltas
+| | |____index.js
+| |______tests__
+| | |____storyshots.spec.js
+| | |______snapshots__
+| | | |____storyshots.spec.js.snap
+| |____actions
+| | |____index.js
+| | |____app.js
+| |____setupTests.js
+```
+
+The CLI is \_very opinionated, but it is not a requirement for working with `brookjs`. You can configure various aspects of the CLI, including which folder your source code is in, through the `.beaverrc.js` file, but this is the default folder your application lives in. By default, the CLI provides:
+
+- Prettier
+- ESLint
+- Jest
+- Storybook
+- Storyshots
+- Webpack + dev server
+- Puppeteer
+
+Alternatively, you could use an tool like [Create React App](cra), which works perfectly well with `brookjs`.
+
+[cra]: https://create-react-app.dev/

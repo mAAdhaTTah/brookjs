@@ -1,0 +1,111 @@
+---
+name: 'Testing: Format, Lint, & Unit'
+route: /walkthrough/testing-format-lint-and-unit/
+menu: Walkthrough
+---
+
+# Testing: Format, Lint, & Unit
+
+The testing tools are the first deep interaction with `brookjs-cli`. You can run it with `npx beaver` or `yarn beaver` after it have been installed in your project. It comes with a number of subcommands under the `test` command. We'll go through them together.
+
+## `test check`
+
+The first command is the simplest and checks if the project conforms to prettier's codestyle. Running `beaver test check` will error if any of them are not in compliance. Running `beaver format` will format them into compliance.
+
+## `test lint`
+
+Next, we check any issues that can't be fixed automatically. Running `beaver test lint` checks if the application's code conforms with the `brookjs` eslint config and error if any of them do not. Any ESLint errors that would be fixable with `--fix` can be fixed with `beaver format` but other errors may need manual intervention.
+
+## `test unit`
+
+The bulk of your time testing will be dealing with unit tests. You can run them with `test unit`. Any files that end with `.{spec,test}.{js,ts}` are globbed by the runner and executed by [Jest][jest] tests.
+
+When bootstrapping an application with `brookjs`, in addition to configuring Jest, a couple of other addons are also provided:
+
+- [Storybook][sb] + [Storyshots][sshts] for [structural testing][struct-test]
+- [`@testing-library/jest-dom`][jest-dom]
+- [`jest-kefir`][jest-kefir]
+- [`brookjs-desalinate`][desal]
+
+The above set of tools, combined with Jest, provide everything you need to fully test your application. Let's take a look at the application we built before and see how we'd test it.
+
+### Low Hanging Fruit with Storyshots
+
+While we're developing our components, we should also be creating them as stories in Storybook so we can develop each component in isolation. During this process, we should use various stories to put the component into all of the states combos it can be in given the props provided. If you bootstrapped with `brookjs-cli`, Storyshots will already be configured to take snapshots of all your stories. If not, see the [Storyshots][sshts] documentation to set it up.
+
+[Button.stories.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__stories__/Button.stories.js&view=editor)
+
+
+[Input.stories.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__stories__/Input.stories.js&view=editor)
+
+[AddTodo.stories.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__stories__/AddTodo.stories.js&view=editor)
+
+### Interaction Testing with `@testing-library/react` and `brookjs-desalinate`
+
+In addition to testing the various states depending on what went _in_ to the component, we need to test the various events that come _out_. We do this with a Jest matcher provided by `brookjs-desalinate` called `toEmitFromJunction`. This matcher uses `@testing-library/react` under the hood to render the provided element wrapped in a `RootJunction`, which is then provided to a callback for the user to interact with.
+
+Let's write some tests and see what this looks like.
+
+#### Testing the `Button` & `Input` Components
+
+For the `Button` component, we have to ensure that it emits the expected action when we click it.
+
+[Button.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__tests__/Button.spec.js&view=editor)
+
+That's it! Between Storyshots and this simple test, te've fully tested the behavior of the component.
+
+We can do the same thing with the `Input` component.
+
+[Input.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__tests__/Input.spec.js&view=editor)
+
+And again, we're done! This are simple tests for simple components, but demonstrate how testing with `brookjs` components is about testing the component's input & output.
+
+#### Testing the `AddTodo` component
+
+The `AddTodo` component is slightly more complicated than the other two, with its own state to manage and wrapper around the `Input` & `Button` components' central Observable. Your first inclination might be to test the `reducer` in isolation, but we can test it in context by asserting against the render results of that state change.
+
+Let's take a look at how we could do that.
+
+[AddTodo.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/components/__tests__/Input.spec.js&view=editor)
+
+Here we reproduce the steps the user would go through to add a new todo: type it into the input, and click the submit button. After each event, we verify the state of the DOM, ensuring that the state is managed correctly. After this function has run, `toEmitFromJunction` asserts that the only the single event has been emitted.
+
+##### A Note on Coverage
+
+As you may have noticed, the `AddTodo` tests overlap with the `Input` & `Button` tests, as they both end up exercising the underlying elements. It's up to you whether you feel the need to test both. If something like `AddTodo` is foundational, then you can test the other two through it. However, you also don't want to delete the parent component and be left with no tests on the underlying components, which wouldn't happen if you tested them directly.
+
+### Testing a Command-Returning Reducer
+
+Reducers are they're pure functions that return new values. Testing them is a matter of passing in the current state and asserting against the return value.
+
+Let's take a look.
+
+[reducers.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/state/__tests__/reducers.spec.js&view=editor)
+
+### Testing `mapStateToProps`
+
+Similarly, `mapStateToProps` is a pure function, so we call it with a state value and assert against the results.
+
+[mapStateToProps.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/state/__tests__/mapStateToProps.spec.js&view=editor)
+
+### Testing Deltas
+
+Testing deltas is a lot less straightfoward than the previous test flows. Fortunately, `brookjs-desalinate` provides some helpers to make testing them easier. Let's try out a new expectation, `toEmitFromDelta`, to test our `rootDelta`.
+
+[deltas.spec.js](embedded-codesandbox://testing-format-lint-unit?module=/src/deltas/__tests__/deltas.spec.js&view=editor)
+
+This test is slightly more complicated, because how you handle side effects will determine how you write these tests. In this case, we use a library called `kefir-ajax` to handle our API calls, so we can use Jest's [module mocking][jest-mock] to mock that module and provide the return values to make sure our delta responds correctly without actually making the API call.
+
+Depending on how complicated your application is, you might want to segregate all of the side-effect-producing functions to separate modules (e.g. `api` or `localStorage`) and mock _that_. Or mock at a lower level by using [`nise`][nise] to mock the XHR request.
+
+Whatever path you choose, the idea is to mock at the side-effect boundary and test that the delta emits the actions expected. Since any external source of data to the application could potentially emit errors, we can test that the delta behaves correctly in both success and error scenarios.
+
+[jest]: https://jestjs.io/
+[sb]: https://storybook.js.org/
+[sshts]: https://www.npmjs.com/package/@storybook/addon-storyshots
+[struct-test]: https://storybook.js.org/docs/testing/structural-testing/
+[jest-dom]: https://github.com/testing-library/jest-dom
+[jest-kefir]: https://github.com/kefirjs/jest-kefir
+[desal]: /api/brookjs-desalinate/
+[jest-mock]: https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options
+[nise]: https://github.com/sinonjs/nise

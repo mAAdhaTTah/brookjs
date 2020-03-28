@@ -1,0 +1,26 @@
+{
+  "name": "brookjs-docs",
+  "description": "reactive programming tools for well-structured, testable applications",
+  "version": "1.0.0-beta.0",
+  "private": true,
+  "scripts": {
+    "build": "docz build",
+    "deploy": "gh-pages -d .docz/dist -m \"Docs updated $(date \"+%Y-%m-%d %H:%M:%S\")\"",
+    "dev": "docz dev",
+    "serve": "docz serve",
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "dependencies": {
+    "docz": "^2.0.0",
+    "docz-theme-default": "^1.2.0",
+    "gatsby-link": "^2.2.30",
+    "gatsby-plugin-emotion": "^4.2.0",
+    "gatsby-react-router-scroll": "^2.1.23",
+    "gatsby-remark-embedded-codesandbox": "github:mattrosno/gatsby-remark-embedded-codesandbox#release",
+    "gatsby-remark-responsive-iframe": "^2.3.0",
+    "gatsby-theme-docz": "^2.2.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

@@ -9,9 +9,9 @@ exports[`NewCommand#View complete should render complete message and call exit 1
 Run [34mnpm i[39m or [34myarn[39m to bootstrap"
 `;
 
-exports[`NewCommand#View configure step should show an error when no name provided 1`] = `"[31mCalled [33mbeaver new[31m with no name.[39m"`;
+exports[`NewCommand#View configure step should show an error when no name provided 1`] = `"[31mCalled [33mbeaver new[39m[31m with no name.[39m"`;
 
-exports[`NewCommand#View configure step should show an error when no name provided 2`] = `"[31mCalled [33mbeaver new[31m with no name.[39m"`;
+exports[`NewCommand#View configure step should show an error when no name provided 2`] = `"[31mCalled [33mbeaver new[39m[31m with no name.[39m"`;
 
 exports[`NewCommand#View configure step should show the first question 1`] = `
 "[32mApp name: test-app[39m
@@ -60,7 +60,7 @@ version: [32m1.0.0[39m
 description: [32mA test application[39m
 dir: [32mclient[39m
 license: [32mISC[39m
-[34m❯[39m [39m[34mYes[39m[39m
+[34m❯[39m [34mYes[39m
   No"
 `;
 
@@ -71,13 +71,13 @@ This is a error message.
 [32mThis is a ok message.[39m
 
 
-[32m▹▹▹▹▹[39m [39mCreating app test-app[39m"
+[32m▹▹▹▹▹[39m Creating app test-app"
 `;
 
 exports[`NewCommand#View creating should render spinner 1`] = `
 "
 
-[32m▹▹▹▹▹[39m [39mCreating app test-app[39m"
+[32m▹▹▹▹▹[39m Creating app test-app"
 `;
 
 exports[`NewCommand#View error should render error message and call exit 1`] = `

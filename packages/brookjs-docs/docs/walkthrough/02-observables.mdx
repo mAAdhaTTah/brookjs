@@ -1,0 +1,117 @@
+---
+name: What are Observables?
+route: /walkthrough/what-are-observables/
+menu: Walkthrough
+---
+
+# What are Observables?
+
+Before we start getting into `brookjs`, let's take a short detour to talk about Observables. For `brookjs`, we'll be using [Kefirjs][kefir], which has a few properties that make it a good choice over RxJS:
+
+1. Hot observables by default
+1. Comparable performance
+1. Thrown errors crash
+1. Smaller API surface
+
+If you're new to Observables, the 4th bullet is probably the most important. This makes Kefir easier to learn & use, as there are fewer methods to wrap your head around.
+
+## Array Over Time
+
+The best way to describe Observables is as an array whose values arrive over time. Instead of them being available in the array at the time you subscribe to the Observable, those values are pushed into the Observable by the data source.
+
+```js
+const input$ = Kefir.fromEvents(document.querySelector('input'), 'input');
+```
+
+_Note: Suffixing the variable name with `$` for Observables is a common convention but not a requirement._
+
+Every time the `input` event fires, the `Event` object is pushed into the stream. We can now manipulate the stream similar to an array.
+
+```js
+// Map the event to its current value
+const value$ = input$.map(e => e.target.value);
+```
+
+Now, every time the value changes, it's pushed as a new value into the stream, and `value$` always has the latest value from the input. We can model this with a Marble Diagram:
+
+```
+|a---b----c----d---e-f-gh----i|
+```
+
+Letters are used to represent the different values emitted by the stream, with the `-` representing the passage of a set amount of time.
+
+## Combining Observables
+
+This may not seem that interesting, but what if we only wanted to get the value of the input whenever a button is clicked?
+
+```js
+const click$ = Kefir.fromEvents(document.querySelector('button'), 'click');
+const submit$ = input$.sampledBy(click$);
+```
+
+In a few lines of code, we combine the two Observables so that the relationship between them is explicit. We can model this stream with this marble diagram:
+
+```
+input$  |a---b----c----d---e-f-gh----i|
+click$  |-----------.-------------.---|
+submit$ |-----------c-------------h---|
+```
+
+Every time the button is clicked, the last value from `input$` Observable is emitted from the `submit$` Observable.
+
+## Handling Side Effects
+
+Now that we've got the latest value at the point it's been submitted, we need to run the search against the API. We can plug Observables into other Observables with `flatMap`:
+
+```js
+const results$ = submit$.flatMap(term =>
+  ajax$(`/api/search?s=${term}`)
+    .flatMap(res => res.json())
+    .map(body => body.results)
+);
+```
+
+There's one issue with this though: If `term` is an empty string, it will still hit the API, which will result in an error. To fix this, we can filter out any empty values:
+
+```js
+const results$ = submit$
+  .filter(term => term !== '')
+  .flatMap(term =>
+    ajax$(`/api/search?s=${term}`)
+      .flatMap(res => res.json())
+      .map(body => body.results)
+  );
+```
+
+Assuming `ajax$` is an Observable-based AJAX library, this searches the API with the current term entered in the input field. We can use the output of this stream to render the search results and output it to the DOM.
+
+```js
+const resultsHTML$ = results$
+  .map(results => results.map(result => `<li>${result.name}</li>`))
+  .flatMapErrors(error => Kefir.constant(`<li>Error: ${error.message}</li>`));
+
+resultsHTML$.observe(html => {
+  resultsUl.innerHTML = html;
+});
+```
+
+In `brookjs`, React is responsible for managing the DOM, and we put our side effects in a delta, which we'll learn about later, but it's this relationship between things happening in various parts of the system that Observables are able to express. We take advantage of this in `brookjs`' architecture.
+
+## Further Resources
+
+This is a pretty quick introduction what Observables are and their benefits. If you want to explore this in more depth, below are some online resources that go into this in more depth.
+
+- [Kefir docs][kefir]
+- [The introduction to Reactive Programming you've been missing
+  ][intro-reactive]
+  - [Video series][intro-reactive-video]
+- [ReactiveX][reactivex]
+- [Video: Netflix JavaScript Talks - Async JavaScript with Reactive Extensions][async-reactive-video]
+
+If you're interested in expanding this list or
+
+[kefir]: https://kefirjs.github.io/kefir/
+[intro-reactive]: https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
+[intro-reactive-video]: https://egghead.io/series/introduction-to-reactive-programming
+[reactivex]: http://reactivex.io/learnrx/
+[async-reactive-video]: https://www.youtube.com/watch?v=FAZJsxcykPs

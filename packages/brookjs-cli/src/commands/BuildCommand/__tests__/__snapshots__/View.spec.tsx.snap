@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BuildCommand#View should render building view 1`] = `"[32m▹▹▹▹▹[39m [39mBuilding application...[39m"`;
+exports[`BuildCommand#View should render building view 1`] = `"[32m▹▹▹▹▹[39m Building application..."`;
 
 exports[`BuildCommand#View should render built view 1`] = `
 "[36mFinished compiling at 07:58:40[39m

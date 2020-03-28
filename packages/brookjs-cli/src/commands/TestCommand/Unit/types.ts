@@ -9,6 +9,7 @@ interface BaseState {
   env: string;
   coverage: boolean;
   watch: boolean;
+  updateSnapshot: boolean;
 }
 
 export interface RunningState extends BaseState {
@@ -28,4 +29,5 @@ export type Action = ActionType<typeof actions>;
 export type Args = {
   coverage: boolean;
   watch: boolean;
+  updateSnapshot: boolean;
 };

@@ -1,0 +1,18 @@
+---
+name: 'Actions: Commands vs Events'
+route: /philosophy/actions-commands-vs-events/
+menu: Philosophy
+---
+
+# Actions: Commands vs Events
+
+- Events are "something happened"
+  - Context
+- Commands are "do this thing"
+- Everything is controlled in the Redux store
+  - All state + behavior described in pure functions
+  - Application logic exists in pure, testable store
+- All delta-managed side effects are commands in, events out
+  - translate commands -> side effects
+  - emit events when things happen
+  - Replace deltas or view layer with zero disruption to rest of application

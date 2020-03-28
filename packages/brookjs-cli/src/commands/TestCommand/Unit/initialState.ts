@@ -19,6 +19,7 @@ const initialState = (
   env: getEnv(args.env),
   coverage: args.coverage === true,
   watch: args.watch === true,
+  updateSnapshot: args.updateSnapshot === true,
   status: 'running'
 });
 

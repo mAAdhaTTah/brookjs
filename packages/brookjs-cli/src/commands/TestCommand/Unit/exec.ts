@@ -20,6 +20,7 @@ const exec = (
         dir: Kefir.constant(getDir(state.rc)),
         coverage: Kefir.constant(state.coverage),
         watch: Kefir.constant(state.watch),
+        updateSnapshot: Kefir.constant(state.updateSnapshot),
         jest: Kefir.constant(state.rc?.jest ?? {}),
         setupTests: project
           .extension$(state.cwd)
@@ -32,7 +33,7 @@ const exec = (
           )
       })
     )
-    .map(({ dir, coverage, watch, jest, setupTests }) => {
+    .map(({ dir, coverage, watch, updateSnapshot, jest, setupTests }) => {
       const argv = [];
 
       const config: any = {
@@ -68,10 +69,10 @@ const exec = (
         moduleNameMapper: {
           '^react-native$': 'react-native-web',
           '^.+\\.module\\.(css|sass|scss)$': 'identity-obj-proxy',
-          '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1',
           // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
           'react-syntax-highlighter/dist/esm/(.*)':
-            'react-syntax-highlighter/dist/cjs/$1'
+            'react-syntax-highlighter/dist/cjs/$1',
+          '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1'
         },
         moduleFileExtensions: ['js', 'jsx', 'json', 'mjs', 'ts', 'tsx', 'node']
       };
@@ -89,6 +90,10 @@ const exec = (
 
       if (watch) {
         argv.push('--watch');
+      }
+
+      if (updateSnapshot) {
+        argv.push('-u');
       }
 
       return argv;

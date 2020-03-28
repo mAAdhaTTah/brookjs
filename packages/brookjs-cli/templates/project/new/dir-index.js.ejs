@@ -29,10 +29,10 @@ const bootstrap = <% if(locals.typescript) { %>(initialState?: State)<% } else {
   store = createStore(reducer, initialState, rootDelta);
   root$ = root$ => root$.observe(store.dispatch);
   unsub = store.subscribe(render);
-  store.dispatch(init());
 };
 
 bootstrap();
+store.dispatch(init());
 
 if (module.hot) {
   // Nothing needs to be done when the actions change.
