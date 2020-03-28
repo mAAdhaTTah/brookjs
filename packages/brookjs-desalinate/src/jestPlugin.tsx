@@ -80,11 +80,11 @@ export const jestPlugin = ({
         return {
           pass: this.equals(log, expected),
           message: () =>
-          matcherHint(
-            `${this.isNot ? '.not' : ''}.toEmitFromJunction`,
-            printReceived(log),
-            printReceived(expected)
-          )
+            matcherHint(
+              `${this.isNot ? '.not' : ''}.toEmitFromJunction`,
+              printReceived(log),
+              printReceived(expected)
+            )
         };
       }
     }
