@@ -1,6 +1,6 @@
 {
   "name": "brookjs-desalinate",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "testing tools for brookjs applications",
   "main": "dist/brookjs-desalinate.cjs.js",
   "module": "dist/brookjs-desalinate.esm.js",
@@ -35,7 +35,7 @@
     "@storybook/core-events": "^5.0.0",
     "@storybook/react": "^5.0.0",
     "@storybook/theming": "^5.0.0",
-    "brookjs-silt": "^1.0.0-beta.0",
+    "brookjs-silt": "^1.0.0-beta.1",
     "jest-kefir": "^2.2.0",
     "jest-matcher-utils": "^24.9.0",
     "kefir-test-utils": "^1.0.0",
