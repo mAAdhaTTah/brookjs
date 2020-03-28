@@ -12,7 +12,7 @@ export default {
       }
     },
     {
-      resolve:  'gatsby-remark-responsive-iframe'
+      resolve: 'gatsby-remark-responsive-iframe'
     }
   ],
   menu: [
@@ -55,8 +55,7 @@ export default {
       menu: [
         { name: 'Actions: Commands vs Events' },
         { name: 'Components Compose Bottom Up' },
-        { name: 'Best Choice is Easiest' },
-        { name: 'Seamless Interop' }
+        { name: 'Best Choice is Easiest' }
       ]
     },
     {
