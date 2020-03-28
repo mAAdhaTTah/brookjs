@@ -65,7 +65,7 @@ export const jestPlugin = ({
         cb: (a: any, b: any, c: any) => void = noop,
         { timeLimit = 10000 } = {}
       ): Result {
-        let log;
+        let log: EventWithTime<any, any>[] = [];
         const root$ = (root$: any) => void (log = watchWithTime(root$));
 
         withFakeTime((tick: any, clock: any) => {
@@ -79,7 +79,12 @@ export const jestPlugin = ({
 
         return {
           pass: this.equals(log, expected),
-          message: () => `expected to emit values from junction`
+          message: () =>
+          matcherHint(
+            `${this.isNot ? '.not' : ''}.toEmitFromJunction`,
+            printReceived(log),
+            printReceived(expected)
+          )
         };
       }
     }
