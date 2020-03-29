@@ -1,9 +1,11 @@
+import path from 'path';
 import vm from 'vm';
 import React from 'react';
 import { defaultLoaders, cosmiconfigSync } from 'cosmiconfig';
 import { render, RenderOptions } from 'ink';
 import { TransformOptions, transformFileSync } from '@babel/core';
 import * as t from 'io-ts';
+import resolve from 'resolve';
 import { BabelRC } from '../babel';
 import { Command } from './Command';
 import Commands from './Commands';
@@ -24,6 +26,53 @@ export class App {
 
   static create(name: string, commands?: Commands) {
     return new App(name, commands);
+  }
+
+  static resolve(target: string, basedir?: string): string {
+    return resolve.sync(target, {
+      basedir,
+      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx']
+    });
+  }
+
+  static load(target: string) {
+    const filename = App.resolve(target);
+
+    const oldNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    const result = transformFileSync(filename, {
+      babelrc: false,
+      configFile: false,
+      presets: [require.resolve('babel-preset-brookjs')],
+      plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')]
+    });
+    process.env.NODE_ENV = oldNodeEnv;
+
+    if (result?.code == null) {
+      throw new Error('No code returned from transform');
+    }
+
+    const exports = {};
+    const module = { exports };
+    const context = vm.createContext({
+      module,
+      exports,
+      require: (target: string) => {
+        const resolvedTarget = App.resolve(target, path.dirname(filename));
+
+        if (resolvedTarget.includes('node_modules')) {
+          return require(resolvedTarget);
+        }
+
+        return this.load(resolvedTarget);
+      }
+    });
+
+    vm.runInNewContext(result.code, context, {
+      filename: filename
+    });
+
+    return module.exports;
   }
 
   private constructor(
@@ -50,7 +99,7 @@ export class App {
 
   loadCommandsFrom(target: string) {
     try {
-      return Object.entries(this.load(target)).reduce<App>(
+      return Object.entries(App.load(target)).reduce<App>(
         (app, [name, cmd]) => app.addCommand(name, cmd),
         this
       );
@@ -62,32 +111,6 @@ export class App {
     }
   }
 
-  private load(filename: string) {
-    const oldNodeEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'production';
-    const result = transformFileSync(filename, {
-      babelrc: false,
-      configFile: false,
-      presets: [require.resolve('babel-preset-brookjs')],
-      plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')]
-    });
-    process.env.NODE_ENV = oldNodeEnv;
-
-    if (result?.code == null) {
-      throw new Error('No code returned from transform');
-    }
-
-    const exports = {};
-    const module = { exports };
-    const context = vm.createContext({ module, exports, require });
-
-    vm.runInNewContext(result.code, context, {
-      filename
-    });
-
-    return module.exports;
-  }
-
   getRC(): unknown {
     if (this.rc !== undefined) {
       return this.rc;
@@ -97,9 +120,9 @@ export class App {
       cosmiconfigSync(this.name, {
         loaders: {
           ...defaultLoaders,
-          '.js': (filename: string) => this.load(filename),
-          '.ts': (filename: string) => this.load(filename),
-          '.tsx': (filename: string) => this.load(filename)
+          '.js': (filename: string) => App.load(filename),
+          '.ts': (filename: string) => App.load(filename),
+          '.tsx': (filename: string) => App.load(filename)
         }
       }).search()?.config ?? null);
   }
