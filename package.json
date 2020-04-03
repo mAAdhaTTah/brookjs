@@ -42,7 +42,7 @@
     "builtins": "^3.0.0",
     "cli-spinners": "^2.0.0",
     "cucumber": "^6.0.3",
-    "eslint": "^5.0.0",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-import-resolver-node": "^0.3.1",
     "eslint-import-resolver-typescript": "^2.0.0",
