@@ -43,7 +43,15 @@ export class App {
     const result = transformFileSync(filename, {
       babelrc: false,
       configFile: false,
-      presets: [require.resolve('babel-preset-brookjs')],
+      presets: [
+        [
+          require.resolve('babel-preset-brookjs'),
+          {
+            useESModules: false,
+            helpers: false
+          }
+        ]
+      ],
       plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')]
     });
     process.env.NODE_ENV = oldNodeEnv;
@@ -57,10 +65,15 @@ export class App {
     const context = vm.createContext({
       module,
       exports,
+      __dirname: path.dirname(filename),
+      process,
       require: (target: string) => {
         const resolvedTarget = App.resolve(target, path.dirname(filename));
 
-        if (resolvedTarget.includes('node_modules')) {
+        if (
+          resolvedTarget.includes('node_modules') ||
+          !resolvedTarget.includes(path.sep)
+        ) {
           return require(resolvedTarget);
         }
 
