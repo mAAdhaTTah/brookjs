@@ -1,6 +1,6 @@
 {
   "name": "brookjs-cli",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "command line tool for building brookjs applications",
   "main": "dist/brookjs-cli.js",
   "types": "dist/index.d.ts",
@@ -42,7 +42,7 @@
     "cross-env": "^7.0.0",
     "date-fns": "^2.9.0",
     "eslint": "^6.8.0",
-    "eslint-config-brookjs": "^1.0.0-beta.0",
+    "eslint-config-brookjs": "^1.0.0-beta.4",
     "eslint-loader": "^3.0.0",
     "execa": "^4.0.0",
     "fs-extra": "^8.0.1",
