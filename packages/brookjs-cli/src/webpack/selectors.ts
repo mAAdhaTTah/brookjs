@@ -120,7 +120,7 @@ const selectStyleLoaders = (
 ) => {
   const loaders = [
     isEnvDevelopment(state) && require.resolve('style-loader'),
-    isEnvProduction && {
+    isEnvProduction(state) && {
       loader: MiniCssExtractPlugin.loader,
       options: shouldUseRelativeAssetPaths(state)
         ? { publicPath: '../../' }
@@ -217,7 +217,7 @@ const selectDefaultRules = (state: State) => [
     test: cssModuleRegex,
     use: selectStyleLoaders(state, {
       importLoaders: 1,
-      sourceMap: isEnvProduction && shouldUseSourceMap,
+      sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
       modules: {
         getLocalIdent: getCSSModuleLocalIdent
       }
@@ -233,7 +233,7 @@ const selectDefaultRules = (state: State) => [
       state,
       {
         importLoaders: 3,
-        sourceMap: isEnvProduction && shouldUseSourceMap
+        sourceMap: isEnvProduction(state) && shouldUseSourceMap()
       },
       'sass-loader'
     ),
@@ -251,7 +251,7 @@ const selectDefaultRules = (state: State) => [
       state,
       {
         importLoaders: 3,
-        sourceMap: isEnvProduction && shouldUseSourceMap,
+        sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
         modules: {
           getLocalIdent: getCSSModuleLocalIdent
         }
@@ -699,7 +699,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
   };
 
   return (
-    state.rc?.webpack?.modifier?.(config, { env: state.env, cmd: 'build' }) ??
+    state.rc?.webpack?.modifier?.(config, { env: state.env, cmd: state.cmd }) ??
     config
   );
 };
