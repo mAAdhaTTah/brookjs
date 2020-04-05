@@ -43,3 +43,4 @@ es
 dist
 cjs
 .docz
+package-lock.json
