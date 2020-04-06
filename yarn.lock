@@ -6075,9 +6075,9 @@ builtins@^1.0.3:
   integrity sha1-y5T662HIaWRR2zZTThQi+U8K7og=
 
 builtins@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/builtins/-/builtins-3.0.0.tgz#d50c7467cf1b993ee58b389001e3476da78fb000"
-  integrity sha512-WxD4J/Uer15eE0IAGHLjz4xhs74+n9Mr6/deYOUaUL4QS3IJyv6jlamqR4SBluP1tkvEZ8My4jh1DEzpnMeBWw==
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/builtins/-/builtins-3.0.1.tgz#38c55022f40a752f61de255eabd41892278032ea"
+  integrity sha512-JxlnRUmQpQReAt5mUshMNQpHe7MEZuy1qH+Eck31mc4GBBM9AmGX9oBrzQH/zAOIRM/CAqNA0J2692a/yJiGQQ==
   dependencies:
     semver "^7.0.0"
 
