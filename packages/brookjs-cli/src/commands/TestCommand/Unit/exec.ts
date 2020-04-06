@@ -41,6 +41,7 @@ const exec = (
         collectCoverageFrom: [
           `${dir}/**/*.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/index.{js,jsx,mjs,ts,tsx}`,
+          `!${dir}/**/__tests__/**`,
           `!${dir}/**/*.d.ts`
         ],
         setupFilesAfterEnv: setupTests,
