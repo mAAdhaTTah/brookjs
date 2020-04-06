@@ -62,27 +62,24 @@ export class App {
 
     const exports = {};
     const module = { exports };
-    const context = vm.createContext({
-      module,
-      exports,
-      __dirname: path.dirname(filename),
-      process,
-      require: (target: string) => {
-        const resolvedTarget = App.resolve(target, path.dirname(filename));
 
-        if (
-          resolvedTarget.includes('node_modules') ||
-          !resolvedTarget.includes(path.sep)
-        ) {
-          return require(resolvedTarget);
-        }
-
-        return this.load(resolvedTarget);
+    vm.compileFunction(
+      result.code,
+      ['module', 'exports', '__dirname', 'require'],
+      {
+        filename
       }
-    });
+    )(module, exports, path.dirname(filename), (target: string) => {
+      const resolvedTarget = App.resolve(target, path.dirname(filename));
 
-    vm.runInNewContext(result.code, context, {
-      filename: filename
+      if (
+        resolvedTarget.includes('node_modules') ||
+        !resolvedTarget.includes(path.sep)
+      ) {
+        return require(resolvedTarget);
+      }
+
+      return this.load(resolvedTarget);
     });
 
     return module.exports;
