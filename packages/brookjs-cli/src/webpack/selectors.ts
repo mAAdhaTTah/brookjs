@@ -235,7 +235,7 @@ const selectDefaultRules = (state: State) => [
         importLoaders: 3,
         sourceMap: isEnvProduction(state) && shouldUseSourceMap()
       },
-      'sass-loader'
+      require.resolve('sass-loader')
     ),
     // Don't consider CSS imports dead code even if the
     // containing package claims to have no side effects.
@@ -256,7 +256,7 @@ const selectDefaultRules = (state: State) => [
           getLocalIdent: getCSSModuleLocalIdent
         }
       },
-      'sass-loader'
+      require.resolve('sass-loader')
     )
   }
 ];
