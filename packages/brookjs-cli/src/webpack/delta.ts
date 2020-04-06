@@ -10,7 +10,10 @@ export const delta: Delta<Action, State> = (action$, state$) => {
   const build$ = sampleStateAtAction(action$, state$, build.request).flatMap(
     state =>
       WebpackService.create(selectWebpackConfig(state))
-        .flatMap(compiler => (state.watch ? compiler.watch() : compiler.run()))
+        .flatMap(compiler => {
+          process.env.NODE_ENV = state.env;
+          return state.watch ? compiler.watch() : compiler.run();
+        })
         .map(build.success)
         .flatMapErrors(error => Kefir.constant(build.failure(error)))
   );
