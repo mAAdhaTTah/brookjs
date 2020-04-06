@@ -44,9 +44,9 @@ const View: React.FC<State> = props => {
   }
 
   if (!props.watch && props.results.hasErrors()) {
-    const { errors } = props.results.toJson('errors-only');
+    const { errors, warnings } = props.results.toJson('errors-only');
 
-    return <BuildErrors watch={props.watch} errors={errors} />;
+    return <BuildErrors watch={props.watch} errors={[...errors, ...warnings]} />;
   }
 
   return <Built results={props.results} watch={props.watch} />;
