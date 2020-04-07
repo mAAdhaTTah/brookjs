@@ -1,6 +1,6 @@
 {
   "name": "brookjs-eddy",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.8",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs-eddy.cjs.js",
   "module": "dist/brookjs-eddy.esm.js",
