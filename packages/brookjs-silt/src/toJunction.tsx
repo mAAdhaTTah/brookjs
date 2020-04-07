@@ -1,8 +1,8 @@
 import React from 'react';
 import Kefir, { Observable, Pool, Stream } from 'kefir';
-import wrapDisplayName from 'recompose/wrapDisplayName';
 import { Action } from 'redux';
 import { Consumer, Provider } from './context';
+import { wrapDisplayName } from './wrapDisplayName';
 
 const id = <T extends any>(x: T) => x;
 

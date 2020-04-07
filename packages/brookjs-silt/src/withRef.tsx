@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
-import wrapDisplayName from 'recompose/wrapDisplayName';
 import Kefir, { Pool, Observable, Property } from 'kefir';
 import { Action } from 'redux';
 import { Consumer } from './context';
+import { wrapDisplayName } from './wrapDisplayName';
 
 // Ref-forward function has 2 params.
 const isRefForwarding = <T, P>(

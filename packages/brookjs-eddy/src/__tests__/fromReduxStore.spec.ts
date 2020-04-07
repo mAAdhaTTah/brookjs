@@ -1,7 +1,6 @@
 /* eslint-env jest */
 import $$observable from 'symbol-observable';
-import { Store } from 'redux';
-import { Observer } from 'recompose';
+import { Store, Observer } from 'redux';
 import fromReduxStore from '../fromReduxStore';
 
 const { value } = KTU;
@@ -34,7 +33,7 @@ const createMockStore = <T extends {}>(
     [$$observable]() {
       return {
         subscribe: (observer: Observer<T>) => {
-          const observe = () => observer.next(store.getState());
+          const observe = () => observer.next?.(store.getState());
 
           observe();
 
