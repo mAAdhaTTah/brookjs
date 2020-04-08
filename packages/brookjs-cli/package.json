@@ -43,7 +43,7 @@
     "date-fns": "^2.9.0",
     "eslint": "^6.8.0",
     "eslint-config-brookjs": "^1.0.0-beta.4",
-    "eslint-loader": "^3.0.0",
+    "eslint-loader": "^4.0.0",
     "execa": "^4.0.0",
     "fs-extra": "^8.0.1",
     "glob": "^7.1.2",
