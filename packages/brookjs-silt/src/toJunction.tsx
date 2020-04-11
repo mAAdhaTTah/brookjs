@@ -136,7 +136,7 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
                 }
               } else {
                 console.error(
-                  'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`',
+                  'Used `toJunction` with no Central Observable.. Needs to be wrapped in `<RootJunction>`',
                 );
               }
 
