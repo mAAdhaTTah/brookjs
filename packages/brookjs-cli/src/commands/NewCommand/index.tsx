@@ -16,25 +16,25 @@ const NewCommand: Command<Args> = {
       name: {
         required: true,
         type: 'string',
-        describe: 'The name of the new brookjs applicaiton'
+        describe: 'The name of the new brookjs applicaiton',
       },
       yes: {
         alias: 'y',
         describe: 'Create the application with defaults answers to the prompts',
-        default: false
+        default: false,
       },
       typescript: {
         alias: 'ts',
         describe: 'Use typescript.',
-        default: defaultSteps.typescript
-      }
+        default: defaultSteps.typescript,
+      },
     });
   },
   View: ({ args, cwd }) => {
     const { state, root$ } = useDelta(
       reducer,
       initialState(args, { cwd }),
-      exec
+      exec,
     );
 
     return (
@@ -42,7 +42,7 @@ const NewCommand: Command<Args> = {
         <View {...state} />
       </RootJunction>
     );
-  }
+  },
 };
 
 export default NewCommand;

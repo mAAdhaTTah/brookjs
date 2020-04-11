@@ -25,7 +25,7 @@ const Actions = styled.pre({
   margin: 0,
   padding: '10px 5px 20px',
   overflowY: 'auto',
-  color: '#666'
+  color: '#666',
 });
 
 const Action = styled.div({
@@ -34,7 +34,7 @@ const Action = styled.div({
   borderLeft: '5px solid transparent',
   borderBottom: '1px solid transparent',
   transition: 'all 0.1s',
-  alignItems: 'flex-start'
+  alignItems: 'flex-start',
 });
 
 const Counter = styled.div(({ theme }) => ({
@@ -45,19 +45,19 @@ const Counter = styled.div(({ theme }) => ({
   lineHeight: 1,
   padding: '1px 5px',
   borderRadius: '20px',
-  margin: '2px 0px'
+  margin: '2px 0px',
 }));
 
 const InspectorContainer = styled.div({
   flex: 1,
-  padding: '0 0 0 5px'
+  padding: '0 0 0 5px',
 });
 
 const Wrapper = styled.div({
   flex: 1,
   display: 'flex',
   position: 'relative',
-  height: '100%'
+  height: '100%',
 });
 
 type LoggedAction = {
@@ -99,7 +99,7 @@ const ActionLoggerComponent: any /*React.SFC<ActionLoggerComponentProps> */ = wi
 
       <ActionBar actionItems={[{ title: 'Clear', onClick: onClear }]} />
     </Wrapper>
-  )
+  ),
 );
 
 type ActionLoggerProps = {
@@ -170,7 +170,7 @@ class ActionLogger extends React.Component<ActionLoggerProps, State> {
     const { active } = this.props;
     const props = {
       actions,
-      onClear: this.clearActions
+      onClear: this.clearActions,
     };
     return active ? <ActionLoggerComponent {...props} /> : null;
   }
@@ -183,7 +183,7 @@ const emit = (value: any) => {
     id,
     count: 0,
     data: { name: 'emit', args: [value] },
-    options: {}
+    options: {},
   });
 };
 
@@ -194,7 +194,7 @@ export const withJunction = makeDecorator({
     <RootJunction root$={root$ => root$.observe(emit)}>
       {Story(context)}
     </RootJunction>
-  )
+  ),
 });
 
 export const register = () => {
@@ -204,7 +204,7 @@ export const register = () => {
       title: 'Junction Logger',
       render: ({ active, key }) => (
         <ActionLogger key={key} api={api} channel={channel} active={active} />
-      )
+      ),
     });
   });
 };

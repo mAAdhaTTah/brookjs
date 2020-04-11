@@ -13,7 +13,7 @@ export const Built: React.FC<{
     entrypoints = {},
     builtAt = Date.now(),
     warnings,
-    errors
+    errors,
   } = results.toJson('verbose');
   return (
     <Box flexDirection="column">
@@ -44,7 +44,7 @@ export const Built: React.FC<{
 
 export const BuildErrors: React.FC<{ errors: string[]; watch: boolean }> = ({
   errors,
-  watch
+  watch,
 }) => {
   const { exit } = useApp();
 

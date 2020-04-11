@@ -6,7 +6,7 @@ import * as glob from '../../../glob';
 import * as eslint from '../../../eslint';
 
 export const RC = t.partial({
-  dir: t.string
+  dir: t.string,
 });
 export type RC = t.TypeOf<typeof RC>;
 export type FileLint =

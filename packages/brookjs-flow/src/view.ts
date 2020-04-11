@@ -3,7 +3,7 @@ import { Observable } from 'kefir';
 const $$initialized = Symbol('init');
 
 export default <I, O, E>(callback: (i: I) => O) => (
-  stream$: Observable<I, E>
+  stream$: Observable<I, E>,
 ): Observable<O, E> => {
   let previous: O | typeof $$initialized = $$initialized;
 

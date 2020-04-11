@@ -27,10 +27,10 @@ describe('NewCommand#View', () => {
               description: null,
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -50,10 +50,10 @@ describe('NewCommand#View', () => {
               description: null,
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -75,10 +75,10 @@ describe('NewCommand#View', () => {
               description: null,
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -100,10 +100,10 @@ describe('NewCommand#View', () => {
               description: null,
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -125,10 +125,10 @@ describe('NewCommand#View', () => {
               description: null,
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -150,10 +150,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -175,10 +175,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -200,10 +200,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -225,10 +225,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -250,10 +250,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: 'ISC',
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -276,21 +276,21 @@ describe('NewCommand#View', () => {
               description: null,
               dir: null,
               license: null,
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(r$).toEmit(
         [
           value({ type: 'INPUT', payload: { value: 'test word' } }),
-          value({ type: 'SUBMIT' })
+          value({ type: 'SUBMIT' }),
         ],
         () => {
           stdin.write('test word');
           stdin.write('\r');
-        }
+        },
       );
     });
   });
@@ -312,10 +312,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: 'ISC',
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -339,17 +339,17 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: 'ISC',
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(r$).toEmit(
         [value({ type: 'CONFIRM', payload: { value: true } })],
         () => {
           stdin.write('\r');
-        }
+        },
       );
     });
 
@@ -370,10 +370,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: 'ISC',
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(r$).toEmit(
@@ -381,7 +381,7 @@ describe('NewCommand#View', () => {
         () => {
           stdin.write('\u001B[B');
           stdin.write('\r');
-        }
+        },
       );
     });
   });
@@ -405,11 +405,11 @@ describe('NewCommand#View', () => {
                 description: 'A test application',
                 dir: 'client',
                 license: 'ISC',
-                typescript: false
+                typescript: false,
               }}
             />
           </RootJunction>
-        </AppContext.Provider>
+        </AppContext.Provider>,
       );
 
       setTimeout(() => {
@@ -438,10 +438,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: 'ISC',
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -455,20 +455,20 @@ describe('NewCommand#View', () => {
             logs={[
               {
                 level: 'notice',
-                msg: 'This is a notice mesasge.'
+                msg: 'This is a notice mesasge.',
               },
               {
                 level: 'warn',
-                msg: 'This is a warn message.'
+                msg: 'This is a warn message.',
               },
               {
                 level: 'error',
-                msg: 'This is a error message.'
+                msg: 'This is a error message.',
               },
               {
                 level: 'ok',
-                msg: 'This is a ok message.'
-              }
+                msg: 'This is a ok message.',
+              },
             ]}
             result={null}
             step="creating"
@@ -480,10 +480,10 @@ describe('NewCommand#View', () => {
               description: 'A test application',
               dir: 'client',
               license: 'ISC',
-              typescript: false
+              typescript: false,
             }}
           />
-        </RootJunction>
+        </RootJunction>,
       );
 
       expect(lastFrame()).toMatchSnapshot();
@@ -510,11 +510,11 @@ describe('NewCommand#View', () => {
                 description: 'A test application',
                 dir: 'client',
                 license: 'ISC',
-                typescript: false
+                typescript: false,
               }}
             />
           </RootJunction>
-        </AppContext.Provider>
+        </AppContext.Provider>,
       );
 
       setTimeout(() => {
@@ -546,11 +546,11 @@ describe('NewCommand#View', () => {
                 description: 'A test application',
                 dir: 'client',
                 license: 'ISC',
-                typescript: false
+                typescript: false,
               }}
             />
           </RootJunction>
-        </AppContext.Provider>
+        </AppContext.Provider>,
       );
 
       setTimeout(() => {

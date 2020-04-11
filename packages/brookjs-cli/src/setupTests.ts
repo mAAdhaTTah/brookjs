@@ -6,5 +6,5 @@ chalk.supportsColor = {
   level: chalk.Level.TrueColor,
   hasBasic: true,
   has256: true,
-  has16m: true
+  has16m: true,
 };

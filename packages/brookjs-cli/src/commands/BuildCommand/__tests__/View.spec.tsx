@@ -6,7 +6,7 @@ import View from '../View';
 
 jest.mock('date-fns', () => ({
   format: (_builtAt: number, formatString: string) =>
-    formatString.replace('HH:mm:ss', '07:58:40').replace(/'/g, '')
+    formatString.replace('HH:mm:ss', '07:58:40').replace(/'/g, ''),
 }));
 
 describe('BuildCommand#View', () => {
@@ -21,7 +21,7 @@ describe('BuildCommand#View', () => {
         env="development"
         cwd="/path/to/wd"
         rc={null}
-      />
+      />,
     );
 
     expect(lastFrame()).toMatchSnapshot();
@@ -41,11 +41,11 @@ describe('BuildCommand#View', () => {
             entry: 'client.js',
             output: {
               path: 'dist',
-              filename: '[name].js'
-            }
-          }
+              filename: '[name].js',
+            },
+          },
         }}
-      />
+      />,
     );
 
     expect(lastFrame()).toMatchSnapshot();
@@ -67,11 +67,11 @@ describe('BuildCommand#View', () => {
             entry: 'client.js',
             output: {
               path: 'dist',
-              filename: '[name].js'
-            }
-          }
+              filename: '[name].js',
+            },
+          },
         }}
-      />
+      />,
     );
 
     expect(lastFrame()).toMatchSnapshot();
@@ -93,12 +93,12 @@ describe('BuildCommand#View', () => {
           assets: [{} as any],
           builtAt: 1580129920074,
           warnings: [],
-          errors: []
+          errors: [],
         };
       },
       toString() {
         return 'Compilation results!';
-      }
+      },
     } as webpack.Stats;
     const { lastFrame } = render(
       <View
@@ -113,11 +113,11 @@ describe('BuildCommand#View', () => {
             entry: 'client.js',
             output: {
               path: 'dist',
-              filename: '[name].js'
-            }
-          }
+              filename: '[name].js',
+            },
+          },
         }}
-      />
+      />,
     );
 
     expect(lastFrame()).toMatchSnapshot();

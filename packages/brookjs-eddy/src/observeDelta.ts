@@ -30,7 +30,7 @@ export function observeDelta<A extends { type: string }, S>(
 ): Middleware<Ext, S> {
   return store => {
     const action$: Stream<A, never> = new (Kefir as any).Stream().setName(
-      'action$'
+      'action$',
     );
     const state$: Property<S, never> = new (Kefir as any).Stream()
       .toProperty(store.getState)
@@ -40,7 +40,7 @@ export function observeDelta<A extends { type: string }, S>(
     let queue: A[] = [];
 
     (store as any).subscription = Kefir.merge(
-      sources.map(source => source(action$, state$))
+      sources.map(source => source(action$, state$)),
     ).observe({
       error(err) {
         console.error('Error emitted into delta', err);
@@ -51,7 +51,7 @@ export function observeDelta<A extends { type: string }, S>(
         } else {
           store.dispatch(value);
         }
-      }
+      },
     });
 
     return next => action => {

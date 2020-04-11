@@ -11,12 +11,12 @@ describe('App', () => {
     expect(<App count={3} />).toEmitFromJunction(
       [
         [0, KTU.value(incrementClick())],
-        [0, KTU.value(decrementClick())]
+        [0, KTU.value(decrementClick())],
       ],
       api => {
         fireEvent.click(api.getByText('+'));
         fireEvent.click(api.getByText('-'));
-      }
+      },
     );
   });
 });

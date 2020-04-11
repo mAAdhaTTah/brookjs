@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import execa from 'execa';
 
 const projectName = type => `test-app-${type}`;
@@ -11,33 +11,33 @@ const setUpProject = async (cwd, type) => {
     `${path.join('./', 'bin', 'beaver.js')} new ${projectName(type)} -y${
       type === 'ts' ? ' --ts' : ''
     }`,
-    { cwd }
+    { cwd },
   );
 };
 
 const packPackages = async packagesRoot => {
   console.log('Packing all of the packages');
 
-  const pkgs = (await fs.promises.readdir(packagesRoot)).filter(
-    pkg => pkg !== '.DS_Store'
+  const pkgs = (await fs.readdir(packagesRoot)).filter(
+    pkg => pkg !== '.DS_Store',
   );
 
   return await Promise.all(
     pkgs.map(pkg =>
       execa
-        .command(`yarn pack`, {
-          cwd: path.join(packagesRoot, pkg)
+        .command(`npm pack`, {
+          cwd: path.join(packagesRoot, pkg),
         })
-        .then(() => fs.promises.readdir(path.join(packagesRoot, pkg)))
-        .then(files => ({
+        .then(() => fs.readdir(path.join(packagesRoot, pkg)))
+        .then(async files => ({
           pkg,
           tarball: path.join(
             packagesRoot,
             pkg,
-            files.find(file => file.endsWith('.tgz'))
-          )
-        }))
-    )
+            files.find(file => file.endsWith('.tgz')),
+          ),
+        })),
+    ),
   );
 };
 
@@ -48,7 +48,7 @@ const projectPath = (cwd, type) => path.join(cwd, projectName(type));
 const cleanupOld = (cwd, type) =>
   Promise.all([
     execa.command(`rm -rf ${projectName(type)}`, { cwd }),
-    execa.command(`rm ${tarballPath(type)}`, { cwd })
+    execa.command(`rm ${tarballPath(type)}`, { cwd }),
   ]);
 
 const updatePkgJson = async (cwd, outputs, type) => {
@@ -61,35 +61,31 @@ const updatePkgJson = async (cwd, outputs, type) => {
 
   // Ensure all packages are resolved from our tarballs.
   for (const { pkg, tarball } of outputs) {
-    newPkgJson.resolutions[pkg] = `file:${tarball}`;
-
     if (newPkgJson.dependencies[pkg]) {
       newPkgJson.dependencies[pkg] = `file:${tarball}`;
-    }
-
-    if (newPkgJson.devDependencies[pkg]) {
+    } else {
       newPkgJson.devDependencies[pkg] = `file:${tarball}`;
     }
   }
 
-  await fs.promises.writeFile(
+  await fs.writeFile(
     pkgJsonPath,
-    JSON.stringify(newPkgJson, null, '  ')
+    JSON.stringify(newPkgJson, null, '  '),
   );
 };
 
 const installDeps = async (cwd, type) => {
   console.log('Installing the dependencies');
 
-  await execa.command(`yarn`, {
-    cwd: projectPath(cwd, type)
+  await execa.command(`npm i`, {
+    cwd: projectPath(cwd, type),
   });
 };
 
 const tarballPackage = async (cwd, type) => {
   console.log(`Tarballing ${projectName(type)}`);
   await execa.command(`tar -cvzf ${tarballPath(type)} ${projectName(type)}`, {
-    cwd
+    cwd,
   });
 };
 
@@ -111,7 +107,7 @@ const tarballPackage = async (cwd, type) => {
     try {
       await Promise.all([
         makeJs && cleanupOld(cwd, 'js'),
-        makeTs && cleanupOld(cwd, 'ts')
+        makeTs && cleanupOld(cwd, 'ts'),
       ]);
     } catch (err) {
       console.log('Tarball or project does not exist');
@@ -120,12 +116,12 @@ const tarballPackage = async (cwd, type) => {
     const [outputs] = await Promise.all([
       packPackages(packagesRoot),
       makeJs && setUpProject(cwd, 'js'),
-      makeTs && setUpProject(cwd, 'ts')
+      makeTs && setUpProject(cwd, 'ts'),
     ]);
 
     await Promise.all([
       makeJs && updatePkgJson(cwd, outputs, 'js'),
-      makeTs && updatePkgJson(cwd, outputs, 'ts')
+      makeTs && updatePkgJson(cwd, outputs, 'ts'),
     ]);
 
     await (makeJs && installDeps(cwd, 'js'));
@@ -133,7 +129,7 @@ const tarballPackage = async (cwd, type) => {
 
     await Promise.all([
       makeJs && tarballPackage(cwd, 'js'),
-      makeTs && tarballPackage(cwd, 'ts')
+      makeTs && tarballPackage(cwd, 'ts'),
     ]);
 
     console.log('Success!');

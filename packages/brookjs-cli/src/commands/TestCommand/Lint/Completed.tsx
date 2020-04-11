@@ -9,7 +9,7 @@ const Message: React.FC<Linter.LintMessage> = ({
   message,
   fatal,
   severity,
-  ruleId
+  ruleId,
 }) => (
   <Box flexDirection="row">
     <Box marginLeft={2}>

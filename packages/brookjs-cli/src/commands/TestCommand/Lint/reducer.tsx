@@ -7,26 +7,26 @@ import { initialState } from './initialState';
 
 export const reducer: EddyReducer<State, Action> = (
   state = initialState('/', null),
-  action
+  action,
 ) => {
   switch (action.type) {
     case getType(glob.actions.lint.success):
       return loop(
         {
           ...state,
-          files: action.payload.map(path => ({ path, status: 'unlinted' }))
+          files: action.payload.map(path => ({ path, status: 'unlinted' })),
         },
-        [eslint.actions.project.request()]
+        [eslint.actions.project.request()],
       );
     case getType(eslint.actions.project.request):
       return {
         ...state,
-        status: 'linting'
+        status: 'linting',
       };
     case getType(eslint.actions.project.success):
       return {
         ...state,
-        status: 'completed'
+        status: 'completed',
       };
     case getType(eslint.actions.file.success):
       return {
@@ -34,8 +34,8 @@ export const reducer: EddyReducer<State, Action> = (
         files: state.files.map(file =>
           file.path === action.payload.path
             ? { ...file, status: 'linted', report: action.payload.report }
-            : file
-        )
+            : file,
+        ),
       };
     case getType(eslint.actions.file.failure):
       return {
@@ -43,8 +43,8 @@ export const reducer: EddyReducer<State, Action> = (
         files: state.files.map(file =>
           file.path === action.payload.path
             ? { ...file, status: 'errored', error: action.payload.error }
-            : file
-        )
+            : file,
+        ),
       };
     default:
       return state;

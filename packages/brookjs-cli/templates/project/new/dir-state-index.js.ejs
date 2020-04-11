@@ -10,20 +10,20 @@ export type State = {
 };
 <% } %>
 const initialState = {
-  count: 0
+  count: 0,
 };
 
 export const reducer = <%= reducerCreator %><% if(locals.typescript) { %><State><% } %>(<% if(locals.typescript) { %>initialState, {
   [getType(incrementClick)]: state => ({ ...state, count: state.count + 1 }),
-  [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 })
+  [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 }),
 })<% } else { %>
   {
     [incrementClick]: state => ({ ...state, count: state.count + 1 }),
-    [decrementClick]: state => ({ ...state, count: state.count - 1 })
+    [decrementClick]: state => ({ ...state, count: state.count - 1 }),
   },
-  initialState
+  initialState,
 )<% } %>;
 
 export const mapStateToProps = state => ({
-  count: state.count
+  count: state.count,
 });

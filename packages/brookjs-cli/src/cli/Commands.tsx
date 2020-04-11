@@ -10,7 +10,7 @@ export default class Commands {
     return new Commands([...this.commands, command]);
   }
   get<A>(
-    argv: string[]
+    argv: string[],
   ): {
     command: Command<A> | null;
     args: Arguments<A>;
@@ -23,9 +23,9 @@ export default class Commands {
             command.cmd,
             command.describe,
             command.builder,
-            () => (running = command)
+            () => (running = command),
           ),
-        yargs
+        yargs,
       )
       .parse(argv) as Arguments<A>;
     return { command: running, args };

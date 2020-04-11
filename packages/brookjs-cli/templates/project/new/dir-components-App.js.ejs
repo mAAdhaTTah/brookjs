@@ -14,7 +14,7 @@ type Props = {
 const App<% if(locals.typescript) { %>: React.FC<Props> = ({
   count,
   onIncrementClick,
-  onDecrementClick
+  onDecrementClick,
 })<% } else { %> = ({ count, onIncrementClick, onDecrementClick })<% } %> => {
   return (
     <div className="<%= name %>">
@@ -31,7 +31,7 @@ const App<% if(locals.typescript) { %>: React.FC<Props> = ({
 
 const events = {
   onIncrementClick: e$ => e$.map(() => incrementClick()),
-  onDecrementClick: e$ => e$.map(() => decrementClick())
+  onDecrementClick: e$ => e$.map(() => decrementClick()),
 };
 
 export default toJunction(events)(App);

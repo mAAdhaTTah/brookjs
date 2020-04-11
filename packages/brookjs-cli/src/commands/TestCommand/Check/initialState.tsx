@@ -6,6 +6,6 @@ export const initialState = (cwd: string, rc: unknown): State => ({
   cwd,
   rc: RC.decode(rc).fold(
     () => null,
-    rc => rc
-  )
+    rc => rc,
+  ),
 });

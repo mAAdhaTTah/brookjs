@@ -15,7 +15,7 @@ export const delta: Delta<Action, State> = (action$, state$) => {
           return state.watch ? compiler.watch() : compiler.run();
         })
         .map(build.success)
-        .flatMapErrors(error => Kefir.constant(build.failure(error)))
+        .flatMapErrors(error => Kefir.constant(build.failure(error))),
   );
 
   const start$ = sampleStateAtAction(action$, state$, start.request).flatMap(
@@ -27,11 +27,11 @@ export const delta: Delta<Action, State> = (action$, state$) => {
           return Kefir.merge<Action, Error>([
             server.listen(3000, 'localhost').map(start.success),
             server.onInvalidate().map(invalidated),
-            server.onDone().map(done)
+            server.onDone().map(done),
           ]);
         })
         .takeErrors(1)
-        .flatMapErrors(error => Kefir.constant(start.failure(error)))
+        .flatMapErrors(error => Kefir.constant(start.failure(error))),
   );
 
   return Kefir.merge<Action, never>([build$, start$]);

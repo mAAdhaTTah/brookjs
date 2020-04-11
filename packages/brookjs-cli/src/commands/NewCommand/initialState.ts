@@ -5,7 +5,7 @@ import { defaultSteps } from './constants';
 const base = {
   logs: [],
   result: null,
-  error: null
+  error: null,
 };
 
 const creating = (argv: Arguments<Args>, cwd: string): ConfiguredState => ({
@@ -14,10 +14,10 @@ const creating = (argv: Arguments<Args>, cwd: string): ConfiguredState => ({
   config: {
     ...defaultSteps,
     name: argv.name as string,
-    typescript: argv.typescript
+    typescript: argv.typescript,
   },
   step: 'creating',
-  configuring: null
+  configuring: null,
 });
 
 const configure = (argv: Arguments<Args>, cwd: string): ConfiguringState => ({
@@ -29,10 +29,10 @@ const configure = (argv: Arguments<Args>, cwd: string): ConfiguringState => ({
     description: null,
     dir: null,
     license: null,
-    typescript: argv.typescript
+    typescript: argv.typescript,
   },
   step: 'configure',
-  configuring: 'version'
+  configuring: 'version',
 });
 
 const initialState = (argv: Arguments<Args>, { cwd }: { cwd: string }): State =>

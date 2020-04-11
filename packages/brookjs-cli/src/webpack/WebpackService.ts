@@ -9,12 +9,12 @@ const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpack
 export class WebpackServer {
   constructor(
     private compiler: webpack.Compiler,
-    private server: WebpackDevServer
+    private server: WebpackDevServer,
   ) {}
 
   static create(
     state: State,
-    compiler: webpack.Compiler
+    compiler: webpack.Compiler,
   ): Stream<WebpackServer, Error> {
     try {
       const serverConfig = selectServerConfig(state);
@@ -63,7 +63,7 @@ export class WebpackServer {
         'afterTypeScriptCheck',
         (diagnostics: any, lints: any) => {
           if (running) emitter.value({ diagnostics, lints });
-        }
+        },
       );
 
       return () => {
@@ -104,13 +104,13 @@ export class WebpackService {
 
   server(state: State): Stream<WebpackServer, Error> {
     return this.compiler().flatMap(compiler =>
-      WebpackServer.create(state, compiler)
+      WebpackServer.create(state, compiler),
     );
   }
 
   run(): Stream<webpack.Stats, Error> {
     return this.compiler().flatMap(compiler =>
-      Kefir.fromNodeCallback(callback => compiler.run(callback))
+      Kefir.fromNodeCallback(callback => compiler.run(callback)),
     );
   }
 
@@ -124,7 +124,7 @@ export class WebpackService {
             emitter.value(stats);
           }
         });
-      })
+      }),
     );
   }
 }

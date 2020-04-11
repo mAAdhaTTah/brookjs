@@ -7,5 +7,5 @@ export const ValidCommand = {
   },
   cmd: 'valid',
   describe: 'A valid command!',
-  View: () => <Text>Success from ValidCommand!</Text>
+  View: () => <Text>Success from ValidCommand!</Text>,
 };

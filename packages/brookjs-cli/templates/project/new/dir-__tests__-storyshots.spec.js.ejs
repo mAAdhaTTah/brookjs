@@ -7,14 +7,14 @@ import { RootJunction } from 'brookjs-silt';
 
 const reactTestingLibrarySerializer = {
   print: (val, serialize) => serialize(val.container.firstChild),
-  test: val => val && val.hasOwnProperty('container')
+  test: val => val && val.hasOwnProperty('container'),
 };
 
 initStoryshots({
   framework: 'react',
   renderer: element =>
     render(element, {
-      wrapper: RootJunction
+      wrapper: RootJunction,
     }),
-  snapshotSerializers: [reactTestingLibrarySerializer]
+  snapshotSerializers: [reactTestingLibrarySerializer],
 });

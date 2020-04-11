@@ -27,7 +27,7 @@ describe('jestPlugin', () => {
       expect(delta).toEmitFromDelta(
         [
           [100, value({ action, state })],
-          [200, value({ action, state })]
+          [200, value({ action, state })],
         ],
         (send, tick) => {
           // One tick
@@ -39,7 +39,7 @@ describe('jestPlugin', () => {
           tick(50);
           tick(50);
         },
-        {}
+        {},
       );
     });
 
@@ -52,8 +52,8 @@ describe('jestPlugin', () => {
           send(action, state);
         },
         {
-          timeLimit: 100
-        }
+          timeLimit: 100,
+        },
       );
     });
   });
@@ -64,20 +64,20 @@ describe('jestPlugin', () => {
     }> = ({ onClick }) => <button onClick={onClick}>Click me!</button>;
 
     const AsJunction = toJunction({
-      onClick: e$ => e$.map(() => ({ type: 'CLICK' }))
+      onClick: e$ => e$.map(() => ({ type: 'CLICK' })),
     })(Component);
 
     it('should emit event from Component', () => {
       expect(<AsJunction />).toEmitFromJunction(
         [
           [0, value({ type: 'CLICK' })],
-          [10, value({ type: 'CLICK' })]
+          [10, value({ type: 'CLICK' })],
         ],
         ({ container }, tick) => {
           fireEvent.click(container.firstElementChild!);
           tick(10);
           fireEvent.click(container.firstElementChild!);
-        }
+        },
       );
     });
   });

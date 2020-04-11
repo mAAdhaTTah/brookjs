@@ -5,42 +5,42 @@ import { eddy, loop, combineReducers, EddyReducer } from '../eddy';
 describe('eddy', () => {
   describe('enhance store', () => {
     const defaultState = {
-      actions: [] as Action[]
+      actions: [] as Action[],
     };
 
     type State = typeof defaultState;
 
     const reducer: EddyReducer<State, Action> = (
       state = defaultState,
-      action
+      action,
     ) => {
       switch (action.type) {
         case 'HOLD':
           return {
-            actions: [...state.actions, action.type]
+            actions: [...state.actions, action.type],
           };
         case 'NEXT':
           return loop(
             {
-              actions: [...state.actions, action.type]
+              actions: [...state.actions, action.type],
             },
             {
-              type: 'HOLD'
-            }
+              type: 'HOLD',
+            },
           );
         case 'MANY':
           return loop(
             {
-              actions: [...state.actions, action.type]
+              actions: [...state.actions, action.type],
             },
-            [{ type: 'HOLD' }, { type: 'FINAL' }, loop.NONE]
+            [{ type: 'HOLD' }, { type: 'FINAL' }, loop.NONE],
           );
         case 'FINAL':
           return loop(
             {
-              actions: [...state.actions, action.type]
+              actions: [...state.actions, action.type],
             },
-            loop.NONE
+            loop.NONE,
           );
         default:
           return state;
@@ -61,7 +61,7 @@ describe('eddy', () => {
 
     it('should upgrade new reducers', () => {
       const defaultState = {
-        dispatches: []
+        dispatches: [],
       };
       const reducer = () => defaultState;
       store.replaceReducer(reducer);
@@ -72,7 +72,7 @@ describe('eddy', () => {
       store.dispatch({ type: 'HOLD' });
 
       expect(store.getState()).toEqual({
-        actions: ['HOLD']
+        actions: ['HOLD'],
       });
     });
 
@@ -80,7 +80,7 @@ describe('eddy', () => {
       store.dispatch({ type: 'NEXT' });
 
       expect(store.getState()).toEqual({
-        actions: ['NEXT', 'HOLD']
+        actions: ['NEXT', 'HOLD'],
       });
     });
 
@@ -88,7 +88,7 @@ describe('eddy', () => {
       store.dispatch({ type: 'MANY' });
 
       expect(store.getState()).toEqual({
-        actions: ['MANY', 'HOLD', 'FINAL']
+        actions: ['MANY', 'HOLD', 'FINAL'],
       });
     });
 
@@ -96,7 +96,7 @@ describe('eddy', () => {
       store.dispatch({ type: 'FINAL' });
 
       expect(store.getState()).toEqual({
-        actions: ['FINAL']
+        actions: ['FINAL'],
       });
     });
   });
@@ -110,7 +110,7 @@ describe('eddy', () => {
       pongs: (state = 0, action: Action) =>
         action.type === 'PONG' && state < 2
           ? loop(state + 1, { type: 'PING' })
-          : state
+          : state,
     };
 
     const reducer = combineReducers(reducerMap);
@@ -128,7 +128,7 @@ describe('eddy', () => {
       store.dispatch({ type: 'PING' });
       expect(store.getState()).toEqual({
         pings: 2,
-        pongs: 2
+        pongs: 2,
       });
     });
 

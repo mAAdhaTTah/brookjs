@@ -6,7 +6,7 @@ import {
   Action,
   createStore as reduxCreateStore,
   applyMiddleware,
-  PreloadedState
+  PreloadedState,
 } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import { Delta } from 'brookjs-types';
@@ -30,23 +30,23 @@ const isResult = <S, A extends Action>(results: any): results is Result<S, A> =>
 
 export const loop = <S, A extends Action>(
   state: S,
-  action: ResultRight<A>
+  action: ResultRight<A>,
 ): Result<S, A> =>
   Object.assign([state, action] as [S, A], {
-    [$$loop]: true as true
+    [$$loop]: true as true,
   });
 
 loop.NONE = NONE;
 
 const normalizeResults = <S, A extends Action>(
-  results: S | Result<S, A>
+  results: S | Result<S, A>,
 ): Result<S, A> => (isResult(results) ? results : (loop(results, NONE) as any));
 
 type HandleCmd<A extends Action> = (cmd: A) => void;
 
 const iterateCmd = <A extends Action>(
   cmd: ResultRight<A>,
-  handleCmd: HandleCmd<A>
+  handleCmd: HandleCmd<A>,
 ) => {
   if (cmd !== loop.NONE) {
     if (Array.isArray(cmd)) {
@@ -59,7 +59,7 @@ const iterateCmd = <A extends Action>(
 
 export const upgradeReducer = <L, A extends Action>(
   reducer: (...args: any[]) => L | Result<L, A>,
-  handleCmd: HandleCmd<A>
+  handleCmd: HandleCmd<A>,
 ): ((...args: Parameters<typeof reducer>) => L) => (...args) => {
   const [nextState, cmd] = normalizeResults(reducer(...args));
 
@@ -70,7 +70,7 @@ export const upgradeReducer = <L, A extends Action>(
 
 const runCommands = <A extends Action>(
   run: ResultRight<A>[],
-  dispatch: (action: A) => A
+  dispatch: (action: A) => A,
 ) => {
   for (const cmd of run) {
     if (cmd === NONE) {
@@ -93,7 +93,7 @@ export const eddy = () => (createStore: ReduxStoreCreator) => <
 >(
   reducer: Reducer<S, A> | EddyReducer<S, A>,
   state?: PreloadedState<S> | StoreEnhancer<Ext, StateExt>,
-  enhancer?: StoreEnhancer<Ext, StateExt>
+  enhancer?: StoreEnhancer<Ext, StateExt>,
 ): Store<S & StateExt, A> & Ext => {
   let queue: ResultRight<A>[] = [];
   const handleCmd = (cmd: A) => queue.push(cmd);
@@ -106,7 +106,7 @@ export const eddy = () => (createStore: ReduxStoreCreator) => <
   const store = createStore(
     upgradeReducer(reducer, handleCmd),
     state,
-    enhancer
+    enhancer,
   );
 
   const dispatch = (action: A) => {
@@ -125,7 +125,7 @@ export const eddy = () => (createStore: ReduxStoreCreator) => <
   return {
     ...store,
     dispatch,
-    replaceReducer
+    replaceReducer,
   } as any;
 };
 
@@ -138,7 +138,7 @@ export interface LiftedLoopReducer<S, A extends Action> {
 }
 
 export const combineReducers = <S, A extends Action>(
-  reducerMap: ReducerMapObject<S, A>
+  reducerMap: ReducerMapObject<S, A>,
 ): LiftedLoopReducer<S, A> => {
   const reducerKeys = Object.keys(reducerMap) as (keyof S)[];
 
@@ -152,7 +152,7 @@ export const combineReducers = <S, A extends Action>(
       const reducer = reducerMap[key];
       const previousStateForKey = state[key];
       const [nextStateForKey, cmd] = normalizeResults(
-        reducer(previousStateForKey, action)
+        reducer(previousStateForKey, action),
       );
 
       if (cmd !== NONE) {
@@ -170,16 +170,16 @@ export const combineReducers = <S, A extends Action>(
 export const createStore = <S, A extends Action<string>>(
   reducer: EddyReducer<S, A>,
   initialState: PreloadedState<S> | undefined,
-  delta: Delta<A, S>
+  delta: Delta<A, S>,
 ): Store<S, A> => {
   const compose = composeWithDevTools({
-    name: 'test-app'
+    name: 'test-app',
   });
 
   const store = reduxCreateStore(
     reducer as Reducer<S, A>,
     initialState,
-    compose(applyMiddleware(observeDelta(delta)), eddy())
+    compose(applyMiddleware(observeDelta(delta)), eddy()),
   );
 
   return store;

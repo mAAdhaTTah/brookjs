@@ -9,7 +9,7 @@ describe('RootJunction', () => {
     render(
       <RootJunction root$={spy}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     expect(spy).toHaveBeenCalledTimes(1);
@@ -21,7 +21,7 @@ describe('RootJunction', () => {
     const wrapper = render(
       <RootJunction root$={spy}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     wrapper.unmount();
@@ -34,7 +34,7 @@ describe('RootJunction', () => {
     const wrapper = render(
       <RootJunction root$={spy}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     wrapper.unmount();
@@ -48,13 +48,13 @@ describe('RootJunction', () => {
     const wrapper = render(
       <RootJunction root$={spy1}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     wrapper.rerender(
       <RootJunction root$={spy1}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     expect(spy1).toHaveBeenCalledTimes(1);
@@ -67,13 +67,13 @@ describe('RootJunction', () => {
     const wrapper = render(
       <RootJunction root$={spy1}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     wrapper.rerender(
       <RootJunction root$={spy2}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     expect(spy1).toHaveBeenCalledTimes(1);
@@ -86,13 +86,13 @@ describe('RootJunction', () => {
     const wrapper = render(
       <RootJunction root$={spy1}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     wrapper.rerender(
       <RootJunction root$={spy2}>
         <p>Hello world!</p>
-      </RootJunction>
+      </RootJunction>,
     );
 
     expect(spy1).toHaveBeenCalledTimes(1);

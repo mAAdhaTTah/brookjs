@@ -105,18 +105,18 @@ const defaultBabelConfig = {
       {
         loaderMap: {
           svg: {
-            ReactComponent: '@svgr/webpack?-svgo,+titleProp,+ref![path]'
-          }
-        }
-      }
-    ]
-  ]
+            ReactComponent: '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+          },
+        },
+      },
+    ],
+  ],
 };
 
 const selectStyleLoaders = (
   state: State,
   cssLoaderOptions: object,
-  preProcessor?: string
+  preProcessor?: string,
 ) => {
   const loaders = [
     isEnvDevelopment(state) && require.resolve('style-loader'),
@@ -124,11 +124,11 @@ const selectStyleLoaders = (
       loader: MiniCssExtractPlugin.loader,
       options: shouldUseRelativeAssetPaths(state)
         ? { publicPath: '../../' }
-        : {}
+        : {},
     },
     {
       loader: require.resolve('css-loader'),
-      options: cssLoaderOptions
+      options: cssLoaderOptions,
     },
     {
       // Options for PostCSS as we reference these options twice
@@ -143,33 +143,33 @@ const selectStyleLoaders = (
           require('postcss-flexbugs-fixes'),
           require('postcss-preset-env')({
             autoprefixer: {
-              flexbox: 'no-2009'
+              flexbox: 'no-2009',
             },
-            stage: 3
+            stage: 3,
           }),
           // Adds PostCSS Normalize as the reset css with default options,
           // so that it honors browserslist config in package.json
           // which in turn let's users customize the target behavior as per their needs.
-          postcssNormalize()
+          postcssNormalize(),
         ],
-        sourceMap: isEnvProduction(state) && shouldUseSourceMap()
-      }
-    }
+        sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
+      },
+    },
   ].filter(Boolean) as Loader[];
   if (preProcessor) {
     loaders.push(
       {
         loader: require.resolve('resolve-url-loader'),
         options: {
-          sourceMap: isEnvProduction(state) && shouldUseSourceMap()
-        }
+          sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
+        },
       },
       {
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: true
-        }
-      }
+          sourceMap: true,
+        },
+      },
     );
   }
   return loaders;
@@ -188,8 +188,9 @@ const selectDefaultRules = (state: State) => [
       cacheDirectory: true,
       cacheCompression: false,
       compact: isEnvProduction(state),
-      ...(state.rc?.babel?.modifier?.(defaultBabelConfig) ?? defaultBabelConfig)
-    }
+      ...(state.rc?.babel?.modifier?.(defaultBabelConfig) ??
+        defaultBabelConfig),
+    },
   },
   // "postcss" loader applies autoprefixer to our CSS.
   // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -203,13 +204,13 @@ const selectDefaultRules = (state: State) => [
     exclude: cssModuleRegex,
     use: selectStyleLoaders(state, {
       importLoaders: 1,
-      sourceMap: isEnvProduction(state) && shouldUseSourceMap()
+      sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
     }),
     // Don't consider CSS imports dead code even if the
     // containing package claims to have no side effects.
     // Remove this when webpack adds a warning or an error for this.
     // See https://github.com/webpack/webpack/issues/6571
-    sideEffects: true
+    sideEffects: true,
   },
   // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
   // using the extension .module.css
@@ -219,9 +220,9 @@ const selectDefaultRules = (state: State) => [
       importLoaders: 1,
       sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
       modules: {
-        getLocalIdent: getCSSModuleLocalIdent
-      }
-    })
+        getLocalIdent: getCSSModuleLocalIdent,
+      },
+    }),
   },
   // Opt-in support for SASS (using .scss or .sass extensions).
   // By default we support SASS Modules with the
@@ -233,15 +234,15 @@ const selectDefaultRules = (state: State) => [
       state,
       {
         importLoaders: 3,
-        sourceMap: isEnvProduction(state) && shouldUseSourceMap()
+        sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
       },
-      require.resolve('sass-loader')
+      require.resolve('sass-loader'),
     ),
     // Don't consider CSS imports dead code even if the
     // containing package claims to have no side effects.
     // Remove this when webpack adds a warning or an error for this.
     // See https://github.com/webpack/webpack/issues/6571
-    sideEffects: true
+    sideEffects: true,
   },
   // Adds support for CSS Modules, but using SASS
   // using the extension .module.scss or .module.sass
@@ -253,12 +254,12 @@ const selectDefaultRules = (state: State) => [
         importLoaders: 3,
         sourceMap: isEnvProduction(state) && shouldUseSourceMap(),
         modules: {
-          getLocalIdent: getCSSModuleLocalIdent
-        }
+          getLocalIdent: getCSSModuleLocalIdent,
+        },
       },
-      require.resolve('sass-loader')
-    )
-  }
+      require.resolve('sass-loader'),
+    ),
+  },
 ];
 
 const selectEnvRules = (state: State) => {
@@ -275,11 +276,11 @@ const selectEnvRules = (state: State) => {
             formatter: require.resolve('react-dev-utils/eslintFormatter'),
             eslintPath: require.resolve('eslint'),
             baseConfig: {
-              extends: [require.resolve('eslint-config-brookjs')]
+              extends: [require.resolve('eslint-config-brookjs')],
             },
-            useEslintrc: false
-          }
-        }
+            useEslintrc: false,
+          },
+        },
       ];
     default:
       return [];
@@ -309,11 +310,11 @@ const selectDefaultPlugins = (state: State) => [
       entrypoints: Object.entries(entrypoints).reduce(
         (entries, [key, entry]) => ({
           ...entries,
-          [key]: entry.filter(fileName => !fileName.endsWith('.map'))
+          [key]: entry.filter(fileName => !fileName.endsWith('.map')),
         }),
-        {}
-      )
-    })
+        {},
+      ),
+    }),
   }),
   // Moment.js is an extremely popular library that bundles large locale files
   // by default due to how Webpack interprets its code. This is a practical
@@ -327,7 +328,7 @@ const selectDefaultPlugins = (state: State) => [
       {},
       {
         inject: true,
-        template: selectAppHtml(state)
+        template: selectAppHtml(state),
       },
       isEnvProduction(state)
         ? {
@@ -341,12 +342,12 @@ const selectDefaultPlugins = (state: State) => [
               keepClosingSlash: true,
               minifyJS: true,
               minifyCSS: true,
-              minifyURLs: true
-            }
+              minifyURLs: true,
+            },
           }
-        : undefined
-    )
-  )
+        : undefined,
+    ),
+  ),
   // new InterpolateHtmlPlugin(HtmlWebpackPlugin, {
   //   // Useful for determining whether we’re running in production mode.
   //   // Most importantly, it switches React into the correct mode.
@@ -384,11 +385,11 @@ const selectEnvPlugins = (state: State) => {
             tsconfig: path.join(state.cwd, 'tsconfig.json'),
             reportFiles: [path.join(state.cwd, state.rc?.dir ?? 'src', '**')],
             silent: true,
-            formatter: require('react-dev-utils/typescriptFormatter')
+            formatter: require('react-dev-utils/typescriptFormatter'),
           }),
         new CaseSensitivePathsPlugin({
-          debug: false
-        })
+          debug: false,
+        }),
       ].filter(Boolean);
     case 'production':
       return [
@@ -396,8 +397,8 @@ const selectEnvPlugins = (state: State) => {
         new ShakePlugin({
           warnings: {
             global: false,
-            module: false
-          }
+            module: false,
+          },
         }),
         // shouldInlineRuntimeChunk(state) &&
         //   new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
@@ -405,8 +406,8 @@ const selectEnvPlugins = (state: State) => {
           // Options similar to the same options in webpackOptions.output
           // both options are optional
           filename: '[name].[contenthash:8].css',
-          chunkFilename: '[name].[contenthash:8].chunk.css'
-        })
+          chunkFilename: '[name].[contenthash:8].chunk.css',
+        }),
       ];
     default:
       return plugins;
@@ -439,7 +440,7 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
     for (const [key, value] of Object.entries(entry)) {
       entry = {
         ...entry,
-        [key]: path.join(selectAppPath(state), value)
+        [key]: path.join(selectAppPath(state), value),
       };
     }
   }
@@ -485,7 +486,7 @@ const selectOutput = (state: State): webpack.Configuration['output'] => ({
   // jsonpFunction: `webpackJsonp${state.name}`,
   // this defaults to 'window', but by setting it to 'this' then
   // module chunks which are built will work in web workers as well.
-  globalObject: 'this'
+  globalObject: 'this',
 });
 
 const selectMinimizer = (state: State) => [
@@ -498,7 +499,7 @@ const selectMinimizer = (state: State) => [
         // into invalid ecma 5 code. This is why the 'compress' and 'output'
         // sections only apply transformations that are ecma 5 safe
         // https://github.com/facebook/create-react-app/pull/4234
-        ecma: 8
+        ecma: 8,
       },
       compress: {
         ecma: 5,
@@ -512,10 +513,10 @@ const selectMinimizer = (state: State) => [
         // https://github.com/facebook/create-react-app/issues/5250
         // Pending further investigation:
         // https://github.com/terser-js/terser/issues/120
-        inline: 2
+        inline: 2,
       },
       mangle: {
-        safari10: true
+        safari10: true,
       },
       // Added for profiling in devtools
       keep_classnames: isEnvProductionProfile(),
@@ -525,10 +526,10 @@ const selectMinimizer = (state: State) => [
         comments: false,
         // Turned on because emoji and regex is not minified properly using default
         // https://github.com/facebook/create-react-app/issues/2488
-        ascii_only: true
-      }
+        ascii_only: true,
+      },
     },
-    sourceMap: shouldUseSourceMap()
+    sourceMap: shouldUseSourceMap(),
   }),
   // This is only used in production mode
   new OptimizeCSSAssetsPlugin({
@@ -541,18 +542,18 @@ const selectMinimizer = (state: State) => [
             inline: false,
             // `annotation: true` appends the sourceMappingURL to the end of
             // the css file, helping the browser find the sourcemap
-            annotation: true
+            annotation: true,
           }
-        : false
+        : false,
     },
     cssProcessorPluginOptions: {
-      preset: ['default', { minifyFontValues: { removeQuotes: false } }]
-    }
-  })
+      preset: ['default', { minifyFontValues: { removeQuotes: false } }],
+    },
+  }),
 ];
 
 const addHotReload = (
-  entry: webpack.Configuration['entry']
+  entry: webpack.Configuration['entry'],
 ): webpack.Configuration['entry'] => {
   const client = require.resolve('react-dev-utils/webpackHotDevClient');
 
@@ -620,7 +621,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
         'tsx',
         'json',
         'web.jsx',
-        'jsx'
+        'jsx',
       ]
         .map(ext => `.${ext}`)
         .filter(ext => state.extension === 'ts' || !ext.includes('ts')),
@@ -631,11 +632,11 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
         // Allows for better profiling with ReactDevTools
         ...(isEnvProductionProfile() && {
           'react-dom$': 'react-dom/profiling',
-          'scheduler/tracing': 'scheduler/tracing-profiling'
+          'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...{
           // Add additional aliases here.
-        }
+        },
       },
       plugins: [
         // @TODO(mAAdhaTTah) revisit if we want to add these plugins to the build
@@ -648,7 +649,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
         // new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
-      ]
+      ],
     },
     // resolveLoader: {
     //   plugins: [
@@ -659,12 +660,12 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
     // },
     module: {
       strictExportPresence: true,
-      rules: [...selectDefaultRules(state), ...selectEnvRules(state)]
+      rules: [...selectDefaultRules(state), ...selectEnvRules(state)],
     },
     plugins: [
       ...selectDefaultPlugins(state),
       ...selectEnvPlugins(state),
-      ...selectCmdPlugins(state)
+      ...selectCmdPlugins(state),
     ],
     optimization: {
       minimize: isEnvProduction(state),
@@ -681,8 +682,8 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
       // https://twitter.com/wSokra/status/969679223278505985
       // https://github.com/facebook/create-react-app/issues/5358
       runtimeChunk: {
-        name: entrypoint => `runtime-${entrypoint.name}`
-      }
+        name: entrypoint => `runtime-${entrypoint.name}`,
+      },
     },
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
@@ -694,8 +695,8 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
       http2: 'empty',
       net: 'empty',
       tls: 'empty',
-      child_process: 'empty'
-    }
+      child_process: 'empty',
+    },
   };
 
   return (
@@ -705,7 +706,7 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
 };
 
 export const selectServerConfig = (
-  state: State
+  state: State,
 ): WebpackDevServer.Configuration => ({
   // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
   // websites from potentially accessing local content through DNS rebinding:
@@ -782,7 +783,7 @@ export const selectServerConfig = (
   // src/node_modules is not ignored to support absolute imports
   // https://github.com/facebook/create-react-app/issues/1065
   watchOptions: {
-    ignored: ignoredFiles(selectAppPath(state))
+    ignored: ignoredFiles(selectAppPath(state)),
   },
   // https: selectHttpsConfig(state),
   // host: selectHost(state),
@@ -791,7 +792,7 @@ export const selectServerConfig = (
     // Paths with dots should still use the history fallback.
     // See https://github.com/facebook/create-react-app/issues/387.
     disableDotRule: true,
-    index: selectPublicUrlOrPath(state)
+    index: selectPublicUrlOrPath(state),
   },
   // public: selectAllowHosts(state),
   // `proxy` is run between `before` and `after` `webpack-dev-server` hooks
@@ -814,5 +815,5 @@ export const selectServerConfig = (
     // it used the same host and port.
     // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
     app.use(noopServiceWorkerMiddleware());
-  }
+  },
 });

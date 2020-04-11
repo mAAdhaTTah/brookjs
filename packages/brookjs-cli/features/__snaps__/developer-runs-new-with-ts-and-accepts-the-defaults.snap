@@ -30,7 +30,7 @@ exports[`Developer runs new with ts and accepts the defaults-.storybook/main.js 
     });
     config.resolve.extensions.push('.ts', '.tsx');
     return config;
-  }
+  },
 };
 "
 `;
@@ -171,16 +171,16 @@ import { RootJunction } from 'brookjs-silt';
 
 const reactTestingLibrarySerializer = {
   print: (val, serialize) => serialize(val.container.firstChild),
-  test: val => val && val.hasOwnProperty('container')
+  test: val => val && val.hasOwnProperty('container'),
 };
 
 initStoryshots({
   framework: 'react',
   renderer: element =>
     render(element, {
-      wrapper: RootJunction
+      wrapper: RootJunction,
     }),
-  snapshotSerializers: [reactTestingLibrarySerializer]
+  snapshotSerializers: [reactTestingLibrarySerializer],
 });
 "
 `;
@@ -206,7 +206,7 @@ exports[`Developer runs new with ts and accepts the defaults-src/components/__st
 import App from '../App';
 
 export default {
-  title: 'App'
+  title: 'App',
 };
 
 export const basic = () => <App count={3} />;
@@ -224,12 +224,12 @@ describe('App', () => {
     expect(<App count={3} />).toEmitFromJunction(
       [
         [0, KTU.value(incrementClick())],
-        [0, KTU.value(decrementClick())]
+        [0, KTU.value(decrementClick())],
       ],
       api => {
         fireEvent.click(api.getByText('+'));
         fireEvent.click(api.getByText('-'));
-      }
+      },
     );
   });
 });
@@ -250,7 +250,7 @@ type Props = {
 const App: React.FC<Props> = ({
   count,
   onIncrementClick,
-  onDecrementClick
+  onDecrementClick,
 }) => {
   return (
     <div className=\\"test-app\\">
@@ -267,7 +267,7 @@ const App: React.FC<Props> = ({
 
 const events = {
   onIncrementClick: e$ => e$.map(() => incrementClick()),
-  onDecrementClick: e$ => e$.map(() => decrementClick())
+  onDecrementClick: e$ => e$.map(() => decrementClick()),
 };
 
 export default toJunction(events)(App);
@@ -316,7 +316,7 @@ const render = () => {
     <RootJunction root$={root$}>
       <App {...mapStateToProps(store.getState())} />
     </RootJunction>,
-    document.getElementById('root')
+    document.getElementById('root'),
   );
 };
 
@@ -386,16 +386,16 @@ export type State = {
 };
 
 const initialState = {
-  count: 0
+  count: 0,
 };
 
 export const reducer = createReducer<State>(initialState, {
   [getType(incrementClick)]: state => ({ ...state, count: state.count + 1 }),
-  [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 })
+  [getType(decrementClick)]: state => ({ ...state, count: state.count - 1 }),
 });
 
 export const mapStateToProps = state => ({
-  count: state.count
+  count: state.count,
 });
 "
 `;

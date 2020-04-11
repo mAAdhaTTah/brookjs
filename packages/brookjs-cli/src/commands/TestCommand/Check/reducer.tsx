@@ -7,26 +7,26 @@ import { initialState } from './initialState';
 
 export const reducer: EddyReducer<State, Action> = (
   state = initialState('/', null),
-  action
+  action,
 ) => {
   switch (action.type) {
     case getType(glob.actions.lint.success):
       return loop(
         {
           ...state,
-          files: action.payload.map(path => ({ path, status: 'unchecked' }))
+          files: action.payload.map(path => ({ path, status: 'unchecked' })),
         },
-        [prettier.actions.project.request()]
+        [prettier.actions.project.request()],
       );
     case getType(prettier.actions.project.request):
       return {
         ...state,
-        status: 'checking'
+        status: 'checking',
       };
     case getType(prettier.actions.project.success):
       return {
         ...state,
-        status: 'completed'
+        status: 'completed',
       };
     case getType(prettier.actions.file.success):
       return {
@@ -34,8 +34,8 @@ export const reducer: EddyReducer<State, Action> = (
         files: state.files.map(file =>
           file.path === action.payload.path
             ? { ...file, status: 'checked', correct: action.payload.correct }
-            : file
-        )
+            : file,
+        ),
       };
     case getType(prettier.actions.file.failure):
       return {
@@ -43,8 +43,8 @@ export const reducer: EddyReducer<State, Action> = (
         files: state.files.map(file =>
           file.path === action.payload.path
             ? { ...file, status: 'errored', error: action.payload.error }
-            : file
-        )
+            : file,
+        ),
       };
     default:
       return state;

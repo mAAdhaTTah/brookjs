@@ -29,7 +29,7 @@ export function ofType<
   V extends { type: string }
 >(
   ac1: ActionCreator<A1>,
-  ac2: ActionCreator<A2>
+  ac2: ActionCreator<A2>,
 ): (obs: Stream<V, E>) => Stream<A1 | A2, E>;
 export function ofType<
   A1 extends { type: string },
@@ -40,7 +40,7 @@ export function ofType<
 >(
   ac1: ActionCreator<A1>,
   ac2: ActionCreator<A2>,
-  ac3: ActionCreator<A3>
+  ac3: ActionCreator<A3>,
 ): (obs: Stream<V, E>) => Stream<A1 | A2 | A3, E>;
 export function ofType<
   A1 extends { type: string },
@@ -53,7 +53,7 @@ export function ofType<
   ac1: ActionCreator<A1>,
   ac2: ActionCreator<A2>,
   ac3: ActionCreator<A3>,
-  ac4: ActionCreator<A4>
+  ac4: ActionCreator<A4>,
 ): (obs: Stream<V, E>) => Stream<A1 | A2 | A3 | A4, E>;
 export function ofType<
   A1 extends { type: string },
@@ -68,7 +68,7 @@ export function ofType<
   ac2: ActionCreator<A2>,
   ac3: ActionCreator<A3>,
   ac4: ActionCreator<A4>,
-  ac5: ActionCreator<A5>
+  ac5: ActionCreator<A5>,
 ): (obs: Stream<V, E>) => Stream<A1 | A2 | A3 | A4 | A5, E>;
 export function ofType<A extends { type: string }, E>(
   ...types: string[]

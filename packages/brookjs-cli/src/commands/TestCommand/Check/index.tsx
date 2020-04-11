@@ -12,7 +12,7 @@ import { Completed } from './Completed';
 
 const Check: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   rc,
-  cwd
+  cwd,
 }) => {
   const { state, dispatch } = useDelta(reducer, initialState(cwd, rc), exec);
 

@@ -13,9 +13,9 @@ describe('App', () => {
           builder: expect.any(Function),
           cmd: 'valid',
           describe: 'A valid command!',
-          View: expect.any(Function)
-        }
-      ])
+          View: expect.any(Function),
+        },
+      ]),
     );
 
     const getFixturePath = (fixture: string) =>
@@ -29,8 +29,8 @@ describe('App', () => {
       ['should load commands from a folder', 'commands-folder'],
       [
         'should load commands from a folder with relative import',
-        'commands-folder-with-relative'
-      ]
+        'commands-folder-with-relative',
+      ],
     ];
 
     loadCommandsFromTests.forEach(([testName, testFixture]) => {

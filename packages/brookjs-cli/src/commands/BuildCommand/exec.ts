@@ -8,7 +8,7 @@ import { State, Action } from './types';
 const exec: Delta<Action, State> = (action$, state$): Stream<Action, never> => {
   const project$ = project.delta(
     action$.thru(ofType(project.actions.extension.request)),
-    state$
+    state$,
   );
 
   const webpack$ = webpack.delta(
@@ -19,8 +19,8 @@ const exec: Delta<Action, State> = (action$, state$): Stream<Action, never> => {
       env: state.env,
       extension: state.extension ?? 'js',
       watch: state.watch,
-      rc: state.rc
-    }))
+      rc: state.rc,
+    })),
   );
 
   return Kefir.merge<Action, never>([project$, webpack$]);
