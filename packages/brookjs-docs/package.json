@@ -18,7 +18,8 @@
     "gatsby-react-router-scroll": "^2.1.23",
     "gatsby-remark-embedded-codesandbox": "github:mattrosno/gatsby-remark-embedded-codesandbox#release",
     "gatsby-remark-responsive-iframe": "^2.3.0",
-    "gatsby-theme-docz": "^2.2.0"
+    "gatsby-theme-docz": "^2.2.0",
+    "gh-pages": "^2.2.0"
   },
   "keywords": [],
   "author": "",
