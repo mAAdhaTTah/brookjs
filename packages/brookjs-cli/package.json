@@ -45,7 +45,7 @@
     "eslint-config-brookjs": "^1.0.0-beta.4",
     "eslint-loader": "^4.0.0",
     "execa": "^4.0.0",
-    "fs-extra": "^8.0.1",
+    "fs-extra": "^9.0.0",
     "glob": "^7.1.2",
     "has-ansi": "^4.0.0",
     "html-webpack-plugin": "^4.0.4",
