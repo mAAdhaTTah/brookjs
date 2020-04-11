@@ -1,8 +1,16 @@
 import { Action, Reducer } from 'redux';
-import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  useContext,
+} from 'react';
 import Kefir, { Observable, Property } from 'kefir';
 import { upgradeReducer, EddyReducer } from 'brookjs-eddy';
 import { Delta } from 'brookjs-types';
+import { CentralObservableContext } from './context';
 
 class Queue<T> extends Kefir.Stream<T, never> {
   private draining = false;
@@ -82,6 +90,14 @@ export const useDelta = <S, A extends Action<string>>(
   ]);
 
   useSubscribe(delta$, action$.emit);
+
+  const central$ = useContext(CentralObservableContext);
+
+  useEffect(() => {
+    central$?.plug(delta$);
+
+    return () => void central$?.unplug(delta$);
+  }, [central$, delta$]);
 
   const root$ = useCallback(
     (root$: Observable<A, Error>) => root$.observe(action$.emit),
