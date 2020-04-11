@@ -1,7 +1,7 @@
 {
   "name": "brookjs-docs",
   "description": "reactive programming tools for well-structured, testable applications",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.9",
   "private": true,
   "scripts": {
     "build": "docz build",

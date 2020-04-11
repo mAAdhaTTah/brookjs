@@ -1,6 +1,6 @@
 {
   "name": "brookjs-silt",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "reactive programming with reactjs",
   "main": "dist/brookjs-silt.cjs.js",
   "module": "dist/brookjs-silt.esm.js",
@@ -24,7 +24,7 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "brookjs-eddy": "^1.0.0-beta.8",
+    "brookjs-eddy": "^1.0.0-beta.9",
     "brookjs-types": "^1.0.0-beta.0"
   },
   "gitHead": "b70ddce5231a58a1568bc86737756b42a73a7686"
