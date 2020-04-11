@@ -11,12 +11,12 @@ export const RAF = 'RAF' as const;
 export const rafAction = Object.assign(
   (time: number) => ({
     type: RAF,
-    payload: { time }
+    payload: { time },
   }),
   {
     getType: () => RAF,
-    toString: () => RAF
-  }
+    toString: () => RAF,
+  },
 );
 
 /**

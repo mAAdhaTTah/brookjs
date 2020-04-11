@@ -20,21 +20,21 @@ const TestCommand: Command<Args> = {
       type: {
         required: true,
         describe: `Type of test to run. One of: ${types.join(', ')}.`,
-        choices: types
+        choices: types,
       },
       coverage: {
         describe: 'Add coverage data to output.',
-        default: false
+        default: false,
       },
       watch: {
         describe: 'Watch files & rerun the tests on changes.',
-        default: false
+        default: false,
       },
       updateSnapshot: {
         describe: 'Updates any changed snapshots on test run.',
         alias: 'u',
-        default: false
-      }
+        default: false,
+      },
     });
   },
   cmd: 'test <type>',
@@ -50,7 +50,7 @@ const TestCommand: Command<Args> = {
       default:
         return unreachable(props.args.type);
     }
-  }
+  },
 };
 
 export default TestCommand;

@@ -6,5 +6,5 @@ export const defaultSteps: ConfiguredState['config'] = {
   description: 'A brookjs application',
   dir: 'src',
   license: 'MIT',
-  typescript: false
+  typescript: false,
 };

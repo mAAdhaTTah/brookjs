@@ -6,7 +6,7 @@ export const Command = t.type({
   builder: t.Function,
   cmd: t.string,
   describe: t.string,
-  View: t.Function
+  View: t.Function,
 });
 
 export type Command<A> = Omit<t.TypeOf<typeof Command>, 'builder' | 'View'> & {

@@ -9,17 +9,17 @@ export const actions = {
   project: createAsyncAction(
     'LINT_PROJECT_REQUESTED',
     'LINT_PROJECT_SUCCEEDED',
-    'LINT_PROJECT_FAILED'
+    'LINT_PROJECT_FAILED',
   )<void, void, void>(),
   file: createAsyncAction(
     'LINT_FILE_REQUESTED',
     'LINT_FILE_SUCCEEDED',
-    'LINT_FILE_FAILED'
+    'LINT_FILE_FAILED',
   )<
     void,
     { path: string; report: CLIEngine.LintReport },
     { path: string; error: Error }
-  >()
+  >(),
 };
 
 type State = {
@@ -41,13 +41,13 @@ export const delta: Delta<Action, State> = (action$, state$) => {
               .check(path)
               .map(report => actions.file.success({ path, report }))
               .flatMapErrors(error =>
-                Kefir.constant(actions.file.failure({ path, error }))
-              )
-          )
+                Kefir.constant(actions.file.failure({ path, error })),
+              ),
+          ),
         ),
-        Kefir.constant(actions.project.success())
+        Kefir.constant(actions.project.success()),
       ]);
-    }
+    },
   );
 };
 
@@ -61,24 +61,24 @@ export class ESLintService {
   private constructor({ cwd, fix }: { cwd: string; fix: boolean }) {
     this.engine = new CLIEngine({
       baseConfig: {
-        extends: 'brookjs'
+        extends: 'brookjs',
       },
       cwd,
       extensions: ['js', 'jsx', 'mjs', 'ts', 'tsx'],
       fix,
       reportUnusedDisableDirectives: true,
-      useEslintrc: false
+      useEslintrc: false,
     });
   }
 
   check(
     path: string,
-    buffer?: Buffer | string
+    buffer?: Buffer | string,
   ): Stream<CLIEngine.LintReport, Error> {
     const buffer$: Observable<string, NodeJS.ErrnoException> =
       buffer != null
         ? Kefir.constant(
-            typeof buffer === 'string' ? buffer : buffer.toString('utf-8')
+            typeof buffer === 'string' ? buffer : buffer.toString('utf-8'),
           )
         : fs.readFile(path).map(buffer => buffer.toString('utf-8'));
 

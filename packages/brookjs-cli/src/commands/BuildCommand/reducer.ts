@@ -7,28 +7,28 @@ import initialState from './initialState';
 
 const reducer: EddyReducer<State, Action> = (
   state: State = initialState({} as any, {} as any),
-  action: Action
+  action: Action,
 ) => {
   switch (action.type) {
     case getType(webpack.actions.build.success):
       return {
         ...state,
         building: false,
-        results: action.payload
+        results: action.payload,
       } as const;
     case getType(webpack.actions.build.failure):
       return {
         ...state,
         building: false,
-        results: action.payload
+        results: action.payload,
       } as const;
     case getType(project.actions.extension.success):
       return loop(
         {
           ...state,
-          extension: action.payload
+          extension: action.payload,
         },
-        webpack.actions.build.request()
+        webpack.actions.build.request(),
       );
     default:
       return state;

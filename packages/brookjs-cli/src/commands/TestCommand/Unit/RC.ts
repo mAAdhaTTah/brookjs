@@ -14,15 +14,15 @@ export const RC = t.partial({
           branches: t.number,
           functions: t.number,
           lines: t.number,
-          statements: t.number
-        })
+          statements: t.number,
+        }),
       ),
       displayName: t.union([
         t.string,
         t.type({
           name: t.string,
-          color: t.string
-        })
+          color: t.string,
+        }),
       ]),
       extraGlobals: t.array(t.string),
       globalSetup: t.string,
@@ -34,12 +34,12 @@ export const RC = t.partial({
       snapshotSerializers: t.array(t.string),
       transform: t.record(
         t.string,
-        t.union([t.string, t.tuple([t.string, t.object])])
+        t.union([t.string, t.tuple([t.string, t.object])]),
       ),
       transformIgnorePatterns: t.array(t.string),
-      watchPathIgnorePatterns: t.array(t.string)
-    })
-  )
+      watchPathIgnorePatterns: t.array(t.string),
+    }),
+  ),
 });
 
 export type RC = t.TypeOf<typeof RC>;

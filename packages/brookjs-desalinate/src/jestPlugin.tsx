@@ -13,7 +13,7 @@ type Result = {
 };
 
 export const jestPlugin = ({
-  Kefir
+  Kefir,
 }: {
   Kefir: typeof import('kefir').default;
 }): Helpers => {
@@ -30,7 +30,7 @@ export const jestPlugin = ({
         delta: any,
         expected: any,
         cb: (a: any, b: any, c: any) => void = noop,
-        { timeLimit = 10000 } = {}
+        { timeLimit = 10000 } = {},
       ): Result {
         let log: EventWithTime<unknown, unknown>[] = [];
         const action$ = stream();
@@ -53,8 +53,8 @@ export const jestPlugin = ({
             matcherHint(
               `${this.isNot ? '.not' : ''}.toEmitFromDelta`,
               printReceived(log),
-              printReceived(expected)
-            )
+              printReceived(expected),
+            ),
         };
       },
 
@@ -63,14 +63,14 @@ export const jestPlugin = ({
         element: any,
         expected: any,
         cb: (a: any, b: any, c: any) => void = noop,
-        { timeLimit = 10000 } = {}
+        { timeLimit = 10000 } = {},
       ): Result {
         let log: EventWithTime<any, any>[] = [];
         const root$ = (root$: any) => void (log = watchWithTime(root$));
 
         withFakeTime((tick: any, clock: any) => {
           const api = render(
-            <RootJunction root$={root$}>{element}</RootJunction>
+            <RootJunction root$={root$}>{element}</RootJunction>,
           );
           cb(api, tick, clock);
           tick(timeLimit);
@@ -83,10 +83,10 @@ export const jestPlugin = ({
             matcherHint(
               `${this.isNot ? '.not' : ''}.toEmitFromJunction`,
               printReceived(log),
-              printReceived(expected)
-            )
+              printReceived(expected),
+            ),
         };
-      }
-    }
+      },
+    },
   };
 };

@@ -21,42 +21,42 @@ type WithProps<E extends { [key: string]: any }, P extends {}> = Omit<
   keyof E
 > & {
   preplug?: (
-    source$: Observable<Action<string>, Error>
+    source$: Observable<Action<string>, Error>,
   ) => Observable<Action<string>, Error>;
 };
 
 export type Combiner<P extends {}, E extends { [key: string]: any } = {}> = (
   combined$: Observable<Action, Error>,
   sources: ObservableDict<E>,
-  props: Readonly<WithProps<E, P>>
+  props: Readonly<WithProps<E, P>>,
 ) => Observable<Action, Error>;
 
 type Events<E> = {
   [K in keyof E]: (
-    obs$: Stream<E[K], never>
+    obs$: Stream<E[K], never>,
   ) => Observable<Action<string>, never>;
 };
 
 export function toJunction(): <P extends {}>(
-  WrappedComponent: React.ElementType<P>
+  WrappedComponent: React.ElementType<P>,
 ) => React.ComponentType<WithProps<{}, P>>;
 export function toJunction<E extends { [key: string]: any }>(
-  events: Events<E>
+  events: Events<E>,
 ): <P extends {}>(
-  WrappedComponent: React.ElementType<P>
+  WrappedComponent: React.ElementType<P>,
 ) => React.ComponentType<WithProps<E, P>>;
 export function toJunction<E extends { [key: string]: any }, P extends {}>(
   events: Events<E>,
-  combine: Combiner<P, Events<E>>
+  combine: Combiner<P, Events<E>>,
 ): (
-  WrappedComponent: React.ComponentType<P>
+  WrappedComponent: React.ComponentType<P>,
 ) => React.ComponentType<WithProps<E, P>>;
 export function toJunction<E extends { [key: string]: any }, P extends {}>(
   events: Events<E> = {} as Events<E>,
-  combine: Combiner<P, E> = id
+  combine: Combiner<P, E> = id,
 ) {
   return (
-    WrappedComponent: React.ComponentType<P>
+    WrappedComponent: React.ComponentType<P>,
   ): React.ComponentType<WithProps<E, P>> =>
     class ToJunction extends React.Component<WithProps<E, P>> {
       static displayName = wrapDisplayName(WrappedComponent, 'ToJunction');
@@ -81,7 +81,7 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
         this.sources = {
           list: [this.children$],
           dict: { children$: this.children$ } as any,
-          merged: Kefir.never()
+          merged: Kefir.never(),
         };
 
         for (const key in events) {
@@ -90,7 +90,7 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
             (e$ as any)._emitValue(e);
           };
           this.sources.list.push(
-            ((this.sources.dict as any)[key + '$'] = events[key](e$))
+            ((this.sources.dict as any)[key + '$'] = events[key](e$)),
           );
         }
 
@@ -102,7 +102,7 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
         const combined$ = combine(
           this.sources.merged,
           this.sources.dict,
-          this.props
+          this.props,
         );
 
         if (this.props.preplug) {
@@ -136,13 +136,13 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
                 }
               } else {
                 console.error(
-                  'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`'
+                  'Used `toJunction` outside of Silt context. Needs to be wrapped in `<RootJunction>`',
                 );
               }
 
               const props = {
                 ...this.props,
-                ...this.events
+                ...this.events,
                 // @TODO(mAAdhaTTah) would be nice for this to type right.
               } as any;
 

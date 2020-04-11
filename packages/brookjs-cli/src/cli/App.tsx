@@ -12,11 +12,11 @@ import Commands from './Commands';
 import ErrorBoundary, {
   CommandValidationError,
   LoadDirError,
-  Root
+  Root,
 } from './components';
 
 const RC = t.partial({
-  babel: BabelRC
+  babel: BabelRC,
 });
 
 type RC = t.Type<typeof RC>;
@@ -31,7 +31,7 @@ export class App {
   static resolve(target: string, basedir?: string): string {
     return resolve.sync(target, {
       basedir,
-      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx']
+      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx'],
     });
   }
 
@@ -48,11 +48,11 @@ export class App {
           require.resolve('babel-preset-brookjs'),
           {
             useESModules: false,
-            helpers: false
-          }
-        ]
+            helpers: false,
+          },
+        ],
       ],
-      plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')]
+      plugins: [require.resolve('@babel/plugin-transform-modules-commonjs')],
     });
     process.env.NODE_ENV = oldNodeEnv;
 
@@ -67,8 +67,8 @@ export class App {
       result.code,
       ['module', 'exports', '__dirname', 'require'],
       {
-        filename
-      }
+        filename,
+      },
     )(module, exports, path.dirname(filename), (target: string) => {
       const resolvedTarget = App.resolve(target, path.dirname(filename));
 
@@ -88,7 +88,7 @@ export class App {
   private constructor(
     private name: string,
     private commands: Commands = new Commands(),
-    private errors: React.ReactNode[] = []
+    private errors: React.ReactNode[] = [],
   ) {}
 
   addCommand(name: string, cmd: unknown): App {
@@ -100,10 +100,10 @@ export class App {
             key={this.errors.length}
             name={name}
             errors={errors}
-          />
+          />,
         ]),
       cmd =>
-        new App(this.name, this.commands.add(cmd as Command<any>), this.errors)
+        new App(this.name, this.commands.add(cmd as Command<any>), this.errors),
     );
   }
 
@@ -111,12 +111,12 @@ export class App {
     try {
       return Object.entries(App.load(target)).reduce<App>(
         (app, [name, cmd]) => app.addCommand(name, cmd),
-        this
+        this,
       );
     } catch (error) {
       return new App(this.name, this.commands, [
         ...this.errors,
-        <LoadDirError key={this.errors.length} error={error} dir={target} />
+        <LoadDirError key={this.errors.length} error={error} dir={target} />,
       ]);
     }
   }
@@ -132,22 +132,20 @@ export class App {
           ...defaultLoaders,
           '.js': (filename: string) => App.load(filename),
           '.ts': (filename: string) => App.load(filename),
-          '.tsx': (filename: string) => App.load(filename)
-        }
+          '.tsx': (filename: string) => App.load(filename),
+        },
       }).search()?.config ?? null);
   }
 
   getBabelConfig(base: TransformOptions): TransformOptions {
     return (
-      RC.decode(this.getRC())
-        .getOrElse({})
-        ?.babel?.modifier?.(base) ?? base
+      RC.decode(this.getRC()).getOrElse({})?.babel?.modifier?.(base) ?? base
     );
   }
 
   run(
     argv: string[],
-    { cwd = process.cwd(), ...opts }: RenderOptions & { cwd?: string } = {}
+    { cwd = process.cwd(), ...opts }: RenderOptions & { cwd?: string } = {},
   ) {
     const rc = this.getRC();
 
@@ -157,11 +155,11 @@ export class App {
       <ErrorBoundary>
         <Root {...{ command, argv, args, cwd, rc, errors: this.errors }} />
       </ErrorBoundary>,
-      opts
+      opts,
     );
 
     return {
-      waitUntilExit: instance.waitUntilExit
+      waitUntilExit: instance.waitUntilExit,
     };
   }
 }

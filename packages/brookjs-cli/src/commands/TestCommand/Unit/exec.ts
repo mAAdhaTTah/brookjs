@@ -11,7 +11,7 @@ const getDir = (rc: Maybe<RC>) => rc?.dir ?? 'src';
 
 const exec = (
   action$: Stream<Action, never>,
-  state$: Property<State, never>
+  state$: Property<State, never>,
 ): Stream<Action, never> =>
   state$
     .take(1)
@@ -28,10 +28,10 @@ const exec = (
             project.setupTestsConfig$(
               state.cwd,
               getDir(state.rc),
-              testExtension
-            )
-          )
-      })
+              testExtension,
+            ),
+          ),
+      }),
     )
     .map(({ dir, coverage, watch, updateSnapshot, jest, setupTests }) => {
       const argv = [];
@@ -42,30 +42,30 @@ const exec = (
           `${dir}/**/*.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/index.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/**/__tests__/**`,
-          `!${dir}/**/*.d.ts`
+          `!${dir}/**/*.d.ts`,
         ],
         setupFilesAfterEnv: setupTests,
         testMatch: [
           // Anything with `spec/test` is a test file
           // Don't glob `__tests__` because test utils
-          `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,mjs,ts,tsx}`
+          `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,mjs,ts,tsx}`,
         ],
         testEnvironment: 'jest-environment-jsdom-fourteen',
         transform: {
           // require.resolve is relative to brookjs-cli/dist
           '^.+\\.(js|jsx|ts|tsx)$': require.resolve(
-            path.join(__dirname, '..', 'jest', 'babelTransform.js')
+            path.join(__dirname, '..', 'jest', 'babelTransform.js'),
           ),
           '^.+\\.css$': require.resolve(
-            path.join(__dirname, '..', 'jest', 'cssTransform.js')
+            path.join(__dirname, '..', 'jest', 'cssTransform.js'),
           ),
           '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': require.resolve(
-            path.join(__dirname, '..', 'jest', 'fileTransform.js')
-          )
+            path.join(__dirname, '..', 'jest', 'fileTransform.js'),
+          ),
         },
         transformIgnorePatterns: [
           '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$',
-          '^.+\\.module\\.(css|sass|scss)$'
+          '^.+\\.module\\.(css|sass|scss)$',
         ],
         moduleNameMapper: {
           '^react-native$': 'react-native-web',
@@ -73,9 +73,9 @@ const exec = (
           // @TODO(mAAdhaTTah) remove when https://github.com/storybookjs/storybook/pull/9292 is merged
           'react-syntax-highlighter/dist/esm/(.*)':
             'react-syntax-highlighter/dist/cjs/$1',
-          '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1'
+          '@babel/runtime/helpers/esm/(.*)': '@babel/runtime/helpers/$1',
         },
-        moduleFileExtensions: ['js', 'jsx', 'json', 'mjs', 'ts', 'tsx', 'node']
+        moduleFileExtensions: ['js', 'jsx', 'json', 'mjs', 'ts', 'tsx', 'node'],
       };
 
       for (const [key, value] of Object.entries(jest)) {
@@ -107,7 +107,7 @@ const exec = (
           .run(argv)
           .then(() => emitter.value(testRun.success()))
           .catch(() => emitter.value(testRun.failure()));
-      })
+      }),
     );
 
 export default exec;

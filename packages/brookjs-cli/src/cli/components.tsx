@@ -16,7 +16,7 @@ export const ExplosiveBullet: React.FC<{ message: string }> = ({ message }) => (
 
 export const LoadDirError: React.FC<{ dir: string; error: Error }> = ({
   dir,
-  error
+  error,
 }) => {
   return (
     <Box flexDirection="column">
@@ -70,7 +70,7 @@ export default class ErrorBoundary extends React.Component<
 > {
   state: ErrorState = {
     error: null,
-    errorInfo: null
+    errorInfo: null,
   };
 
   static contextType = AppContext;

@@ -14,9 +14,9 @@ describe('BuildCommand#selectors', () => {
         cwd: '/path/to/cwd',
         rc: {
           webpack: {
-            modifier
-          } as any
-        }
+            modifier,
+          } as any,
+        },
       };
 
       const results = selectWebpackConfig(state);

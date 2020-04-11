@@ -50,7 +50,7 @@ const selectNewProjectContext = (state: ConfiguredState) => ({
   main: path.join(state.config.dir, 'index.js'),
   author: '', // @TODO(mAAdhaTTah) get author,
   license: state.config.license,
-  typescript: state.config.typescript
+  typescript: state.config.typescript,
 });
 
 const createHygenArgv = (state: ConfiguredState) => {
@@ -68,11 +68,11 @@ const createHygenArgv = (state: ConfiguredState) => {
 
 const exec = (
   action$: Stream<Action, never>,
-  state$: Property<State, never>
+  state$: Property<State, never>,
 ): Observable<Action, never> =>
   state$
     .filter(
-      (state: State): state is ConfiguredState => state.step === 'creating'
+      (state: State): state is ConfiguredState => state.step === 'creating',
     )
     .take(1)
     .flatMapFirst(state =>
@@ -90,7 +90,7 @@ const exec = (
             const opts = body && body.length > 0 ? { input: body } : {};
             return execa(action, { ...opts, shell: true });
           },
-          debug: false
+          debug: false,
         })
           .then(result => {
             emitter.value({ type: 'CREATED', payload: { result } });
@@ -98,7 +98,7 @@ const exec = (
           .catch(error => {
             emitter.value({ type: 'FAILED', error: true, payload: { error } });
           });
-      })
+      }),
     );
 
 export default exec;

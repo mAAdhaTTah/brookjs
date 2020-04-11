@@ -4,19 +4,19 @@ import Kefir from 'kefir';
 export const service = {
   access(path: string) {
     return Kefir.fromNodeCallback<void, NodeJS.ErrnoException>(callback =>
-      fs.access(path, err => callback(err))
+      fs.access(path, err => callback(err)),
     );
   },
 
   readFile(path: string) {
     return Kefir.fromNodeCallback<Buffer, NodeJS.ErrnoException>(callback =>
-      fs.readFile(path, callback)
+      fs.readFile(path, callback),
     );
   },
 
   writeFile(path: string, contents: string) {
     return Kefir.fromNodeCallback<void, NodeJS.ErrnoException>(callback =>
-      fs.writeFile(path, contents, err => callback(err))
+      fs.writeFile(path, contents, err => callback(err)),
     );
-  }
+  },
 };

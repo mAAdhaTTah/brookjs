@@ -20,25 +20,25 @@ export const WebpackRC = t.partial({
   entry: t.union([
     t.string,
     t.dictionary(t.string, t.string),
-    t.array(t.string)
+    t.array(t.string),
   ]),
   output: t.type({
     path: t.string,
-    filename: t.union([t.Function, t.string])
-  })
+    filename: t.union([t.Function, t.string]),
+  }),
 });
 
 export type WebpackRC = Omit<t.TypeOf<typeof WebpackRC>, 'modifier'> & {
   modifier?: (
     config: webpack.Configuration,
-    state: State
+    state: State,
   ) => webpack.Configuration;
 };
 
 export const RC = t.partial({
   dir: t.string,
   babel: BabelRC,
-  webpack: WebpackRC
+  webpack: WebpackRC,
 });
 
 export type RC = Omit<t.TypeOf<typeof RC>, 'babel'> & {

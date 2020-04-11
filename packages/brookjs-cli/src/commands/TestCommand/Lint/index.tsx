@@ -12,7 +12,7 @@ import { Completed } from './Completed';
 
 const Lint: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   rc,
-  cwd
+  cwd,
 }) => {
   const { state, dispatch } = useDelta(reducer, initialState(cwd, rc), exec);
 
@@ -46,18 +46,18 @@ const Lint: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
                         ...props.issues,
                         {
                           path: file.path.replace(`${state.cwd}/`, ''),
-                          result: file.report.results[0]
-                        }
+                          result: file.report.results[0],
+                        },
                       ]
-                    : props.issues
+                    : props.issues,
               };
             },
             {
               total: 0,
               errors: 0,
               warnings: 0,
-              issues: []
-            }
+              issues: [],
+            },
           )}
         />
       );

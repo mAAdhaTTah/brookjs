@@ -105,7 +105,7 @@ exports[`Developer runs new and accepts the defaults-.storybook/main.js 1`] = `
     '@storybook/addon-actions',
     '@storybook/addon-links',
     'brookjs-desalinate/register'
-  ]
+  ],
 };
 "
 `;
@@ -234,16 +234,16 @@ import { RootJunction } from 'brookjs-silt';
 
 const reactTestingLibrarySerializer = {
   print: (val, serialize) => serialize(val.container.firstChild),
-  test: val => val && val.hasOwnProperty('container')
+  test: val => val && val.hasOwnProperty('container'),
 };
 
 initStoryshots({
   framework: 'react',
   renderer: element =>
     render(element, {
-      wrapper: RootJunction
+      wrapper: RootJunction,
     }),
-  snapshotSerializers: [reactTestingLibrarySerializer]
+  snapshotSerializers: [reactTestingLibrarySerializer],
 });
 "
 `;
@@ -309,7 +309,7 @@ exports[`Developer runs new and accepts the defaults-src/components/__stories__/
 import App from '../App';
 
 export default {
-  title: 'App'
+  title: 'App',
 };
 
 export const basic = () => <App count={3} />;
@@ -327,12 +327,12 @@ describe('App', () => {
     expect(<App count={3} />).toEmitFromJunction(
       [
         [0, KTU.value(incrementClick())],
-        [0, KTU.value(decrementClick())]
+        [0, KTU.value(decrementClick())],
       ],
       api => {
         fireEvent.click(api.getByText('+'));
         fireEvent.click(api.getByText('-'));
-      }
+      },
     );
   });
 });
@@ -360,7 +360,7 @@ const App = ({ count, onIncrementClick, onDecrementClick }) => {
 
 const events = {
   onIncrementClick: e$ => e$.map(() => incrementClick()),
-  onDecrementClick: e$ => e$.map(() => decrementClick())
+  onDecrementClick: e$ => e$.map(() => decrementClick()),
 };
 
 export default toJunction(events)(App);
@@ -431,7 +431,7 @@ const render = () => {
     <RootJunction root$={root$}>
       <App {...mapStateToProps(store.getState())} />
     </RootJunction>,
-    document.getElementById('root')
+    document.getElementById('root'),
   );
 };
 
@@ -506,19 +506,19 @@ exports[`Developer runs new and accepts the defaults-src/state/index.js 1`] = `
 import { incrementClick, decrementClick } from '../actions';
 
 const initialState = {
-  count: 0
+  count: 0,
 };
 
 export const reducer = handleActions(
   {
     [incrementClick]: state => ({ ...state, count: state.count + 1 }),
-    [decrementClick]: state => ({ ...state, count: state.count - 1 })
+    [decrementClick]: state => ({ ...state, count: state.count - 1 }),
   },
-  initialState
+  initialState,
 );
 
 export const mapStateToProps = state => ({
-  count: state.count
+  count: state.count,
 });
 "
 `;

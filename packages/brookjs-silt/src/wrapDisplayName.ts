@@ -1,4 +1,4 @@
-const getDisplayName = function(Component: React.ComponentType<any> | string) {
+const getDisplayName = function (Component: React.ComponentType<any> | string) {
   if (typeof Component === 'string') {
     return Component;
   }
@@ -8,5 +8,5 @@ const getDisplayName = function(Component: React.ComponentType<any> | string) {
 
 export const wrapDisplayName = (
   BaseComponent: React.ComponentType<any> | string,
-  hocName: string
+  hocName: string,
 ) => hocName + '(' + getDisplayName(BaseComponent) + ')';

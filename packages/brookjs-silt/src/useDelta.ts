@@ -26,7 +26,7 @@ class Queue<T> extends Kefir.Stream<T, never> {
     while (this.list.length) {
       (this as any)._dispatcher.dispatch({
         type: 'value',
-        value: this.list.shift()
+        value: this.list.shift(),
       });
     }
 
@@ -46,7 +46,7 @@ const useSingleton = <T>(creator: () => T): T => {
 
 const useSubscribe = <V>(
   obs$: Observable<V, never>,
-  listener: (value: V) => void
+  listener: (value: V) => void,
 ) => {
   useEffect(() => {
     const sub = obs$.observe(listener);
@@ -62,14 +62,14 @@ const defaultDelta: Delta<any, any> = () => Kefir.never();
 export const useDelta = <S, A extends Action<string>>(
   reducer: Reducer<S, A> | EddyReducer<S, A>,
   initialState: S,
-  delta: Delta<A, S> = defaultDelta
+  delta: Delta<A, S> = defaultDelta,
 ) => {
   const action$ = useSingleton(Queue.create as () => Queue<A>);
   const state$: Property<S, never> = useMemo(
     () => action$.scan(upgradeReducer(reducer, action$.emit), initialState),
     // leaving out `initialState` cuz that only matters the first time.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [action$, reducer]
+    [action$, reducer],
   );
   const [state, setState] = useState(initialState);
 
@@ -78,14 +78,14 @@ export const useDelta = <S, A extends Action<string>>(
   const delta$: Observable<A, never> = useMemo(() => delta(action$, state$), [
     delta,
     action$,
-    state$
+    state$,
   ]);
 
   useSubscribe(delta$, action$.emit);
 
   const root$ = useCallback(
     (root$: Observable<A, Error>) => root$.observe(action$.emit),
-    [action$]
+    [action$],
   );
 
   return { state, root$, dispatch: action$.emit };

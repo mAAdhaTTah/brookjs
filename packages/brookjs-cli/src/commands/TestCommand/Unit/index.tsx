@@ -10,12 +10,12 @@ import { Args } from './types';
 const Unit: React.FC<{ args: Arguments<Args>; rc: unknown; cwd: string }> = ({
   args,
   rc,
-  cwd
+  cwd,
 }) => {
   const { state, root$ } = useDelta(
     reducer,
     initialState(args, { rc, cwd }),
-    exec
+    exec,
   );
 
   return (

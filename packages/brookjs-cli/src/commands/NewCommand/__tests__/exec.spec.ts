@@ -7,26 +7,26 @@ describe('NewCommand#exec', () => {
       sendToDelta(
         { type: 'DUMMY' },
         {
-          step: 'configure'
-        }
+          step: 'configure',
+        },
       );
       sendToDelta(
         { type: 'DUMMY' },
         {
-          step: 'confirm'
-        }
+          step: 'confirm',
+        },
       );
       sendToDelta(
         { type: 'DUMMY' },
         {
-          step: 'cancelled'
-        }
+          step: 'cancelled',
+        },
       );
       sendToDelta(
         { type: 'DUMMY' },
         {
-          step: 'complete'
-        }
+          step: 'complete',
+        },
       );
     });
   });

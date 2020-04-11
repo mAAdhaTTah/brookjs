@@ -29,6 +29,6 @@ export const getMessage = (name: string, e: t.ValidationError): string => {
 
   return `Invalid value ${stringify(e.value)} was provided for ${getContextPath(
     name,
-    e.context
+    e.context,
   )}`;
 };

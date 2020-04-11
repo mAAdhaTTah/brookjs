@@ -10,8 +10,8 @@ const { value, stream, pool, send } = KTU;
 describe('toJunction', () => {
   const events = {
     onButtonClick: (
-      e$: Observable<React.MouseEvent<HTMLButtonElement>, never>
-    ) => e$.map(() => ({ type: 'CLICK' }))
+      e$: Observable<React.MouseEvent<HTMLButtonElement>, never>,
+    ) => e$.map(() => ({ type: 'CLICK' })),
   };
   const _Button: React.FC<any> = ({ onButtonClick, text, enabled }) =>
     enabled ? (
@@ -44,7 +44,7 @@ describe('toJunction', () => {
     it('should render normally', () => {
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       expect(wrapper.container.innerHTML).toBe('<button>Click me</button>');
@@ -53,11 +53,11 @@ describe('toJunction', () => {
     it('should update normally', () => {
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       wrapper.rerender(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={false} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={false} />,
       );
 
       expect(wrapper.container.innerHTML).toBe('<span>nothing to click</span>');
@@ -66,7 +66,7 @@ describe('toJunction', () => {
     it('should emit events through root stream', () => {
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       expect(root$).toEmit([value({ type: 'CLICK' })], () => {
@@ -77,11 +77,11 @@ describe('toJunction', () => {
     it('should emit one event after updating', () => {
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       wrapper.rerender(
-        <ProvidedButton root$={root$} text={'Click you'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click you'} enabled={true} />,
       );
 
       expect(root$).toEmit([value({ type: 'CLICK' })], () => {
@@ -92,7 +92,7 @@ describe('toJunction', () => {
     it('should unplug if unmounted', () => {
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       wrapper.unmount();
@@ -103,7 +103,7 @@ describe('toJunction', () => {
     it('should unplug from old root stream if new root stream provided', () => {
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       const newAggregated$ = Kefir.pool();
@@ -113,7 +113,7 @@ describe('toJunction', () => {
           root$={newAggregated$}
           text={'Click me'}
           enabled={true}
-        />
+        />,
       );
       expect((root$ as any)._curSources).toHaveLength(0);
       expect((newAggregated$ as any)._curSources).toHaveLength(1);
@@ -121,13 +121,13 @@ describe('toJunction', () => {
 
     it('should take events directly', () => {
       const Button = toJunction(
-        events
+        events,
       )(({ onButtonClick, text, enabled }: any) =>
         enabled ? (
           <button onClick={onButtonClick}>{text}</button>
         ) : (
           <span>nothing to click</span>
-        )
+        ),
       );
 
       const ProvidedButton = ({ root$, text, enabled }: any) => (
@@ -138,7 +138,7 @@ describe('toJunction', () => {
 
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       expect(root$).toEmit([value({ type: 'CLICK' })], () => {
@@ -174,7 +174,7 @@ describe('toJunction', () => {
       const ProvidedButton: React.FC<ProvidedProps> = ({
         root$,
         text,
-        enabled
+        enabled,
       }) => (
         <Provider value={root$}>
           <Button text={text} enabled={enabled} />
@@ -192,15 +192,15 @@ describe('toJunction', () => {
         expect.any(Kefir.Observable),
         {
           onButtonClick$: expect.any(Kefir.Observable),
-          children$: expect.any(Kefir.Observable)
+          children$: expect.any(Kefir.Observable),
         },
-        { text: 'Click me', enabled: true }
+        { text: 'Click me', enabled: true },
       );
     });
 
     it('should call combine with updated props', () => {
       const combine: Combiner<Props, typeof events> = jest.fn(() =>
-        Kefir.never()
+        Kefir.never(),
       );
       const _Button: React.FC<Props> = ({ onButtonClick, text, enabled }) =>
         enabled ? (
@@ -213,7 +213,7 @@ describe('toJunction', () => {
       const ProvidedButton: React.FC<ProvidedProps> = ({
         root$,
         text,
-        enabled
+        enabled,
       }) => (
         <Provider value={root$}>
           <Button text={text} enabled={enabled} />
@@ -221,11 +221,11 @@ describe('toJunction', () => {
       );
       const root$ = Kefir.pool();
       const wrapper = render(
-        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click me'} enabled={true} />,
       );
 
       wrapper.rerender(
-        <ProvidedButton root$={root$} text={'Click you'} enabled={true} />
+        <ProvidedButton root$={root$} text={'Click you'} enabled={true} />,
       );
 
       expect(combine).toHaveBeenCalledTimes(2);
@@ -234,18 +234,18 @@ describe('toJunction', () => {
         expect.any(Kefir.Observable),
         {
           onButtonClick$: expect.any(Kefir.Observable),
-          children$: expect.any(Kefir.Observable)
+          children$: expect.any(Kefir.Observable),
         },
-        { text: 'Click me', enabled: true }
+        { text: 'Click me', enabled: true },
       );
       expect(combine).toHaveBeenNthCalledWith(
         2,
         expect.any(Kefir.Observable),
         {
           onButtonClick$: expect.any(Kefir.Observable),
-          children$: expect.any(Kefir.Observable)
+          children$: expect.any(Kefir.Observable),
         },
-        { text: 'Click you', enabled: true }
+        { text: 'Click you', enabled: true },
       );
     });
   });
@@ -260,7 +260,7 @@ describe('toJunction', () => {
             enabled={true}
             preplug={child$ => child$.map(() => ({ type: 'BUTTON_CLICK' }))}
           />
-        </Provider>
+        </Provider>,
       );
 
       expect(root$).toEmit([value({ type: 'BUTTON_CLICK' })], () => {
@@ -279,7 +279,7 @@ describe('toJunction', () => {
           <Wrapper
             preplug={child$ => child$.map(() => ({ type: 'BUTTON_CLICK' }))}
           />
-        </Provider>
+        </Provider>,
       );
 
       expect(root$).toEmit([value({ type: 'BUTTON_CLICK' })], () => {

@@ -16,7 +16,7 @@ describe('BuildCommand#View', () => {
         coverage={false}
         watch={false}
         updateSnapshot={false}
-      />
+      />,
     );
 
     expect(lastFrame()).toMatchSnapshot();

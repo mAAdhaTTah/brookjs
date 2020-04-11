@@ -13,14 +13,14 @@ type Action = { type: string };
 
 describe('useDelta', () => {
   const initialState: State = {
-    counter: 0
+    counter: 0,
   };
   const reducer = (state: State, action: Action): State => {
     switch (action.type) {
       case 'INCREMENT':
         return {
           ...state,
-          counter: state.counter + 1
+          counter: state.counter + 1,
         };
       default:
         return state;
@@ -33,7 +33,7 @@ describe('useDelta', () => {
     expect(result.current).toEqual({
       state: initialState,
       dispatch: expect.any(Function),
-      root$: expect.any(Function)
+      root$: expect.any(Function),
     });
   });
 
@@ -45,7 +45,7 @@ describe('useDelta', () => {
     });
 
     expect(result.current.state).toEqual({
-      counter: 1
+      counter: 1,
     });
   });
 
@@ -59,7 +59,7 @@ describe('useDelta', () => {
     });
 
     expect(result.current.state).toEqual({
-      counter: 1
+      counter: 1,
     });
 
     sub.unsubscribe();
@@ -70,7 +70,7 @@ describe('useDelta', () => {
 
     // State is unchanged.
     expect(result.current.state).toEqual({
-      counter: 1
+      counter: 1,
     });
   });
 
@@ -87,7 +87,7 @@ describe('useDelta', () => {
     expect(Kefir.zip([action$, state$.sampledBy(action$)])).toEmit(
       [
         value([{ type: 'INCREMENT' }, { counter: 1 }]),
-        value([{ type: 'INCREMENT' }, { counter: 2 }])
+        value([{ type: 'INCREMENT' }, { counter: 2 }]),
       ],
       () => {
         act(() => {
@@ -97,13 +97,13 @@ describe('useDelta', () => {
         act(() => {
           result.current.dispatch({ type: 'INCREMENT' });
         });
-      }
+      },
     );
   });
 
   it('should dispatch actions from the provided delta', () => {
     let delta$: any;
-    const delta: any = jest.fn(function() {
+    const delta: any = jest.fn(function () {
       return (delta$ = Kefir.pool());
     });
     const { result } = renderHook(() => useDelta(reducer, initialState, delta));
@@ -113,7 +113,7 @@ describe('useDelta', () => {
     });
 
     expect(result.current.state).toEqual({
-      counter: 1
+      counter: 1,
     });
   });
 
@@ -122,7 +122,7 @@ describe('useDelta', () => {
     const { result } = renderHook(() => useDelta(reducer, initialState, delta));
 
     expect(result.current.state).toEqual({
-      counter: 1
+      counter: 1,
     });
   });
 
@@ -136,7 +136,7 @@ describe('useDelta', () => {
       [
         value([{ type: 'RANDOM' }, { counter: 0 }]),
         value([{ type: 'INCREMENT' }, { counter: 1 }]),
-        value([{ type: 'SOMETHING_ELSE' }, { counter: 1 }])
+        value([{ type: 'SOMETHING_ELSE' }, { counter: 1 }]),
       ],
       () => {
         act(() => {
@@ -150,20 +150,20 @@ describe('useDelta', () => {
         act(() => {
           result.current.dispatch({ type: 'SOMETHING_ELSE' });
         });
-      }
+      },
     );
   });
 
   it('should dispatch actions from eddy reducer', () => {
     const initialState = {
-      actions: []
+      actions: [],
     };
     const eddyReducer = (state: any, action: any) => {
       switch (action.type) {
         case 'INCREMENT':
           return loop(
             { ...state, actions: [...state.actions, action.type] },
-            { type: 'DOUBLE' }
+            { type: 'DOUBLE' },
           );
         default:
           return { ...state, actions: [...state.actions, action.type] };
@@ -180,25 +180,25 @@ describe('useDelta', () => {
     });
 
     expect(result.current.state).toEqual({
-      actions: ['INCREMENT', 'DOUBLE', 'INCREMENT', 'DOUBLE']
+      actions: ['INCREMENT', 'DOUBLE', 'INCREMENT', 'DOUBLE'],
     });
   });
 
   it('should dispatch actions from eddy & delta in correct order', () => {
     const initialState = {
-      actions: []
+      actions: [],
     };
     const eddyReducer = (state: any, action: any) => {
       switch (action.type) {
         case 'INCREMENT':
           return loop(
             { ...state, actions: [...state.actions, action.type] },
-            { type: 'DOUBLE' }
+            { type: 'DOUBLE' },
           );
         case 'DOUBLE':
           return loop(
             { ...state, actions: [...state.actions, action.type] },
-            { type: 'SQR_ROOT' }
+            { type: 'SQR_ROOT' },
           );
         default:
           return { ...state, actions: [...state.actions, action.type] };
@@ -207,7 +207,7 @@ describe('useDelta', () => {
     const delta = (action$: any) =>
       action$.thru(ofType('SQR_ROOT')).map(() => ({ type: 'THIRD' }));
     const { result } = renderHook(() =>
-      useDelta(eddyReducer, initialState, delta)
+      useDelta(eddyReducer, initialState, delta),
     );
 
     act(() => {
@@ -227,8 +227,8 @@ describe('useDelta', () => {
         'INCREMENT',
         'DOUBLE',
         'SQR_ROOT',
-        'THIRD'
-      ]
+        'THIRD',
+      ],
     });
   });
 });

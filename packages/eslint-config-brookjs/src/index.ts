@@ -3,7 +3,7 @@ import { Linter } from 'eslint';
 const config: Linter.Config = {
   extends: ['eslint-config-react-app', 'prettier'],
   globals: {
-    KTU: true
+    KTU: true,
   },
   rules: {
     'import/named': 2,
@@ -21,10 +21,10 @@ const config: Linter.Config = {
       1,
       {
         groups: ['builtin', 'external', 'parent', 'sibling', 'index'],
-        'newlines-between': 'never'
-      }
-    ]
-  }
+        'newlines-between': 'never',
+      },
+    ],
+  },
 };
 
 export default config;

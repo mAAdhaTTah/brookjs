@@ -5,7 +5,7 @@ import { WebpackRC } from '../../webpack';
 export const RC = t.partial({
   dir: t.string,
   webpack: WebpackRC,
-  babel: BabelRC
+  babel: BabelRC,
 });
 
 export type RC = t.TypeOf<typeof RC> & {

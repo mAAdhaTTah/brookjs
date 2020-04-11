@@ -14,7 +14,7 @@ const setup = () => {
   const initial = { changed: false };
   const reducer: Reducer<any, any> = function reducer(
     state = initial,
-    { type }
+    { type },
   ) {
     switch (type) {
       case 'AN_ACTION':
@@ -26,23 +26,23 @@ const setup = () => {
   const store = createStore(
     reducer,
     initial,
-    applyMiddleware(observeDelta(delta))
+    applyMiddleware(observeDelta(delta)),
   );
   const [actions$, state$] = delta.mock.calls[0] as any;
 
   return { delta, delta$: delta$!, reducer, initial, store, actions$, state$ };
 };
 
-describe('observeDelta', function() {
+describe('observeDelta', function () {
   let sub: Subscription | undefined;
 
-  it('should call the delta with actions$ and state$', function() {
+  it('should call the delta with actions$ and state$', function () {
     const { actions$, state$ } = setup();
     expect(actions$).toBeObservable();
     expect(state$).toBeObservable();
   });
 
-  it('should dispatch action to actions$', function() {
+  it('should dispatch action to actions$', function () {
     const action = { type: 'AN_ACTION' };
     const value = jest.fn();
     const { actions$, store } = setup();
@@ -54,7 +54,7 @@ describe('observeDelta', function() {
     expect(value).toHaveBeenCalledWith(action);
   });
 
-  it('should dispatch state to state$', function() {
+  it('should dispatch state to state$', function () {
     const action = { type: 'AN_ACTION' };
     const value = jest.fn();
     const { state$, store } = setup();
@@ -67,7 +67,7 @@ describe('observeDelta', function() {
     expect(value).toHaveBeenNthCalledWith(2, { changed: true });
   });
 
-  it('should dispatch delta$ events to actions$', function() {
+  it('should dispatch delta$ events to actions$', function () {
     const action = { type: 'AN_ACTION' };
     const value = jest.fn();
     const { actions$, delta$ } = setup();
@@ -79,7 +79,7 @@ describe('observeDelta', function() {
     expect(value).toHaveBeenCalledWith(action);
   });
 
-  it('should dispatch delta$ events to store', function() {
+  it('should dispatch delta$ events to store', function () {
     const action = { type: 'AN_ACTION' };
     const subscribe = jest.fn();
     const { delta$, store } = setup();
@@ -92,12 +92,12 @@ describe('observeDelta', function() {
 
   it('should emit the actions in the correct order', () => {
     const delta1 = jest.fn(action$ =>
-      action$.thru(ofType('REQUEST')).map(() => ({ type: 'FIRST_RESPONSE' }))
+      action$.thru(ofType('REQUEST')).map(() => ({ type: 'FIRST_RESPONSE' })),
     );
     const delta2 = jest.fn(action$ =>
       action$
         .thru(ofType('FIRST_RESPONSE'))
-        .map(() => ({ type: 'SECOND_RESPONSE' }))
+        .map(() => ({ type: 'SECOND_RESPONSE' })),
     );
     const store = configureStore([observeDelta(delta1, delta2)])({});
     const [action$] = delta2.mock.calls[0];
@@ -106,11 +106,11 @@ describe('observeDelta', function() {
       [
         value({ type: 'REQUEST' }),
         value({ type: 'FIRST_RESPONSE' }),
-        value({ type: 'SECOND_RESPONSE' })
+        value({ type: 'SECOND_RESPONSE' }),
       ],
       () => {
         store.dispatch({ type: 'REQUEST' });
-      }
+      },
     );
   });
 
@@ -118,7 +118,7 @@ describe('observeDelta', function() {
     const delta1 = jest.fn(action$ =>
       action$
         .thru(ofType('FIRST_REQUEST'))
-        .map(() => ({ type: 'SECOND_REQUEST' }))
+        .map(() => ({ type: 'SECOND_REQUEST' })),
     );
     const delta2 = jest.fn(action$ =>
       Kefir.merge<{ type: string }, never>([
@@ -127,8 +127,8 @@ describe('observeDelta', function() {
           .map(() => ({ type: 'FIRST_RESPONSE' })),
         action$
           .thru(ofType('SECOND_REQUEST'))
-          .map(() => ({ type: 'SECOND_RESPONSE' }))
-      ])
+          .map(() => ({ type: 'SECOND_RESPONSE' })),
+      ]),
     );
     const store = configureStore([observeDelta(delta1, delta2)])({});
     const [action$] = delta2.mock.calls[0];
@@ -138,15 +138,15 @@ describe('observeDelta', function() {
         value({ type: 'FIRST_REQUEST' }),
         value({ type: 'SECOND_REQUEST' }),
         value({ type: 'SECOND_RESPONSE' }),
-        value({ type: 'FIRST_RESPONSE' })
+        value({ type: 'FIRST_RESPONSE' }),
       ],
       () => {
         store.dispatch({ type: 'FIRST_REQUEST' });
-      }
+      },
     );
   });
 
-  afterEach(function() {
+  afterEach(function () {
     if (sub) {
       sub.unsubscribe();
     }

@@ -16,14 +16,14 @@ const getEnv = (env: unknown): Required<webpack.Configuration>['mode'] => {
 
 const initialState = (
   args: Arguments,
-  { rc, cwd }: { rc: unknown; cwd: string }
+  { rc, cwd }: { rc: unknown; cwd: string },
 ): State => ({
   watch: typeof args.watch === 'boolean' ? args.watch : false,
   building: true,
   results: null,
   env: getEnv(args.env),
   rc: RC.decode(rc).getOrElse({}) as RC,
-  cwd
+  cwd,
 });
 
 export default initialState;

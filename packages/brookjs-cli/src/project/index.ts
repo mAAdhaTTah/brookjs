@@ -19,7 +19,7 @@ export const extension$ = (cwd: string): Observable<Ext, never> =>
 export const setupTestsConfig$ = (
   cwd: string,
   dir: string,
-  ext: Ext
+  ext: Ext,
 ): Observable<string[], never> =>
   fs
     .access(setupTestsPath(cwd, dir, ext))
@@ -30,8 +30,8 @@ export const actions = {
   extension: createAsyncAction(
     'PROJECT_EXTENSION_REQUESTED',
     'PROJECT_EXTENSION_SUCCEEDED',
-    'PROJECT_EXTENSION_FAILED'
-  )<void, Ext, never>()
+    'PROJECT_EXTENSION_FAILED',
+  )<void, Ext, never>(),
 };
 
 export type Action = ActionType<typeof actions>;

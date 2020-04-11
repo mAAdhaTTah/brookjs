@@ -4,7 +4,7 @@ import {
   FormatCommand,
   NewCommand,
   StartCommand,
-  TestCommand
+  TestCommand,
 } from './commands';
 
 const create = () =>

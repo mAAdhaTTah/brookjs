@@ -31,13 +31,13 @@ export const actions = {
   project: createAsyncAction(
     'CHECK_PROJECT_REQUESTED',
     'CHECK_PROJECT_SUCCEEDED',
-    'CHECK_PROJECT_FAILED'
+    'CHECK_PROJECT_FAILED',
   )<void, void, void>(),
   file: createAsyncAction(
     'CHECK_FILE_REQUESTED',
     'CHECK_FILE_SUCCEEDED',
-    'CHECK_FILE_FAILED'
-  )<void, CheckResult, CheckError>()
+    'CHECK_FILE_FAILED',
+  )<void, CheckResult, CheckError>(),
 };
 
 export type Action = ActionType<typeof actions>;
@@ -52,17 +52,17 @@ export const check = (path: string): Observable<CheckResult, CheckError> =>
       path,
       correct: prettier.check(buffer.toString('utf-8'), {
         ...prettierOptions,
-        filepath: path
-      })
+        filepath: path,
+      }),
     }))
     .mapErrors(error => ({
       path,
-      error
+      error,
     }));
 
 export const format = (
   path: string,
-  buffer?: Buffer
+  buffer?: Buffer,
 ): Observable<FormatResult, FormatError> => {
   const buffer$: Observable<Buffer, NodeJS.ErrnoException> = buffer
     ? Kefir.constant(buffer)
@@ -73,14 +73,14 @@ export const format = (
     .flatMap(contents => {
       const formatted = prettier.format(contents, {
         ...prettierOptions,
-        filepath: path
+        filepath: path,
       });
 
       if (contents === formatted) {
         return Kefir.constant({
           path,
           contents,
-          changed: false
+          changed: false,
         });
       }
 
@@ -94,7 +94,7 @@ export const format = (
     })
     .mapErrors(error => ({
       path,
-      error
+      error,
     }));
 };
 
@@ -104,6 +104,6 @@ export const delta: Delta<Action, State> = (action$, state$) =>
       Kefir.merge(state.paths.map(path => check(path)))
         .map(result => actions.file.success(result))
         .flatMapErrors(error => Kefir.constant(actions.file.failure(error))),
-      Kefir.constant(actions.project.success())
-    ])
+      Kefir.constant(actions.project.success()),
+    ]),
   );

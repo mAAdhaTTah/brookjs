@@ -9,12 +9,12 @@ const reducer = (state: State, action: Action): State => {
     case getType(testRun.success):
       return {
         ...state,
-        status: 'complete'
+        status: 'complete',
       };
     case getType(testRun.failure):
       return {
         ...state,
-        status: 'error'
+        status: 'error',
       };
   }
 };

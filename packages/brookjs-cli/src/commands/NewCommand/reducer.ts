@@ -3,21 +3,21 @@ import {
   Action,
   ConfiguringState,
   ConfiguredState,
-  unreachable
+  unreachable,
 } from './types';
 import { defaultSteps } from './constants';
 
 const applyDefaults = (
-  config: ConfiguringState['config']
+  config: ConfiguringState['config'],
 ): ConfiguredState['config'] =>
   (Object.keys(config) as (keyof typeof config)[]).reduce<
     ConfiguredState['config']
   >(
     (acc, key) => ({
       ...acc,
-      [key]: config[key] ?? acc[key]
+      [key]: config[key] ?? acc[key],
     }),
-    defaultSteps
+    defaultSteps,
   );
 
 const reducer = (state: State, action: Action): State => {
@@ -31,8 +31,8 @@ const reducer = (state: State, action: Action): State => {
         ...state,
         config: {
           ...state.config,
-          [state.configuring]: action.payload.value
-        }
+          [state.configuring]: action.payload.value,
+        },
       };
     case 'SUBMIT':
       switch (state.step) {
@@ -41,24 +41,24 @@ const reducer = (state: State, action: Action): State => {
             case 'version':
               return {
                 ...state,
-                configuring: 'description'
+                configuring: 'description',
               };
             case 'description':
               return {
                 ...state,
-                configuring: 'dir'
+                configuring: 'dir',
               };
             case 'dir':
               return {
                 ...state,
-                configuring: 'license'
+                configuring: 'license',
               };
             case 'license':
               return {
                 ...state,
                 step: 'confirm',
                 configuring: null,
-                config: applyDefaults(state.config)
+                config: applyDefaults(state.config),
               };
             default:
               return unreachable(state.configuring);
@@ -83,18 +83,18 @@ const reducer = (state: State, action: Action): State => {
       if (action.payload.value) {
         return {
           ...state,
-          step: 'creating'
+          step: 'creating',
         };
       } else {
         return {
           ...state,
-          step: 'cancelled'
+          step: 'cancelled',
         };
       }
     case 'LOG':
       return {
         ...state,
-        logs: [...state.logs, action.payload]
+        logs: [...state.logs, action.payload],
       };
     case 'CREATED':
       // CREATED should only be emitted from creating step
@@ -105,7 +105,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         step: 'complete',
-        result: action.payload.result
+        result: action.payload.result,
       };
     case 'FAILED':
       // CREATED should only be emitted from creating step
@@ -116,7 +116,7 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         step: 'error',
-        error: action.payload.error
+        error: action.payload.error,
       };
     default:
       return state;

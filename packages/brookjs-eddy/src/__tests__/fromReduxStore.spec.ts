@@ -6,7 +6,7 @@ import fromReduxStore from '../fromReduxStore';
 const { value } = KTU;
 
 const createMockStore = <T extends {}>(
-  state?: T
+  state?: T,
 ): Store & { setState(state: T): void } => {
   const store = {
     state,
@@ -44,9 +44,9 @@ const createMockStore = <T extends {}>(
 
         [$$observable]() {
           return this;
-        }
+        },
       };
-    }
+    },
   };
 
   return store as any;
@@ -78,7 +78,7 @@ describe('fromReduxStore', () => {
       [value(true, { current: true }), value(false)],
       () => {
         store.setState(false);
-      }
+      },
     );
   });
 });

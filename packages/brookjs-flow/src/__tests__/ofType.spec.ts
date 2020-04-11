@@ -12,9 +12,9 @@ describe('ofType', () => {
       () => {
         send(action$, [
           value({ type: 'UNMATCHED' }),
-          value({ type: 'MATCHED' })
+          value({ type: 'MATCHED' }),
         ]);
-      }
+      },
     );
   });
 
@@ -28,9 +28,9 @@ describe('ofType', () => {
       () => {
         send(action$, [
           value({ type: 'UNMATCHED' }),
-          value({ type: 'MATCHED' })
+          value({ type: 'MATCHED' }),
         ]);
-      }
+      },
     );
   });
 
@@ -44,9 +44,9 @@ describe('ofType', () => {
           value({ type: 'MATCHED_ONE' }),
           value({ type: 'UNMATCHED' }),
           value({ type: 'MATCHED_TWO' }),
-          value({ type: 'UNMATCHED_AGAIN' })
+          value({ type: 'UNMATCHED_AGAIN' }),
         ]);
-      }
+      },
     );
   });
 
@@ -64,9 +64,9 @@ describe('ofType', () => {
           value({ type: 'MATCHED_ONE' }),
           value({ type: 'UNMATCHED' }),
           value({ type: 'MATCHED_TWO' }),
-          value({ type: 'UNMATCHED_AGAIN' })
+          value({ type: 'UNMATCHED_AGAIN' }),
         ]);
-      }
+      },
     );
   });
 });

@@ -12,7 +12,7 @@ const getEnv = (env: unknown): string => {
 
 const initialState = (
   args: Arguments<Args>,
-  { rc, cwd }: { rc: unknown; cwd: string }
+  { rc, cwd }: { rc: unknown; cwd: string },
 ): State => ({
   rc: RC.decode(rc).getOrElse({}),
   cwd,
@@ -20,7 +20,7 @@ const initialState = (
   coverage: args.coverage === true,
   watch: args.watch === true,
   updateSnapshot: args.updateSnapshot === true,
-  status: 'running'
+  status: 'running',
 });
 
 export default initialState;

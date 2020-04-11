@@ -7,7 +7,7 @@ module.exports = {
     '@storybook/addon-actions',
     '@storybook/addon-links',
     'brookjs-desalinate/register'
-  ]<% if(locals.typescript) { %>,
+  ],<% if(locals.typescript) { %>
   webpack: async config => {
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
@@ -18,5 +18,5 @@ module.exports = {
     });
     config.resolve.extensions.push('.ts', '.tsx');
     return config;
-  }<% } %>
+  },<% } %>
 };

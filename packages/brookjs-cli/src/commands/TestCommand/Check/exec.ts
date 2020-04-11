@@ -8,14 +8,14 @@ import { State, Action } from './types';
 export const exec: Delta<Action, State> = (action$, state$) => {
   const globLint$ = glob.delta(
     action$.thru(ofType(glob.actions.lint.request)),
-    state$
+    state$,
   );
 
   const check$ = prettier.delta(
     action$.thru(ofType(prettier.actions.project.request)),
     state$.map(state => ({
-      paths: state.files.map(file => file.path)
-    }))
+      paths: state.files.map(file => file.path),
+    })),
   );
 
   return Kefir.merge<Action, never>([globLint$, check$]);

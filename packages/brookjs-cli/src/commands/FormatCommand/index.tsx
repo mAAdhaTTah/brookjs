@@ -6,7 +6,7 @@ import {
   ActionType,
   getType,
   createAsyncAction,
-  createAction
+  createAction,
 } from 'typesafe-actions';
 import Kefir from 'kefir';
 import { Delta, Maybe, unreachable } from 'brookjs-types';
@@ -35,7 +35,7 @@ type Action = ActionType<typeof glob.actions | typeof actions>;
 type RC = t.TypeOf<typeof RC>;
 
 const RC = t.partial({
-  dir: t.string
+  dir: t.string,
 });
 
 type FormatResults = {
@@ -49,43 +49,43 @@ const actions = {
   format: createAsyncAction(
     'FORMAT_REQUESTED',
     'FORMAT_SUCCEEDED',
-    'FORMAT_FAILED'
-  )<void, void, Error>()
+    'FORMAT_FAILED',
+  )<void, void, Error>(),
 };
 
 const reducer: EddyReducer<State, Action> = (
   state = initialState({}, { rc: null, cwd: '/' }),
-  action
+  action,
 ) => {
   switch (action.type) {
     case getType(glob.actions.format.request):
       return {
         ...state,
-        status: 'globbing'
+        status: 'globbing',
       };
     case getType(glob.actions.format.success):
       return loop(
         { ...state, status: 'formatting', paths: action.payload },
-        actions.format.request()
+        actions.format.request(),
       );
     case getType(actions.fileFormatted):
       return {
         ...state,
         results: {
           ...state.results,
-          [action.payload.path]: action.payload
-        }
+          [action.payload.path]: action.payload,
+        },
       };
     case getType(actions.format.success):
       return {
         ...state,
-        status: 'finished'
+        status: 'finished',
       };
     case getType(actions.format.failure):
       return {
         ...state,
         status: 'errored',
-        error: action.payload
+        error: action.payload,
       };
     default:
       return state;
@@ -94,17 +94,17 @@ const reducer: EddyReducer<State, Action> = (
 
 const initialState = (
   args: Args,
-  { rc, cwd }: { rc: unknown; cwd: string }
+  { rc, cwd }: { rc: unknown; cwd: string },
 ): State => ({
   status: 'init',
   cwd,
   rc: RC.decode(rc).fold(
     () => null,
-    rc => rc
+    rc => rc,
   ),
   paths: [],
   results: {},
-  error: null
+  error: null,
 });
 
 const exec: Delta<Action, State> = (action$, state$) => {
@@ -112,14 +112,14 @@ const exec: Delta<Action, State> = (action$, state$) => {
     action$.thru(ofType(glob.actions.format.request)),
     state$.map(state => ({
       cwd: state.cwd,
-      rc: state.rc
-    }))
+      rc: state.rc,
+    })),
   );
 
   const format$ = sampleStateAtAction(
     action$,
     state$,
-    actions.format.request
+    actions.format.request,
   ).flatMap(state => {
     const eslint = ESLintService.create({ cwd: state.cwd, fix: true });
 
@@ -127,20 +127,20 @@ const exec: Delta<Action, State> = (action$, state$) => {
       .flatten(paths => paths)
       .flatMapConcurLimit(
         file => fs.readFile(file).map(buffer => ({ buffer, file })),
-        4
+        4,
       )
       .flatMap(({ buffer, file }) => prettier.format(file, buffer))
       .flatMap(result =>
         eslint.check(result.path, result.contents).map(r => ({
           path: result.path,
           contents: r.results[0].output ?? result.contents,
-          changed: result.changed || r.results[0].output != null
-        }))
+          changed: result.changed || r.results[0].output != null,
+        })),
       )
       .flatMap(result =>
         result.changed
           ? fs.writeFile(result.path, result.contents).map(() => result)
-          : Kefir.constant(result)
+          : Kefir.constant(result),
       )
       .map(actions.fileFormatted)
       .concat(Kefir.constant(actions.format.success()))
@@ -175,7 +175,7 @@ const View: React.FC<State> = ({ status, paths, results, error }) => {
     case 'finished':
       const total = paths.reduce(
         (total, path) => total + (results[path].changed ? 1 : 0),
-        0
+        0,
       );
       return (
         <Box flexDirection="column">
@@ -203,7 +203,7 @@ const FormatCommand: Command<Args> = {
     const { state, root$, dispatch } = useDelta(
       reducer,
       initialState(args, { rc, cwd }),
-      exec
+      exec,
     );
 
     useEffect(() => {
@@ -215,7 +215,7 @@ const FormatCommand: Command<Args> = {
         <View {...state} />
       </RootJunction>
     );
-  }
+  },
 };
 
 export default FormatCommand;

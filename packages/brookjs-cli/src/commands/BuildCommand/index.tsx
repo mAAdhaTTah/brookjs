@@ -16,11 +16,11 @@ const BuildCommand: Command<Args> = {
     return yargs
       .option('env', {
         describe: 'Environment build target. One of: development, production.',
-        default: 'production'
+        default: 'production',
       })
       .option('watch', {
         describe: 'Watch the files and rebuild on changes',
-        default: false
+        default: false,
       });
   },
 
@@ -28,7 +28,7 @@ const BuildCommand: Command<Args> = {
     const { state, root$, dispatch } = useDelta(
       reducer,
       initialState(args, { rc, cwd }),
-      exec
+      exec,
     );
 
     useEffect(() => {
@@ -40,7 +40,7 @@ const BuildCommand: Command<Args> = {
         <View {...state} />
       </RootJunction>
     );
-  }
+  },
 };
 
 export default BuildCommand;

@@ -12,7 +12,7 @@ import {
   unreachable,
   ConfiguredState,
   ConfiguringState,
-  Log
+  Log,
 } from './types';
 
 type Props = State & {
@@ -53,26 +53,28 @@ type Question = {
 const questions: { [key in Configurable]: Question } = {
   version: {
     text: 'What is the application version?',
-    placeholder: '0.0.0'
+    placeholder: '0.0.0',
   },
   description: {
     text: 'What is the application description?',
-    placeholder: 'A brookjs application'
+    placeholder: 'A brookjs application',
   },
   dir: {
     text: 'Relative to the project, where will the source code live?',
-    placeholder: 'src'
+    placeholder: 'src',
   },
   license: {
     text: 'Choose a license',
-    placeholder: 'MIT'
-  }
+    placeholder: 'MIT',
+  },
 };
 
-const ConfigureStep: React.FC<ConfiguringState & {
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-}> = ({ configuring, config, onChange, onSubmit }) => {
+const ConfigureStep: React.FC<
+  ConfiguringState & {
+    onChange: (value: string) => void;
+    onSubmit: () => void;
+  }
+> = ({ configuring, config, onChange, onSubmit }) => {
   useOnSubmit(onSubmit);
 
   return (
@@ -91,9 +93,11 @@ const ConfigureStep: React.FC<ConfiguringState & {
   );
 };
 
-const ConfirmStep: React.FC<ConfiguredState & {
-  onConfirm: (value: boolean) => void;
-}> = ({ config: { name, version, description, dir, license }, onConfirm }) => (
+const ConfirmStep: React.FC<
+  ConfiguredState & {
+    onConfirm: (value: boolean) => void;
+  }
+> = ({ config: { name, version, description, dir, license }, onConfirm }) => (
   <Box flexDirection="column">
     <Box>Configuration:</Box>
     <Box>
@@ -116,12 +120,12 @@ const ConfirmStep: React.FC<ConfiguredState & {
         items={[
           {
             label: 'Yes',
-            value: 1
+            value: 1,
           },
           {
             label: 'No',
-            value: 0
-          }
+            value: 0,
+          },
         ]}
         onSelect={({ value }) => onConfirm(!!value)}
       />
@@ -149,7 +153,7 @@ const LogDisplay: React.FC<{ logs: Log[] }> = ({ logs }) => (
 
 const CreatingStep: React.FC<{ name: string; logs: Log[] }> = ({
   name,
-  logs
+  logs,
 }) => (
   <Box flexDirection="column">
     <LogDisplay logs={logs} />
@@ -224,7 +228,7 @@ const events = {
     e$.map(value => ({ type: 'INPUT', payload: { value } })),
   onSubmit: (e$: Observable<void, never>) => e$.map(() => ({ type: 'SUBMIT' })),
   onConfirm: (e$: Observable<boolean, never>) =>
-    e$.map(value => ({ type: 'CONFIRM', payload: { value } }))
+    e$.map(value => ({ type: 'CONFIRM', payload: { value } })),
 };
 
 export default toJunction(events)(View);

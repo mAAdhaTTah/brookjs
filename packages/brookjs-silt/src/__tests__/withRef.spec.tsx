@@ -19,14 +19,14 @@ const refback: Refback<Props, HTMLButtonElement, any> = (ref$, props$) =>
 
 const _Button: React.RefForwardingComponent<HTMLButtonElement, Props> = (
   { children },
-  ref
+  ref,
 ) => <button ref={ref}>{children}</button>;
 
 const Button = withRef$(refback)(_Button);
 
 const Instance: React.FC<Props & { aggregated$: Pool<any, any> }> = ({
   children,
-  aggregated$
+  aggregated$,
 }) => (
   <Provider value={aggregated$}>
     <Button children={children} />
@@ -47,24 +47,24 @@ describe('withRef$', () => {
   it('should emit value from ref$', () => {
     const aggregated$ = Kefir.pool();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />
+      <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
 
     expect(aggregated$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
-          props$: { children: 'Click me!' }
+          props$: { children: 'Click me!' },
         },
-        { current: true }
-      )
+        { current: true },
+      ),
     ]);
   });
 
   it('should remove ref$ when unmounted', () => {
     const aggregated$ = Kefir.pool();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />
+      <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
 
     wrapper.unmount();
@@ -76,11 +76,11 @@ describe('withRef$', () => {
     const aggregated$ = Kefir.pool();
     const newAggregated$ = Kefir.pool();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />
+      <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
 
     wrapper.rerender(
-      <Instance children={'Click me!'} aggregated$={newAggregated$} />
+      <Instance children={'Click me!'} aggregated$={newAggregated$} />,
     );
 
     expect((aggregated$ as any)._curSources).toHaveLength(0);
@@ -90,17 +90,17 @@ describe('withRef$', () => {
       value(
         {
           ref$: wrapper.container.querySelector('button'),
-          props$: { children: 'Click me!' }
+          props$: { children: 'Click me!' },
         },
-        { current: true }
-      )
+        { current: true },
+      ),
     ]);
   });
 
   it('should emit new props', () => {
     const aggregated$ = Kefir.pool();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />
+      <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
     const ref$ = wrapper.container.querySelector('button');
 
@@ -109,19 +109,19 @@ describe('withRef$', () => {
         value(
           {
             ref$,
-            props$: { children: 'Click me!' }
+            props$: { children: 'Click me!' },
           },
           {
-            current: true
-          }
+            current: true,
+          },
         ),
-        value({ ref$, props$: { children: 'Click me too!' } })
+        value({ ref$, props$: { children: 'Click me too!' } }),
       ],
       () => {
         wrapper.rerender(
-          <Instance children={'Click me too!'} aggregated$={aggregated$} />
+          <Instance children={'Click me too!'} aggregated$={aggregated$} />,
         );
-      }
+      },
     );
   });
 
@@ -135,17 +135,17 @@ describe('withRef$', () => {
     );
 
     const wrapper = render(
-      <Instance text={'Click me!'} aggregated$={aggregated$} />
+      <Instance text={'Click me!'} aggregated$={aggregated$} />,
     );
 
     expect(aggregated$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
-          props$: { children: 'Click me!' }
+          props$: { children: 'Click me!' },
         },
-        { current: true }
-      )
+        { current: true },
+      ),
     ]);
   });
 });

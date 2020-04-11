@@ -9,13 +9,13 @@ export const actions = {
   lint: createAsyncAction(
     'GLOB_LINT_REQUESTED',
     'GLOB_LINT_SUCCEEDED',
-    'GLOB_LINT_FAILED'
+    'GLOB_LINT_FAILED',
   )<void, string[], Error>(),
   format: createAsyncAction(
     'GLOB_FORMAT_REQUESTED',
     'GLOB_FORMAT_SUCCEEDED',
-    'GLOB_FORMAT_FAILED'
-  )<void, string[], Error>()
+    'GLOB_FORMAT_FAILED',
+  )<void, string[], Error>(),
 };
 
 export type State = {
@@ -35,21 +35,21 @@ export const delta: Delta<Action, State> = (action$, state$) => {
   const lint$ = sampleStateAtAction(
     action$,
     state$,
-    actions.lint.request
+    actions.lint.request,
   ).flatMap(state =>
     service(selectLintGlob(state.cwd, state.rc?.dir ?? 'src'))
       .map(files => actions.lint.success(files))
-      .flatMapErrors(err => Kefir.constant(actions.lint.failure(err)))
+      .flatMapErrors(err => Kefir.constant(actions.lint.failure(err))),
   );
 
   const format$ = sampleStateAtAction(
     action$,
     state$,
-    actions.format.request
+    actions.format.request,
   ).flatMap(state =>
     service(selectFormatGlob(state.cwd, state.rc?.dir ?? 'src'))
       .map(files => actions.format.success(files))
-      .flatMapErrors(err => Kefir.constant(actions.format.failure(err)))
+      .flatMapErrors(err => Kefir.constant(actions.format.failure(err))),
   );
 
   return Kefir.merge<Action, never>([lint$, format$]);

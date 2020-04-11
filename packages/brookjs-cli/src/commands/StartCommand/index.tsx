@@ -12,11 +12,11 @@ import { Command } from '../../cli';
 import {
   WebpackRC,
   delta as webpackDelta,
-  actions as webpackActions
+  actions as webpackActions,
 } from '../../webpack';
 import {
   actions as projectActions,
-  delta as projectDelta
+  delta as projectDelta,
 } from '../../project';
 import { Built } from '../components';
 
@@ -39,23 +39,23 @@ type RC = t.TypeOf<typeof RC>;
 
 const RC = t.partial({
   dir: t.string,
-  webpack: WebpackRC
+  webpack: WebpackRC,
 });
 
 const actions = {
   ...projectActions,
-  ...webpackActions
+  ...webpackActions,
 };
 
 const reducer: EddyReducer<State, Action> = (
   state = initialState({}, { rc: null, cwd: '/' }),
-  action
+  action,
 ) => {
   switch (action.type) {
     case getType(actions.extension.success):
       return loop(
         { ...state, extension: action.payload },
-        actions.start.request()
+        actions.start.request(),
       );
     case getType(actions.start.failure):
       return { ...state, error: action.payload };
@@ -63,18 +63,18 @@ const reducer: EddyReducer<State, Action> = (
       return {
         ...state,
         running: true,
-        building: true
+        building: true,
       };
     case getType(actions.invalidated):
       return {
         ...state,
-        building: true
+        building: true,
       };
     case getType(actions.done):
       return {
         ...state,
         building: false,
-        stats: action.payload
+        stats: action.payload,
       };
     default:
       return state;
@@ -83,24 +83,24 @@ const reducer: EddyReducer<State, Action> = (
 
 const initialState = (
   args: Args,
-  { rc, cwd }: { rc: unknown; cwd: string }
+  { rc, cwd }: { rc: unknown; cwd: string },
 ): State => ({
   args,
   cwd,
   extension: null,
   rc: RC.decode(rc).fold(
     () => null,
-    rc => rc
+    rc => rc,
   ),
   error: null,
   running: false,
-  building: false
+  building: false,
 });
 
 const exec: Delta<Action, State> = (action$, state$) => {
   const project$ = projectDelta(
     action$.thru(ofType(actions.extension.request)),
-    state$
+    state$,
   );
 
   const webpack$ = webpackDelta(
@@ -111,8 +111,8 @@ const exec: Delta<Action, State> = (action$, state$) => {
       rc: state.rc,
       cmd: 'start',
       env: 'development',
-      watch: true
-    }))
+      watch: true,
+    })),
   );
 
   return Kefir.merge<Action, never>([project$, webpack$]);
@@ -161,7 +161,7 @@ const StartCommand: Command<Args> = {
     const { state, root$, dispatch } = useDelta(
       reducer,
       initialState(args, { rc, cwd }),
-      exec
+      exec,
     );
 
     useEffect(() => {
@@ -173,7 +173,7 @@ const StartCommand: Command<Args> = {
         <View {...state} />
       </RootJunction>
     );
-  }
+  },
 };
 
 export default StartCommand;
