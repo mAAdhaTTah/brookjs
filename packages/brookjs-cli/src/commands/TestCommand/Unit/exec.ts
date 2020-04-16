@@ -42,6 +42,8 @@ const exec = (
           `${dir}/**/*.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/index.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/**/__tests__/**`,
+          `!${dir}/**/__stories__/**`,
+          `!${dir}/**/*.stories.{js,jsx,mjs,ts,tsx}`,
           `!${dir}/**/*.d.ts`,
         ],
         setupFilesAfterEnv: setupTests,
