@@ -135,7 +135,7 @@ exports[`Developer runs new and accepts the defaults-package.json 1`] = `
     \\"@storybook/addon-storyshots\\": \\"^5.3.6\\",
     \\"@storybook/addons\\": \\"^5.0.0\\",
     \\"@storybook/react\\": \\"^5.0.0\\",
-    \\"@testing-library/react\\": \\"^9.0.0\\",
+    \\"@testing-library/react\\": \\"^10.0.0\\",
     \\"@testing-library/jest-dom\\": \\"^5.0.0\\",
     \\"brookjs-cli\\": \\"^1.0.0-alpha\\",
     \\"brookjs-desalinate\\": \\"^1.0.0-alpha\\"
