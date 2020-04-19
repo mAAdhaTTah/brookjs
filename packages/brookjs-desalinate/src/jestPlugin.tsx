@@ -1,5 +1,4 @@
 import React from 'react';
-import { matcherHint, printReceived } from 'jest-matcher-utils';
 import jestKefir, { Helpers } from 'jest-kefir';
 import { render } from '@testing-library/react';
 import { RootJunction } from 'brookjs-silt';
@@ -26,7 +25,7 @@ export const jestPlugin = ({
       ...extensions,
 
       toEmitFromDelta(
-        this: any,
+        this: jest.MatcherContext,
         delta: any,
         expected: any,
         cb: (a: any, b: any, c: any) => void = noop,
@@ -50,10 +49,10 @@ export const jestPlugin = ({
         return {
           pass: this.equals(log, expected),
           message: () =>
-            matcherHint(
+            this.utils.matcherHint(
               `${this.isNot ? '.not' : ''}.toEmitFromDelta`,
-              printReceived(log),
-              printReceived(expected),
+              this.utils.printReceived(log),
+              this.utils.printExpected(expected),
             ),
         };
       },
@@ -80,10 +79,10 @@ export const jestPlugin = ({
         return {
           pass: this.equals(log, expected),
           message: () =>
-            matcherHint(
+            this.utils.matcherHint(
               `${this.isNot ? '.not' : ''}.toEmitFromJunction`,
-              printReceived(log),
-              printReceived(expected),
+              this.utils.printReceived(log),
+              this.utils.printExpected(expected),
             ),
         };
       },
