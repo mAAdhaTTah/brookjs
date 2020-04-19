@@ -1,14 +1,15 @@
 import Kefir from 'kefir';
 import { Delta } from 'brookjs-types';
-import { sampleStateAtAction } from 'brookjs-flow';
+import { sampleByAction } from 'brookjs-flow';
 import { build, start, invalidated, done } from './actions';
 import { selectWebpackConfig } from './selectors';
 import { State, Action } from './types';
 import { WebpackService } from './WebpackService';
 
 export const delta: Delta<Action, State> = (action$, state$) => {
-  const build$ = sampleStateAtAction(action$, state$, build.request).flatMap(
-    state =>
+  const build$ = state$
+    .thru(sampleByAction(action$, build.request))
+    .flatMap(state =>
       WebpackService.create(selectWebpackConfig(state))
         .flatMap(compiler => {
           process.env.NODE_ENV = state.env;
@@ -16,10 +17,11 @@ export const delta: Delta<Action, State> = (action$, state$) => {
         })
         .map(build.success)
         .flatMapErrors(error => Kefir.constant(build.failure(error))),
-  );
+    );
 
-  const start$ = sampleStateAtAction(action$, state$, start.request).flatMap(
-    state =>
+  const start$ = state$
+    .thru(sampleByAction(action$, start.request))
+    .flatMap(state =>
       WebpackService.create(selectWebpackConfig(state))
         .flatMap(compiler => compiler.server(state))
         .flatMap(server => {
@@ -32,7 +34,7 @@ export const delta: Delta<Action, State> = (action$, state$) => {
         })
         .takeErrors(1)
         .flatMapErrors(error => Kefir.constant(start.failure(error))),
-  );
+    );
 
   return Kefir.merge<Action, never>([build$, start$]);
 };

@@ -2,7 +2,7 @@ import { CLIEngine } from 'eslint';
 import Kefir, { Stream, Observable } from 'kefir';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { Delta } from 'brookjs-types';
-import { sampleStateAtAction } from 'brookjs-flow';
+import { sampleByAction } from 'brookjs-flow';
 import { service as fs } from '../fs';
 
 export const actions = {
@@ -30,8 +30,9 @@ type State = {
 type Action = ActionType<typeof actions>;
 
 export const delta: Delta<Action, State> = (action$, state$) => {
-  return sampleStateAtAction(action$, state$, actions.project.request).flatMap(
-    state => {
+  return state$
+    .thru(sampleByAction(action$, actions.project.request))
+    .flatMap(state => {
       const eslint = ESLintService.create({ cwd: state.cwd, fix: false });
 
       return Kefir.concat<Action, never>([
@@ -47,8 +48,7 @@ export const delta: Delta<Action, State> = (action$, state$) => {
         ),
         Kefir.constant(actions.project.success()),
       ]);
-    },
-  );
+    });
 };
 
 export class ESLintService {

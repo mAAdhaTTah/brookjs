@@ -11,7 +11,7 @@ import {
 import Kefir from 'kefir';
 import { Delta, Maybe, unreachable } from 'brookjs-types';
 import * as t from 'io-ts';
-import { ofType, sampleStateAtAction } from 'brookjs-flow';
+import { ofType, sampleByAction } from 'brookjs-flow';
 import { Box, Color } from 'ink';
 import { Command, useExit, ExitError } from '../../cli';
 import * as glob from '../../glob';
@@ -116,37 +116,35 @@ const exec: Delta<Action, State> = (action$, state$) => {
     })),
   );
 
-  const format$ = sampleStateAtAction(
-    action$,
-    state$,
-    actions.format.request,
-  ).flatMap(state => {
-    const eslint = ESLintService.create({ cwd: state.cwd, fix: true });
+  const format$ = state$
+    .thru(sampleByAction(action$, actions.format.request))
+    .flatMap(state => {
+      const eslint = ESLintService.create({ cwd: state.cwd, fix: true });
 
-    return Kefir.constant(state.paths)
-      .flatten(paths => paths)
-      .flatMapConcurLimit(
-        file => fs.readFile(file).map(buffer => ({ buffer, file })),
-        4,
-      )
-      .flatMap(({ buffer, file }) => prettier.format(file, buffer))
-      .flatMap(result =>
-        eslint.check(result.path, result.contents).map(r => ({
-          path: result.path,
-          contents: r.results[0].output ?? result.contents,
-          changed: result.changed || r.results[0].output != null,
-        })),
-      )
-      .flatMap(result =>
-        result.changed
-          ? fs.writeFile(result.path, result.contents).map(() => result)
-          : Kefir.constant(result),
-      )
-      .map(actions.fileFormatted)
-      .concat(Kefir.constant(actions.format.success()))
-      .takeErrors(1)
-      .flatMapErrors(err => Kefir.constant(actions.format.failure(err)));
-  });
+      return Kefir.constant(state.paths)
+        .flatten(paths => paths)
+        .flatMapConcurLimit(
+          file => fs.readFile(file).map(buffer => ({ buffer, file })),
+          4,
+        )
+        .flatMap(({ buffer, file }) => prettier.format(file, buffer))
+        .flatMap(result =>
+          eslint.check(result.path, result.contents).map(r => ({
+            path: result.path,
+            contents: r.results[0].output ?? result.contents,
+            changed: result.changed || r.results[0].output != null,
+          })),
+        )
+        .flatMap(result =>
+          result.changed
+            ? fs.writeFile(result.path, result.contents).map(() => result)
+            : Kefir.constant(result),
+        )
+        .map(actions.fileFormatted)
+        .concat(Kefir.constant(actions.format.success()))
+        .takeErrors(1)
+        .flatMapErrors(err => Kefir.constant(actions.format.failure(err)));
+    });
 
   return Kefir.merge<Action, never>([glob$, format$]);
 };
