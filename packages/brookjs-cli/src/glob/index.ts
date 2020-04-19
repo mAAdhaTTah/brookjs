@@ -1,7 +1,7 @@
 import path from 'path';
 import Kefir, { Stream } from 'kefir';
 import { Delta, Maybe } from 'brookjs-types';
-import { sampleStateAtAction } from 'brookjs-flow';
+import { sampleByAction } from 'brookjs-flow';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
 import glob from 'glob';
 
@@ -32,25 +32,21 @@ export const selectFormatGlob = (cwd: string, dir: string) =>
 export type Action = ActionType<typeof actions>;
 
 export const delta: Delta<Action, State> = (action$, state$) => {
-  const lint$ = sampleStateAtAction(
-    action$,
-    state$,
-    actions.lint.request,
-  ).flatMap(state =>
-    service(selectLintGlob(state.cwd, state.rc?.dir ?? 'src'))
-      .map(files => actions.lint.success(files))
-      .flatMapErrors(err => Kefir.constant(actions.lint.failure(err))),
-  );
+  const lint$ = state$
+    .thru(sampleByAction(action$, actions.lint.request))
+    .flatMap(state =>
+      service(selectLintGlob(state.cwd, state.rc?.dir ?? 'src'))
+        .map(files => actions.lint.success(files))
+        .flatMapErrors(err => Kefir.constant(actions.lint.failure(err))),
+    );
 
-  const format$ = sampleStateAtAction(
-    action$,
-    state$,
-    actions.format.request,
-  ).flatMap(state =>
-    service(selectFormatGlob(state.cwd, state.rc?.dir ?? 'src'))
-      .map(files => actions.format.success(files))
-      .flatMapErrors(err => Kefir.constant(actions.format.failure(err))),
-  );
+  const format$ = state$
+    .thru(sampleByAction(action$, actions.format.request))
+    .flatMap(state =>
+      service(selectFormatGlob(state.cwd, state.rc?.dir ?? 'src'))
+        .map(files => actions.format.success(files))
+        .flatMapErrors(err => Kefir.constant(actions.format.failure(err))),
+    );
 
   return Kefir.merge<Action, never>([lint$, format$]);
 };

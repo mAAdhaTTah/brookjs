@@ -2,7 +2,7 @@ import Kefir, { Observable } from 'kefir';
 import prettier from 'prettier';
 import prettierOptions from 'brookjs-prettier-config';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
-import { sampleStateAtAction } from 'brookjs-flow';
+import { sampleByAction } from 'brookjs-flow';
 import { Delta } from 'brookjs-types';
 import { service as fs } from '../fs';
 
@@ -99,7 +99,7 @@ export const format = (
 };
 
 export const delta: Delta<Action, State> = (action$, state$) =>
-  sampleStateAtAction(action$, state$, actions.project.request).flatMap(state =>
+  state$.thru(sampleByAction(action$, actions.project.request)).flatMap(state =>
     Kefir.concat<Action, never>([
       Kefir.merge(state.paths.map(path => check(path)))
         .map(result => actions.file.success(result))

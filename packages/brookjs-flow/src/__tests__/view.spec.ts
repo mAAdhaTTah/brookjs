@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import view from '../view';
+import { view } from '../view';
 
 const { stream, prop, value, send, error, end } = KTU;
 

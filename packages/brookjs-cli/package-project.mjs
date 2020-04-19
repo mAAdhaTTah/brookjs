@@ -15,6 +15,70 @@ const setUpProject = async (cwd, type) => {
   );
 };
 
+const tarballNames = {};
+
+const getTarballName = async (packagesRoot, pkg) => {
+  if (tarballNames[pkg]) {
+    return tarballNames[pkg];
+  }
+  try {
+    const pkgJsonPath = path.join(packagesRoot, pkg, 'package.json');
+    const pkgJson = JSON.parse(await fs.readFile(pkgJsonPath, 'utf-8'));
+
+    return tarballNames[pkg] = `${pkg}-v${pkgJson.version}.tgz`;
+  } catch (err) {
+    throw new Error(
+      `Error occurred getting tarball name for ${pkg}: ${err.message}`,
+    );
+  }
+};
+
+const packPackage = async (packagesRoot, pkg) => {
+  const packagePath = path.join(packagesRoot, pkg);
+  const pkgJsonPath = path.join(packagePath, 'package.json');
+  const oldPkgJson = await fs.readFile(pkgJsonPath, 'utf-8');
+  const newPkgJson = JSON.parse(oldPkgJson);
+
+  for (const dep in newPkgJson.dependencies) {
+    if (dep.includes('brookjs')) {
+      newPkgJson.dependencies[dep] = `file:${path.join(
+        packagesRoot,
+        dep,
+        await getTarballName(packagesRoot, dep),
+      )}`;
+    }
+  }
+
+  for (const devDep in newPkgJson.devDependencies) {
+    if (devDep.includes('brookjs')) {
+      newPkgJson.dependencies[devDep] = `file:${path.join(
+        packagesRoot,
+        devDep,
+        await getTarballName(packagesRoot, devDep),
+      )}`;
+    }
+  }
+
+  try {
+    await fs.writeFile(pkgJsonPath, JSON.stringify(newPkgJson, null, '  '));
+
+    await execa.command(`yarn pack`, {
+      cwd: packagePath,
+    });
+
+    return {
+      pkg,
+      tarball: path.join(
+        packagesRoot,
+        pkg,
+        await getTarballName(packagesRoot, pkg),
+      ),
+    };
+  } finally {
+    await fs.writeFile(pkgJsonPath, oldPkgJson);
+  }
+};
+
 const packPackages = async packagesRoot => {
   console.log('Packing all of the packages');
 
@@ -22,23 +86,7 @@ const packPackages = async packagesRoot => {
     pkg => pkg !== '.DS_Store',
   );
 
-  return await Promise.all(
-    pkgs.map(pkg =>
-      execa
-        .command(`npm pack`, {
-          cwd: path.join(packagesRoot, pkg),
-        })
-        .then(() => fs.readdir(path.join(packagesRoot, pkg)))
-        .then(async files => ({
-          pkg,
-          tarball: path.join(
-            packagesRoot,
-            pkg,
-            files.find(file => file.endsWith('.tgz')),
-          ),
-        })),
-    ),
-  );
+  return Promise.all(pkgs.map(pkg => packPackage(packagesRoot, pkg)));
 };
 
 const tarballPath = type =>
@@ -55,29 +103,27 @@ const updatePkgJson = async (cwd, outputs, type) => {
   console.log('Updating package.json to install from tarballs');
 
   const pkgJsonPath = path.join(projectPath(cwd, type), 'package.json');
-  const { stdout: pkgJson } = await execa.command(`cat ${pkgJsonPath}`);
+  const pkgJson = await fs.readFile(pkgJsonPath, 'utf-8');
   const newPkgJson = JSON.parse(pkgJson);
-  newPkgJson.resolutions = {};
 
   // Ensure all packages are resolved from our tarballs.
   for (const { pkg, tarball } of outputs) {
     if (newPkgJson.dependencies[pkg]) {
       newPkgJson.dependencies[pkg] = `file:${tarball}`;
-    } else {
+    }
+
+    if (newPkgJson.devDependencies[pkg]) {
       newPkgJson.devDependencies[pkg] = `file:${tarball}`;
     }
   }
 
-  await fs.writeFile(
-    pkgJsonPath,
-    JSON.stringify(newPkgJson, null, '  '),
-  );
+  await fs.writeFile(pkgJsonPath, JSON.stringify(newPkgJson, null, '  '));
 };
 
 const installDeps = async (cwd, type) => {
   console.log('Installing the dependencies');
 
-  await execa.command(`npm i`, {
+  await execa.command(`yarn`, {
     cwd: projectPath(cwd, type),
   });
 };
@@ -135,6 +181,7 @@ const tarballPackage = async (cwd, type) => {
     console.log('Success!');
   } catch (err) {
     console.log(err.message);
+    console.log(err.stack);
     process.exitCode = 1;
   }
 })();

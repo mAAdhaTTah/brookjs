@@ -2,7 +2,7 @@ import path from 'path';
 import Kefir, { Observable } from 'kefir';
 import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { Delta } from 'brookjs-types';
-import { sampleStateAtAction } from 'brookjs-flow';
+import { sampleByAction } from 'brookjs-flow';
 import { service as fs } from '../fs';
 
 export type Ext = 'ts' | 'js';
@@ -41,6 +41,7 @@ export type State = {
 };
 
 export const delta: Delta<Action, State> = (action$, state$) =>
-  sampleStateAtAction(action$, state$, actions.extension.request)
+  state$
+    .thru(sampleByAction(action$, actions.extension.request))
     .flatMap(state => extension$(state.cwd))
     .map(actions.extension.success);

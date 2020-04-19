@@ -1,9 +1,9 @@
 import Kefir from 'kefir';
-import { sampleStateAtAction } from 'brookjs';
+import { sampleByAction } from 'brookjs';
 import { init } from '../actions';
 
 export const rootDelta = (action$, state$) => {
-  const init$ = sampleStateAtAction(action$, state$, init).flatMap(() => {
+  const init$ = state$.thru(sampleByAction(action$, init)).flatMap(() => {
     console.log('App initialized');
 
     return Kefir.never();
