@@ -52,7 +52,7 @@ const exec = (
           // Don't glob `__tests__` because test utils
           `<rootDir>/${dir}/**/*.{spec,test}.{js,jsx,mjs,ts,tsx}`,
         ],
-        testEnvironment: 'jest-environment-jsdom-fourteen',
+        testEnvironment: 'jest-environment-jsdom-sixteen',
         transform: {
           // require.resolve is relative to brookjs-cli/dist
           '^.+\\.(js|jsx|ts|tsx)$': require.resolve(
