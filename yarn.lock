@@ -3643,20 +3643,15 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@>= 8":
-  version "13.7.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.0.tgz#b417deda18cf8400f278733499ad5547ed1abec4"
-  integrity sha512-GnZbirvmqZUzMgkFn70c74OQpTTUcCzlhQliTzYjQMqg+hVKcDnxdL19Ne3UdYzdMA/+W3eb646FWn/ZaT1NfQ==
-
-"@types/node@^12.0.0", "@types/node@^12.12.0":
-  version "12.12.26"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.26.tgz#213e153babac0ed169d44a6d919501e68f59dea9"
-  integrity sha512-UmUm94/QZvU5xLcUlNR8hA7Ac+fGpO1EG/a8bcWVz0P0LqtxFmun9Y2bbtuckwGboWJIT70DoWq1r3hb56n3DA==
-
-"@types/node@^13.13.0":
+"@types/node@*", "@types/node@>= 8", "@types/node@^13.1.4", "@types/node@^13.13.0":
   version "13.13.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.0.tgz#30d2d09f623fe32cde9cb582c7a6eda2788ce4a8"
   integrity sha512-WE4IOAC6r/yBZss1oQGM5zs2D7RuKR6Q+w+X2SouPofnWn+LbCqClRyhO3ZE7Ix8nmFgo/oVuuE01cJT2XB13A==
+
+"@types/node@^12.0.0":
+  version "12.12.26"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.26.tgz#213e153babac0ed169d44a6d919501e68f59dea9"
+  integrity sha512-UmUm94/QZvU5xLcUlNR8hA7Ac+fGpO1EG/a8bcWVz0P0LqtxFmun9Y2bbtuckwGboWJIT70DoWq1r3hb56n3DA==
 
 "@types/node@^8.5.7":
   version "8.10.59"
@@ -14265,13 +14260,13 @@ just-curry-it@^3.1.0:
   integrity sha512-mjzgSOFzlrurlURaHVjnQodyPNvrHrf1TbQP2XU9NSqBtHQPuHZ+Eb6TAJP7ASeJN9h9K0KXoRTs8u6ouHBKvg==
 
 kefir-test-utils@^1.0.0, kefir-test-utils@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/kefir-test-utils/-/kefir-test-utils-1.1.1.tgz#23a5fb60a559446077b0ce74e99d8ade1f8e365a"
-  integrity sha512-ZaL3Gj59tF0VsooUnDYHz5jKwiN2zq2ryyXP/aYEERU8rtOC9YIbXzVI6b45y6p/A6h54tptu9oVBQQcHyfBDw==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/kefir-test-utils/-/kefir-test-utils-1.2.1.tgz#aafe37bc40cbfecd27ca89d337b6938460e61fec"
+  integrity sha512-EsrtgRcHH1vv3mOXh5JZSd5zz47BwQ9MrSxa1+vDWBemVagbdgbxYantaTCVH/a9ZKkzbvSyMDboQwmN/jHN9g==
   dependencies:
     "@types/kefir" "^3.8.0"
     "@types/lolex" "^2.0.0"
-    "@types/node" "^12.12.0"
+    "@types/node" "^13.1.4"
     lolex "^2.0.0"
 
 kefir@^3.8.0:
