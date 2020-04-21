@@ -3670,9 +3670,9 @@
     "@types/react" "*"
 
 "@types/react-dev-utils@^9.0.2":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-dev-utils/-/react-dev-utils-9.0.3.tgz#bca9083107f6a757add0a56ce8a1c54330df034e"
-  integrity sha512-b38J3sjBsJowEqbYCvPbcg3ihuPVoIRBiBrUloP8/Q0sRcPuJSa2y8ols7BuSLw4lVSHRXr7zB3IeYxZ9x8HlQ==
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/@types/react-dev-utils/-/react-dev-utils-9.0.4.tgz#3e4bee79b7536777cef219427ab1d38adc24f3f2"
+  integrity sha512-8cv9rAeSP1EmyRQAbZ/i6uYtai1VoKHGSBwDyCLM82wCkqoh3WPjJgI1pfi2kiLc0C5hNU7DLo7/c4hylfHLWg==
   dependencies:
     "@types/eslint" "*"
     "@types/express" "*"
