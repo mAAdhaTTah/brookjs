@@ -1,16 +1,10 @@
 import { Action, Reducer } from 'redux';
-import {
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  useContext,
-} from 'react';
+import { useEffect, useCallback, useMemo, useState, useContext } from 'react';
 import Kefir, { Observable, Property } from 'kefir';
 import { upgradeReducer, EddyReducer } from 'brookjs-eddy';
 import { Delta } from 'brookjs-types';
 import { CentralObservableContext } from './context';
+import { useSingleton, useSubscribe } from './hooks';
 
 class Queue<T> extends Kefir.Stream<T, never> {
   private draining = false;
@@ -42,29 +36,6 @@ class Queue<T> extends Kefir.Stream<T, never> {
   }
 }
 
-const useSingleton = <T>(creator: () => T): T => {
-  const ref = useRef<T | null>(null);
-
-  if (ref.current == null) {
-    ref.current = creator();
-  }
-
-  return ref.current;
-};
-
-const useSubscribe = <V>(
-  obs$: Observable<V, never>,
-  listener: (value: V) => void,
-) => {
-  useEffect(() => {
-    const sub = obs$.observe(listener);
-
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [obs$, listener]);
-};
-
 const defaultDelta: Delta<any, any> = () => Kefir.never();
 
 export const useDelta = <S, A extends Action<string>>(
@@ -94,10 +65,10 @@ export const useDelta = <S, A extends Action<string>>(
   const central$ = useContext(CentralObservableContext);
 
   useEffect(() => {
-    central$?.plug(delta$);
+    central$?.plug(action$);
 
-    return () => void central$?.unplug(delta$);
-  }, [central$, delta$]);
+    return () => void central$?.unplug(action$);
+  }, [central$, action$]);
 
   const root$ = useCallback(
     (root$: Observable<A, Error>) => root$.observe(action$.emit),
