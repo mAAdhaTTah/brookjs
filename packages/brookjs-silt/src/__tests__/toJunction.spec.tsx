@@ -161,7 +161,7 @@ describe('toJunction', () => {
     };
 
     it('should call combine with correct arguments and use returned stream', () => {
-      const source$ = stream<any, any>();
+      const source$ = stream<any, never>();
       const combine: Combiner<Props, typeof events> = jest.fn(() => source$);
       const _Button: React.FC<Props> = ({ onButtonClick, text, enabled }) =>
         enabled ? (
@@ -252,7 +252,7 @@ describe('toJunction', () => {
 
   describe('preplug', () => {
     it('should map stream', () => {
-      const root$ = pool<any, any>();
+      const root$ = pool<any, never>();
       const wrapper = render(
         <Provider value={root$}>
           <Button
@@ -269,7 +269,7 @@ describe('toJunction', () => {
     });
 
     it('should map children', () => {
-      const root$ = pool<any, any>();
+      const root$ = pool<any, never>();
       const Wrapper = toJunction()(() => (
         <Button text={'Click me'} enabled={true} />
       ));

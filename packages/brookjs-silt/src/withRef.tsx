@@ -23,7 +23,7 @@ const wrap = <E, P>(
 export type Refback<P, E extends Element, R extends { type: string }> = (
   ref$: Property<E, never>,
   props$: Property<P, never>,
-) => Observable<R, Error>;
+) => Observable<R, never>;
 
 export const withRef$ = <P, E extends Element, R extends { type: string }>(
   refback: Refback<P, E, R>,
@@ -46,9 +46,9 @@ export const withRef$ = <P, E extends Element, R extends { type: string }>(
       `${WithRef$.displayName}#ref$`,
     );
 
-    aggregated$?: Pool<Action, Error>;
+    aggregated$?: Pool<Action, never>;
 
-    plugged$?: Observable<Action, Error>;
+    plugged$?: Observable<Action, never>;
 
     refback = (el: E | null) => el && (this.ref$ as any)._emitValue(el);
 
