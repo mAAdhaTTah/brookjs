@@ -24,7 +24,7 @@ const _Button: React.RefForwardingComponent<HTMLButtonElement, Props> = (
 
 const Button = withRef$(refback)(_Button);
 
-const Instance: React.FC<Props & { aggregated$: Pool<any, any> }> = ({
+const Instance: React.FC<Props & { aggregated$: Pool<any, never> }> = ({
   children,
   aggregated$,
 }) => (
@@ -45,7 +45,7 @@ describe('withRef$', () => {
   });
 
   it('should emit value from ref$', () => {
-    const aggregated$ = Kefir.pool();
+    const aggregated$ = Kefir.pool<any, never>();
     const wrapper = render(
       <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
@@ -62,7 +62,7 @@ describe('withRef$', () => {
   });
 
   it('should remove ref$ when unmounted', () => {
-    const aggregated$ = Kefir.pool();
+    const aggregated$ = Kefir.pool<any, never>();
     const wrapper = render(
       <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
@@ -73,8 +73,8 @@ describe('withRef$', () => {
   });
 
   it('should replace aggregated$', () => {
-    const aggregated$ = Kefir.pool();
-    const newAggregated$ = Kefir.pool();
+    const aggregated$ = Kefir.pool<any, never>();
+    const newAggregated$ = Kefir.pool<any, never>();
     const wrapper = render(
       <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
@@ -98,7 +98,7 @@ describe('withRef$', () => {
   });
 
   it('should emit new props', () => {
-    const aggregated$ = Kefir.pool();
+    const aggregated$ = Kefir.pool<any, never>();
     const wrapper = render(
       <Instance children={'Click me!'} aggregated$={aggregated$} />,
     );
@@ -126,7 +126,7 @@ describe('withRef$', () => {
   });
 
   it('should work with components that can take a ref directly', () => {
-    const aggregated$ = Kefir.pool();
+    const aggregated$ = Kefir.pool<any, never>();
     const Button = withRef$(refback)('button');
     const Instance: React.FC<any> = ({ text, aggregated$ }) => (
       <Provider value={aggregated$}>

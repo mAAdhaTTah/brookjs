@@ -4,7 +4,7 @@ import { createContext } from 'react';
 
 export const CentralObservableContext = createContext<Pool<
   Action,
-  Error
+  never
 > | null>(null);
 
 export const { Provider, Consumer } = CentralObservableContext;

@@ -7,9 +7,9 @@ import { wrapDisplayName } from './wrapDisplayName';
 const id = <T extends any>(x: T) => x;
 
 type ObservableDict<E extends { [key: string]: any }> = {
-  [K in keyof E]: Observable<Action, Error>;
+  [K in keyof E]: Observable<Action, never>;
 } & {
-  children$: Observable<Action, Error>;
+  children$: Observable<Action, never>;
 };
 
 type ProvidedProps<E extends { [key: string]: any }> = {
@@ -21,15 +21,15 @@ type WithProps<E extends { [key: string]: any }, P extends {}> = Omit<
   keyof E
 > & {
   preplug?: (
-    source$: Observable<Action<string>, Error>,
-  ) => Observable<Action<string>, Error>;
+    source$: Observable<Action<string>, never>,
+  ) => Observable<Action<string>, never>;
 };
 
 export type Combiner<P extends {}, E extends { [key: string]: any } = {}> = (
-  combined$: Observable<Action, Error>,
+  combined$: Observable<Action, never>,
   sources: ObservableDict<E>,
   props: Readonly<WithProps<E, P>>,
-) => Observable<Action, Error>;
+) => Observable<Action, never>;
 
 type Events<E> = {
   [K in keyof E]: (
@@ -61,15 +61,15 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
     class ToJunction extends React.Component<WithProps<E, P>> {
       static displayName = wrapDisplayName(WrappedComponent, 'ToJunction');
 
-      root$: null | Pool<Action, Error>;
+      root$: null | Pool<Action, never>;
       events: ProvidedProps<E>;
       sources: {
-        list: Observable<Action, Error>[];
+        list: Observable<Action, never>[];
         dict: ObservableDict<E>;
-        merged: Observable<Action, Error>;
+        merged: Observable<Action, never>;
       };
-      children$: Pool<Action, Error>;
-      source$: Observable<Action, Error>;
+      children$: Pool<Action, never>;
+      source$: Observable<Action, never>;
 
       constructor(props: WithProps<E, P>) {
         super(props);

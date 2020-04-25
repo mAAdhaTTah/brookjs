@@ -5,16 +5,14 @@ import { Maybe } from 'brookjs-types';
 import { Provider, Consumer } from './context';
 
 type Props<A> = {
-  root$?: (p: Pool<A, Error>) => Maybe<Subscription>;
+  root$?: (p: Pool<A, never>) => Maybe<Subscription>;
   children: React.ReactNode;
 };
 
-export default class RootJunction<A extends Action> extends React.Component<
-  Props<A>
-> {
-  childRoot$: Pool<A, Error> = Kefir.pool();
+export class RootJunction<A extends Action> extends React.Component<Props<A>> {
+  childRoot$: Pool<A, never> = Kefir.pool();
   sub?: Maybe<Subscription>;
-  parentRoot$?: Maybe<Pool<A, Error>>;
+  parentRoot$?: Maybe<Pool<A, never>>;
 
   unplug() {
     this.parentRoot$?.unplug(this.childRoot$);

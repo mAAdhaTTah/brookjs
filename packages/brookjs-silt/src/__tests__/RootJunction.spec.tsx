@@ -1,7 +1,7 @@
 /* eslint-env jest */
 import React from 'react';
 import { render } from '@testing-library/react';
-import RootJunction from '../RootJunction';
+import { RootJunction } from '../RootJunction';
 
 describe('RootJunction', () => {
   it('should provide aggregated$ as context', () => {
