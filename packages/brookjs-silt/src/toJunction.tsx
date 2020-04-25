@@ -140,15 +140,12 @@ export function toJunction<E extends { [key: string]: any }, P extends {}>(
                 );
               }
 
-              const props = {
-                ...this.props,
-                ...this.events,
-                // @TODO(mAAdhaTTah) would be nice for this to type right.
-              } as any;
+              const { preplug, ...props } = this.props;
 
               return (
                 <Provider value={this.children$}>
-                  <WrappedComponent {...props} />
+                  {/* TODO(mAAdhaTTah) would be nice for this to type right. */}
+                  <WrappedComponent {...this.events} {...(props as any)} />
                 </Provider>
               );
             }}
