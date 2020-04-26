@@ -5,7 +5,7 @@ declare namespace jest {
     toEmitFromDelta<V, E>(
       expect: import('kefir-test-utils').EventWithTime<V, E>[],
       cb?: (
-        send: (state: any, action: any) => void,
+        send: (action: any, state: any) => void,
         tick: (s: number) => void,
         clock: import('lolex').Clock
       ) => void,
