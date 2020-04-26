@@ -1,6 +1,6 @@
 import React from 'react';
 import jestKefir, { Helpers } from 'jest-kefir';
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import { RootJunction } from 'brookjs-silt';
 import { EventWithTime } from 'kefir-test-utils';
 
@@ -68,10 +68,17 @@ export const jestPlugin = ({
         const root$ = (root$: any) => void (log = watchWithTime(root$));
 
         withFakeTime((tick: any, clock: any) => {
+          const actTick = (s: number) => {
+            act(() => {
+              tick(s);
+            });
+          };
+
           const api = render(
             <RootJunction root$={root$}>{element}</RootJunction>,
           );
-          cb(api, tick, clock);
+
+          cb(api, actTick, clock);
           tick(timeLimit);
           api.unmount();
         });
