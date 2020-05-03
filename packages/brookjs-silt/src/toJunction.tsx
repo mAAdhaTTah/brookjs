@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import Kefir, { Observable, Pool, Stream } from 'kefir';
 import { Action } from 'redux';
-import { Consumer, Provider } from './context';
+import { Provider, useCentralObservable } from './context';
 import { wrapDisplayName } from './wrapDisplayName';
+import { useSingleton } from './hooks';
 
-const id = <T extends any>(x: T) => x;
+const id: Combiner = x => x;
 
 type ObservableDict<E extends { [key: string]: any }> = {
   [K in keyof E]: Observable<Action, never>;
@@ -20,15 +21,11 @@ type WithProps<E extends { [key: string]: any }, P extends {}> = Omit<
   P,
   keyof E
 > & {
-  preplug?: (
-    source$: Observable<Action<string>, never>,
-  ) => Observable<Action<string>, never>;
+  preplug?: (source$: Observable<Action, never>) => Observable<Action, never>;
 };
 
-export type Combiner<P extends {}, E extends { [key: string]: any } = {}> = (
+export type Combiner = (
   combined$: Observable<Action, never>,
-  sources: ObservableDict<E>,
-  props: Readonly<WithProps<E, P>>,
 ) => Observable<Action, never>;
 
 type Events<E> = {
@@ -37,120 +34,87 @@ type Events<E> = {
   ) => Observable<Action<string>, never>;
 };
 
-export function toJunction(): <P extends {}>(
-  WrappedComponent: React.ElementType<P>,
-) => React.ComponentType<WithProps<{}, P>>;
+export function toJunction<E extends { [key: string]: any }>(): <P extends {}>(
+  WrappedComponent: React.ComponentType<P>,
+) => React.FC<WithProps<E, P>>;
 export function toJunction<E extends { [key: string]: any }>(
   events: Events<E>,
 ): <P extends {}>(
-  WrappedComponent: React.ElementType<P>,
-) => React.ComponentType<WithProps<E, P>>;
-export function toJunction<E extends { [key: string]: any }, P extends {}>(
-  events: Events<E>,
-  combine: Combiner<P, Events<E>>,
-): (
   WrappedComponent: React.ComponentType<P>,
-) => React.ComponentType<WithProps<E, P>>;
-export function toJunction<E extends { [key: string]: any }, P extends {}>(
-  events: Events<E> = {} as Events<E>,
-  combine: Combiner<P, E> = id,
+) => React.FC<WithProps<E, P>>;
+export function toJunction<E extends { [key: string]: any }>(
+  events: Events<E>,
+  combine: Combiner,
+): <P extends {}>(
+  WrappedComponent: React.ComponentType<P>,
+) => React.FC<WithProps<E, P>>;
+export function toJunction<E extends { [key: string]: any }>(
+  combine: Combiner,
+): <P extends {}>(
+  WrappedComponent: React.ComponentType<P>,
+) => React.FC<WithProps<E, P>>;
+export function toJunction<E extends { [key: string]: any }>(
+  _events: Events<E> | Combiner = {} as Events<E>,
+  _combine: Combiner = id,
 ) {
-  return (
-    WrappedComponent: React.ComponentType<P>,
-  ): React.ComponentType<WithProps<E, P>> =>
-    class ToJunction extends React.Component<WithProps<E, P>> {
-      static displayName = wrapDisplayName(WrappedComponent, 'ToJunction');
+  let events: Events<E>, combine: Combiner;
 
-      root$: null | Pool<Action, never>;
-      events: ProvidedProps<E>;
-      sources: {
-        list: Observable<Action, never>[];
-        dict: ObservableDict<E>;
-        merged: Observable<Action, never>;
-      };
-      children$: Pool<Action, never>;
-      source$: Observable<Action, never>;
+  if (typeof _events === 'function') {
+    combine = _events;
+    events = {} as Events<E>;
+  } else {
+    events = _events;
+    combine = _combine;
+  }
 
-      constructor(props: WithProps<E, P>) {
-        super(props);
-        this.root$ = null;
-        this.events = {} as ProvidedProps<E>;
+  return <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
+    const ToJunction: React.FC<WithProps<E, P>> = ({ preplug, ...props }) => {
+      const children$ = useSingleton(() => Kefir.pool() as Pool<Action, never>);
 
-        this.children$ = Kefir.pool();
-
-        this.sources = {
-          list: [this.children$],
-          dict: { children$: this.children$ } as any,
-          merged: Kefir.never(),
-        };
+      const { combined$, eventCallbacks } = useMemo(() => {
+        const eventCallbacks = {} as ProvidedProps<E>;
+        const list: Observable<Action, never>[] = [children$];
 
         for (const key in events) {
           const e$ = new Kefir.Stream<any, never>();
-          this.events[key] = e => {
+          eventCallbacks[key] = e => {
             (e$ as any)._emitValue(e);
           };
-          this.sources.list.push(
-            ((this.sources.dict as any)[key + '$'] = events[key](e$)),
+          list.push(events[key](e$));
+        }
+
+        return { combined$: combine(Kefir.merge(list)), eventCallbacks };
+      }, [children$]);
+
+      const source$ = useMemo(() => preplug?.(combined$) ?? combined$, [
+        combined$,
+        preplug,
+      ]);
+
+      const central$ = useCentralObservable();
+
+      useEffect(() => {
+        if (central$ == null) {
+          console.error(
+            'Used `toJunction` with no Central Observable. Needs to be wrapped in `<RootJunction>`',
           );
+        } else {
+          central$.plug(source$);
         }
 
-        this.sources.merged = Kefir.merge(this.sources.list);
-        this.source$ = this.createSource();
-      }
+        return () => void central$?.unplug(source$);
+      }, [central$, source$]);
 
-      createSource() {
-        const combined$ = combine(
-          this.sources.merged,
-          this.sources.dict,
-          this.props,
-        );
-
-        if (this.props.preplug) {
-          return this.props.preplug(combined$);
-        }
-
-        return combined$;
-      }
-
-      unplug() {
-        this.root$?.unplug(this.source$);
-      }
-
-      componentWillUnmount() {
-        this.unplug();
-      }
-
-      componentDidUpdate() {
-        this.unplug();
-        this.root$?.plug((this.source$ = this.createSource()));
-      }
-
-      render() {
-        return (
-          <Consumer>
-            {root$ => {
-              if (root$ != null) {
-                if (this.root$ !== root$) {
-                  this.unplug();
-                  this.root$ = root$.plug(this.source$);
-                }
-              } else {
-                console.error(
-                  'Used `toJunction` with no Central Observable.. Needs to be wrapped in `<RootJunction>`',
-                );
-              }
-
-              const { preplug, ...props } = this.props;
-
-              return (
-                <Provider value={this.children$}>
-                  {/* TODO(mAAdhaTTah) would be nice for this to type right. */}
-                  <WrappedComponent {...this.events} {...(props as any)} />
-                </Provider>
-              );
-            }}
-          </Consumer>
-        );
-      }
+      return (
+        <Provider value={children$}>
+          {/* TODO(mAAdhaTTah) would be nice for this to type right. */}
+          <WrappedComponent {...(props as any)} {...eventCallbacks} />
+        </Provider>
+      );
     };
+
+    ToJunction.displayName = wrapDisplayName(WrappedComponent, 'ToJunction');
+
+    return ToJunction;
+  };
 }

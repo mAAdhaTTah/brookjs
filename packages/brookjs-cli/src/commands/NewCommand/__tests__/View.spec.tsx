@@ -324,7 +324,7 @@ describe('NewCommand#View', () => {
     it('should respond to confirm', () => {
       let r$;
 
-      const { stdin } = render(
+      const element = (
         <RootJunction root$={root$ => void (r$ = root$)}>
           <View
             error={null}
@@ -342,8 +342,13 @@ describe('NewCommand#View', () => {
               typescript: false,
             }}
           />
-        </RootJunction>,
+        </RootJunction>
       );
+      const { stdin, rerender } = render(element);
+
+      // @TODO(mAAdhaTTah) needed to flush effects
+      // remove when this is fixed: https://github.com/vadimdemedes/ink-testing-library/issues/3
+      rerender(element);
 
       expect(r$).toEmit(
         [value({ type: 'CONFIRM', payload: { value: true } })],

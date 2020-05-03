@@ -12,8 +12,12 @@ describe('toJunction', () => {
     onButtonClick: (
       e$: Observable<React.MouseEvent<HTMLButtonElement>, never>,
     ) => e$.map(() => ({ type: 'CLICK' })),
-  };
-  const _Button: React.FC<any> = ({ onButtonClick, text, enabled }) =>
+  } as const;
+  const _Button: React.FC<{
+    onButtonClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    text: string;
+    enabled?: boolean;
+  }> = ({ onButtonClick, text, enabled }) =>
     enabled ? (
       <button onClick={onButtonClick}>{text}</button>
     ) : (
@@ -33,7 +37,7 @@ describe('toJunction', () => {
   it('should warn if rendered outside of provider', () => {
     const mock = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    render(<Button />);
+    render(<Button text="Hello" />);
 
     expect(mock).toHaveBeenCalledTimes(1);
 
@@ -162,7 +166,7 @@ describe('toJunction', () => {
 
     it('should call combine with correct arguments and use returned stream', () => {
       const source$ = stream<any, never>();
-      const combine: Combiner<Props, typeof events> = jest.fn(() => source$);
+      const combine: Combiner = jest.fn(() => source$);
       const _Button: React.FC<Props> = ({ onButtonClick, text, enabled }) =>
         enabled ? (
           <button onClick={onButtonClick}>{text}</button>
@@ -186,22 +190,13 @@ describe('toJunction', () => {
       expect(root$).toEmit([value({ type: 'EMITTED' })], () => {
         send(source$, [value({ type: 'EMITTED' })]);
       });
-      expect(combine).toHaveBeenCalledTimes(1);
 
-      expect(combine).toHaveBeenCalledWith(
-        expect.any(Kefir.Observable),
-        {
-          onButtonClick$: expect.any(Kefir.Observable),
-          children$: expect.any(Kefir.Observable),
-        },
-        { text: 'Click me', enabled: true },
-      );
+      expect(combine).toHaveBeenCalledTimes(1);
+      expect(combine).toHaveBeenCalledWith(expect.any(Kefir.Observable));
     });
 
-    it('should call combine with updated props', () => {
-      const combine: Combiner<Props, typeof events> = jest.fn(() =>
-        Kefir.never(),
-      );
+    it('should call combine once with rerender', () => {
+      const combine: Combiner = jest.fn(() => Kefir.never());
       const _Button: React.FC<Props> = ({ onButtonClick, text, enabled }) =>
         enabled ? (
           <button onClick={onButtonClick}>{text}</button>
@@ -228,25 +223,7 @@ describe('toJunction', () => {
         <ProvidedButton root$={root$} text={'Click you'} enabled={true} />,
       );
 
-      expect(combine).toHaveBeenCalledTimes(2);
-      expect(combine).toHaveBeenNthCalledWith(
-        1,
-        expect.any(Kefir.Observable),
-        {
-          onButtonClick$: expect.any(Kefir.Observable),
-          children$: expect.any(Kefir.Observable),
-        },
-        { text: 'Click me', enabled: true },
-      );
-      expect(combine).toHaveBeenNthCalledWith(
-        2,
-        expect.any(Kefir.Observable),
-        {
-          onButtonClick$: expect.any(Kefir.Observable),
-          children$: expect.any(Kefir.Observable),
-        },
-        { text: 'Click you', enabled: true },
-      );
+      expect(combine).toHaveBeenCalledTimes(1);
     });
   });
 
