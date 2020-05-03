@@ -1,6 +1,6 @@
 {
   "name": "brookjs",
-  "version": "1.0.0-beta.14",
+  "version": "1.0.0-beta.15",
   "description": "reactive programming tools for well-structured, testable applications",
   "main": "dist/brookjs.cjs.js",
   "module": "dist/brookjs.esm.js",
@@ -22,7 +22,7 @@
   "dependencies": {
     "brookjs-eddy": "^1.0.0-beta.9",
     "brookjs-flow": "^1.0.0-beta.11",
-    "brookjs-silt": "^1.0.0-beta.14",
+    "brookjs-silt": "^1.0.0-beta.15",
     "brookjs-types": "^1.0.0-beta.0"
   },
   "peerDependencies": {
