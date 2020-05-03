@@ -1,6 +1,6 @@
 import { Pool } from 'kefir';
 import { Action } from 'redux';
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 
 export const CentralObservableContext = createContext<Pool<
   Action,
@@ -8,3 +8,5 @@ export const CentralObservableContext = createContext<Pool<
 > | null>(null);
 
 export const { Provider, Consumer } = CentralObservableContext;
+
+export const useCentralObservable = () => useContext(CentralObservableContext);
