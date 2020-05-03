@@ -9,6 +9,16 @@ import { State, Action } from './types';
 
 const getDir = (rc: Maybe<RC>) => rc?.dir ?? 'src';
 
+const mergeJestConfig = (target: any, source: any) => {
+  // source is never null, as its run thru the validation
+  if (target == null) return source;
+
+  if (Array.isArray(target)) return [...target, ...source];
+
+  if (typeof target === 'string') return source;
+  if (typeof target === 'object') return { ...target, ...source };
+};
+
 const exec = (
   action$: Stream<Action, never>,
   state$: Property<State, never>,
@@ -81,7 +91,7 @@ const exec = (
       };
 
       for (const [key, value] of Object.entries(jest)) {
-        config[key] = value;
+        config[key] = mergeJestConfig(config[key], value);
       }
 
       argv.push(`--config`, JSON.stringify(config));
