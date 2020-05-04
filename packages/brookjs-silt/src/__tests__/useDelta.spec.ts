@@ -51,7 +51,7 @@ describe('useDelta', () => {
 
   it('should dispatch actions from the root$ and unsubscribe as needed', () => {
     const { result } = renderHook(() => useDelta(reducer, initialState));
-    const root$ = stream<any, any>();
+    const root$ = stream<any, never>();
     const sub = result.current.root$(root$);
 
     act(() => {
