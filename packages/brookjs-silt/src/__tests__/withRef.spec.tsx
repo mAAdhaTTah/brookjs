@@ -24,11 +24,11 @@ const _Button: React.RefForwardingComponent<HTMLButtonElement, Props> = (
 
 const Button = withRef$(refback)(_Button);
 
-const Instance: React.FC<Props & { aggregated$: Pool<any, never> }> = ({
+const Instance: React.FC<Props & { central$: Pool<any, never> }> = ({
   children,
-  aggregated$,
+  central$,
 }) => (
-  <Provider value={aggregated$}>
+  <Provider value={central$}>
     <Button children={children} />
   </Provider>
 );
@@ -45,12 +45,12 @@ describe('withRef$', () => {
   });
 
   it('should emit value from ref$', () => {
-    const aggregated$ = Kefir.pool<any, never>();
+    const central$ = Kefir.pool<any, never>();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />,
+      <Instance children={'Click me!'} central$={central$} />,
     );
 
-    expect(aggregated$).toEmit([
+    expect(central$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
@@ -62,31 +62,31 @@ describe('withRef$', () => {
   });
 
   it('should remove ref$ when unmounted', () => {
-    const aggregated$ = Kefir.pool<any, never>();
+    const central$ = Kefir.pool<any, never>();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />,
+      <Instance children={'Click me!'} central$={central$} />,
     );
 
     wrapper.unmount();
 
-    expect((aggregated$ as any)._curSources).toHaveLength(0);
+    expect((central$ as any)._curSources).toHaveLength(0);
   });
 
-  it('should replace aggregated$', () => {
-    const aggregated$ = Kefir.pool<any, never>();
-    const newAggregated$ = Kefir.pool<any, never>();
+  it('should replace central$', () => {
+    const central$ = Kefir.pool<any, never>();
+    const newcentral$ = Kefir.pool<any, never>();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />,
+      <Instance children={'Click me!'} central$={central$} />,
     );
 
     wrapper.rerender(
-      <Instance children={'Click me!'} aggregated$={newAggregated$} />,
+      <Instance children={'Click me!'} central$={newcentral$} />,
     );
 
-    expect((aggregated$ as any)._curSources).toHaveLength(0);
-    expect((newAggregated$ as any)._curSources).toHaveLength(1);
+    expect((central$ as any)._curSources).toHaveLength(0);
+    expect((newcentral$ as any)._curSources).toHaveLength(1);
 
-    expect(newAggregated$).toEmit([
+    expect(newcentral$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
@@ -98,13 +98,13 @@ describe('withRef$', () => {
   });
 
   it('should emit new props', () => {
-    const aggregated$ = Kefir.pool<any, never>();
+    const central$ = Kefir.pool<any, never>();
     const wrapper = render(
-      <Instance children={'Click me!'} aggregated$={aggregated$} />,
+      <Instance children={'Click me!'} central$={central$} />,
     );
     const ref$ = wrapper.container.querySelector('button');
 
-    expect(aggregated$).toEmit(
+    expect(central$).toEmit(
       [
         value(
           {
@@ -119,26 +119,24 @@ describe('withRef$', () => {
       ],
       () => {
         wrapper.rerender(
-          <Instance children={'Click me too!'} aggregated$={aggregated$} />,
+          <Instance children={'Click me too!'} central$={central$} />,
         );
       },
     );
   });
 
   it('should work with components that can take a ref directly', () => {
-    const aggregated$ = Kefir.pool<any, never>();
+    const central$ = Kefir.pool<any, never>();
     const Button = withRef$(refback)('button');
-    const Instance: React.FC<any> = ({ text, aggregated$ }) => (
-      <Provider value={aggregated$}>
+    const Instance: React.FC<any> = ({ text, central$ }) => (
+      <Provider value={central$}>
         <Button children={text} />
       </Provider>
     );
 
-    const wrapper = render(
-      <Instance text={'Click me!'} aggregated$={aggregated$} />,
-    );
+    const wrapper = render(<Instance text={'Click me!'} central$={central$} />);
 
-    expect(aggregated$).toEmit([
+    expect(central$).toEmit([
       value(
         {
           ref$: wrapper.container.querySelector('button'),
