@@ -74,9 +74,15 @@ export const jestPlugin = ({
             });
           };
 
-          const api = render(
+          const { rerender, ...rr } = render(
             <RootJunction root$={root$}>{element}</RootJunction>,
           );
+
+          const api = {
+            ...rr,
+            rerender: (element: React.ReactElement) =>
+              rerender(<RootJunction root$={root$}>{element}</RootJunction>),
+          };
 
           cb(api, actTick, clock);
           tick(timeLimit);
