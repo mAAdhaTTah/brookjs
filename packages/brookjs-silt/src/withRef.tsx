@@ -1,8 +1,8 @@
-import React, { forwardRef } from 'react';
-import Kefir, { Pool, Observable, Property } from 'kefir';
-import { Action } from 'redux';
-import { Consumer } from './context';
+import React, { forwardRef, useCallback, useEffect } from 'react';
+import Kefir, { Observable, Property } from 'kefir';
+import { useCentralObservable } from './context';
 import { wrapDisplayName } from './wrapDisplayName';
+import { useSingleton } from './hooks';
 
 // Ref-forward function has 2 params.
 const isRefForwarding = <T, P>(
@@ -10,91 +10,75 @@ const isRefForwarding = <T, P>(
 ): x is React.RefForwardingComponent<T, P> =>
   typeof x === 'function' && x.length === 2;
 
-const wrap = <E, P>(
-  WrappedComponent: React.ElementType<P> | React.RefForwardingComponent<E, P>,
-) => {
+const wrap = <E extends Element, P extends {}>(
+  WrappedComponent: React.ElementType<P> | React.ForwardRefRenderFunction<E, P>,
+): React.ElementType<P> | React.ForwardRefExoticComponent<P> => {
   if (isRefForwarding(WrappedComponent)) {
-    return forwardRef(WrappedComponent);
+    return forwardRef(WrappedComponent) as React.ForwardRefExoticComponent<P>;
   }
 
   return WrappedComponent;
 };
 
-export type Refback<P, E extends Element, R extends { type: string }> = (
+export type Refback<
+  P extends {},
+  E extends Element,
+  R extends { type: string }
+> = (
   ref$: Property<E, never>,
   props$: Property<P, never>,
 ) => Observable<R, never>;
 
-export const withRef$ = <P, E extends Element, R extends { type: string }>(
+const createProps$ = <P extends {}>() =>
+  new Kefir.Property<P, never>().setName(`props$`);
+
+const createRef$ = <E extends Element>() =>
+  new Kefir.Property<E, never>().setName(`ref$`);
+
+export const withRef$ = <
+  P extends {},
+  E extends Element,
+  R extends { type: string }
+>(
   refback: Refback<P, E, R>,
 ) => (
-  WrappedComponent: React.RefForwardingComponent<E, P> | React.ElementType<P>,
-) =>
-  class WithRef$ extends React.Component<P> {
-    static displayName =
-      typeof WrappedComponent !== 'string'
-        ? wrapDisplayName(WrappedComponent, 'WithRef$')
-        : `WithRef(${WrappedComponent})`;
+  WrappedComponent: React.ForwardRefRenderFunction<E, P> | React.ElementType<P>,
+) => {
+  // @TODO(mAAdhaTTah) why isn't this type working?
+  const Target = wrap(WrappedComponent) as any;
 
-    static Target: any = wrap(WrappedComponent);
-
-    props$ = new Kefir.Stream<P, never>()
-      .toProperty(() => this.props)
-      .setName(`${WithRef$.displayName}#props$`);
-
-    ref$ = new Kefir.Property<E, never>().setName(
-      `${WithRef$.displayName}#ref$`,
+  const WithRef$: React.FC<P> = props => {
+    const props$ = useSingleton(createProps$ as () => Property<P, never>);
+    const ref$ = useSingleton(createRef$ as () => Property<E, never>);
+    const ref: React.RefCallback<E> = useCallback(
+      el => void (el && (ref$ as any)._emitValue(el)),
+      [ref$],
     );
+    const central$ = useCentralObservable();
 
-    aggregated$?: Pool<Action, never>;
+    useEffect(() => {
+      (props$ as any)._emitValue(props);
+    }, [props, props$]);
 
-    plugged$?: Observable<Action, never>;
-
-    refback = (el: E | null) => el && (this.ref$ as any)._emitValue(el);
-
-    componentWillUnmount() {
-      if (this.plugged$) {
-        this.aggregated$?.unplug(this.plugged$);
+    useEffect(() => {
+      if (central$ == null) {
+        console.error(
+          'Used `withRef$` with no Central Observable. Needs to be wrapped in `<RootJunction>`',
+        );
+        return;
       }
-    }
 
-    componentDidMount() {
-      this.emitProps();
-    }
+      const plugged$ = refback(ref$, props$);
 
-    componentDidUpdate() {
-      this.emitProps();
-    }
+      central$.plug(plugged$);
 
-    emitProps() {
-      (this.props$ as any)._emitValue(this.props);
-    }
+      return () => void central$.unplug(plugged$);
+    }, [ref$, props$, central$]);
 
-    render() {
-      return (
-        <Consumer>
-          {aggregated$ => {
-            if (aggregated$ != null) {
-              if (this.plugged$ && this.aggregated$ !== aggregated$) {
-                this.aggregated$?.unplug(this.plugged$);
-                this.aggregated$ = aggregated$.plug(this.plugged$);
-              }
-
-              if (!this.plugged$) {
-                this.aggregated$ = aggregated$.plug(
-                  (this.plugged$ = refback(this.ref$, this.props$)),
-                );
-              }
-            } else {
-              console.error(
-                'Used `withRef$` with no Central Observable.. Needs to be wrapped in `<RootJunction>`',
-              );
-            }
-
-            // eslint-disable-next-line react/jsx-pascal-case
-            return <WithRef$.Target {...this.props} ref={this.refback} />;
-          }}
-        </Consumer>
-      );
-    }
+    return <Target {...props} ref={ref} />;
   };
+
+  WithRef$.displayName = wrapDisplayName(WrappedComponent, 'WithRef$');
+
+  return WithRef$;
+};
