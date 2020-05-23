@@ -95,7 +95,6 @@ const exec = (
       }
 
       argv.push(`--config`, JSON.stringify(config));
-      argv.push('--env', 'jsdom');
 
       if (coverage) {
         argv.push('--coverage');
