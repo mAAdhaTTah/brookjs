@@ -574,12 +574,12 @@ const addHotReload = (
     for (const key in entry) {
       let value = entry[key];
 
-      if (typeof value === 'string') {
-        value = [client, value];
-      }
-
       if (Array.isArray(value)) {
         value = [client, ...value];
+      }
+
+      if (typeof value === 'string') {
+        value = [client, value];
       }
 
       entry[key] = value;
