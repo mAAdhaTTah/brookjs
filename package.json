@@ -48,7 +48,7 @@
     "expect": "^24.9.0",
     "ink-testing-library": "^1.0.1",
     "jest": "^25.0.0",
-    "jest-snapshot": "^25.0.0",
+    "jest-snapshot": "^26.1.0",
     "kefir": "^3.8.0",
     "lerna": "^3.0.6",
     "node-pty": "^0.9.0",
