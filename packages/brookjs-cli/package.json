@@ -27,7 +27,7 @@
     "@babel/core": "^7.0.0",
     "@babel/plugin-transform-modules-commonjs": "^7.0.0",
     "address": "^1.1.2",
-    "babel-jest": "^25.0.0",
+    "babel-jest": "^26.1.0",
     "babel-loader": "^8.0.0",
     "babel-plugin-named-asset-import": "^0.3.5",
     "babel-preset-brookjs": "^1.0.0-beta.9",
