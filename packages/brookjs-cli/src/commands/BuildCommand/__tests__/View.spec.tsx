@@ -14,14 +14,7 @@ describe('BuildCommand#View', () => {
 
   it('should render missing rc view', () => {
     const { lastFrame } = render(
-      <View
-        building={true}
-        watch={false}
-        results={null}
-        env="development"
-        cwd="/path/to/wd"
-        rc={null}
-      />,
+      <View building={true} watch={false} results={null} rc={null} />,
     );
 
     expect(lastFrame()).toMatchSnapshot();
@@ -33,8 +26,6 @@ describe('BuildCommand#View', () => {
         building={true}
         watch={false}
         results={null}
-        env="development"
-        cwd="/path/to/wd"
         rc={{
           dir: 'src',
           webpack: {
@@ -59,8 +50,6 @@ describe('BuildCommand#View', () => {
         building={false}
         watch={false}
         results={results}
-        env="development"
-        cwd="/path/to/wd"
         rc={{
           dir: 'src',
           webpack: {
@@ -105,8 +94,6 @@ describe('BuildCommand#View', () => {
         building={false}
         watch={false}
         results={results}
-        env="development"
-        cwd="/path/to/wd"
         rc={{
           dir: 'src',
           webpack: {

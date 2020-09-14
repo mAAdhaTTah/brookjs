@@ -1,38 +1,24 @@
-import { getType } from 'typesafe-actions';
-import { loop, EddyReducer } from 'brookjs-eddy';
-import * as webpack from '../../webpack';
-import * as project from '../../project';
-import { State, Action } from './types';
-import initialState from './initialState';
+import { combineReducers } from 'brookjs-eddy';
+import {
+  reducer as webpackReducer,
+  State as WebpackState,
+  Action as WebpackAction,
+} from '../../webpack';
+import {
+  reducer as projectReducer,
+  State as ProjectState,
+  Action as ProjectAction,
+} from '../../project';
 
-const reducer: EddyReducer<State, Action> = (
-  state: State = initialState({} as any, {} as any),
-  action: Action,
-) => {
-  switch (action.type) {
-    case getType(webpack.actions.build.success):
-      return {
-        ...state,
-        building: false,
-        results: action.payload,
-      } as const;
-    case getType(webpack.actions.build.failure):
-      return {
-        ...state,
-        building: false,
-        results: action.payload,
-      } as const;
-    case getType(project.actions.extension.success):
-      return loop(
-        {
-          ...state,
-          extension: action.payload,
-        },
-        webpack.actions.build.request(),
-      );
-    default:
-      return state;
-  }
-};
+const reducer = combineReducers<
+  {
+    project: ProjectState;
+    webpack: WebpackState;
+  },
+  WebpackAction | ProjectAction
+>({
+  project: projectReducer,
+  webpack: webpackReducer,
+});
 
 export default reducer;

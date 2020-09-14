@@ -1,25 +1,24 @@
 import { selectWebpackConfig } from '../selectors';
-import { State } from '../types';
 
 describe('BuildCommand#selectors', () => {
   describe('selectWebpackConfig', () => {
     it('should call the modifier when creating webpack config', () => {
       const config = {};
       const modifier = jest.fn().mockReturnValue(config);
-      const state: State = {
-        watch: false,
+
+      const results = selectWebpackConfig({
+        name: 'test-project',
+        cmd: 'build',
+        cwd: '/path/to/project',
         env: 'production',
         extension: 'js',
-        cmd: 'build',
-        cwd: '/path/to/cwd',
+        watch: false,
         rc: {
           webpack: {
             modifier,
-          } as any,
+          },
         },
-      };
-
-      const results = selectWebpackConfig(state);
+      });
 
       expect(config).toBe(results);
     });

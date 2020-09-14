@@ -1,19 +1,24 @@
-import { Maybe } from 'brookjs-types';
 import webpack from 'webpack';
 import * as t from 'io-ts';
 import { ActionType } from 'typesafe-actions';
+import { Maybe } from 'brookjs-types';
 import { BabelRC } from '../babel';
 import { Ext } from '../project';
 import * as actions from './actions';
 
-export type State = {
-  cmd: 'build' | 'start';
-  cwd: string;
-  env: webpack.Configuration['mode'];
-  extension: Ext;
-  watch: boolean;
-  rc: Maybe<RC>;
+type Idle = {
+  status: 'idle';
 };
+
+type Running = {
+  status: 'running';
+  building: boolean;
+  serverStarted: boolean;
+  results: null | webpack.Stats | Error;
+  watch: boolean;
+};
+
+export type State = Idle | Running;
 
 export const WebpackRC = t.partial({
   modifier: t.Function,
@@ -31,7 +36,12 @@ export const WebpackRC = t.partial({
 export type WebpackRC = Omit<t.TypeOf<typeof WebpackRC>, 'modifier'> & {
   modifier?: (
     config: webpack.Configuration,
-    state: State,
+    state: {
+      cmd: 'build' | 'start';
+      env: webpack.Configuration['mode'];
+      extension: Ext;
+      watch: boolean;
+    },
   ) => webpack.Configuration;
 };
 
@@ -46,3 +56,13 @@ export type RC = Omit<t.TypeOf<typeof RC>, 'babel'> & {
 };
 
 export type Action = ActionType<typeof actions>;
+
+export type BuildConfig = {
+  name: string;
+  cmd: 'build' | 'start';
+  cwd: string;
+  env: webpack.Configuration['mode'];
+  extension: Ext;
+  watch: boolean;
+  rc: Maybe<RC>;
+};

@@ -1,9 +1,11 @@
 import Spinner from 'ink-spinner';
 import { Box, Color } from 'ink';
 import React from 'react';
+import { Maybe } from 'brookjs-types';
+import webpack from 'webpack';
 import { ExitError, useExit } from '../../cli';
 import { Built, BuildErrors } from '../components';
-import { State } from './types';
+import { RC } from '../../webpack';
 
 const Building: React.FC<{}> = () => (
   <Box>
@@ -26,7 +28,12 @@ const RCInvalid: React.FC<{ message: string }> = ({ message }) => {
   return <Color red>RC file invalid. {message}</Color>;
 };
 
-const View: React.FC<State> = props => {
+const View: React.FC<{
+  rc: Maybe<RC>;
+  building: boolean;
+  results: Maybe<Error | webpack.Stats>;
+  watch: Maybe<boolean>;
+}> = props => {
   if (props.rc == null) {
     return <RCNotLoaded />;
   }
@@ -40,18 +47,20 @@ const View: React.FC<State> = props => {
   }
 
   if (props.results instanceof Error) {
-    return <BuildErrors watch={props.watch} errors={[props.results.message]} />;
-  }
-
-  if (!props.watch && props.results.hasErrors()) {
-    const { errors, warnings } = props.results.toJson('errors-warnings');
-
     return (
-      <BuildErrors watch={props.watch} errors={[...errors, ...warnings]} />
+      <BuildErrors watch={!!props.watch} errors={[props.results.message]} />
     );
   }
 
-  return <Built results={props.results} watch={props.watch} />;
+  if (!props.watch && props.results!.hasErrors()) {
+    const { errors, warnings } = props.results!.toJson('errors-warnings');
+
+    return (
+      <BuildErrors watch={!!props.watch} errors={[...errors, ...warnings]} />
+    );
+  }
+
+  return <Built results={props.results!} watch={!!props.watch} />;
 };
 
 export default View;

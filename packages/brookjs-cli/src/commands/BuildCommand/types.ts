@@ -1,35 +1,9 @@
-import { ActionType } from 'typesafe-actions';
-import { Stats, Configuration } from 'webpack';
-import { Maybe } from 'brookjs-types';
+import { ActionType, StateType } from 'typesafe-actions';
 import * as webpack from '../../webpack';
-import { Ext } from '../../project';
-import { project } from '../..';
-import { RC } from './RC';
+import * as project from '../../project';
+import reducer from './reducer';
 
-interface BaseState {
-  env: Required<Configuration>['mode'];
-  cwd: string;
-  rc: Maybe<RC>;
-  watch: boolean;
-  extension?: Ext;
-}
-
-interface BuildingState extends BaseState {
-  building: true;
-  results: null;
-}
-
-interface BuildSuccessState extends BaseState {
-  building: false;
-  results: Stats;
-}
-
-interface BuildErrorState extends BaseState {
-  building: false;
-  results: Error;
-}
-
-export type State = BuildingState | BuildSuccessState | BuildErrorState;
+export type State = StateType<typeof reducer>[0];
 export type Action = ActionType<
   typeof webpack.actions & typeof project.actions
 >;

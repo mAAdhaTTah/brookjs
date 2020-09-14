@@ -1,37 +1,33 @@
 import React, { useEffect } from 'react';
 import { useDelta, RootJunction } from 'brookjs-silt';
-import { EddyReducer, loop } from 'brookjs-eddy';
-import { ActionType, getType } from 'typesafe-actions';
+import { ActionType, StateType } from 'typesafe-actions';
 import Kefir from 'kefir';
 import { Delta, Maybe } from 'brookjs-types';
 import * as t from 'io-ts';
 import { ofType } from 'brookjs-flow';
 import { Box, Color } from 'ink';
+import { combineReducers } from 'brookjs-eddy';
 import webpack from 'webpack';
 import { Command } from '../../cli';
 import {
   WebpackRC,
   delta as webpackDelta,
   actions as webpackActions,
+  reducer as webpackReducer,
+  State as WebpackState,
+  getEnv,
 } from '../../webpack';
 import {
   actions as projectActions,
   delta as projectDelta,
+  reducer as projectReducer,
+  State as ProjectState,
+  useInitializeProject,
 } from '../../project';
+import { RootAction } from '../../types';
 import { Built } from '../components';
 
 type Args = {};
-
-type State = {
-  args: Args;
-  cwd: string;
-  rc: Maybe<RC>;
-  extension: Maybe<'js' | 'ts'>;
-  error: Maybe<Error>;
-  running: boolean;
-  building: boolean;
-  stats?: Maybe<webpack.Stats>;
-};
 
 type Action = ActionType<typeof actions>;
 
@@ -47,78 +43,39 @@ const actions = {
   ...webpackActions,
 };
 
-const reducer: EddyReducer<State, Action> = (
-  state = initialState({}, { rc: null, cwd: '/' }),
-  action,
-) => {
-  switch (action.type) {
-    case getType(actions.extension.success):
-      return loop(
-        { ...state, extension: action.payload },
-        actions.start.request(),
-      );
-    case getType(actions.start.failure):
-      return { ...state, error: action.payload };
-    case getType(actions.start.success):
-      return {
-        ...state,
-        running: true,
-        building: true,
-      };
-    case getType(actions.invalidated):
-      return {
-        ...state,
-        building: true,
-      };
-    case getType(actions.done):
-      return {
-        ...state,
-        building: false,
-        stats: action.payload,
-      };
-    default:
-      return state;
-  }
-};
-
-const initialState = (
-  args: Args,
-  { rc, cwd }: { rc: unknown; cwd: string },
-): State => ({
-  args,
-  cwd,
-  extension: null,
-  rc: RC.decode(rc).fold(
-    () => null,
-    rc => rc,
-  ),
-  error: null,
-  running: false,
-  building: false,
+const reducer = combineReducers<
+  {
+    project: ProjectState;
+    webpack: WebpackState;
+  },
+  RootAction
+>({
+  project: projectReducer,
+  webpack: webpackReducer,
 });
 
-const exec: Delta<Action, State> = (action$, state$) => {
+type State = StateType<typeof reducer>[0];
+
+const exec: Delta<RootAction, State> = (action$, state$) => {
   const project$ = projectDelta(
-    action$.thru(ofType(actions.extension.request)),
-    state$,
+    action$.thru(ofType(actions.initialize.request)),
+    state$.map(({ project }) => project),
   );
 
   const webpack$ = webpackDelta(
     action$.thru(ofType(actions.start.request)),
-    state$.map(state => ({
-      cwd: state.cwd,
-      extension: state.extension ?? 'js',
-      rc: state.rc,
-      cmd: 'start',
-      env: 'development',
-      watch: true,
-    })),
+    state$.map(({ webpack }) => webpack),
   );
 
   return Kefir.merge<Action, never>([project$, webpack$]);
 };
 
-const View: React.FC<State> = ({ error, building, running, stats }) => {
+const View: React.FC<{
+  error: Maybe<Error>;
+  building: boolean;
+  running: boolean;
+  stats: Maybe<webpack.Stats>;
+}> = ({ error, building, running, stats }) => {
   if (error) {
     return (
       <Box>
@@ -150,6 +107,11 @@ const View: React.FC<State> = ({ error, building, running, stats }) => {
   return null;
 };
 
+const initialState: State = {
+  webpack: { status: 'idle' },
+  project: { status: 'uninitialized' },
+};
+
 const StartCommand: Command<Args> = {
   cmd: 'start',
   describe: 'Start the brookjs development server.',
@@ -158,19 +120,47 @@ const StartCommand: Command<Args> = {
   },
 
   View: ({ args, rc, cwd }) => {
-    const { state, root$, dispatch } = useDelta(
-      reducer,
-      initialState(args, { rc, cwd }),
-      exec,
-    );
+    const { state, root$, dispatch } = useDelta(reducer, initialState, exec);
+
+    useInitializeProject(state.project, cwd, dispatch);
 
     useEffect(() => {
-      dispatch(projectActions.extension.request());
-    }, [dispatch]);
+      if (state.project.status === 'initialized') {
+        dispatch(
+          webpackActions.start.request({
+            name: state.project.pkg.name,
+            cmd: 'start',
+            cwd,
+            env: getEnv(args.env),
+            extension: state.project.ext,
+            watch: typeof args.watch === 'boolean' ? args.watch : false,
+            rc: RC.decode(rc).getOrElse({}) as RC,
+          }),
+        );
+      }
+    }, [dispatch, cwd, state, args, rc]);
 
     return (
       <RootJunction root$={root$}>
-        <View {...state} />
+        <View
+          building={
+            state.webpack.status === 'idle' ||
+            (state.webpack.status === 'running' && state.webpack.building)
+          }
+          running={state.webpack.status === 'running'}
+          error={
+            state.webpack.status === 'running' &&
+            state.webpack.results instanceof Error
+              ? state.webpack.results
+              : null
+          }
+          stats={
+            state.webpack.status === 'running' &&
+            !(state.webpack.results instanceof Error)
+              ? state.webpack.results
+              : null
+          }
+        />
       </RootJunction>
     );
   },
