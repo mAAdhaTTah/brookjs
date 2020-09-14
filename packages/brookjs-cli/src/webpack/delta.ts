@@ -1,40 +1,36 @@
 import Kefir from 'kefir';
 import { Delta } from 'brookjs-types';
-import { sampleByAction } from 'brookjs-flow';
+import { ofType } from 'brookjs-flow';
 import { build, start, invalidated, done } from './actions';
 import { selectWebpackConfig } from './selectors';
 import { State, Action } from './types';
 import { WebpackService } from './WebpackService';
 
-export const delta: Delta<Action, State> = (action$, state$) => {
-  const build$ = state$
-    .thru(sampleByAction(action$, build.request))
-    .flatMap(state =>
-      WebpackService.create(selectWebpackConfig(state))
-        .flatMap(compiler => {
-          process.env.NODE_ENV = state.env;
-          return state.watch ? compiler.watch() : compiler.run();
-        })
-        .map(build.success)
-        .flatMapErrors(error => Kefir.constant(build.failure(error))),
-    );
+export const delta: Delta<Action, State> = action$ => {
+  const build$ = action$.thru(ofType(build.request)).flatMap(action =>
+    WebpackService.create(selectWebpackConfig(action.payload))
+      .flatMap(compiler => {
+        process.env.NODE_ENV = action.payload.env;
+        return action.payload.watch ? compiler.watch() : compiler.run();
+      })
+      .map(build.success)
+      .flatMapErrors(error => Kefir.constant(build.failure(error))),
+  );
 
-  const start$ = state$
-    .thru(sampleByAction(action$, start.request))
-    .flatMap(state =>
-      WebpackService.create(selectWebpackConfig(state))
-        .flatMap(compiler => compiler.server(state))
-        .flatMap(server => {
-          process.env.NODE_ENV = 'development';
-          return Kefir.merge<Action, Error>([
-            server.listen(3000, 'localhost').map(start.success),
-            server.onInvalidate().map(invalidated),
-            server.onDone().map(done),
-          ]);
-        })
-        .takeErrors(1)
-        .flatMapErrors(error => Kefir.constant(start.failure(error))),
-    );
+  const start$ = action$.thru(ofType(start.request)).flatMap(action =>
+    WebpackService.create(selectWebpackConfig(action.payload))
+      .flatMap(compiler => compiler.server(action.payload))
+      .flatMap(server => {
+        process.env.NODE_ENV = 'development';
+        return Kefir.merge<Action, Error>([
+          server.listen(3000, 'localhost').map(start.success),
+          server.onInvalidate().map(invalidated),
+          server.onDone().map(done),
+        ]);
+      })
+      .takeErrors(1)
+      .flatMapErrors(error => Kefir.constant(start.failure(error))),
+  );
 
   return Kefir.merge<Action, never>([build$, start$]);
 };

@@ -7,20 +7,13 @@ import { State, Action } from './types';
 
 const exec: Delta<Action, State> = (action$, state$): Stream<Action, never> => {
   const project$ = project.delta(
-    action$.thru(ofType(project.actions.extension.request)),
-    state$,
+    action$.thru(ofType(project.actions.initialize.request)),
+    state$.map(({ project }) => project),
   );
 
   const webpack$ = webpack.delta(
     action$.thru(ofType(webpack.actions.build.request)),
-    state$.map(state => ({
-      cwd: state.cwd,
-      cmd: 'build',
-      env: state.env,
-      extension: state.extension ?? 'js',
-      watch: state.watch,
-      rc: state.rc,
-    })),
+    state$.map(({ webpack }) => webpack),
   );
 
   return Kefir.merge<Action, never>([project$, webpack$]);

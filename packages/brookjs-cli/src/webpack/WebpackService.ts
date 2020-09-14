@@ -2,7 +2,7 @@ import Kefir, { Property, Stream } from 'kefir';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import { selectServerConfig } from './selectors';
-import { State } from './types';
+import { BuildConfig } from './types';
 // @TODO(mAAdhaTTah) missing types
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 
@@ -13,7 +13,7 @@ export class WebpackServer {
   ) {}
 
   static create(
-    state: State,
+    state: BuildConfig,
     compiler: webpack.Compiler,
   ): Stream<WebpackServer, Error> {
     try {
@@ -102,7 +102,7 @@ export class WebpackService {
     }
   }
 
-  server(state: State): Stream<WebpackServer, Error> {
+  server(state: BuildConfig): Stream<WebpackServer, Error> {
     return this.compiler().flatMap(compiler =>
       WebpackServer.create(state, compiler),
     );

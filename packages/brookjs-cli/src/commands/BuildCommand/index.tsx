@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Argv } from 'yargs';
 import { useDelta, RootJunction } from 'brookjs-silt';
 import { Command } from '../../cli';
 import * as project from '../../project';
+import * as webpack from '../../webpack';
 import exec from './exec';
 import initialState from './initialState';
 import reducer from './reducer';
@@ -25,19 +26,46 @@ const BuildCommand: Command<Args> = {
   },
 
   View: ({ args, rc, cwd }) => {
-    const { state, root$, dispatch } = useDelta(
-      reducer,
-      initialState(args, { rc, cwd }),
-      exec,
+    const { state, root$, dispatch } = useDelta(reducer, initialState, exec);
+
+    const decodedRc = useMemo(
+      () => webpack.RC.decode(rc).getOrElse({}) as webpack.RC,
+      [rc],
     );
 
+    project.useInitializeProject(state.project, cwd, dispatch);
+
     useEffect(() => {
-      dispatch(project.actions.extension.request());
-    }, [dispatch]);
+      if (state.project.status === 'initialized') {
+        dispatch(
+          webpack.actions.build.request({
+            name: state.project.pkg.name,
+            cwd,
+            cmd: 'build',
+            env: webpack.getEnv(args.env),
+            extension: state.project.ext,
+            watch: typeof args.watch === 'boolean' ? args.watch : false,
+            rc: decodedRc,
+          }),
+        );
+      }
+    }, [dispatch, cwd, state.project, args.env, args.watch, decodedRc]);
 
     return (
       <RootJunction root$={root$}>
-        <View {...state} />
+        <View
+          rc={decodedRc}
+          building={
+            state.webpack.status === 'idle' ||
+            (state.webpack.status === 'running' && state.webpack.building)
+          }
+          watch={
+            state.webpack.status === 'running' ? state.webpack.watch : null
+          }
+          results={
+            state.webpack.status === 'running' ? state.webpack.results : null
+          }
+        />
       </RootJunction>
     );
   },

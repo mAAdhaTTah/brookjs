@@ -23,7 +23,8 @@ import ManifestPlugin from 'webpack-manifest-plugin';
 import WebpackDevServer from 'webpack-dev-server';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { unreachable } from 'brookjs-types';
-import { State } from './types';
+import camelcase from 'camelcase';
+import { BuildConfig } from './types';
 // @TODO(mAAdhaTTah) fix require -> import (missing types)
 // const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath');
 // const redirectServedPath = require('react-dev-utils/redirectServedPathMiddleware');
@@ -36,20 +37,20 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
-const isEnvDevelopment = (state: State) => state.env === 'development';
-const isEnvProduction = (state: State) => state.env === 'production';
+const isEnvDevelopment = (state: BuildConfig) => state.env === 'development';
+const isEnvProduction = (state: BuildConfig) => state.env === 'production';
 const isEnvProductionProfile = (/* state: State */) => false;
 const shouldUseSourceMap = (/* state: State */) => true;
-const shouldUseRelativeAssetPaths = (state: State) =>
+const shouldUseRelativeAssetPaths = (state: BuildConfig) =>
   selectPublicPath(state) === './';
-const selectPublicPath = (state: State) => '/';
-const selectPublicUrlOrPath = (state: State) => {
+const selectPublicPath = (state: BuildConfig) => '/';
+const selectPublicUrlOrPath = (state: BuildConfig) => {
   return '/';
   // return getPublicUrlOrPath(isEnvDevelopment(state));
 };
-const selectAppPath = (state: State): string =>
+const selectAppPath = (state: BuildConfig): string =>
   path.join(state.cwd, state.rc?.dir ?? 'src');
-const selectAppHtml = (state: State) =>
+const selectAppHtml = (state: BuildConfig) =>
   path.join(state.cwd, 'public', 'index.html');
 // const selectHttpsConfig = (state: State) => false;
 // const selectProxy = (state: State) => undefined;
@@ -114,7 +115,7 @@ const defaultBabelConfig = {
 };
 
 const selectStyleLoaders = (
-  state: State,
+  state: BuildConfig,
   cssLoaderOptions: object,
   preProcessor?: string,
 ) => {
@@ -175,7 +176,7 @@ const selectStyleLoaders = (
   return loaders;
 };
 
-const selectDefaultRules = (state: State) => [
+const selectDefaultRules = (state: BuildConfig) => [
   { parser: { requireEnsure: false } },
   {
     test: jsRegex,
@@ -262,7 +263,7 @@ const selectDefaultRules = (state: State) => [
   },
 ];
 
-const selectEnvRules = (state: State) => {
+const selectEnvRules = (state: BuildConfig) => {
   switch (state.env) {
     case 'development':
       return [
@@ -287,7 +288,7 @@ const selectEnvRules = (state: State) => {
   }
 };
 
-const selectDefaultPlugins = (state: State) => [
+const selectDefaultPlugins = (state: BuildConfig) => [
   // @TODO(mAAdhaTTah) readd–rollup gets sad :(
   // This gives some necessary context to module not found errors, such as
   // the requesting resource.
@@ -360,7 +361,7 @@ const selectDefaultPlugins = (state: State) => [
   // })
 ];
 
-const selectEnvPlugins = (state: State) => {
+const selectEnvPlugins = (state: BuildConfig) => {
   const plugins = state.watch
     ? [
         // If you require a missing module and then `npm install` it, you still have
@@ -414,7 +415,7 @@ const selectEnvPlugins = (state: State) => {
   }
 };
 
-const selectCmdPlugins = (state: State) => {
+const selectCmdPlugins = (state: BuildConfig) => {
   switch (state.cmd) {
     case 'build':
       return [];
@@ -425,7 +426,9 @@ const selectCmdPlugins = (state: State) => {
   }
 };
 
-const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
+const selectWebpackEntry = (
+  state: BuildConfig,
+): webpack.Configuration['entry'] => {
   let entry = state.rc?.webpack?.entry ?? `index`;
 
   if (typeof entry === 'string') {
@@ -448,7 +451,7 @@ const selectWebpackEntry = (state: State): webpack.Configuration['entry'] => {
   return entry;
 };
 
-const selectFilename = (state: State): string => {
+const selectFilename = (state: BuildConfig): string => {
   let filename = state.rc?.webpack?.output?.filename ?? '[name].js';
 
   if (typeof filename === 'function') {
@@ -462,10 +465,10 @@ const selectFilename = (state: State): string => {
   return filename;
 };
 
-const selectPath = (state: State) =>
+const selectPath = (state: BuildConfig) =>
   path.join(state.cwd, state.rc?.webpack?.output?.path ?? 'dist/');
 
-const selectOutput = (state: State): webpack.Configuration['output'] => ({
+const selectOutput = (state: BuildConfig): webpack.Configuration['output'] => ({
   path: selectPath(state),
   pathinfo: isEnvDevelopment(state),
   filename: selectFilename(state),
@@ -482,14 +485,15 @@ const selectOutput = (state: State): webpack.Configuration['output'] => ({
   publicPath: selectPublicUrlOrPath(state),
   // Prevents conflicts when multiple Webpack runtimes (from different apps)
   // are used on the same page.
-  // @TODO(mAAdhaTTah) get app name
-  // jsonpFunction: `webpackJsonp${state.name}`,
+  jsonpFunction: `webpackJsonp${camelcase(state.name, {
+    pascalCase: true,
+  })}`,
   // this defaults to 'window', but by setting it to 'this' then
   // module chunks which are built will work in web workers as well.
   globalObject: 'this',
 });
 
-const selectMinimizer = (state: State) => [
+const selectMinimizer = (state: BuildConfig) => [
   // This is only used in production mode
   new TerserPlugin({
     terserOptions: {
@@ -589,7 +593,9 @@ const addHotReload = (
   return entry;
 };
 
-export const selectWebpackConfig = (state: State): webpack.Configuration => {
+export const selectWebpackConfig = (
+  state: BuildConfig,
+): webpack.Configuration => {
   let entry = selectWebpackEntry(state);
 
   if (state.cmd === 'start') {
@@ -700,13 +706,15 @@ export const selectWebpackConfig = (state: State): webpack.Configuration => {
   };
 
   return (
-    state.rc?.webpack?.modifier?.(config, { env: state.env, cmd: state.cmd }) ??
-    config
+    state.rc?.webpack?.modifier?.(config, {
+      env: state.env,
+      cmd: state.cmd,
+    }) ?? config
   );
 };
 
 export const selectServerConfig = (
-  state: State,
+  state: BuildConfig,
 ): WebpackDevServer.Configuration => ({
   // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
   // websites from potentially accessing local content through DNS rebinding:
