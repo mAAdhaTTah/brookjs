@@ -3715,14 +3715,14 @@
     "@types/react" "*"
 
 "@types/react-dev-utils@^9.0.2":
-  version "9.0.3"
-  resolved "https://registry.yarnpkg.com/@types/react-dev-utils/-/react-dev-utils-9.0.3.tgz#bca9083107f6a757add0a56ce8a1c54330df034e"
-  integrity sha512-b38J3sjBsJowEqbYCvPbcg3ihuPVoIRBiBrUloP8/Q0sRcPuJSa2y8ols7BuSLw4lVSHRXr7zB3IeYxZ9x8HlQ==
+  version "9.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-dev-utils/-/react-dev-utils-9.0.5.tgz#3265699edaba0078256d91b7793f98c4fb9bf6cf"
+  integrity sha512-uUsdRdc4LU1WQrfw3htnRIRchyOOsBnmnByK6H3oZMBdjmeyH1f7Cfy64YixQ3T3Dzy5gwGilcJVSDyOFjVBWQ==
   dependencies:
     "@types/eslint" "*"
     "@types/express" "*"
     "@types/html-webpack-plugin" "*"
-    "@types/webpack" "*"
+    "@types/webpack" "^4"
     "@types/webpack-dev-server" "*"
 
 "@types/react-dom@*":
@@ -3818,6 +3818,11 @@
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.5.tgz#9adbc12950582aa65ead76bffdf39fe0c27a3c02"
   integrity sha512-/gG2M/Imw7cQFp8PGvz/SwocNrmKFjFsm5Pb8HdbHkZ1K8pmuPzOX4VeVoiEecFCVf4CsN1r3/BRvx+6sNqwtQ==
+
+"@types/tapable@^1":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.7.tgz#545158342f949e8fd3bfd813224971ecddc3fac4"
+  integrity sha512-0VBprVqfgFD7Ehb2vd8Lh9TG3jP98gvr8rgehQqzztZNI7o8zS8Ad4jyZneKELphpuE212D8J70LnSNQSyO6bQ==
 
 "@types/terser-webpack-plugin@^2.2.0":
   version "2.2.0"
@@ -3935,14 +3940,14 @@
     "@types/source-list-map" "*"
     source-map "^0.6.1"
 
-"@types/webpack@*", "@types/webpack@^4.4.26", "@types/webpack@^4.41.8":
-  version "4.41.10"
-  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.10.tgz#2e1f6b3508a249854efe3dcc7690905ac5ee10be"
-  integrity sha512-vIy0qaq8AjOjZLuFPqpo7nAJzcoVXMdw3mvpNN07Uvdy0p1IpJeLNBe3obdRP7FX2jIusDE7z1pZa0A6qYUgnA==
+"@types/webpack@*", "@types/webpack@^4", "@types/webpack@^4.4.26", "@types/webpack@^4.41.8":
+  version "4.41.27"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.27.tgz#f47da488c8037e7f1b2dbf2714fbbacb61ec0ffc"
+  integrity sha512-wK/oi5gcHi72VMTbOaQ70VcDxSQ1uX8S2tukBK9ARuGXrYM/+u4ou73roc7trXDNmCxCoerE8zruQqX/wuHszA==
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
-    "@types/tapable" "*"
+    "@types/tapable" "^1"
     "@types/uglify-js" "*"
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
