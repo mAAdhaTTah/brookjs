@@ -1,0 +1,56 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+    timezone: America/New_York
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: jest-matcher-utils
+    versions:
+    - ">= 25.a, < 26"
+  - dependency-name: react-inspector
+    versions:
+    - "> 2.3.1"
+  - dependency-name: "@types/uuid"
+    versions:
+    - "> 3.4.7"
+  - dependency-name: uuid
+    versions:
+    - "> 3.4.0"
+  - dependency-name: yargs
+    versions:
+    - "> 12.0.5"
+  - dependency-name: "@babel/register"
+    versions:
+    - 7.12.10
+    - 7.12.13
+    - 7.13.0
+    - 7.13.14
+    - 7.13.8
+  - dependency-name: "@types/node"
+    versions:
+    - 14.14.20
+    - 14.14.22
+    - 14.14.25
+    - 14.14.28
+    - 14.14.30
+    - 14.14.31
+    - 14.14.33
+    - 14.14.34
+    - 14.14.35
+    - 14.14.37
+  - dependency-name: webpack
+    versions:
+    - 5.11.1
+    - 5.20.2
+    - 5.21.2
+    - 5.23.0
+  - dependency-name: "@types/webpack"
+    versions:
+    - 4.41.26
+  - dependency-name: "@types/react-dev-utils"
+    versions:
+    - 9.0.4
