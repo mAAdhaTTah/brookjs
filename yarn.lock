@@ -2954,12 +2954,19 @@
     simplebar-react "^1.0.0-alpha.6"
     ts-dedent "^1.1.0"
 
-"@storybook/core-events@5.3.18", "@storybook/core-events@^5.0.0":
+"@storybook/core-events@5.3.18":
   version "5.3.18"
   resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-5.3.18.tgz#e5d335f8a2c7dd46502b8f505006f1e111b46d49"
   integrity sha512-uQ6NYJ5WODXK8DJ7m8y3yUAtWB3n+6XtYztjY+tdkCsLYvTYDXNS+epV+f5Hu9+gB+/Dm+b5Su4jDD+LZB2QWA==
   dependencies:
     core-js "^3.0.1"
+
+"@storybook/core-events@^6.4.17":
+  version "6.4.17"
+  resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-6.4.17.tgz#ad70c883673a2060f1c7c4aa8f5926fc14119f4a"
+  integrity sha512-k6wNjQLZZ8A/rt4gLz0M4ebTORKYYz2B9hZ3LvPJftNVqv+bTFAV4KVks6bBlvbJWpJ+eCPEyfeSP9Np2QIFMQ==
+  dependencies:
+    core-js "^3.8.2"
 
 "@storybook/core@5.3.18":
   version "5.3.18"
@@ -7426,10 +7433,10 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
   integrity sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY=
 
-core-js@^3.0.1, core-js@^3.0.4:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.4.tgz#440a83536b458114b9cb2ac1580ba377dc470647"
-  integrity sha512-4paDGScNgZP2IXXilaffL9X7968RuvwlkK3xWtZRVqgd8SYNiVKRJvkFd1aqqEuPfN7E68ZHEp9hDj6lHj4Hyw==
+core-js@^3.0.1, core-js@^3.0.4, core-js@^3.8.2:
+  version "3.20.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.20.3.tgz#c710d0a676e684522f3db4ee84e5e18a9d11d69a"
+  integrity sha512-vVl8j8ph6tRS3B8qir40H7yw7voy17xL0piAjlbBUsH7WIfzoedL/ZOr1OV9FyZQLWXsayOJyV4tnRyXR85/ag==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
